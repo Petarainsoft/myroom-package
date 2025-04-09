@@ -1,0 +1,88 @@
+.balloonRoot{
+  position:absolute;
+  width:rem(120px);
+  height:100%;
+  .balloon{
+    position: relative;
+    animation-play-state: running;
+    &.idle{
+      animation-name: balloon-idle;
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
+    &.appear{
+      animation-fill-mode: forwards;
+      animation-name: balloon-appear, balloon-idle;
+      animation-duration: 3s, 2s;
+      animation-delay: 0s, 3s;
+      animation-direction: alternate, alternate;
+      animation-iteration-count: 1, infinite;
+      animation-timing-function: ease-out, ease-in-out;
+      z-index: 1;
+    }
+    
+    &.popped{
+      pointer-events: none;
+      img{
+        opacity: 0;
+      }
+    }
+  } 
+}
+
+@keyframes balloon-idle {
+  from{transform: translateY(0px);}
+  to{transform: translateY(rem(5px));}
+}
+@keyframes balloon-appear{
+  0%{opacity: 0; transform: translateY(100%);}
+  80%{opacity: 100%; transform: translateY(rem(-5px));}
+  90%{transform: translateY(rem(5px));}
+  100%{transform: translateY(0);}
+}
+
+.confetti{
+  width: 1rem;
+  height: 1rem;
+  display: inline-block;
+  position: absolute;
+  top: -1rem;
+  left: 0;
+  z-index: 50;
+}
+.confetti .rotate {
+  animation: driftyRotate 1s infinite both ease-in-out;
+  perspective: 1000;
+}
+.confetti .askew {
+  transform: skewY(10deg);
+  width: 2rem;
+  height: 3.2rem;
+  animation: drifty 1s infinite alternate both ease-in-out;
+  perspective:1000;
+  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+}
+.confetti .askew {
+  background: currentColor;
+  width: rem(10px);
+  height: rem(20px);
+  clip-path: polygon(evenodd,
+  0% 0%, 100% 0%, 100% 100%, 50% 90%, 0% 100%
+  );
+}
+@keyframes drifty {
+  0% {
+    transform: skewY(10deg) translate3d(-250%, 0, 0);
+  }
+  100% {
+    transform: skewY(-12deg) translate3d(250%, 0, 0);
+  }
+}
+@keyframes driftyRotate {
+  0% {
+    transform: rotateX(0);
+  }
+  100% {
+    transform: rotateX(359deg);
+  }
+}

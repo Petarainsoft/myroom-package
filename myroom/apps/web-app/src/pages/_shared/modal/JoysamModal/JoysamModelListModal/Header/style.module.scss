@@ -1,0 +1,32 @@
+.header {
+    display: flex;
+    width: 100%;
+    background-color: $default-background-color;
+    padding: 0 rem(20px);
+    height: $default-header-height;
+    justify-content: space-between;
+    align-items: center;
+    font-size: rem(12px);
+
+    button {
+        background-color: transparent;
+    }
+
+    .close_button {
+        padding: 0;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        width: rem(24px);
+        height: rem(24px);
+
+        svg {
+            width: rem(24px);
+            height: rem(24px);
+        }
+
+        background-color: transparent;
+        text-align: center;
+        color: $joysam-gray-scale-700;
+    }
+}

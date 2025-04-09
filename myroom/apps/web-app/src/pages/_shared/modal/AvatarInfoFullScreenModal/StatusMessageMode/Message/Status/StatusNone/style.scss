@@ -1,0 +1,53 @@
+@import '../../../mixins.scss';
+
+.statusSwiperWrapper {
+  position: absolute;
+  // top: rem(48px);
+  margin-top: rem(6px);
+  width: 100%;
+  .mySwiper {
+    height: calc(rem(98px) + rem(14px));
+    padding-bottom: rem(14px); //balloon bottom
+    .swiper-slide {
+      width: fit-content;
+      display: flex;
+      justify-content: center;
+      align-items: end;
+    }
+    .swiper-slide-active {
+      position: relative;
+      min-width: rem(98px);
+      @include balloonBottom($primary-color);
+    }
+    .swiper-slide-prev {
+      z-index: -1;
+    }
+    .swiper-slide-next {
+      z-index: -1;
+    }
+    .slideWrapper {
+      position: relative;
+    }
+  }
+  .inactiveSlide {
+    z-index: 1;
+    width: rem(60px);
+    height: rem(26px);
+    border-radius: rem(20px);
+    box-sizing: border-box;
+    border: solid rem(1px) $gray-scale-700;
+    background-color: $default-background-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    &.right {
+      right: rem(calc(-60px - 20px));
+    }
+    &.left {
+      left: rem(calc(-60px - 20px));
+    }
+    // @include balloonBottom($default-background-color);
+  }
+}

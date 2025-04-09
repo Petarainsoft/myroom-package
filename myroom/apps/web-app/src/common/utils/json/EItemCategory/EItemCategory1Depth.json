@@ -1,0 +1,26 @@
+{
+    "1": {
+        "Name": "AVATAR",
+        "Text": "아바타 프리셋",
+        "Desc": "아바타의 외형을 이루는 아이템",
+        "Parent": "",
+        "ActiveIcon": "",
+        "InActiveIcon": ""
+    },
+    "2": {
+        "Name": "MYROOMSKIN",
+        "Text": "마이룸 배경",
+        "Desc": "마이룸의 벽과 바닥을 이루는 스킨 아이템",
+        "Parent": "",
+        "ActiveIcon": "",
+        "InActiveIcon": ""
+    },
+    "3": {
+        "Name": "MYROOMITEM",
+        "Text": "마이룸 아이템",
+        "Desc": "마이룸에 배치되는 아이템",
+        "Parent": "",
+        "ActiveIcon": "",
+        "InActiveIcon": ""
+    }
+}

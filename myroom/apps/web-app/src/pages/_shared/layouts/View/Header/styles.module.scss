@@ -1,0 +1,37 @@
+.wrap {
+    width: 100%;
+    max-width: $max-width;
+    height: rem(48px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: $default-background-color;
+
+    &.float {
+        position: absolute;
+        top: 0;
+        background-color: transparent;
+    }
+
+    .container {
+        display: flex;
+        align-items: center;
+
+        &.start {
+            justify-content: flex-start;
+            flex: 1;
+        }
+
+        &.center {
+            justify-content: center;
+        }
+        
+        &.end {
+            justify-content: flex-end;
+        }
+
+        .close {
+            margin-right: rem(10px);
+        }
+    }
+}

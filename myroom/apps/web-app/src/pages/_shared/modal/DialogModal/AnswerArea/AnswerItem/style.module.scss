@@ -1,0 +1,42 @@
+.body {
+    position: relative;
+    width: 100%;
+    height: rem(48px);
+    padding: 0 rem(42px);
+    background-color: $joysam-gray-scale-100;
+    border-radius: rem(24px);
+    margin-bottom: rem(11px);
+    border:1px solid $joysam-gray-scale-700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &.selected {
+        background-color: $dialog-secondary-color3;
+        box-shadow: rem(1px) rem(1px) 0px 0px $joysam-gray-scale-700;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+
+    .text {
+        width: 100%;
+        height: fit-content;
+        color: $dialog-text-color;
+        text-align: center;
+        font-size: $font-size-300;
+        text-size-adjust: auto;
+        font-style: normal;
+        font-weight: $font-weight-medium;
+        line-height: 1.2;
+    }
+
+    .selected_mark {
+        position: absolute;
+        width: rem(14px);
+        height: rem(14px);
+        top: rem(17px);
+        right: rem(17px);
+        color:$joysam-gray-scale-700;
+    }
+}

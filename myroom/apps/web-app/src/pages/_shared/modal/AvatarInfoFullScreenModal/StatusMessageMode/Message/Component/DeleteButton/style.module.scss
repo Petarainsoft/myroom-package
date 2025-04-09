@@ -1,0 +1,21 @@
+.messageStatusDeleteBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: calc(rem(-20px) + rem(-10px));
+  width: rem(20px);
+  height: rem(20px);
+  button {
+    width: inherit;
+    height: inherit;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    svg {
+      width: rem(20px);
+      height: rem(20px);
+    }
+  }
+}

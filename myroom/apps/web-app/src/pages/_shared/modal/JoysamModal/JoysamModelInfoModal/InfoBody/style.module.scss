@@ -1,0 +1,165 @@
+.body {
+    position: relative;
+    width: 100%;
+    height: rem(252px);
+
+    .canvas_btn {
+        position: absolute;
+        width: rem(40px);
+        height: rem(40px);
+        top: rem(20px);
+        right: rem(20px);
+    }
+}
+
+.color_body {
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    left: calc(50% - 50vw);
+}
+
+.inner_body {
+    position: relative;
+    top: rem(20px);
+    left: rem(20px);
+    width: calc(100% - rem(40px));
+    height: calc(100% - rem(40px));
+}
+
+.view1 {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+
+    .grade_mark {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        width: rem(36px);
+        height: rem(20px);
+        background-color: #fdd00080;
+        border-radius: rem(15px);
+
+        .text {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            top: rem(-1px);
+            overflow: hidden;
+            font-size: $font-size-100;
+            color: $joysam-gray-scale-700;
+        }
+    }
+
+    .title {
+        position: relative;
+        width: 100%;
+        height: rem(16px);
+        font-size: $font-size-400;
+        font-weight: $font-weight-bold;
+        color: $joysam-gray-scale-700;
+        margin-top: rem(12px);
+    }
+
+    .material_desc {
+        position: relative;
+        width: 100%;
+        height: rem(12px);
+        font-size: $font-size-200;
+        font-weight: $font-weight-regular;
+        color: $joysam-gray-scale-500;
+        margin-top: rem(8px);
+    }
+
+    .desc {
+        position: relative;
+        width: 100%;
+        height: rem(34px);
+        font-size: $font-size-300;
+        font-weight: $font-weight-regular;
+        color: $joysam-gray-scale-600;
+        display: flex;
+        align-items: center;
+        margin-top: rem(18px);
+    }
+
+    .btn_round {
+        position: relative;
+        width: 100%;
+        height: rem(70px);
+        margin-top: rem(20px);
+        background-color: $joysam-gray-scale-100;
+        border-radius: rem(12px);
+        border: rem(1px) solid;
+        border-color: $joysam-gray-scale-300;
+
+        .btn_link {
+            position: absolute;
+            width: rem(14px);
+            height: rem(14px);
+            top: rem(28px);
+            right: rem(20px);
+        }
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .btn_inner {
+        position: relative;
+        width: calc(100% - rem(18px));
+        height: calc(100% - rem(18px));
+        top: rem(9px);
+        left: rem(9px);
+        display: flex;
+        flex-direction: row;
+
+        .btn_img_border {
+            position: relative;
+            width: rem(50px);
+            height: rem(50px);
+            border-radius: 6px;
+            overflow: hidden;
+
+            .btn_img {
+                border-radius: 6px;
+                display: block;
+            }
+        }
+
+        .btn_content_view {
+            position: relative;
+            flex: 1;
+            margin-left: rem(14px);
+            height: rem(50px);
+            display: flex;
+            flex-direction: column;
+
+            .btn_title {
+                height: rem(25px);
+                display: flex;
+                align-items: center;
+                font-size: $font-size-300;
+                font-weight: $font-weight-bold;
+                color: $joysam-gray-scale-700;
+            }
+
+            .btn_buy {
+                height: rem(25px);
+                display: flex;
+                align-items: center;
+                font-size: $font-size-100;
+                font-weight: $font-weight-regular;
+                color: $joysam-gray-scale-500;
+            }
+        }
+    }
+}

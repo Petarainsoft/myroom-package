@@ -1,0 +1,43 @@
+.botMargin {
+  margin-bottom: rem(20px);
+}
+
+.dimension {
+  width: rem(36px);
+  height: rem(36px);
+}
+
+.opacityWrapper {
+  position: absolute;
+  left: rem(20px);
+  opacity: 1;
+  bottom: rem(26px);
+  width: rem(36px);
+  height: rem(36px);
+
+  &.hide {
+    opacity: 0;
+  }
+}
+
+.toggleStatusMsg {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  bottom: rem(26px);
+  width: rem(36px);
+  height: rem(36px);
+}
+
+.commentNplacemode {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: rem(26px);
+  right: rem(20px);
+}
+
+.balloonNewBadge {
+  top: rem(-8px);
+  right: 0;
+}

@@ -1,0 +1,109 @@
+.profileNameWrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: rem(138px);
+}
+.speechBubbleWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: rem(20px);
+  font-size: $font-size-300;
+}
+.speechBubbleBG {
+  position: relative;
+  background: $default-background-color;
+  border: 1px solid $gray-scale-700;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  height: rem(32px);
+  padding: rem(9px) rem(14px);
+  border-radius: rem(25px);
+  font-weight: $font-weight-regular;
+}
+.speechBubbleBG:after,
+.speechBubbleBG:before {
+  top: 100%;
+  left: 50%;
+  border: solid transparent;
+  content: '';
+  height: 0;
+  width: 0;
+  position: absolute;
+  pointer-events: none;
+}
+
+.speechBubbleBG:after {
+  //top:calc(100% - rem(1px));
+  border-top-color: $default-background-color;
+  border-width: rem(6px);
+  margin-left: rem(-6px);
+}
+.speechBubbleBG:before {
+  border-top-color: $gray-scale-700;
+  border-width: rem(7px);
+  margin-left: rem(-7px);
+}
+
+.profileNameInputWrapper {
+  width: rem(335px);
+  height: rem(46px);
+  margin: rem(14px) auto 0px auto;
+  padding: 0px rem(16px);
+  box-sizing: border-box;
+  border-radius: rem(16px);
+  background-color: $default-background-color;
+  color: $gray-scale-500;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &.empty {
+    border: rem(1px) solid $gray-scale-700;
+  }
+  &.valid {
+    border: rem(1px) solid $tertiary-color;
+  }
+  &.invalid {
+    border: rem(1px) solid $fail-color;
+  }
+  .profileNameInput {
+    margin-left:rem(3px);
+    border: none;
+    padding: 0;
+    color: $gray-scale-700;
+    font-weight: $font-weight-regular;
+  }
+  .profileNameInput::placeholder {
+    color: $gray-scale-700;
+    font-weight: $font-weight-regular;
+  }
+  .profileNameValidMark {
+    width: rem(16px);
+    height: rem(16px);
+
+    color: $fail-color;
+
+    &.success {
+      color: $tertiary-color;
+    }
+  }
+}
+
+.profileNameWarningWrapper {
+  width: rem(335px);
+  color: $fail-color;
+  font-size: $font-size-300;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: rem(8px);
+  svg {
+    width: rem(10px);
+    height: rem(10px);
+    margin-right: rem(6px);
+  }
+}

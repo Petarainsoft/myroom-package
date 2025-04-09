@@ -1,0 +1,67 @@
+{
+   "format":3,
+   "main":{
+      "type":"MyRoom",
+      "room":{
+         "backgroundColor":"#6b8cc2ff",
+         "roomSkinId":"2NBOyh6Spw7E5QNaEr4BG4",
+         "grids":[
+            {
+               "meshName":"Floor",
+               "isFloor":true,
+               "placementType":"Floor",
+               "gridNormal":"Y",
+               "width":20,
+               "height":20,
+               "gridOrigin":[
+                  0,
+                  0.1,
+                  0
+               ],
+               "markArray":[
+                  
+               ]
+            },
+            {
+               "meshName":"LeftWall",
+               "isFloor":false,
+               "placementType":"Wall",
+               "gridNormal":"X",
+               "width":20,
+               "height":20,
+               "gridOrigin":[
+                  0.1,
+                  0,
+                  0
+               ],
+               "markArray":[
+                  
+               ]
+            },
+            {
+               "meshName":"RightWall",
+               "isFloor":false,
+               "placementType":"Wall",
+               "gridNormal":"Z",
+               "width":20,
+               "height":20,
+               "gridOrigin":[
+                  0,
+                  0,
+                  0.1
+               ],
+               "markArray":[
+                  
+               ]
+            }
+         ]
+      },
+      "items":[
+         
+      ],
+      "figures":[
+         
+      ]
+   },
+   "testItems":["2P4OSaE6T4fqZK0C1JtHl2","2QxNyca6tUjrpBCYxbIfIW","2SqNYPqa2PbWLCSvSOGpxg","2UjN0UEATlC47y6tO2nL5U"]
+}

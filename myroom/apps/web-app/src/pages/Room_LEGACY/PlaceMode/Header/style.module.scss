@@ -1,0 +1,71 @@
+.headerArea {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+
+  .headerInfoWrapper {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.placeModeBtn {
+  position: absolute;
+  top: 10px;
+  right: rem(5px);
+  margin: rem(5px);
+  width: rem(40px);
+  height: rem(40px);
+  z-index: 1;
+
+  img {
+    height: 100%;
+  }
+}
+
+.closeBtn {
+  position: relative;
+  width: rem(24px);
+  height: rem(24px);
+  text-align: center;
+  margin-right: rem(15px);
+}
+
+.currency {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+  position: absolute;
+  left: 15%;
+  border-radius: rem(20px);
+}
+
+.coin {
+  position: relative;
+  margin: rem(10px);
+  width: rem(20px);
+  height: rem(20px);
+
+  &.expanded {
+  }
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.navCategory {
+  position: relative;
+  display: flex;
+}
+
+.navBtn {
+  position: relative;
+  margin-left: rem(20px);
+  width: rem(24px);
+  height: rem(24px);
+}

@@ -1,0 +1,39 @@
+.container {
+    padding-top: rem(24px);
+    width: 100%;
+
+    .recent-wrap {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        overflow-x: auto;
+        
+        .recent-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            border: 1px solid $gray-scale-700;
+            border-radius: rem(56px);
+            padding: 0 rem(8px) 0 rem(12px);
+            height: rem(32px);
+            
+            margin-right: rem(8px);
+            &:first-child {
+                margin-left: rem(20px);
+            }
+    
+            &:last-child {
+                margin-right: rem(20px);
+            }
+        
+            
+            .text {
+                font-size: $font-size-300;
+                font-weight: $font-weight-regular;
+        
+                white-space: nowrap;
+            }
+        }
+    }
+}

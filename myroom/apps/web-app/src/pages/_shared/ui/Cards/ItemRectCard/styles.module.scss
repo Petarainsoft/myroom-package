@@ -1,0 +1,98 @@
+.wrap {
+  position: relative;
+  display: block;
+  width: rem(103px);
+  height: rem(149px);
+  border-radius: rem(16px);
+  border: 1px solid $gray-scale-300;
+
+  padding: rem(12px);
+
+  font-size: $font-size-100;
+  font-weight: $font-weight-medium;
+
+  .info{
+    width: rem(79px);
+    height: rem(18px);
+    border-radius: rem(10px);
+    border: 1px solid $gray-scale-300;
+    background-color: $gray-scale-200;
+    position: absolute;
+    bottom: rem(26px);
+
+    text-align: center;
+    color: $gray-scale-600;
+    padding: 0 rem(12px);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .thumbnail {
+    width: rem(79px);
+    height: rem(105px);
+  
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .text {
+    text-align: center;
+    line-height: 12px;
+    margin-top: rem(8px);
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &.add-button {
+    padding-bottom: rem(1px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    font-size: $font-size-200;
+    color: $gray-scale-600;
+
+    .icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: rem(42px);
+      height: rem(42px);
+      border: 1px dashed $gray-scale-300;
+      background-color: $gray-scale-200;
+      border-radius: 50%;
+    }
+
+    .saveCoordiText {
+      height: rem(17px);
+      margin-top: rem(4px);
+      line-height: rem(17px);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .count {
+      margin-top: rem(4px);
+      height: rem(16px);
+      width: rem(32px);
+      color: $gray-scale-100;
+      background-color: $gray-scale-700;
+      padding: 0 rem(8px);
+      border-radius: rem(7.5px);
+      font-size: $font-size-100;
+      font-weight: $font-weight-bold;
+    }
+  }
+}

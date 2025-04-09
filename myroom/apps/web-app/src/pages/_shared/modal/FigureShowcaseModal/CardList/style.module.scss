@@ -1,0 +1,64 @@
+.figureShowcaseCardListWrapper {
+  height: calc($vh-100 - 48px - 52px - 70px);
+  position: relative;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  .inputWrapper {
+    font-weight: $font-weight-regular;
+    position: relative;
+    padding: 20px;
+    input {
+      border-radius: 16px;
+      border: 1px solid var(--gray-scale-300);
+      &:focus {
+        border: 1px solid $tertiary-color;
+        caret-color: $tertiary-color;
+      }
+      &::placeholder {
+        color: var(--gray-scale-500);
+        opacity: 1;
+      }
+
+      &::-moz-placeholder {
+        color: var(--gray-scale-500);
+        opacity: 1;
+      }
+
+      &:-ms-input-placeholder {
+        color: var(--gray-scale-500);
+      }
+
+      &::-ms-input-placeholder {
+        color: var(--gray-scale-500);
+      }
+    }
+  }
+  .figureCardItemGridWrapper {
+    position: relative;
+    display: grid;
+    height: fit-content;
+    width: 100%;
+    padding: 0px 20px 20px 20px;
+    grid-template-columns: repeat(auto-fill, 103px);
+    grid-row-gap: rem(24px);
+    grid-column-gap: rem(13px);
+    justify-content: center;
+    padding: 0;
+  }
+
+  .inView {
+    position: absolute;
+    bottom: 300px;
+    width: 100%;
+    // background: aqua;
+    height: 1px;
+  }
+}
+
+.btnDeleteInput {
+  position: absolute;
+  right: calc(36px);
+  top: 50%;
+  transform: translateY(-50%);
+}

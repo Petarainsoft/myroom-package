@@ -1,0 +1,83 @@
+stages:
+  - triggers
+  - test
+  - build
+  - deploy
+
+variables:
+  NODE_VERSION: 16.16.0
+  WORK_ENVIRONMENT: $CI_COMMIT_REF_SLUG
+
+# #storybook trigger
+# myroom-storybook:
+#   stage: triggers
+#   only:
+#     refs:
+#       - branches
+#     changes:
+#       - myroom/apps/web-app/src/**/*.stories.tsx
+#       - myroom/apps/web-app/.storybook/**/*
+#   trigger:
+#     include: myroom/apps/web-app/.storybook/.gitlab-ci.yml
+
+########################################
+# build
+########################################
+.node-myroom-build: &node-myroom-build
+  image: node:$NODE_VERSION
+  stage: build
+  tags: ['cv']
+  environment: ${WORK_ENVIRONMENT}-build-$APP_NAME
+  cache:
+    key: '${PROJECT_SLUG}-${CI_COMMIT_REF_SLUG}-${CI_JOB_STAGE}'
+    paths:
+      - myroom/node_modules/
+    policy: pull-push
+  script:
+    - cd myroom
+    - yarn install
+    - CI=false yarn workspace web-app build
+  artifacts:
+    paths:
+      - myroom/apps/web-app/dist
+
+# myroom
+build-myroom:
+  <<: *node-myroom-build
+
+########################################
+# deploy
+########################################
+.deploy-web: &deploy-web
+  stage: deploy
+  image:
+    name: amazon/aws-cli
+    entrypoint: ['']
+  tags: ['cv']
+  environment: ${WORK_ENVIRONMENT}-deploy-$APP_NAME
+  script:
+    - aws s3 cp --region $AWS_S3_REGION --recursive myroom/apps/web-app/dist s3://${AWS_S3_BUCKET_NAME}/${WORK_ENVIRONMENT}/web-myroom
+
+# deploy myroom
+deploy-myroom:
+  <<: *deploy-web
+  environment: $WORK_ENVIRONMENT
+  variables:
+    AWS_ACCESS_KEY_ID: $DOCS_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $DOCS_AWS_SECRET_ACCESS_KEY
+    AWS_S3_REGION: $DOCS_AWS_S3_REGION
+    #AWS_S3_PATH: ${DOCS_AWS_S3_PATH}
+    APP_NAME: web-myroom
+  needs:
+    - build-myroom
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_REF_SLUG == "main"'
+      when: always
+      variables:
+        WORK_ENVIRONMENT: 'dev'
+    - if: '$CI_COMMIT_REF_SLUG == "ir-production"'
+      when: always
+      variables:
+        WORK_ENVIRONMENT: 'ir'

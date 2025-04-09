@@ -1,0 +1,127 @@
+.wrapper {
+  width: 100%;
+  height: 100%;
+  border: 1px solid $gray-scale-700;
+  border-radius: rem(20px);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  .balloonImage {
+    width: rem(170px);
+    height: rem(170px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: rem(20px);
+    margin-bottom: rem(18px);
+    position: relative;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+    .balloonInactiveCover{
+      position:absolute;
+      top:0;
+      left:0;
+      filter: invert(96%) sepia(0%) saturate(0%) hue-rotate(174deg) brightness(90%) contrast(90%) opacity(10%);
+    }
+  }
+  &.inactive{
+    .balloonImage img{
+      opacity: 0.5;
+    }
+    
+    .btnBalloonAction{
+      background-color: $primary-color;
+    }
+  }
+  
+  position: relative;
+  .btnBalloonAction {
+    display: flex;
+    align-items: center;
+    border: 1px solid black;
+    width: rem(137px);
+    height: rem(36px);
+    border-radius: rem(20px);
+    position: absolute;
+    top: rem(190px);
+    z-index: 1;
+    background-color: $tertiary-color;
+    left: calc(50% - rem(137px) / 2);
+    .actionBtnIcon{
+      width:rem(24px);
+      height:rem(24px);
+      margin-left:rem(10px);
+    }
+    .actionBtnText{
+      width:rem(90px);
+      height:rem(18px);
+      text-align: center;
+      font-size: $font-size-200;
+      font-weight: $font-weight-medium;
+    }
+  }
+  .isInactiveMark{
+    position:absolute;
+    top:rem(10px);
+    right:rem(14px);
+    width:rem(32px);
+    height:rem(32px);
+    border-radius: 50%;
+    background-color: $tertiary-color;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .content {
+    width: rem(275px);
+    height: rem(284px);
+    padding: rem(35px) rem(20px);
+    border: 1px solid black;
+    border-radius: rem(20px);
+    font-size: $font-size-200;
+    font-weight: $font-weight-medium;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    color:black;
+    background-color: #fff;
+  }
+  .writerWrapper {
+    width: 100%;
+    padding: rem(20px);
+    display: flex;
+    color:black;
+    .info {
+      width: 100%;
+      margin-left: rem(10px);
+      .nickname {
+        font-size: $font-size-200;
+        font-weight: $font-weight-medium;
+      }
+      .bottomWrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: fit-content;
+        width: 100%;
+        .btnVisitRoom {
+          display: flex;
+          align-items: center;
+          font-size: $font-size-200;
+          color: #666;
+          svg {
+            margin-top: rem(3px);
+            margin-left: rem(4px);
+          }
+        }
+        .writeDate {
+          font-size: $font-size-100;
+          color: #999;
+          font-weight: $font-weight-regular;
+        }
+      }
+    }
+  }
+}

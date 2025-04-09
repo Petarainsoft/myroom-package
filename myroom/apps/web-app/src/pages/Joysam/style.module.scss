@@ -1,0 +1,25 @@
+.loading {
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+}
+
+.loadingText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'noto-sans-cjk-kr', sans-serif;
+    font-weight: $font-weight-medium;
+    overflow: hidden;
+    overscroll-behavior: none;
+    background-color: $default-background-color;
+    color: $gray-scale-700;
+}
+
+.roomLoading {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background-color: #00000080;
+}

@@ -1,0 +1,73 @@
+.roomPresetViewerWrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  height:rem(522px);
+}
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  display: none;
+}
+.mainSwiper {
+  width: rem(344px);
+  height: rem(271px);
+}
+.mainSlide {
+  width: rem(344px);
+  height: rem(271px);
+  text-align: center;
+  img {
+    width: rem(344px);
+    height: rem(271px);
+  }
+}
+.mainSwiperPagingButtons{
+  position: absolute;
+  top:rem(107px);
+  padding:0 rem(6px);
+  width: rem(344px);
+  display:flex;
+  justify-content: space-between;
+  button{
+    z-index: 1;
+  }
+}
+// bottom paging ------------------------
+.bottomWrapper{
+  width:100%;
+  background-color: #fff;
+  margin-top:rem(9px);
+}
+.colorPagingWrapper {
+  margin: auto;
+  padding:rem(20px) 0;
+  width: 100%;
+  max-width: fit-content;
+}
+.presetPagingSwiper {
+  margin-top: rem(20px);
+  padding: 0px rem(20px-6px);
+  width: 100%;
+  max-width: fit-content;
+}
+.pagingSlide {
+  width: rem(100px);
+  height: rem(100px);
+  overflow: hidden;
+  border-radius: rem(12px);
+  border: rem(1px) solid $gray-scale-300;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0px rem(6px);
+  img {
+    width: rem(113px);
+    height: rem(77px);
+  }
+}
+.pagingSlide.swiper-slide-thumb-active {
+  border-radius: rem(12px);
+  border: rem(2px) solid $secondary-color;
+}

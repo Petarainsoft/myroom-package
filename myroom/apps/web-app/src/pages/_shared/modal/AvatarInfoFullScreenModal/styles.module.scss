@@ -1,0 +1,249 @@
+.wrap {
+  background-size: rem(50px) rem(50px);
+  background-image: linear-gradient(0deg,
+      #ececec 0%,
+      #f2f2f2 1%,
+      #f2f2f2 2%,
+      transparent 3%,
+      transparent 50%,
+      #f2f2f2 51%,
+      #f2f2f2 52%,
+      transparent 53%,
+      transparent),
+    linear-gradient(90deg,
+      #ececec 0%,
+      #f2f2f2 1%,
+      #ececec 3%,
+      #ececec 50%,
+      #f2f2f2 51%,
+      #f2f2f2 52%,
+      #ececec 53%,
+      #ececec);
+
+  .container {
+    display: flex;
+    flex-direction: column;
+
+
+    .scene-container {
+      flex: 1;
+      // flex 설정시 100%로 하면 무한하게 커집니다.
+      height: 1px;
+    }
+  }
+}
+
+.webcam {
+  width: 240px;
+  height: 180px;
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 10;
+}
+
+
+// .AvatarModalWrapper {
+//   background-image: linear-gradient(
+//       0deg,
+//       #ececec 0%,
+//       #f2f2f2 1%,
+//       #f2f2f2 2%,
+//       transparent 3%,
+//       transparent 50%,
+//       #f2f2f2 51%,
+//       #f2f2f2 52%,
+//       transparent 53%,
+//       transparent
+//     ),
+//     linear-gradient(
+//       90deg,
+//       #ececec 0%,
+//       #f2f2f2 1%,
+//       #ececec 3%,
+//       #ececec 50%,
+//       #f2f2f2 51%,
+//       #f2f2f2 52%,
+//       #ececec 53%,
+//       #ececec
+//     );
+//   width: 100vw !important;
+//   background-size: rem(50px) rem(50px);
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: flex-start !important;
+// }
+
+// .AvatarModalContent {
+//   position: relative;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: flex-start;
+//   height: calc(100% - rem(48px)); //header 크기만큼 뺌
+//   width: 100%;
+// }
+// .StatusMessageAndSceneWrapper {
+//   display: flex;
+//   flex-direction: column;
+//   position: relative;
+// }
+// .statusMessage {
+//   border: 1px solid $gray-scale-700;
+//   border-radius: 10px;
+//   background-color: lightcoral;
+//   width: 150px;
+//   height: 50px;
+//   margin-bottom: 10px;
+// }
+
+// .avatarImage {
+//   width: 100%;
+//   flex-grow: 1;
+//   max-height: 700px;
+// }
+
+// .defaultCanvas {
+//   height: calc(
+//     100% - (170px + 40px + 48px + 86px)
+//   ); // 상메 + 리액션(마이룸) + 닉네임 영역
+// }
+
+// .avatarCustomCanvas {
+//   width: 100%;
+//   height: 100%;
+//   touch-action: none;
+//   flex-grow: 1;
+//   min-height: 50%;
+
+//   @supports (-webkit-touch-callout: none) {
+//     height: -webkit-fill-available;
+//   }
+// }
+
+// .header {
+//   display: flex;
+//   justify-content: space-between;
+//   width: 100%;
+//   min-height: 48px;
+//   padding: 0px 20px;
+//   background-color: $default-background-color;
+// }
+
+// .nameContainer {
+//   display: flex;
+//   align-items: center;
+// }
+
+// .rightMargin {
+//   margin-right: 10px;
+// }
+// .rightMarginCash {
+//   margin-right: 15px;
+// }
+
+// .dimension {
+//   width: 24px;
+
+//   svg {
+//     height: 100%;
+//     width: 100%;
+//   }
+// }
+// .figure {
+//   width: 28px;
+//   height: 28px;
+//   svg {
+//     height: 100%;
+//     width: 100%;
+//   }
+// }
+
+// .currency {
+//   display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//   justify-content: start;
+//   position: absolute;
+//   left: 15%;
+//   border-radius: 20px;
+// }
+
+// .containerPlacemode {
+//   display: flex;
+//   flex-direction: column;
+//   height: 100vh;
+//   overflow: hidden;
+// }
+
+// .canvasContainer {
+//   flex-grow: 1;
+//   min-height: 50%;
+// }
+
+// .contentAction {
+//   position: absolute;
+//   top: -70px;
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: center;
+//   height: 40px;
+//   width: 100%;
+//   opacity: 0;
+
+//   &.expanded {
+//     opacity: 1;
+//     transition: opacity 0.3s ease;
+//   }
+// }
+
+// .contentCategory {
+//   position: relative;
+//   display: flex;
+//   flex-wrap: nowrap;
+//   flex-grow: 0;
+//   flex-shrink: 0;
+//   flex-basis: auto;
+//   width: 100%;
+//   background-color: $elevated-background-color;
+//   border-radius: 10px 10px 0px 0px;
+// }
+
+// .contentSort {
+//   display: flex;
+//   flex-direction: row;
+//   position: relative;
+//   margin: 5px;
+// }
+
+// .statusMessageHeaderWrapper {
+//   width: 100%;
+//   min-height: rem(48px);
+//   background-color: $default-background-color;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+//   font-size: rem(12px);
+//   .backBtn {
+//     width: rem(24px);
+//     height: rem(24px);
+//     align-items: center;
+//     padding: 0;
+//     background-color: transparent;
+
+//     svg {
+//       width: rem(24px);
+//       height: rem(24px);
+//     }
+//   }
+
+//   .saveBtn {
+//     background-color: $tertiary-color;
+//     width: rem(62px);
+//     height: rem(36px);
+//     text-align: center;
+//     border: rem(1px) solid $gray-scale-700;
+//     border-radius: rem(20px);
+//     padding: 0;
+//   }
+// }

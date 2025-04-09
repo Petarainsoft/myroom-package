@@ -1,0 +1,11 @@
+.wrap {
+    width: 100%;
+    height: rem(45px);
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    color: $gray-scale-600;
+    font-size: $font-size-300;
+}

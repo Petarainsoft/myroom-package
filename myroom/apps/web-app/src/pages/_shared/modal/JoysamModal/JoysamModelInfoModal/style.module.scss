@@ -1,0 +1,65 @@
+.modal {
+    //background-color: #fff;
+    background-size: rem(50px) rem(50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+}
+
+.body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.body2 {
+    position: relative;
+    width: 100%;
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inner_body {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: $joysam-max-width;
+    height: 100%;
+}
+
+.content {
+    position: relative;
+    border: 0px;
+    height: calc(100% - rem(252px) - rem(116px));
+}
+
+// 이상하게 3d canvas의 height를 100%로 잡으면, 늘어난다.. 그래서 rem(50px)만큼 작게 배치한다.
+.canvas {
+    position: relative;
+    width: 100%;
+    height: calc(100% - rem(10px));
+    border: 0px;
+}
+
+.video_area {
+    position: relative;
+    width: 100%;
+    height: 100%; //calc(100% - rem(60px));
+    border: 0px;
+    //padding-top: rem(39px);
+}
+
+.canvas_btn {
+    position: absolute;
+    width: rem(40px);
+    height: rem(40px);
+    bottom: rem(10px);
+    right: rem(20px);
+}

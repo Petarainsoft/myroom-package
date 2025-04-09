@@ -1,0 +1,1 @@
+export { default as TempRoomManifest } from './myRoomTestPreset.json';

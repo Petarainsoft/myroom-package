@@ -1,0 +1,10 @@
+.container {
+    .card {
+        margin-bottom: rem(20px);
+    
+        &:last-child {
+            margin-right: 0;
+        }
+    }
+}
+

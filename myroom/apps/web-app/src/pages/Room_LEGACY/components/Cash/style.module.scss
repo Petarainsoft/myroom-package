@@ -1,0 +1,21 @@
+.CashCoreWrapper {
+  display: flex;
+  align-items: center;
+}
+.cashWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: rem(18px);
+  font-size: $font-size-200;
+}
+.firstCashWrapper {
+  margin-right: rem(10px);
+}
+
+.iconWrapper {
+  margin-right: rem(4px);
+}
+.cashText{
+  margin-top:rem(-2px);
+}

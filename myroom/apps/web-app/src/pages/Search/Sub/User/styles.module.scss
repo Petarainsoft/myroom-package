@@ -1,0 +1,10 @@
+
+.wrap {
+    height: 100%;
+    padding-top: rem(10px);
+    
+    .container {
+        height: calc(100% - rem(45px));
+    }
+}
+

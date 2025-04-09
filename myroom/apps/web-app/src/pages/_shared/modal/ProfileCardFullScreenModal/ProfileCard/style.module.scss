@@ -1,0 +1,30 @@
+.card{
+  width:rem(338px);
+  height:rem(507px);
+  position: relative;
+  z-index: 1;
+  .btnAvatar{
+    position:absolute;
+    top:rem(100px);
+    left:rem(24px);
+    width:rem(290px);
+    height:rem(290px);
+    z-index: 3;
+    img{
+      width:100%;
+      height:100%;
+    }
+  }
+  .innerText{
+    white-space: nowrap;
+    transform-origin: left center;
+    z-index: 2;
+  }
+  .qrCodeWrapper{
+    z-index: 2;
+    .qrCode{
+      width:100%;
+      height:100%;
+    }
+  }
+}

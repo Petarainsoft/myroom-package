@@ -1,0 +1,14 @@
+@import '../../../mixins.scss';
+
+.statusImageInEditor {
+  @include commonStateStyle;
+  padding: rem(10px);
+  max-height: rem(98px);
+  max-width: rem(98px);
+  img {
+    aspect-ratio: auto;
+    max-height: rem(calc(98px - 20px));
+    max-width: rem(calc(98px - 20px));
+    border-radius: rem(5px);
+  }
+}

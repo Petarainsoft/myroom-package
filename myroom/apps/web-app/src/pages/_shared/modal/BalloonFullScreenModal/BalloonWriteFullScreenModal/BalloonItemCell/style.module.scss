@@ -1,0 +1,35 @@
+.wrapper {
+  width: rem(60px);
+  height: rem(80px);
+  padding:rem(9px) 0 rem(7px) 0;
+  border-radius: rem(12px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .icon {
+    width: rem(43px);
+    height: rem(43px);
+    text-align: center;
+    margin-bottom:rem(8px);
+  }
+  .priceWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: $font-size-100;
+    font-weight: $font-weight-bold;
+    color:#666;
+    .priceIcon{
+      width:rem(11px);
+      height:rem(11px);
+      margin-right:rem(2px);
+      svg{
+        width:100%;
+        height:100%;
+      }
+    }
+  }
+  &.selected {
+    border: 1.5px solid $secondary-color;
+  }
+}

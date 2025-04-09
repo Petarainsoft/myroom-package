@@ -1,0 +1,1 @@
+export type LinkType = 'link' | 'video';

@@ -1,0 +1,59 @@
+.header {
+    position: absolute;
+    top:0;
+    left:0;
+    display: flex;
+    width: 100%;
+    padding: 0 rem(20px);
+    height: $default-header-height;
+    align-items: center;
+    font-size: rem(12px);
+    z-index: 2;
+    .prev_button{
+        width:rem(28px);
+        height:rem(28px);
+        svg{
+            width:100%;
+            height:100%;
+        }
+    }
+    
+    .skip_button {
+        position: relative;
+        width: rem(40px);
+        height: rem(28px);
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: $joysam-gray-scale-100;
+        border-radius: rem(20px);
+
+        .text {
+            color: $dialog-text-color;
+            font-size: $font-size-100;
+            font-style: normal;
+            font-weight: $font-weight-bold;
+            line-height: 100%;
+        }
+    }
+    
+    .progress_back{
+        @media screen and (max-width: 374px) {
+            width:100%;
+        }
+        width:calc(100% - rem(68px) - rem(27px));
+        margin-left:rem(20px);
+        border-radius: rem(8px);
+        height:rem(4px);
+        background-color: #f9f9f9;
+        .progress{
+            width:100%;
+            height:100%;
+            background-color: #000;
+            border-radius: rem(8px);
+            transform-origin: center left;
+            // transform: scale(0.5, 1);
+        }
+    }
+}

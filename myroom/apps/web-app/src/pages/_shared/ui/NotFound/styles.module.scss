@@ -1,0 +1,35 @@
+
+.wrap {
+    width: 100%;
+    height: 100%;
+    
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    font-size:$font-size-300;
+
+    .container {
+        width:rem(288px);
+        text-align: center;
+        
+        .icon-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: rem(24px);
+        }
+    
+        .text {
+            max-height: rem(42px);
+        }
+    
+        .button {
+            margin-top: rem(30px);
+        }
+    }   
+}
+
+

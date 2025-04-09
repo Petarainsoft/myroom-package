@@ -1,0 +1,65 @@
+{
+  "11000": {
+    "Name": "HEAD",
+    "Text": "머리",
+    "Desc": "아바타의 머리 외형 변경",
+    "Parent": "AVATAR",
+    "ActiveIcon": "body_active.svg",
+    "InActiveIcon": "body.svg",
+    "IsShow": true
+  },
+  "12000": {
+    "Name": "BODY",
+    "Text": "몸통",
+    "Desc": "아바타의 몸통 외형 변경",
+    "Parent": "AVATAR",
+    "ActiveIcon": "body_active.svg",
+    "InActiveIcon": "body.svg",
+    "IsShow": true
+  },
+  "21000": {
+    "Name": "INDOOR",
+    "Text": "실내",
+    "Desc": "실내형 마이룸 스킨",
+    "Parent": "MYROOMSKIN",
+    "ActiveIcon": "body_active.svg",
+    "InActiveIcon": "body.svg",
+    "IsShow": true
+  },
+  "22000": {
+    "Name": "OUTDOOR",
+    "Text": "실외",
+    "Desc": "실외형 마이룸 스킨",
+    "Parent": "MYROOMSKIN",
+    "ActiveIcon": "body_active.svg",
+    "InActiveIcon": "body.svg",
+    "IsShow": true
+  },
+  "31000": {
+    "Name": "FLOOR",
+    "Text": "바닥",
+    "Desc": "바닥에 배치되는 아이템",
+    "Parent": "MYROOMITEM",
+    "ActiveIcon": "body_active.svg",
+    "InActiveIcon": "body.svg",
+    "IsShow": true
+  },
+  "32000": {
+    "Name": "WALLHANGING",
+    "Text": "벽걸이",
+    "Desc": "벽에 배치되는 아이템",
+    "Parent": "MYROOMITEM",
+    "ActiveIcon": "body_active.svg",
+    "InActiveIcon": "body.svg",
+    "IsShow": true
+  },
+  "33000": {
+    "Name": "RUG",
+    "Text": "깔개",
+    "Desc": "마이룸 바닥에 배치되는 바닥 깔개",
+    "Parent": "MYROOMITEM",
+    "ActiveIcon": "body_active.svg",
+    "InActiveIcon": "body.svg",
+    "IsShow": true
+  }
+}

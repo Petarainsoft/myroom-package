@@ -1,0 +1,99 @@
+.background {
+  width: 100%;
+  height: 100%;
+  background-color: $default-background-color;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.body {
+  height: calc($vh-100 - $full-button-height - $default-header-height);
+  overflow-y: auto;
+  .targetUserWrapper {
+    height:rem(168px);
+    padding:rem(20px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: #ECECEC;
+    $gridColor : rgba(255, 255, 255, 0.5);
+    background-image:
+    linear-gradient(0deg, transparent 0%,
+    $gridColor 1%,
+    $gridColor 2%, transparent 3%, transparent 50%,
+    $gridColor 51%,
+    $gridColor 52%, transparent 53%, transparent),
+    linear-gradient(90deg, transparent 0%,
+    $gridColor 1%,
+    $gridColor 2%, transparent 3%, transparent 50%,
+    $gridColor 51%,
+    $gridColor 52%, transparent 53%, transparent);
+    background-size:rem(50px) rem(50px);
+    
+    img {
+      width: rem(100px);
+      height: rem(100px);
+    }
+    .targetNicknameWrapper{
+      margin-top:rem(18px);
+      font-size: $font-size-300;
+      font-weight: $font-weight-medium;
+      word-break: keep-all;
+      text-align: center;
+      color:#000;
+      .nickname{
+        font-weight: $font-weight-bold;
+      }
+      // .highlight{
+      //   display: inline-block;
+      //   margin-right:rem(2px);
+      //   font-weight: $font-weight-bold;
+      //   background-image: linear-gradient(
+      //     0deg,
+      //     $primary-color 0%,
+      //     $primary-color 100%
+      //   );
+      //   background-repeat: no-repeat;
+      //   background-size: 100% 30%;
+      //   background-position: 0 88%;
+      // }
+    }
+    
+  }
+  .line{
+    width:100%;
+    height:rem(8px);
+    background-color: $gray-scale-200;
+  }
+  .messageWrapper{
+    width:100%;
+    height: rem(340px);
+    padding:rem(30px) rem(20px);
+    .messageTitle{
+      margin-bottom:rem(16px);
+      font-size: $font-size-300;
+      font-weight: $font-weight-medium;
+    }
+    .textArea{
+      width:100%;
+      height: rem(250px);
+      padding:rem(20px);
+      border-radius:rem(20px);
+      background-color:$gray-scale-100;
+      font-size: $font-size-200;
+      font-weight: $font-weight-regular;
+      border:1px solid $gray-scale-700;
+      color:$gray-scale-700;
+    }
+    .textArea:placeholder-shown{
+      border:1px solid $gray-scale-300;
+      color:$gray-scale-400;
+    }
+      
+  }
+  
+}
+

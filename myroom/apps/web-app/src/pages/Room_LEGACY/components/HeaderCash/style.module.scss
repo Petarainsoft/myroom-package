@@ -1,0 +1,37 @@
+.headerCashWrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  font-size: $font-size-200;
+  &.isClosed {
+    .cash {
+      display: none;
+    }
+    .diamond {
+      position: absolute;
+      left: 0;
+    }
+    .arrow {
+      margin-left: rem(8px);
+    }
+  }
+  .cash{
+    margin-bottom:rem(3px);
+  }
+}
+.cashWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.firstCashWrapper {
+  margin-right: rem(10px);
+}
+
+.iconWrapper {
+  margin-right: rem(4px);
+}
+.arrow {
+  margin-left: rem(10px);
+}

@@ -1,0 +1,167 @@
+{
+  "111111": {
+    "Name": "HAIR",
+    "Text": "머리",
+    "Desc": "머리 스타일",
+    "Parent": "HEAD",
+    "ActiveIcon": "lens_active",
+    "InActiveIcon": "cate-avatar-head",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "111112": {
+    "Name": "HEADACC",
+    "Text": "머리 액세서리",
+    "Desc": "머리 스타일",
+    "Parent": "HEAD",
+    "ActiveIcon": "colormakeup_active",
+    "InActiveIcon": "cate-avatar-clothe",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": true
+  },
+  "111113": {
+    "Name": "CLOTHES",
+    "Text": "눈동자",
+    "Desc": "몸통의 형태",
+    "Parent": "HEAD",
+    "ActiveIcon": "eyemakeup_active",
+    "InActiveIcon": "cate-avatar-clothe",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "111211": {
+    "Name": "CLOTHES",
+    "Text": "복장",
+    "Desc": "몸통의 형태",
+    "Parent": "BODY",
+    "ActiveIcon": "eyemakeup_active",
+    "InActiveIcon": "cate-avatar-clothe",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "121111": {
+    "Name": "SINGLEROOM",
+    "Text": "벽 2개 실내형 단층 배경",
+    "Desc": "가장 많이 쓰일 실내형 벽 2개인 마이룸 스킨",
+    "Parent": "INDOOR",
+    "ActiveIcon": "hair_active",
+    "InActiveIcon": "cate-skin-singlelevel",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "121112": {
+    "Name": "DUPLEXROOM",
+    "Text": "벽 2개 실외형 복층 배경",
+    "Desc": "실내형 스킨에 플로어가 2개인 마이룸 스킨",
+    "Parent": "INDOOR",
+    "ActiveIcon": "lipstick_active",
+    "InActiveIcon": "cate-skin-multilevel",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "121211": {
+    "Name": "GARDEN",
+    "Text": "벽 0개 실외형",
+    "Desc": "필드형 스킨",
+    "Parent": "OUTDOOR",
+    "ActiveIcon": "tattoo_active",
+    "InActiveIcon": "cate-skin-field",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "121212": {
+    "Name": "FACADE",
+    "Text": "벽1개 실외형",
+    "Desc": "왼쪽 벽만 있는 실외 스킨",
+    "Parent": "OUTDOOR",
+    "ActiveIcon": "lens_active",
+    "InActiveIcon": "cate-skin-facade",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "131111": {
+    "Name": "STATUE",
+    "Text": "단독형",
+    "Desc": "바닥위 O 아이템 위 X 벽에 X | 자신 위에 올리기 X 자신 옆에  X",
+    "Parent": "FLOOR",
+    "ActiveIcon": "colormakeup_active",
+    "InActiveIcon": "cate-item-statue",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "131112": {
+    "Name": "FUNITURE",
+    "Text": "책상형",
+    "Desc": "바닥위 O 아이템 위 X 벽에 X | 자신 위에 올리기 O 자신 옆에  X",
+    "Parent": "FLOOR",
+    "ActiveIcon": "tattoo_active",
+    "InActiveIcon": "cate-item-furniture",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "131113": {
+    "Name": "STACKABLE",
+    "Text": "적층형",
+    "Desc": "바닥위 O 아이템 위 O 벽에 X | 자신 위에 올리기 O 자신 옆에  X",
+    "Parent": "FLOOR",
+    "ActiveIcon": "tattoo_active",
+    "InActiveIcon": "cate-item-stackable",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "131114": {
+    "Name": "PILLAR",
+    "Text": "기둥형",
+    "Desc": "바닥위 O 아이템 위 X 벽에 X | 자신 위에 올리기 X 자신 옆에  O",
+    "Parent": "FLOOR",
+    "ActiveIcon": "tattoo_active",
+    "InActiveIcon": "cate-item-pillar",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "131115": {
+    "Name": "PROP",
+    "Text": "소품",
+    "Desc": "바닥위 O 아이템 위 O 벽에 X | 자신 위에 올리기 X 자신 옆에  X",
+    "Parent": "FLOOR",
+    "ActiveIcon": "tattoo_active",
+    "InActiveIcon": "cate-item-prop",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "131211": {
+    "Name": "WALLHANGING",
+    "Text": "벽걸이형",
+    "Desc": "바닥위 X 아이템 위 X 벽에 O | 자신 위에 올리기 X 자신 옆에  X",
+    "Parent": "WALL",
+    "ActiveIcon": "beautySelectedIcon",
+    "InActiveIcon": "cate-item-wallhanging",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  },
+  "131311": {
+    "Name": "TABLEMAT",
+    "Text": "깔개형",
+    "Desc": "오직 바닥에만 설치 가능한 아이템.",
+    "Parent": "RUG",
+    "ActiveIcon": "faceSelectedIcon",
+    "InActiveIcon": "cate-item-tablemat",
+    "IsShowShop": true,
+    "HideWhenEquipped": "",
+    "isToggleitem": false
+  }
+}

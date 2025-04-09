@@ -1,0 +1,20 @@
+.toggleCoreBtn {
+  pointer-events: all;
+  display: flex;
+  justify-content: flex-start;
+  width: rem(36px);
+  height: rem(20px);
+  border-radius: rem(15px);
+  padding: rem(2px);
+  background-color: #bbbbbb;
+  &.activeToggle {
+    justify-content: flex-end;
+    background-color: $tertiary-color;
+  }
+  .handleBtn {
+    width: rem(16px);
+    height: rem(16px);
+    background-color: #ffffff;
+    border-radius: 50%;
+  }
+}

@@ -1,0 +1,95 @@
+#editorMode {
+  display: grid;
+  grid-template-rows: calc(100vh - 20vh) 20vh;
+  width: 100vw;
+  height: 100vh;
+  background-color: #464646;
+  font-size: 10pt;
+
+  .left-panel{
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    display: grid;
+    grid-template-columns: 100%;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  #left-grab{
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    cursor: ew-resize;
+  }
+
+  #scene {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+
+  #right-grab{
+    grid-column: 4;
+    grid-row: 1 / span 2;
+    cursor: ew-resize;
+  }
+
+  .right-panel{
+    grid-column: 5;
+    grid-row: 1/ span 2;
+    display: grid;
+    grid-template-rows: 1fr 40px auto 40px;
+    grid-template-columns: 100%;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  #log {
+    grid-column: 3;
+    grid-row: 2;
+    background-color: #ffffff;
+  }
+}
+
+
+#viewerMode {
+  display: grid;
+  grid-template-rows: calc(100vh - 20vh) 20vh;
+  width: 100vw;
+  height: 100vh;
+  background-color: #464646;
+  font-size: 10pt;
+
+  #scene {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #log {
+    grid-column: 1;
+    grid-row: 2;
+    background-color: #ffffff;
+  }
+}
+
+#equipEditorMode {
+  display: grid;
+  grid-template-rows: calc(100vh - 20vh) 20vh;
+  width: 100vw;
+  height: 100vh;
+  background-color: #464646;
+  font-size: 10pt;
+
+  #scene {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #log {
+    grid-column: 1;
+    grid-row: 2;
+    background-color: #ffffff;
+  }
+}
+
+
+

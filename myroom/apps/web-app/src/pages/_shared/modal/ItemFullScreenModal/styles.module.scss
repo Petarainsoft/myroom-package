@@ -1,0 +1,44 @@
+.wrap {
+  background-color: lightgrey !important;
+  background-size: rem(50px) rem(50px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start !important;
+
+  .reset {
+    margin-right: rem(14px);
+  }
+  .message-box {
+    position: absolute;
+    top: rem(169px);
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+}
+
+.itemModalBackground {
+  background-size: rem(50px) rem(50px);
+  background-image: linear-gradient(
+      0deg,
+      #ececec 0%,
+      #f2f2f2 1%,
+      #f2f2f2 2%,
+      transparent 3%,
+      transparent 50%,
+      #f2f2f2 51%,
+      #f2f2f2 52%,
+      transparent 53%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      #ececec 0%,
+      #f2f2f2 1%,
+      #ececec 3%,
+      #ececec 50%,
+      #f2f2f2 51%,
+      #f2f2f2 52%,
+      #ececec 53%,
+      #ececec
+    );
+}

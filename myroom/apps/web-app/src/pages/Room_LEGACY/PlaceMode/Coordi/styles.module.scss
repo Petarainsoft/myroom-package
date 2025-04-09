@@ -1,0 +1,56 @@
+.wrap {
+  position: relative;
+  height: calc(100% - 6.25rem);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 103px);
+  grid-row-gap: rem(10px);
+  grid-column-gap: rem(13px);
+  justify-content: center;
+  padding: 0;
+  margin: rem(20px);
+  background-color: $default-background-color;
+  overflow-y: auto;
+
+  .item-box {
+    width: rem(103px);
+    height: rem(149px);
+    border-radius: rem(16px);
+    border: 1px solid $gray-scale-300;
+    background-position: center;
+
+    &.add {
+      border-style: dashed;
+
+      .add-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        font-size: $font-size-200;
+        color: $gray-scale-600;
+
+        .icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: rem(42px);
+          height: rem(42px);
+          border: 1px dashed $gray-scale-300;
+          background-color: $gray-scale-200;
+          border-radius: 50%;
+        }
+
+        .count {
+          color: $gray-scale-100;
+          background-color: $gray-scale-700;
+          padding: 0 rem(8px);
+          border-radius: rem(7.5px);
+          font-size: $font-size-100;
+          font-weight: $font-weight-bold;
+        }
+      }
+    }
+  }
+}

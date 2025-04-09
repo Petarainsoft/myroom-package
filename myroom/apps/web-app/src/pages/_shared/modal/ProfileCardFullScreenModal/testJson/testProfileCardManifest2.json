@@ -1,0 +1,67 @@
+{
+  "background":"/icons/cardTest/card_2_background.svg",
+  "imageTransforms" : [
+    {
+      "x" : 66,
+      "y" : 136,
+      "w" : 205,
+      "h" : 250,
+      "name" : "/icons/cardTest/card_2_inner_image_1.svg"
+    },
+    {
+      "x" : 26,
+      "y" : 47,
+      "w" : 283,
+      "h" : 89,
+      "name" : "/icons/cardTest/card_2_inner_image_2.svg"
+    },
+    {
+      "x" : 36,
+      "y" : 437,
+      "w" : 53,
+      "h" : 21,
+      "name" : "/icons/cardTest/card_2_inner_image_3.svg"
+    }
+  ],
+  "textTransforms" : [
+    {
+      "x":0,
+      "y":46,
+      "w":"100%",
+      "h":30,
+      "type":"account",
+      "textId":"@{{0}}",
+      "fontSize":"20px",
+      "fontWeight":"700",
+      "textAlign":"center"
+    },
+    {
+      "x": 301,
+      "y": 136,
+      "w": 250,
+      "h": 18,
+      "type":"edit",
+      "textId": "{{0}}",
+      "defaultTextId" : "이제는 더이상 물러날 곳이~",
+      "transform": "rotate(90deg)",
+      "fontSize": "12px",
+      "fontWeight": "700",
+      "textAlign": "left",
+      "transformOrigin": "left top"
+    },
+    {
+      "x": 54,
+      "y": 136,
+      "w": 250,
+      "h": 18,
+      "type":"date",
+      "textId": "Check-In Date {{0}}",
+      "transform": "rotate(90deg)",
+      "fontSize": "12px",
+      "fontWeight": "400",
+      "textAlign": "right",
+      "transformOrigin": "left top"
+    }
+  ],
+  "qrTransform": { "x": 270, "y": 436, "w": 30, "h": 30 }
+}

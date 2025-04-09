@@ -1,0 +1,41 @@
+.user {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: rem(10px) 0px;
+
+
+  .userInfo {
+    display: flex;
+
+    .userName {
+      display: flex;
+      flex-direction: column;
+      margin-left: rem(10px);
+
+      // width: rem(215px);
+
+      .userNick {
+        font-weight: 600;
+        font-size: rem(14px);
+      }
+
+      .userAccFollow {
+        display: flex;
+        font-weight: 200;
+        font-size: 12px;
+        color: lightgrey;
+      }
+
+      .userDesc {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: lightgrey;
+        font-weight: 200;
+        font-size: 12px;
+      }
+    }
+
+  }
+}

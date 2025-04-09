@@ -1,0 +1,19 @@
+@import './mixins.scss';
+
+.inactiveSlide {
+  width: rem(60px);
+  height: rem(32px);
+  border-radius: rem(20px);
+  box-sizing: border-box;
+  border: solid rem(1px) $gray-scale-700;
+  background-color: $default-background-color;
+}
+
+.messageModeWrapper {
+  width: 100vw;
+  height: $vh-100;
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  // justify-content: center;
+}

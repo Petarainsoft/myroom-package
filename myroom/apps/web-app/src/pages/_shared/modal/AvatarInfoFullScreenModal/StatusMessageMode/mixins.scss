@@ -1,0 +1,42 @@
+@mixin balloonBottom($color) {
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: rem(-8px); /* 요소의 하단 밖으로 이동 */
+    width: rem(6px);
+    height: rem(6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: $color;
+    border: rem(1px) solid $gray-scale-700;
+    border-radius: 50%;
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: rem(-14px); /* 요소의 하단 밖으로 이동 */
+    width: rem(4px);
+    height: rem(4px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: $color;
+    border: rem(1px) $gray-scale-700 solid;
+    border-radius: 50%;
+  }
+}
+
+@mixin commonStateImage {
+  width: rem(98px);
+  height: rem(98px);
+}
+
+@mixin commonStateStyle {
+  box-sizing: border-box;
+  border-radius: rem(20px);
+  border: solid rem(1px) $gray-scale-700;
+  background-color: $primary-color;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  word-break: keep-all;
+}

@@ -1,0 +1,35 @@
+.modal {
+    //background-color: #fff;
+    background-size: rem(50px) rem(50px);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+}
+
+.body {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.body2 {
+    position: relative;
+    width: 100%;
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.inner_body {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: $joysam-max-width;
+    height: 100%;
+}

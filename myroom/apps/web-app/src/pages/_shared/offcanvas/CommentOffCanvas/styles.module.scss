@@ -1,0 +1,12 @@
+.wrap {
+  height: calc(100% + $keyboard-height);
+  
+  .container {
+    padding-left: rem(10px);
+
+    .observer {
+      width: 100%;
+      height: rem(20px);
+    }
+  }
+}

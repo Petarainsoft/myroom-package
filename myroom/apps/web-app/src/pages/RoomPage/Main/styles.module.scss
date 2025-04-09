@@ -1,0 +1,26 @@
+
+
+.zoom-button {
+    position: absolute;
+    left: rem(20px);
+    bottom: rem(26px);
+}
+
+.place-button {
+    position: absolute;
+    right: rem(20px);
+    bottom: rem(82px);
+}
+
+.balloon-button {
+    position: absolute;
+    right: rem(20px);
+    bottom: rem(26px);
+}
+
+.toggle-button {
+    position: absolute;
+    left: 50%;
+    bottom: rem(34px);
+    transform: translateX(-50%);
+}

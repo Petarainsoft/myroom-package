@@ -1,0 +1,84 @@
+.auth-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-signin {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 56px;
+  border-radius: 71px;
+  border: 1px solid $gray-scale-700;
+  box-shadow: 1px 1px 0px 0px $gray-scale-700;
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.main {
+  position: relative;
+  height: 100%;
+  background-color: green;
+  overflow-y: hidden;
+
+  .landing {
+    position: relative;
+    top: 20%;
+    left: rem(10px);
+    width: 100%;
+    height: rem(64px);
+    font-size: $font-size-600;
+    font-weight: $font-weight-bold;
+  }
+
+  .landing::before {
+    position: absolute;
+    top: rem(-1px);
+    left: rem(-5px);
+    width: rem(20px);
+    height: rem(20px);
+    background-color: $primary-color;
+    border-radius: 50%;
+    content: '';
+    z-index: -1;
+  }
+}
+
+.kakao {
+  background-color: #fee500;
+}
+
+.btn-icon-wrap {
+  width: 22px;
+}
+
+.btn-container {
+  position: absolute;
+  bottom: 70px;
+  width: 100%;
+  text-align: center;
+}
+.toggleSignButton {
+  font-size: $font-size-300;
+  color: $gray-scale-500;
+}
+.toggleSignArrow {
+  position: relative;
+}
+.toggleSignArrow::after {
+  content: '';
+  position: absolute;
+  right: rem(-10px);
+  bottom: rem(4px);
+
+  width: rem(8px); /* 사이즈 */
+  height: rem(8px); /* 사이즈 */
+  border-top: 1px solid $fail-color; /* 선 두께 */
+  border-right: 1px solid $fail-color; /* 선 두께 */
+  transform: rotate(45deg); /* 각도 */
+}

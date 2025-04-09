@@ -1,0 +1,147 @@
+.button {
+  position: relative;
+  max-width: $max-width;
+  &.button-full {
+    width: 100%;
+  }
+
+  .badge {
+    position: absolute;
+    top: rem(-2px);
+    right: 0;
+    width: rem(25px);
+    height: rem(14px);
+    background-color: $secondary-color;
+    border-radius: rem(8px) rem(8px) rem(8px) rem(1px);
+    padding: 0 rem(4px);
+    font-size: $font-size-100;
+    color: $gray-scale-100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 0;
+  }
+}
+
+
+.container {
+  width: 100%;
+  height: 100%;
+  border: 1px solid $gray-scale-700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  line-height: 0;
+}
+
+.primary {
+  background-color: $primary-color;
+}
+
+.secondary {
+  background-color: $secondary-color;
+}
+
+.tertiary {
+  background-color: $tertiary-color;
+}
+
+.default {
+  background-color: $gray-scale-100;
+}
+
+.elevated {
+  border: 1px solid $gray-scale-300;
+  background-color: $gray-scale-200;
+  color: $gray-scale-600;
+}
+.white{
+  border: 1px solid $gray-scale-700;
+  background-color: $gray-scale-100;
+  color:$gray-scale-700;
+}
+
+.disabled {
+  border: 1px solid $gray-scale-400;
+  background-color: $gray-scale-400;
+  color: $gray-scale-100;
+}
+
+//BTN_24_S
+.xs {
+  width: rem(47px);
+  height: rem(24px);
+  padding: rem(6px) rem(12px);
+
+  &.capsule {
+    border-radius: rem(15px);
+  }
+}
+
+//BTN_26_S
+.s {
+  width: rem(82px);
+  height: rem(26px);
+  padding: rem(4px) rem(12px);
+
+  &.capsule {
+    border-radius: rem(15px);
+  }
+}
+
+//BTN_36_S
+.m {
+  width: rem(62px);
+  height: rem(36px);
+  padding: rem(4px) rem(8px);
+
+  &.capsule {
+    border-radius: rem(20px);
+  }
+}
+
+//BTN_36_M
+.l {
+  width: rem(137.5px);
+  height: rem(36px);
+  padding: rem(4px) rem(14px);
+
+  &.capsule {
+    border-radius: rem(20px);
+  }
+}
+
+.xl {
+  width: rem(137.5px);
+  height: rem(48px);
+  padding: rem(4px) rem(14px);
+
+  &.capsule {
+    border-radius: rem(40px);
+  }
+}
+
+//BTN_36_Bottom_M
+.bottom_m {
+  width: rem(161.5px);
+  height: rem(36px);
+  padding: rem(4px) rem(14px);
+
+  &.capsule {
+    border-radius: rem(20px);
+  }
+}
+
+.full {
+  width: 100%;
+  height: $full-button-height;
+  padding: rem(15px) rem(20px);
+  font-weight: $font-weight-bold;
+  &.rect {
+    border: none;
+  }
+  &.capsule {
+    border-radius: rem(40px);
+  }
+}

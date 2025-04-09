@@ -1,0 +1,155 @@
+/* 카테고리 스크롤 영역 */
+.categoryArea {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: $elevated-background-color;
+
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  padding: 0 rem(8px);
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+.figureCateItem {
+  margin-left: 10px;
+}
+
+/* 갤러리 접기*/
+.fold {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -20px;
+  width: 24px;
+  height: 7px;
+
+  // background-color: $default-background-color;
+  > button {
+    width: 100%;
+    height: 100%;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* My, 마켓 토글 영역 */
+.my_market {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0px rem(20px);
+  background-color: $default-background-color;
+}
+
+.toggleMyMarketContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: rem(5px);
+  width: rem(60px);
+  height: rem(34px);
+  border: solid 1px $gray-scale-700;
+  border-radius: rem(20px);
+  position: relative;
+
+  &.toggleEnd {
+    justify-content: flex-end;
+  }
+}
+
+.categoryIcon {
+  position: absolute;
+  &.my {
+    left: 6px;
+  }
+  &.market {
+    right: 6px;
+  }
+}
+
+.toggleBtn {
+  border: solid 1px $gray-scale-700;
+  border-radius: rem(20px);
+  background-color: $primary-color;
+  width: rem(24px);
+  height: rem(24px);
+  box-sizing: content-box;
+}
+
+/* 마이 카테고리 버튼 */
+.myCategoryBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 100%;
+  padding: 0px rem(10px);
+  font-size: 14px;
+
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+  font-weight: normal;
+  color: $gray-scale-600;
+
+  &:first-child {
+    margin-left: 10px;
+  }
+
+  &.selected {
+    font-weight: bold;
+    padding-top: 2px;
+    border-bottom: 2px solid $primary-color;
+    color: $gray-scale-700;
+  }
+}
+
+.figureContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: rem(60px);
+  padding: 0px 10px;
+
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+
+  &.selected {
+    border-bottom: 2px solid $primary-color;
+  }
+}
+
+/* 마켓 카테고리 버튼 */
+.marketCategoryBtn {
+  position: relative;
+  width: rem(34px) !important;
+  height: rem(34px);
+  margin: 0px rem(12px);
+  z-index: 1;
+
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+
+  svg {
+    color: $primary-color;
+  }
+
+  &.selected {
+    svg {
+      color: $secondary-color;
+    }
+  }
+}

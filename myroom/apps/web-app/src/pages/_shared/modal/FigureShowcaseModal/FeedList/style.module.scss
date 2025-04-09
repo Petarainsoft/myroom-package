@@ -1,0 +1,17 @@
+.figureShowcaseFeedListWrapper {
+  position: relative;
+  height: calc($vh-100 - 48px - 52px - 70px);
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  .itemListWrapper {
+    position: relative;
+  }
+  .inView {
+    position: absolute;
+    bottom: 800px;
+    width: 100%;
+    // background: aqua;
+    height: 1px;
+  }
+}

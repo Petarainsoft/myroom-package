@@ -1,0 +1,133 @@
+$header_height: rem(54px);
+$footer_height: rem(60px);
+.secondaryColor {
+  color: $secondary-color;
+}
+.bold {
+  font-weight: $font-weight-bold;
+}
+.wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.header {
+  width: 100%;
+  height: $header_height;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: rem(20px);
+
+  .allSelectCheckBox {
+    display: flex;
+    .childWrapper{
+      margin-left:rem(10px);
+    }
+    span:nth-of-type(1) {
+      margin-right: rem(10px);
+    }
+  }
+  .delButton {
+    font-size: $font-size-200;
+    font-weight: $font-weight-regular;
+    position: absolute;
+    right: 0;
+    margin-right: rem(20px);
+  }
+}
+.delButton:not(.secondaryColor) {
+  color: $gray-scale-600;
+}
+
+.cartListWrapper {
+  width: 100%;
+  height: calc(
+    100% - $header_height - $full-button-height
+  ); // header(54), footer(60) size.
+  position: relative;
+  overflow: auto;
+}
+.cartListWrapper.hasTotalPrice {
+  width: 100%;
+  height: calc(
+    100% - $header_height - $footer_height - $full-button-height
+  ); // header(54), footer(60) size.
+  position: relative;
+  overflow: auto;
+}
+.category {
+  width: 100%;
+  height: rem(56px);
+  padding-left: rem(20px);
+  border-top: rem(8px) solid $elevated-background-color;
+  display: flex;
+  align-items: center;
+}
+
+.checkBox {
+  width: rem(26px);
+  height: rem(26px);
+  background: url('/icons/Common_Check_M.svg') no-repeat center center;
+  background-size: 100% 100%;
+  margin-right: rem(10px);
+}
+
+.checkBox:checked {
+  background: url('/icons/Common_Check_M_On.svg') no-repeat center;
+  background-size: 100% 100%;
+}
+
+.totalPriceWrapper {
+  width: 100%;
+  height: $footer_height;
+  background-color: $elevated-background-color;
+  display: flex;
+  align-items: center;
+  padding-left: rem(20px);
+  position: absolute;
+  font-weight: $font-weight-bold;
+  bottom: $full-button-height;
+  .pricesWrapper {
+    display: flex;
+    position: absolute;
+    right: rem(20px);
+    .priceWrapper {
+      display: flex;
+      align-items: center;
+      .priceIcon {
+        width: rem(20px);
+        height: rem(20px);
+        margin-left: rem(16px);
+        margin-right: rem(6px);
+        div {
+          width: 100%;
+          height: 100%;
+        }
+        svg {
+          display: block;
+          margin: auto;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+
+.buyButton {
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  font-weight: $font-weight-bold;
+  span:nth-child(1) {
+    margin-right: rem(5px);
+  }
+}
+
+.buyButton:disabled {
+  background-color: $disabled-background-color;
+  color: white;
+}

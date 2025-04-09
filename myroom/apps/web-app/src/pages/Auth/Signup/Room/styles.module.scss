@@ -1,0 +1,51 @@
+.background {
+  width: 100%;
+  height: fit-content;
+  min-height: calc(100% + 90px);
+  display: flex;
+  flex-direction: column;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  position: relative;
+  background-color: #fff;
+}
+.headerWrapper {
+  background-color: $default-background-color;
+}
+.gridPattern {
+  // $gridColor : rgba(255, 255, 255, 0.5);
+  // background-image:
+  //   linear-gradient(0deg, transparent 0%,
+  //   $gridColor 1%,
+  //   $gridColor 2%, transparent 3%, transparent 50%,
+  //   $gridColor 51%,
+  //   $gridColor 52%, transparent 53%, transparent),
+  //   linear-gradient(90deg, transparent 0%,
+  //   $gridColor 1%,
+  //   $gridColor 2%, transparent 3%, transparent 50%,
+  //   $gridColor 51%,
+  //   $gridColor 52%, transparent 53%, transparent);
+  // background-size:rem(50px) rem(50px);
+}
+// height 크기가 작은 해상도에서 버튼 영역 노출을 위한 더미박스.
+@media (max-height: 768px) {
+  .dummyButtonArea {
+    width:100%;
+    height: $full-button-height;
+  }
+}
+.btnCreateRoom {
+  border: none;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-400;
+  text-align: center;
+  position: fixed;
+  z-index: 1;
+  bottom: 0;
+}
+.btnCreateRoom:disabled {
+  background-color: $disabled-background-color;
+  color: $gray-scale-100;
+}

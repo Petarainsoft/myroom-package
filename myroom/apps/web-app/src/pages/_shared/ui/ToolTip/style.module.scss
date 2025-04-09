@@ -1,0 +1,35 @@
+.toolTip{
+  
+  width:fit-content;
+  max-width:rem(265px);
+  height:fit-content;
+  padding:rem(20px) rem(15px) rem(15px) rem(15px);
+  z-index: $zindex-tooltip;
+  min-width: rem(275px);
+  &.lt{
+    border-image: url('/icons/images/bubble_bg_lt.svg');
+    border-image-slice: 20 16 16 16;
+    border-image-width: 20px 16px 16px 16px;
+  }
+  &.rt{
+    border-image: url('/icons/images/bubble_bg_rt.svg');
+    border-image-slice: 25 20 20 20;
+    border-image-width: 25px 20px 20px 20px;
+  }
+  color:black;
+  font-size: $font-size-100;
+  font-weight: $font-weight-medium;
+  .btnClose{
+    color:black;
+    position:absolute;
+    top:rem(0px);
+    right:rem(-10px);
+    height: rem(19px) !important;
+  }
+  .content{
+    margin:rem(-12px) rem(-5px) rem(-14px) rem(-5px);        // image slice 하고 뒤에 남는 선 가리려고.
+    padding:rem(12px) rem(5px) rem(14px) rem(5px);
+    background-color: #fff;
+  }
+  
+}

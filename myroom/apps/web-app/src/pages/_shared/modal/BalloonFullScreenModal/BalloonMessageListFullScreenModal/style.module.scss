@@ -1,0 +1,106 @@
+$list-type-height: rem(52px);
+.background {
+  width: 100%;
+  height: 100%;
+  background-color: $default-background-color;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.listType {
+  width:100%;
+  height: $list-type-height;
+  display:flex;
+  align-items: stretch;
+  justify-content: space-between;
+  font-size: $font-size-300;
+  border-bottom: 1px solid #EEE;
+  .btnListType{
+    width:100%;
+    display:flex;
+    justify-content: center;
+    align-items: center;    
+    font-weight: $font-weight-regular;
+    &.on{
+      font-weight: $font-weight-bold;
+      border-bottom: 3px solid $primary-color;
+    }
+    
+    &.off{
+      border-bottom: none; 
+      border-bottom: 3px solid transparent;
+    }
+  }
+}
+
+.listArea{
+  &.view{
+    height: calc(
+    $vh-100 - $full-button-height - $default-header-height -
+      $list-type-height
+  );
+  }
+  &.edit{
+    height: calc(
+      $vh-100 - $full-button-height - $default-header-height
+    );
+  }
+  overflow-y: auto;
+  .listEmpty{
+    height:100%;
+  }
+  .listBody{
+    .listEndObserver{
+      width:100%;
+      height:rem(20px);
+    }
+  }
+}
+
+.listEmpty{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color:$primary-color;
+  .desc{
+    margin-top:rem(24px);
+    color:$gray-scale-700;
+    font-size: $font-size-300;
+  }
+}
+.bottomWrapper{
+  width:100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  .btnStore, .btnDelete{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:50%;
+    height:rem(60px);
+    font-size:$font-size-400;
+    font-weight: $font-weight-bold;
+  }
+  .btnStore{
+    border:1px solid $gray-scale-300;
+    background-color: $gray-scale-100;
+    color:$gray-scale-700;
+  }
+  .btnDelete{
+    background-color: $primary-color;
+    color:$gray-scale-700;
+  }
+  .btnStore:disabled{
+    background-color: $gray-scale-100;
+    color:$gray-scale-400;
+    
+  }
+  .btnDelete:disabled{
+    background-color: $gray-scale-400;
+    color:$gray-scale-100;
+  }
+}

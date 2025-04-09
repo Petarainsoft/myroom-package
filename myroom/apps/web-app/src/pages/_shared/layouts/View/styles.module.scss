@@ -1,0 +1,28 @@
+
+
+.wrap {
+    width: 100vw;
+    height: $vh-100;
+    max-width: $max-width;
+    margin: 0 auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    .container {
+        flex: 1;
+
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        &.fixed {
+            overflow-y: hidden;
+        }
+    }
+   
+}
+

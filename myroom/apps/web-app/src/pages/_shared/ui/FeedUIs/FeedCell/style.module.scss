@@ -1,0 +1,94 @@
+.header{
+  width:100%;
+  height:rem(80px);
+  display: flex;
+  padding:rem(20px);
+  position: relative;
+  .profileThumbnail{
+    margin-right:rem(10px);
+  }
+  .userInfoWrapper{
+    display: flex;
+    flex-direction: column;
+    font-size:$font-size-200;
+    .nicknameWrapper{
+      display:flex;
+      align-items: center;
+      color:$gray-scale-700;
+      font-weight: $font-weight-medium;
+      .nickname{
+        margin-right:rem(4px);
+      }
+    }
+    .accountNameWrapper{
+      display: flex;
+      align-items: center;
+      .accountName{
+        color:$gray-scale-500;
+        font-weight: $font-weight-regular;
+      }
+      .accountName::after{
+        content: '';
+        display: inline-block;
+        width:rem(2px);
+        height:rem(2px);
+        border:1px solid $gray-scale-400;
+        border-radius: 50%;
+        margin:rem(2px) rem(4px);
+      }
+    }
+  }
+  .rightSide{
+    position: absolute;
+    right:rem(13px);
+    display:flex;
+    flex-direction: column;
+    align-items: flex-end;
+    .timeStamp{
+      color:$gray-scale-500;
+      font-size: $font-size-100;
+      margin-right:rem(7px);
+    }
+  }
+}
+.body{
+  width:100%;
+  height:rem(377px);
+  background-color: $gray-scale-200;
+}
+.footer{
+  display: flex;
+  padding:rem(20px);
+  position: relative;
+  .btnLike, .btnComment{
+    display: flex;
+    align-items: center;
+  }
+  .btnLike{
+    margin-right: rem(16px);
+  }
+  .btnBookMark{
+    position: absolute;
+    right:rem(20px);
+  }
+}
+.menu{
+  position: absolute;
+  min-width: rem(128px);
+  right:rem(14px);
+  top:rem(45px);
+  
+  .menuItem{
+    display: flex;
+    align-items: center;
+    height:rem(36px);
+    .menuText{
+      white-space: nowrap;
+      width:fit-content;
+      margin-left:rem(10px);
+      color:#000;
+      font-size: $font-size-200;
+      font-weight: $font-weight-medium;
+    }
+  }
+}

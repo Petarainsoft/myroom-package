@@ -1,0 +1,33 @@
+@import '../../../mixins.scss';
+.statusMessageEditItemNone {
+  @include commonStateStyle;
+  padding: rem(6px) rem(14px);
+  min-width: rem(98px);
+  min-height: rem(24px);
+  width: fit-content;
+  font-size: rem(12px);
+  line-height: rem(24px);
+}
+.iconWrapper {
+  width: rem(20px);
+  height: rem(20px);
+  margin-right: rem(3px);
+}
+
+.statusMessageEditItemExist {
+  @include commonStateStyle;
+  //StatusMessageEdit style과 동일
+  //width, height DOM 요소 스타일을 직접 조작해야해서 px사용
+  padding: 9px 20px;
+  width: fit-content;
+  height: auto;
+  font-size: 12px;
+  > p {
+    word-break: break-all;
+    white-space: break-spaces;
+    max-width: 155px;
+    min-width: 20px;
+    min-height: 16px;
+    line-height: 16px;
+  }
+}

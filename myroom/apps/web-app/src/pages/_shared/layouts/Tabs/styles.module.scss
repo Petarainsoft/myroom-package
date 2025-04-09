@@ -1,0 +1,38 @@
+
+
+.wrap {
+    width: 100%;
+    height: $default-tab-height;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-bottom: 1px solid $gray-scale-300;
+
+
+    font-weight: $font-weight-regular;
+    font-size: $font-size-300;
+
+    .tab {
+        flex: 1;
+        padding: rem(15px) 0 rem(16px) 0;
+        height: rem(52px);
+        overflow: hidden;
+
+        .item  {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            .icon {
+                margin-right: rem(4px);
+            }
+        }
+
+        &.selected {
+            border-bottom: 3px solid $primary-color;
+            font-weight: $font-weight-bold;
+        }
+    }
+}
