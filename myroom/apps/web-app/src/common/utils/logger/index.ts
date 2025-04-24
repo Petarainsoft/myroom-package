@@ -1,13 +1,13 @@
 import { ENABLE_LOG, ENV } from '@/common/constants';
-import Logger from '@colorverse/logger';
 
 
-export const logger = new Logger({
-    env: ENV,
-    enableLog: ENABLE_LOG,
-    enableSentry: false,
-    dsnKey: '',
-});
+
+export const logger = {
+  log: console.log,
+  info: console.info,
+  warn: console.warn,
+  error: console.error,
+};
 
 
 //TODO: logger 주석해제
