@@ -39,7 +39,7 @@ i18n
     // },
     backend: {
       // 추후 world ID로 분기 예정
-      loadPath: `https://develop.colorverseapis.com/v1/world/worlds/1mkSuyvWsZAZKE2cuDzmzI/multilingual/i18n.json?lang={{lng}}`,
+      loadPath: '/locales/ko/translation.json',
       queryStringParams: { t: Date.now() },
     },
     interpolation: {
