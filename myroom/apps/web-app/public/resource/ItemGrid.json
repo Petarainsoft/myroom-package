@@ -1,0 +1,185 @@
+{
+	"4x4x50xmark": {
+		"ID": "4x4x50xmark",
+		"gridWidth": 4,
+		"gridHeight": 4,
+		"gridOrigin": [0, 0.51, 0],
+		"gridMarkArray": [0, 3, 12, 15]
+	},
+	"2x2x50": {
+		"ID": "2x2x50",
+		"gridWidth": 2,
+		"gridHeight": 2,
+		"gridOrigin": [0, 0.51, 0],
+		"gridMarkArray": []
+	},
+	"2x2x100": {
+		"ID": "2x2x100",
+		"gridWidth": 2,
+		"gridHeight": 2,
+		"gridOrigin": [0, 1.01, 0],
+		"gridMarkArray": []
+	},
+	"2x2x150": {
+		"ID": "2x2x150",
+		"gridWidth": 2,
+		"gridHeight": 2,
+		"gridOrigin": [0, 1.51, 0],
+		"gridMarkArray": []
+	},
+	"4x4x50": {
+		"ID": "4x4x50",
+		"gridWidth": 4,
+		"gridHeight": 4,
+		"gridOrigin": [0, 0.51, 0],
+		"gridMarkArray": []
+	},
+	"6x2x50xside": {
+		"ID": "6x2x50xside",
+		"gridWidth": 6,
+		"gridHeight": 2,
+		"gridOrigin": [0, 1.51, -0.25],
+		"gridMarkArray": []
+	},
+	"8x8x50": {
+		"ID": "8x8x50",
+		"gridWidth": 8,
+		"gridHeight": 8,
+		"gridOrigin": [0, 0.51, 0],
+		"gridMarkArray": []
+	},
+	"8x4x50xside": {
+		"ID": "8x4x50xside",
+		"gridWidth": 8,
+		"gridHeight": 4,
+		"gridOrigin": [0, 0.51, -0.25],
+		"gridMarkArray": []
+	},
+	"8x4x70": {
+		"ID": "8x4x70",
+		"gridWidth": 8,
+		"gridHeight": 4,
+		"gridOrigin": [0, 0.71, 0],
+		"gridMarkArray": []
+	},
+	"8x4x50xmark": {
+		"ID": "8x4x50xmark",
+		"gridWidth": 8,
+		"gridHeight": 4,
+		"gridOrigin": [0, 0.51, 0],
+		"gridMarkArray": [0, 1, 2, 3, 4, 5, 6, 7, 8, 15, 16, 23, 24, 31]
+	},
+	"6x4x50": {
+		"ID": "6x4x50",
+		"gridWidth": 6,
+		"gridHeight": 4,
+		"gridOrigin": [0, 0.51, 0],
+		"gridMarkArray": []
+	},
+	"12x2x100": {
+		"ID": "12x2x100",
+		"gridWidth": 12,
+		"gridHeight": 2,
+		"gridOrigin": [0, 1.01, 0],
+		"gridMarkArray": []
+	},
+	"12x2x200": {
+		"ID": "12x2x200",
+		"gridWidth": 12,
+		"gridHeight": 2,
+		"gridOrigin": [0, 2.01, 0],
+		"gridMarkArray": []
+	},
+	"12x2x300": {
+		"ID": "12x2x300",
+		"gridWidth": 12,
+		"gridHeight": 2,
+		"gridOrigin": [0, 3.01, 0],
+		"gridMarkArray": []
+	},
+	"12x2x400": {
+		"ID": "12x2x400",
+		"gridWidth": 12,
+		"gridHeight": 2,
+		"gridOrigin": [0, 4.01, 0],
+		"gridMarkArray": []
+	},
+	"10x4x150": {
+		"ID": "10x4x150",
+		"gridWidth": 10,
+		"gridHeight": 4,
+		"gridOrigin": [0, 1.51, 0],
+		"gridMarkArray": []
+	},
+	"10x2x200": {
+		"ID": "10x2x200",
+		"gridWidth": 10,
+		"gridHeight": 2,
+		"gridOrigin": [0, 2.01, 0],
+		"gridMarkArray": []
+	},
+	"10x2x300": {
+		"ID": "10x2x300",
+		"gridWidth": 10,
+		"gridHeight": 2,
+		"gridOrigin": [0, 3.01, 0],
+		"gridMarkArray": []
+	},
+	"10x2x400": {
+		"ID": "10x2x400",
+		"gridWidth": 10,
+		"gridHeight": 2,
+		"gridOrigin": [0, 4.01, 0],
+		"gridMarkArray": []
+	},
+	"4x4x470": {
+		"ID": "4x4x470",
+		"gridWidth": 4,
+		"gridHeight": 4,
+		"gridOrigin": [0, 0.71, 0],
+		"gridMarkArray": []
+	},
+	"8x8x75": {
+		"ID": "8x8x75",
+		"gridWidth": 8,
+		"gridHeight": 8,
+		"gridOrigin": [0, 0.76, 0],
+		"gridMarkArray": []
+	},
+	"10x6x50": {
+		"ID": "10x6x50",
+		"gridWidth": 10,
+		"gridHeight": 6,
+		"gridOrigin": [0, 0.51, 0],
+		"gridMarkArray": []
+	},
+	"8x6x75": {
+		"ID": "8x6x75",
+		"gridWidth": 8,
+		"gridHeight": 6,
+		"gridOrigin": [0, 0.76, 0],
+		"gridMarkArray": []
+	},
+	"10x10x75": {
+		"ID": "10x10x75",
+		"gridWidth": 10,
+		"gridHeight": 10,
+		"gridOrigin": [0, 0.76, 0],
+		"gridMarkArray": []
+	},
+	"20x20x75": {
+		"ID": "20x20x75",
+		"gridWidth": 20,
+		"gridHeight": 20,
+		"gridOrigin": [0, 0.76, 0],
+		"gridMarkArray": []
+	},
+	"20x20x50": {
+		"ID": "20x20x50",
+		"gridWidth": 20,
+		"gridHeight": 20,
+		"gridOrigin": [0, 0.51, 0],
+		"gridMarkArray": []
+	}
+}
+
