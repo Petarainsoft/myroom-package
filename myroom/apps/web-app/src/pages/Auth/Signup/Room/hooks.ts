@@ -6,7 +6,7 @@ import useProfileAPI from '@/apis/User/Profile';
 import useUserAPI from '@/apis/User/User';
 import useMyRoomAPI from '@/apis/Space/MyRoom';
 import usePopup from '@/common/hooks/Popup/usePopup';
-import { refreshCredential } from '@colorverse/auth';
+// import { refreshCredential } from '@colorverse/auth';
 import useAuth from '@/common/hooks/use-auth';
 import {
   signup_isProfileNameInvalidAtom,
@@ -127,7 +127,7 @@ const useSignupRoom = () => {
       }
       setCreatedProfileName(profileName);
       signin();
-      await refreshCredential(auth);
+      // await refreshCredential(auth);
 
       return {
         data: {

@@ -1,10 +1,17 @@
 import useAuth from '@/common/hooks/use-auth';
 import useMe from "@/common/hooks/use-me";
 import { auth } from '@/common/utils/auth';
-import {AuthProvider,authorizesWithRedirect } from '@colorverse/auth';
+// import {AuthProvider,authorizesWithRedirect } from '@colorverse/auth';
 import React, { useCallback } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+// Định nghĩa lại AuthProvider (ví dụ là enum hoặc type)
+export type AuthProvider = string; // hoặc enum AuthProvider { GOOGLE = "google", ... }
+export function authorizesWithRedirect(_auth: any, _params: { provider: AuthProvider, worldId: string }): void {
+  // Do nothing (mock implementation)
+}
+
 
 const useSignin = () => {
     const [isSignin, setIsSignin] = useState(true);

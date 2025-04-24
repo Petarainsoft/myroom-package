@@ -9,7 +9,7 @@ import 'the-new-css-reset/css/reset.css';
 import PopupContainer from './pages/_shared/popup/PopupContainer';
 import { GlobalModal, ModalProvider } from './components/_core/ModalCore';
 import { auth } from '@/common/utils/auth';
-import { refreshCredential } from '@colorverse/auth';
+// import { refreshCredential } from '@colorverse/auth';
 import useAuth from './common/hooks/use-auth';
 import ReactGA from 'react-ga4';
 import TagManager from 'react-gtm-module';
@@ -153,7 +153,7 @@ const App = ({ outlet }: AppProps) => {
         return;
       }
 
-      await refreshCredential(auth);
+      // await refreshCredential(auth);
 
       signin();
     }

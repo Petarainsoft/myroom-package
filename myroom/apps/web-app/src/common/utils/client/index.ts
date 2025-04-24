@@ -1,9 +1,21 @@
 import { Scene } from '@babylonjs/core';
-import { initializeClientMessage } from '@colorverse/client-message';
+// import { initializeClientMessage } from '@colorverse/client-message';
 import { MyRoomAPI } from 'client-core';
 import { logger } from '../logger';
 
-export const messageClient = initializeClientMessage('WebGL', { console: true });
+// export const messageClient = initializeClientMessage('WebGL', { console: true });
+
+export const messageClient = {
+    postMessage: (_type: string, _payload?: any): void => {
+        // Do nothing
+    },
+    addListener: (_type: string, _listener: (...args: any[]) => void): void => {
+        // Do nothing
+    },
+    removeListener: (_type: string, _listener: (...args: any[]) => void): void => {
+        // Do nothing
+    }
+};
 
 
 export type SceneType = 'ROOM' | 'AVATAR' | 'ITEM' | 'AVATAR2';

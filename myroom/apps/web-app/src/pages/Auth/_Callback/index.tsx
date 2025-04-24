@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { signIn, signOut } from '@colorverse/auth';
-import { auth } from '@/common/utils/auth';
+// import { signIn, signOut } from '@colorverse/auth';
+// import { auth } from '@/common/utils/auth';
 import React from 'react';
 // import useUserAPI from '@/apis/User/User';
 // import useMyRoomAPI from '@/apis/Space/MyRoom';
@@ -16,14 +16,14 @@ const _Callback = () => {
   const authorize = async () => {
     const code = searchParams.get('code');
     if (code) {
-      const success = await signIn(auth, {
-        code: decodeURIComponent(code),
-        codeVerifier: '123',
-        clientId: auth.config.apiKey,
-        grantType: 'code',
-        requestUri: 'https://myroom.develop.colorver.se/auth/_callback',
-      });
-
+      // const success = await signIn(auth, {
+      //   code: decodeURIComponent(code),
+      //   codeVerifier: '123',
+      //   clientId: auth.config.apiKey,
+      //   grantType: 'code',
+      //   requestUri: 'https://myroom.develop.colorver.se/auth/_callback',
+      // });
+      const success = true; // Mocking success for now
       if (success) {
         signin();
         return;
@@ -32,7 +32,7 @@ const _Callback = () => {
       }
     }
 
-    signOut(auth);
+    // signOut(auth);
     signout();
     navigate('/auth/signin', { replace: true });
   };
