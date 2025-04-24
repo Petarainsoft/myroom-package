@@ -169,15 +169,15 @@ const useRoomPage = () => {
     },[profileData]);
 
     React.useEffect(()=>{
-        if(target === 'me' && !isLogined) {
-            loadingFullScreenModal.deleteModal();
-            navigate('/auth/signin');
-        }
-        else {
-            if(target === meRoomId) {
+        // if(target === 'me' && !isLogined) {
+        //     loadingFullScreenModal.deleteModal();
+        //     navigate('/auth/signin');
+        // }
+        // else {
+        //     if(target === meRoomId) {
                 navigate('/rooms/me');
-            }
-        }
+        //     }
+        // }
     },[isLogined, target, meRoomId, loadingFullScreenModal]);
 
     return {sceneStatus, hideRoomPlaceUI, roomMode, roomBackgroundColor, currentRoomInfo, roomSelectedItem, handleClickClose, handleClickSave, handleClickProfile, onAfterSceneReady}
