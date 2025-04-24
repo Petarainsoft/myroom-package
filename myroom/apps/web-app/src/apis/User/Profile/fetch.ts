@@ -68,7 +68,33 @@ export async function getProfilesMeCount(instance: RequestInstance) {
     method: 'GET',
   });
 }
-
+export const fakeProfileResponse: ProfileResponse = {
+  data: {
+    _id: "p_123456",
+    name: "John Doe",
+    myroom_id: "1",
+    avatar_id: "1",
+    stat: {
+      created: 1681875791, // UNIX timestamp
+      updated: 1681879999,
+    },
+    option: {
+      interest: [1, 5, 9],
+      background_color: "#FF5733",
+      nick: "JDoe",
+      selfie_type: "image", // hoặc "avatar"
+    },
+    resource: {
+      image_selfie: "https://picsum.photos/200/300.jpg",
+      avatar_selfie: "https://picsum.photos/200/300.jpg",
+    },
+    txt: {
+      desc: "This is a mock user profile used for testing.",
+    },
+    user_id: "u_999999",
+    world_id: "w_888888",
+  },
+};
 /**
  *
  * @param instance
@@ -76,6 +102,10 @@ export async function getProfilesMeCount(instance: RequestInstance) {
  * @returns
  */
 export async function getProfile(instance: RequestInstance, id?: string) {
+  const isDevMode = true; 
+  if (isDevMode) {
+    return fakeProfileResponse
+  }
   return await onRequest<ProfileResponse>(instance, `/v1/user/profiles/${id}`, {
     method: 'GET',
   });

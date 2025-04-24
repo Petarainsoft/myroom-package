@@ -28,6 +28,27 @@ export async function delFollower(
     { method: 'DELETE' },
   );
 }
+const fakeFollowListResponse: FollowListResponse = {
+  current: {
+    limit: 10,
+    page: 1,
+    total: 45
+  },
+  list: [
+    { _id: "user_001" },
+    { _id: "user_002" },
+    { _id: "user_003" },
+    { _id: "user_004" },
+    { _id: "user_005" },
+    { _id: "user_006" },
+    { _id: "user_007" },
+    { _id: "user_008" },
+    { _id: "user_009" },
+    { _id: "user_010" }
+  ],
+  scrollid: "scroll_abc123def456",
+  t: 1713240000000 // timestamp is fake, could be Date.now()
+};
 
 /**
  *
@@ -35,6 +56,7 @@ export async function delFollower(
  * @returns
  */
 export async function getMeFollowings(instance: RequestInstance, params: any) {
+  return fakeFollowListResponse
   return await onRequest<FollowListResponse>(
     instance,
     `/v1/user/profiles/me/followings`,

@@ -80,6 +80,39 @@ export async function getMyroom(instance: RequestInstance, myroomId?: string) {
  * @returns
  */
 export async function getMyroomsMe(instance: RequestInstance) {
+  const isDevMode = true; 
+  if (isDevMode) {
+    const mockData: MyRoomListResponse = {
+      list: [
+        {
+          _id: '1',
+          profile_id: 'mock_profile',
+          txt: {
+            title: 'Mock Title',
+            desc: 'Mock Desc',
+            hashtag: ['mock', 'test'],
+          },
+          resource: {
+            manifest: 'mock_manifest',
+            image: ['mock_image1'],
+            video: [],
+            thumbnail: 'mock_thumb',
+          },
+          option: {
+            version: 1,
+            avatar: [],
+            item: [],
+          },
+          stat: {
+            created: Date.now(),
+            updated: Date.now(),
+          },
+        },
+      ],
+    };
+    return mockData;
+  }
+  
   return await onRequest<MyRoomListResponse>(
     instance,
     `/v1/space/profiles/me/myrooms`,
