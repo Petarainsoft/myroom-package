@@ -6,7 +6,8 @@ export const MYROOM_APP_ENV = "DEV";
 
 // 인증서버 URL
 export const MYROOM_APP_AUTH_SERVER__URL = `https://develop.colorverseapis.com`;
-export const MYROOM_APP_AUTH_SERVER__API = `${MYROOM_APP_AUTH_SERVER__URL}/v1`;
+// export const MYROOM_APP_AUTH_SERVER__API = `${MYROOM_APP_AUTH_SERVER__URL}/v1`;
+export const MYROOM_APP_AUTH_SERVER__API = `http://localhost:9567`;
 // export const MYROOM_APP_AUTH_SERVER__PUBLIC = `https://public.develop.colorver.se`;
 export const MYROOM_APP_AUTH_SERVER__PUBLIC = `http://localhost:5173`;
 

@@ -125,7 +125,43 @@ export async function getMyroomsMe(instance: RequestInstance) {
     },
   );
 }
-
+const fakeMyRoomData: MyRoomData = {
+  format: {
+    version: "1.0",
+    layout: "grid"
+  },
+  main: {
+    roomId: "room_456789",
+    backgroundColor: "#FFFFFF",
+    roomSkinId: "skin_classic_01"
+  },
+  txt: {
+    title: "Phòng của tôi"
+  },
+  option: {
+    preset: "cozy-modern"
+  },
+  manifest: {
+    objects: [
+      { id: "chair_01", type: "furniture", position: [1, 0, 2] },
+      { id: "table_01", type: "furniture", position: [2, 0, 3] }
+    ],
+    environment: {
+      lighting: "soft",
+      ambient: "#FAFAFA"
+    }
+  } as unknown as JSON, // cast tạm nếu manifest là kiểu cụ thể hơn JSON
+  resource: {
+    thumbnail: "https://cdn.example.com/rooms/room_456789/thumbnail.jpg",
+    image: [
+      "https://cdn.example.com/rooms/room_456789/img1.jpg",
+      "https://cdn.example.com/rooms/room_456789/img2.jpg"
+    ],
+    video: [
+      "https://cdn.example.com/rooms/room_456789/preview.mp4"
+    ]
+  }
+};
 /**
  *
  * @param instance
@@ -138,6 +174,7 @@ export async function getMyroomManifest(
   myroomId?: string,
   version?: number,
 ) {
+  return fakeMyRoomData;
   return await onRequest<MyRoomData>(
     instance,
     `/v1/space/myrooms/${myroomId}/${version}/manifest`,

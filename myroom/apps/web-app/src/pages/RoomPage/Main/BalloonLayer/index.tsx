@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 
 const BalloonLayer = () => {
   const { floatingBalloons, handleBalloonPopped } = useBalloonLayer();
-  const isShowBalloonLayer = useAtomValue(isShowBalloonLayerAtom);
+  const isShowBalloonLayer = false;// useAtomValue(isShowBalloonLayerAtom);
   const uiPlaceMode = useAtomValue(uiPlaceModeAtom);
   const isHidden = useMemo(() => {
     return !isShowBalloonLayer || uiPlaceMode;

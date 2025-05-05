@@ -143,6 +143,23 @@ export class AssetLoader implements IAssetLoader {
     }
 
     private async _loadManifest_Avatar<T>(assetId: string): Promise<T | null> {
+        
+        // anhnguyen
+        const mainfest_avatar = {
+            "format": 3,
+            "main": {
+                "type": "Avatar",
+                
+                "skeleton":"34aDyVneHDnaCDEY6gW9Me",
+                "equipments":[
+                // "30oEzvPCKJvlr5k4Cqi6pk",
+                // "32hEXHCDWw0KlE3JOu1Vmi",
+                "34aDyVneHDnaCDEY6gW9Me"
+                ]		
+            }
+        };
+
+        return mainfest_avatar as T;
         const url = `${Constants.BASEURL_API}/space/avatars/${assetId}`;
 
         try {

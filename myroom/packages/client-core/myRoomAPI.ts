@@ -58,34 +58,50 @@ export class MyRoomAPI {
     }
 
     public constructor(scene: BABYLON.Scene, renderPeriod?: number, recording: boolean = false) {
+        console.log("🚀 [Khởi tạo MyRoomAPI] recoariing " + recording);
+    
         this._cmdQueue = new MyRoomCommandQueue(scene, this, recording);
         this._scene = scene;
+    
         if (this._scene) {
-            this._cmdUpdateObserver = this._scene.onBeforeRenderObservable.add(() => { this._cmdQueue.updateCommands(); });
-
+            console.log("✅ Đã nhận được scene");
+    
+            this._cmdUpdateObserver = this._scene.onBeforeRenderObservable.add(() => {
+                // console.log("🚀 [My room api] => UpdateCommands()");
+                this._cmdQueue.updateCommands();
+            });
+            console.log("🌀 Đã đăng ký updateCommands vào onBeforeRender");
+    
             const changeRenderLoopFunc = (isActive: boolean) => {
                 if (isActive) {
+                    console.log("⚡️ Chuyển sang chế độ render nhanh (active)");
                     this._blockChangeRenderLoopByPointer = true;
                     this.changeRenderLoop(RENDER_PERIOD_ACTIVE);
                 } else {
+                    console.log("⏸ Chuyển sang render bình thường");
                     this._blockChangeRenderLoopByPointer = false;
                     this.changeRenderLoop(RENDER_PERIOD_NORMAL);
                 }
             };
-
+    
             this._context = new MyRoomContext(this._scene, changeRenderLoopFunc);
+            console.log("🧠 Đã tạo context");
+    
             this._assetLoader = new AssetLoader(this._context, this._scene);
+            console.log("📦 AssetLoader đã sẵn sàng");
+    
             this.changeRenderLoop(renderPeriod ?? RENDER_PERIOD_NORMAL);
-
-            // 임시로 테스트코드 넣었음.
+            console.log(`🎯 Thiết lập renderLoop mặc định: ${renderPeriod ?? RENDER_PERIOD_NORMAL}`);
+    
+            // Thêm sự kiện bàn phím cho test
             scene?.onKeyboardObservable.add((kbInfo) => {
                 switch (kbInfo.type) {
                     case BABYLON.KeyboardEventTypes.KEYDOWN:
-                        //console.log("KEY DOWN: ", kbInfo.event.key);
                         if (kbInfo.event.key == ';') {
+                            console.log("👤 Thêm avatar thử nghiệm vào scene");
                             this.createOutsideFigures([{ avatarId: "BJx99yaC9R2kLsy438O0m" }, { avatarId: "IrvFJ4wylmgdhEFFo3xTc" }, { avatarId: "1szaJD9tmPUrWhZMxEYBE" }, { avatarId: "5eyfya3KN14GSt9EofNuy" }, { avatarId: "9QxheDXOc1JzeBSdmFYoq" }, { avatarId: "DCwlAk5KEQ3wAMummtBhY" }, { avatarId: "GyvjIemJAzT8B1ID80exs" }, { avatarId: "KkupcDhr2IUu8NnpGIXZo" }]);
                         } else if (kbInfo.event.key == '1') {
-                            //pauseRendering(false);
+                            console.log("🔍 Mở Babylon Inspector");
                             void Promise.all([
                                 import("@babylonjs/core/Debug/debugLayer"),
                                 import("@babylonjs/inspector"),
@@ -96,18 +112,16 @@ export class MyRoomAPI {
                                     globalRoot: document.getElementById("#root") || undefined,
                                 });
                             });
-                        } else if (kbInfo.event.key == '2') {
-                            // this.clearMyRoom();
-                            // this.initializeMyRoom(this._lastRoomManifest, false);
                         } else if (kbInfo.event.key == '3') {
-                            console.log("scene count", this._scene?.getEngine().getRenderWidth(false), this._scene?.getEngine().getRenderWidth(true), this._scene?.getEngine()._hardwareScalingLevel);
+                            console.log("📊 Thông tin render engine:", this._scene?.getEngine().getRenderWidth(false), this._scene?.getEngine().getRenderWidth(true), this._scene?.getEngine()._hardwareScalingLevel);
                         }
                         break;
                 }
             });
-
+    
+            console.log("⌨️ Đăng ký sự kiện bàn phím test hoàn tất");
         } else {
-            console.error("MyRoomAPI:constructor - no scene");
+            console.error("❌ MyRoomAPI:constructor - KHÔNG CÓ scene truyền vào!");
         }
     }
 
@@ -683,46 +697,69 @@ export class MyRoomAPI {
     // Private Helpers (MyRoom 관련)
     //-----------------------------------------------------------------------------------
     private async _initializeMyRoom(roomManifest: IAssetManifest_MyRoom | null, forRoomCoordi: boolean, onComplete: (() => void) | null, serviceType?: string) {
-        let start = performance.now();
+        const start = performance.now();
+        console.warn("🚀 [MyRoom] Bắt đầu khởi tạo phòng...");
+    
         this._myRoomController = new MyRoomController(this._scene, this._assetLoader!, this._context!, serviceType);
+        
         if (roomManifest) {
-
+            console.log("📦 [MyRoom] Dữ liệu manifest đã nhận:", roomManifest);
+    
             this._blockChangeRenderLoopByPointer = true;
             this.changeRenderLoop(RENDER_PERIOD_ACTIVE);
-
-            await this._myRoomController.initModel(roomManifest.main.room.backgroundColor, roomManifest.main.room.roomSkinId, roomManifest.main.room.grids, roomManifest.main.environment || "", Constants.PLAY_LOADING_ANIMATION_ROOM);
-
-            //const processes = [];
+            console.log("🔄 [MyRoom] Bật chế độ render nhanh để khởi tạo...");
+    
+            console.log("🎨 [MyRoom] Khởi tạo backgroundColor:", roomManifest.main.room.backgroundColor);
+            console.log("🧱 [MyRoom] RoomSkinId:", roomManifest.main.room.roomSkinId);
+            console.log("📐 [MyRoom] Grids:", roomManifest.main.room.grids);
+            console.log("🌳 [MyRoom] Environment:", roomManifest.main.environment);
+    
+            await this._myRoomController.initModel(
+                roomManifest.main.room.backgroundColor,
+                roomManifest.main.room.roomSkinId,
+                roomManifest.main.room.grids,
+                roomManifest.main.environment || "",
+                Constants.PLAY_LOADING_ANIMATION_ROOM
+            );
+    
             if (roomManifest.main.items) {
+                console.log("🪑 [MyRoom] Có", roomManifest.main.items.length, "item(s) cần đặt trong phòng");
+    
                 let datas;
                 if (roomManifest.main.itemFunctionDatas && !forRoomCoordi) {
                     datas = roomManifest.main.itemFunctionDatas;
+                    console.log("📎 [MyRoom] Kèm theo function data:", datas);
                 }
-                //processes.push();
+    
                 await this._myRoomController.placeItems(roomManifest.main.items, datas, Constants.PLAY_LOADING_ANIMATION_ITEM);
+                console.log("✅ [MyRoom] Đã hoàn tất đặt item");
             }
-
-            let end = performance.now();
-            let elapsedTime = end - start;
-            console.warn(`loading myroom1: ${elapsedTime} ms.`);
-
+    
+            const middle = performance.now();
+            console.warn(`⏱️ [MyRoom] Thời gian load phòng + item: ${(middle - start).toFixed(2)} ms.`);
+    
             if (roomManifest.main.figures) {
-                //processes.push();
-                await this._myRoomController.placeFigures(roomManifest.main.figures, forRoomCoordi, Constants.PLAY_LOADING_ANIMATION_FIGURE);
+                console.log("👤 [MyRoom] Có", roomManifest.main.figures.length, "figure(s) cần đặt");
+                await this._myRoomController.placeFigures(
+                    roomManifest.main.figures,
+                    forRoomCoordi,
+                    Constants.PLAY_LOADING_ANIMATION_FIGURE
+                );
+                console.log("✅ [MyRoom] Đã hoàn tất đặt figure");
             }
-
+    
             this._blockChangeRenderLoopByPointer = false;
             this.changeRenderLoop(RENDER_PERIOD_NORMAL);
-
-            //if (processes.length > 0) await Promise.all(processes);
+            console.log("🔁 [MyRoom] Trả render loop về chế độ bình thường");
+        } else {
+            console.warn("⚠️ [MyRoom] Không có roomManifest để khởi tạo");
         }
-
+    
         onComplete?.();
-
-        let end = performance.now();
-        let elapsedTime = end - start;
-        console.warn(`loading myroom2: ${elapsedTime} ms.`);
+        const end = performance.now();
+        console.warn(`⏱️ [MyRoom] Tổng thời gian khởi tạo phòng: ${(end - start).toFixed(2)} ms.`);
     }
+    
 
     private async _changeRoomSkin(roomManifest: IAssetManifest_MyRoom | null, onComplete: ((success: boolean) => void) | null) {
         if (!this._myRoomController) {

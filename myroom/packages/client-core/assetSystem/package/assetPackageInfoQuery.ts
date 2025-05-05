@@ -87,12 +87,12 @@ export class AssetPackageInfoQuery implements IAssetPacakgeInfoQuery {
     }
 
     public static async RequestAssetInfo(itemId: string): Promise<any> {
-        if (BuildConfig.isDevTool) {
+        // if (BuildConfig.isDevTool) {
             const assetInfoFromLocalServer = await AssetPackageInfoQuery._getAssetInfoFromLocalServer(itemId);
             if (assetInfoFromLocalServer !== -1) {
                 return assetInfoFromLocalServer;
             }
-        }
+        // }
 
         const url = `${Constants.BASEURL_API}/meta/items/${itemId}`;
 
@@ -137,6 +137,7 @@ export class AssetPackageInfoQuery implements IAssetPacakgeInfoQuery {
     private static _isFirstCheckAssetServer = true;
     private static _isUsingLocalAssetServer = false;
     private static async _checkUsingLocalAssetServer(): Promise<boolean> {
+        return true;
         if (this._isFirstCheckAssetServer) {
             this._isFirstCheckAssetServer = false;
             try {

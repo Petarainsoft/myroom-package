@@ -1,0 +1,156 @@
+{
+	"1111": {
+		"ID": "1111",
+		"Name": "HEAD",
+		"Text": "머리",
+		"Desc": "아바타의 머리 외형 변경",
+		"Parent": "AVATAR",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1112": {
+		"ID": "1112",
+		"Name": "BODY",
+		"Text": "몸통",
+		"Desc": "아바타의 몸통 외형 변경",
+		"Parent": "AVATAR",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1211": {
+		"ID": "1211",
+		"Name": "INDOOR",
+		"Text": "실내",
+		"Desc": "실내형 마이룸 스킨",
+		"Parent": "MYROOMSKIN",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1212": {
+		"ID": "1212",
+		"Name": "OUTDOOR",
+		"Text": "실외",
+		"Desc": "실외형 마이룸 스킨",
+		"Parent": "MYROOMSKIN",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1221": {
+		"ID": "1221",
+		"Name": "ENVLIGHT",
+		"Text": "조명",
+		"Desc": "마이룸 조명",
+		"Parent": "MYROOMSKIN",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1311": {
+		"ID": "1311",
+		"Name": "FLOOR",
+		"Text": "바닥",
+		"Desc": "바닥에 배치되는 아이템",
+		"Parent": "MYROOMITEM",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1312": {
+		"ID": "1312",
+		"Name": "WALL",
+		"Text": "벽걸이",
+		"Desc": "벽에 배치되는 아이템",
+		"Parent": "MYROOMITEM",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1313": {
+		"ID": "1313",
+		"Name": "RUG",
+		"Text": "깔개",
+		"Desc": "마이룸 바닥에 배치되는 바닥 깔개",
+		"Parent": "MYROOMITEM",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1411": {
+		"ID": "1411",
+		"Name": "INDOORCOORDI",
+		"Text": "실내 코디",
+		"Desc": "실내형 코디 완성",
+		"Parent": "MYROOMCOORDI",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1412": {
+		"ID": "1412",
+		"Name": "OUTDOORCOORDI",
+		"Text": "실외 코디",
+		"Desc": "실외형 코디 완성",
+		"Parent": "MYROOMCOORDI",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1511": {
+		"ID": "1511",
+		"Name": "DUMMY02_01",
+		"Text": "-",
+		"Desc": "-",
+		"Parent": "DUMMY01",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1512": {
+		"ID": "1512",
+		"Name": "DUMMY02_02",
+		"Text": "-",
+		"Desc": "-",
+		"Parent": "DUMMY01",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1611": {
+		"ID": "1611",
+		"Name": "SYSTEMAVATAR",
+		"Text": "시스템 아바타",
+		"Desc": "머리와 몸통을 포함한 프리셋 정보",
+		"Parent": "SYSTEMITEM",
+		"ActiveIcon": "",
+		"IsShow": "0"
+	},
+	"1621": {
+		"ID": "1621",
+		"Name": "SYSTEMMYROOM",
+		"Text": "시스템 마이룸",
+		"Desc": "마이룸의 시스템 설정",
+		"Parent": "SYSTEMITEM",
+		"ActiveIcon": "",
+		"IsShow": "0"
+	},
+	"1711": {
+		"ID": "1711",
+		"Name": "STATUSANIMATIONSUB",
+		"Text": "상태메시지서브",
+		"Desc": "의미없는 상태값",
+		"Parent": "STATUSANIMATION",
+		"ActiveIcon": "",
+		"IsShow": "1"
+	},
+	"1811": {
+		"ID": "1811",
+		"Name": "CONTENTSPURCHASE",
+		"Text": "컨텐츠 결제",
+		"Desc": "컨텐츠 사용료",
+		"Parent": "SYSTEMPURCHASE",
+		"ActiveIcon": "",
+		"IsShow": "0"
+	},
+	"1911": {
+		"ID": "1911",
+		"Name": "PROFILEITEM",
+		"Text": "프로필 아이템",
+		"Desc": "프로필에 사용할 아이템",
+		"Parent": "PROFILE",
+		"ActiveIcon": "",
+		"IsShow": "0"
+	}
+}
+

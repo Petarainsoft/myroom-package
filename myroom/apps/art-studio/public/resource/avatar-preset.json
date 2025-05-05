@@ -1,0 +1,15 @@
+[
+  {
+    "AvatarID": 1,
+    "AvatarImage": "CV_AVATARSETTING_0001",
+    "AvatarIcon": "CV_AVATARSETTING_0001",
+    "AvatarModelID": "ublkxsnCqXqMxeRg6rgCu"
+  },
+  { "AvatarID": 2, "AvatarImage": "CV_AVATARSETTING_0002", "AvatarIcon": "CV_AVATARSETTING_0002", "AvatarModelID": "wUlJpiD0pRuUSs0rNzWhk" },
+  { "AvatarID": 3, "AvatarImage": "CV_AVATARSETTING_0003", "AvatarIcon": "CV_AVATARSETTING_0003", "AvatarModelID": "yNkrrlWFArRAM48He5onY" },
+  { "AvatarID": 4, "AvatarImage": "CV_AVATARSETTING_0004", "AvatarIcon": "CV_AVATARSETTING_0004", "AvatarModelID": "10GkKPgJScp3W7IBl2jrVI" },
+  { "AvatarID": 5, "AvatarImage": "CV_AVATARSETTING_0005", "AvatarIcon": "CV_AVATARSETTING_0005", "AvatarModelID": "129jrI3k9iFByYfvBprcxs" },
+  { "AvatarID": 6, "AvatarImage": "CV_AVATARSETTING_0006", "AvatarIcon": "CV_AVATARSETTING_0006", "AvatarModelID": "142jPIS0vlVEL2K70y2Hke" },
+  { "AvatarID": 7, "AvatarImage": "CV_AVATARSETTING_0007", "AvatarIcon": "CV_AVATARSETTING_0007", "AvatarModelID": "15viun9krtlqIgtt43Sqo4" },
+  { "AvatarID": 8, "AvatarImage": "CV_AVATARSETTING_0008", "AvatarIcon": "CV_AVATARSETTING_0008", "AvatarModelID": "17oiQevwpopuxT8BVZMdbE" }
+]

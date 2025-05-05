@@ -29,7 +29,7 @@ import { EMediaType, eAssetType } from "../assetSystem/definitions";
 //import { MyRoomController } from "../assetSystem/controllers/myRoomController";
 import { MyRoomAPI } from "../myRoomAPI";
 import { TableDataManager } from "../tableData/tableDataManager";
-//import { IAssetManifest_MyRoom } from "../assetSystem/jsonTypes/manifest/assetManifest_MyRoom";
+import { IAssetManifest_MyRoom } from "../assetSystem/jsonTypes/manifest/assetManifest_MyRoom";
 
 export class MyRoomAPIRecordPlayer extends BABYLON.TransformNode {
     private _api: MyRoomAPI;
