@@ -1,0 +1,202 @@
+{
+    "scene": {
+        "cameras": [
+            {
+                "type": "thirdPersonCamera",
+                "name": "thirdPersonCamera",
+                "visible": true,
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "rotation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "boom": {
+                    "length": 10,
+                    "rotation": {
+                        "x": -0.14,
+                        "y": 0,
+                        "z": 0
+                    }
+                }
+            }
+        ],
+        "lights": [
+            {
+                "type": "hemiSphericLight",
+                "name": "hemiSphericLight",
+                "direction": {
+                    "x": 0,
+                    "y": 1,
+                    "z": 0
+                }
+            }
+        ],
+        "targetObjects": [
+            {
+                "objectId": 1,
+                "skeletonRoot": {
+                    "name": "mixamorig:Hips",
+                    "position": {
+                        "lockX": false,
+                        "lockY": true,
+                        "lockZ": false
+                    }
+                }
+            }
+        ],
+        "objects": [
+            {
+                "type": "glb",
+                "id": 1,
+                "name": "sodier.glb",
+                "url": "http://localhost:3001/objects/character/sodier.glb",
+                "visible": true,
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                }
+            },
+            {
+                "type": "glb",
+                "name": "ground.glb",
+                "url": "http://localhost:3001/objects/ground/ground.glb",
+                "visible": true,
+                "position": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "scaling": {
+                    "x": 5,
+                    "y": 5,
+                    "z": 5
+                }
+            },
+            {
+                "type": "group",
+                "name": "group",
+                "visible": true,
+                "position": {
+                    "x": 20,
+                    "y": 0,
+                    "z": 0
+                },
+                "rotation": {
+                    "x": 0,
+                    "y": 0,
+                    "z": 0
+                },
+                "scaling": [
+                    1,
+                    1,
+                    1
+                ],
+                "children": [
+                    {
+                        "type": "glb",
+                        "name": "kt_house_set_01.glb",
+                        "url": "http://localhost:3001/objects/house/kt_house_set_01.glb",
+                        "visible": false,
+                        "position": {
+                            "x": -16,
+                            "y": 0,
+                            "z": 20
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": 3.14159,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "glb",
+                        "name": "kt_house_set_02.glb",
+                        "url": "http://localhost:3001/objects/house/kt_house_set_02.glb",
+                        "visible": false,
+                        "position": {
+                            "x": 20,
+                            "y": 0,
+                            "z": 20
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": 3.14159,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "glb",
+                        "name": "kt_house_set_03.glb",
+                        "url": "http://localhost:3001/objects/house/kt_house_set_03.glb",
+                        "visible": false,
+                        "position": {
+                            "x": -20,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": 1.57,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "glb",
+                        "name": "kt_house_set_04.glb",
+                        "url": "http://localhost:3001/objects/house/kt_house_set_04.glb",
+                        "visible": true,
+                        "position": {
+                            "x": 0,
+                            "y": 0,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "glb",
+                        "name": "kt_house_set_05.glb",
+                        "url": "http://localhost:3001/objects/house/kt_house_set_05.glb",
+                        "visible": false,
+                        "position": {
+                            "x": 20,
+                            "y": 0,
+                            "z": 0
+                        },
+                        "rotation": {
+                            "x": 0,
+                            "y": -1.57,
+                            "z": 0
+                        }
+                    },
+                    {
+                        "type": "glb",
+                        "name": "kt_house_set_06.glb",
+                        "url": "http://localhost:3001/objects/house/kt_house_set_06.glb",
+                        "visible": false,
+                        "position": {
+                            "x": 17,
+                            "y": 0,
+                            "z": -20
+                        }
+                    },
+                    {
+                        "type": "glb",
+                        "name": "kt_house_set_07.glb",
+                        "url": "http://localhost:3001/objects/house/kt_house_set_07.glb",
+                        "visible": false,
+                        "position": {
+                            "x": -17,
+                            "y": 0,
+                            "z": -20
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
