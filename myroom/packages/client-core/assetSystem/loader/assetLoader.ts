@@ -159,6 +159,9 @@ export class AssetLoader implements IAssetLoader {
             }
         };
 
+
+        
+
         return mainfest_avatar as T;
         const url = `${Constants.BASEURL_API}/space/avatars/${assetId}`;
 

@@ -45,7 +45,7 @@ const PropertyGrid = (props:IPropertyTabProps) => {
         const entity = selectedEntity;
         if(!entity){
             return (<div className="infoMessage">Item Explorer에서 Entity를 선택해 주세요.</div>);
-        }
+        } 
 
         if(entity.type === "Mesh"){
             const mesh = entity.object as Mesh;
