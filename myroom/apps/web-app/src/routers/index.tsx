@@ -2,11 +2,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from '@/App';
 import Init from '@/pages/Init';
 import Error from '@/pages/Error';
-import AuthRouter from './Auth';
 import SearchRouter from './Search';
 import RoomRouter from './Room';
 import OKIMYJTest from '@/pages/OKIMYJTest';
-import SYTest from '@/pages/SYTest';
 import Joysam from '@/pages/Joysam';
 import KHConv from '@/pages/KHHome/KHConv';
 import ProfilePage from '@/pages/ProfilePage';
@@ -61,10 +59,6 @@ const router = createBrowserRouter([
         element: <OKIMYJTest />,
       },
       {
-        path: 'sy',
-        element: <SYTest />,
-      },
-      {
         path: 'joysam',
         element: <Joysam />,
       },
@@ -96,7 +90,6 @@ const router = createBrowserRouter([
         path: 'avatar',
         element: <Avatar />,
       },
-      ...AuthRouter,
       ...SearchRouter,
       ...RoomRouter,
     ],

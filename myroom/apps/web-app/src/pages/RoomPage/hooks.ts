@@ -24,9 +24,9 @@ const useRoomPage = () => {
     const { isLogined } = useAuth();
     const { createThumbnail } = useThumbnail();
     const {sceneStatus, setSceneStatus} = useScene();
-    const { currentRoomInfo, setCurrentRoomInfo, roomSelectedItem, hideRoomPlaceUI, adf, roomBackgroundColor, setRoomBackgroundColor, recommendFigures } = useRoom();
+    const { currentRoomInfo, setCurrentRoomInfo, roomSelectedItem, hideRoomPlaceUI, roomBackgroundColor, setRoomBackgroundColor } = useRoom();
 
-    const meRoomManifest = {
+    const meRoomManifest: IAssetManifest_MyRoom = {
         main: {
           room: {
             backgroundColor: "#FFFFFF",

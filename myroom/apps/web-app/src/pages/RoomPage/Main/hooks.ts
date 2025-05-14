@@ -10,7 +10,7 @@ let callbackAnimaion : any = null;
 const useMain = () => {
     const navigate = useNavigate();
 
-    const { currentRoomInfo, showAlwaysRoomInfo, setShowAlwaysRoomInfo, setRoomSelectedItem, roomSelectedItem, recommendFigures} = useRoom();
+    const { currentRoomInfo, showAlwaysRoomInfo, setShowAlwaysRoomInfo, setRoomSelectedItem, roomSelectedItem} = useRoom();
     const itemFullScreenModal = useModal('ItemFullScreenModal');
     const avatarInfoFullScreenModal = useModal('AvatarInfoFullScreenModal');
     const balloonMessageListFullScreenModal = useModal(
@@ -118,8 +118,8 @@ const useMain = () => {
     }, [callbackRoomPlacementSelectionChanged]);
 
     useEffect(() => { 
-        recommendFigures();
-    }, [recommendFigures]);
+        // recommendFigures();
+    }, []);
 
     return {roomSelectedItem, currentRoomInfo, showAlwaysRoomInfo, handleToggle, handleClickPlace, handleClickZoomOut, handleClickBalloon}
 }

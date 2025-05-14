@@ -8,7 +8,6 @@ import {
   uiSignInSheetAtom,
 } from '@/common/stores';
 import useAuth from '@/common/hooks/use-auth';
-import useFollowAPI from '@/apis/User/Follow';
 import OffCanvas from '@/pages/_shared/layouts/Offcanvas';
 import { logger } from '@/common/utils/logger';
 import Text from '@/components/Text';
@@ -22,7 +21,6 @@ import { useNavigate } from 'react-router-dom';
 import useMe from '@/common/hooks/use-me';
 import ProfileThumnail from '@/pages/_shared/ui/Profiles/Profile';
 import usePopup from '@/common/hooks/Popup/usePopup';
-import useFollow from '@/apis/User/Follow/hooks';
 import { useOffCanvasOpenAndClose } from '@/common/utils/common.hooks';
 import useProfileAPI from '@/apis/User/Profile';
 
@@ -31,14 +29,11 @@ const ProfileOffCanvas = (): React.ReactElement => {
   const [uiProfile, setUiProfile] = useAtom(uiProfileAtom);
   const { handleOffCanvasClose } = useOffCanvasOpenAndClose(setUiProfile);
   // const [uiFollow] = useAtom(uiFollowAtom);
-  const [isFollowing, setIsFollowing] = React.useState<boolean | null>(null);
+  const [isFollowing] = React.useState<boolean | null>(null);
   const [, setUISignInSheet] = useAtom(uiSignInSheetAtom);
-  const { handleRequestFollow } = useFollow();
   //const isOwnRoom = useAtomValue(isOwnRoomAtom); // uri 내 마이룸 아이디/ - myRoom 단건조회를 통해 나온 프로필 아이디
   const { currentRoomInfo } = useRoom();
   const { meRoomId, meThumbnail, meProfileId } = useMe();
-  const { fetchMeFollowings } = useFollowAPI();
-  const { data: followingsList } = fetchMeFollowings();
   const { showToastPopup } = usePopup();
   // const FigureShowcaseModal = useModal('FigureShowcaseModal');
   const { isLogined, signout } = useAuth();
@@ -120,10 +115,10 @@ const ProfileOffCanvas = (): React.ReactElement => {
   };
 
   useEffect(() => {
-    followingsList?.list.some((item) => item._id === currentRoomInfo?.ownerId)
-      ? setIsFollowing(true)
-      : setIsFollowing(false);
-  }, [followingsList]);
+    // followingsList?.list.some((item) => item._id === currentRoomInfo?.ownerId)
+    //   ? setIsFollowing(true)
+    //   : setIsFollowing(false);
+  }, []);
   /*
   const handleFollow = async () => {
     logger.log('handleFollow uiFollow? ', uiFollow);
@@ -152,10 +147,10 @@ const ProfileOffCanvas = (): React.ReactElement => {
       return;
     }
     if (currentRoomInfo) {
-      handleRequestFollow({
-        profileId: currentRoomInfo.ownerId!,
-        isFollow: isFollowing!,
-      });
+      // handleRequestFollow({
+      //   profileId: currentRoomInfo.ownerId!,
+      //   isFollow: isFollowing!,
+      // });
     }
   }, [isLogined, isFollowing, currentRoomInfo?.ownerId]);
 

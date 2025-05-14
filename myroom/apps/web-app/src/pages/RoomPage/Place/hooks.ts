@@ -7,7 +7,6 @@ import useMarketAPI from "@/apis/Meta/Market";
 import { ISelectButton } from "@/pages/_shared/offcanvas/SelectOffCanvas";
 import useModal from "@/common/hooks/Modal/useModal";
 import useRoomSkin from "@/common/hooks/use-room-skin";
-import useFollowAPI from "@/apis/User/Follow";
 import useItemAPI from "@/apis/Meta/Item";
 import useMyRoomAPI from "@/apis/Space/MyRoom";
 import useReactionAPI from "@/apis/Social/Reaction";
@@ -26,9 +25,8 @@ import useCart from "@/common/hooks/Cart";
 const usePlace = () => {
     const { removeCartItem } = useCart();
     const { add, remove, itemList, figureList } = useTrash();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const { fetchMarketProductsInfi } = useMarketAPI();
-    const { fetchMeFollowings  } = useFollowAPI();
     const { fetchMeItems } = useItemAPI();
     const { fetchMyroomTemplates, mutationDelMyroomTemplate } = useMyRoomAPI();
     const { fetchMeReactions } = useReactionAPI();
@@ -54,13 +52,9 @@ const usePlace = () => {
     const {data : productsData, isSuccess: isProductsDataSuccess, hasNextPage: hasProductsNextPage, fetchNextPage: fetchProductsNextPage} = fetchMarketProductsInfi({category: currentSubCategory === 'FREE'? currentCategory : currentSubCategory, limit: 15, selling: currentSubCategory === 'FREE'? false : undefined });
     const {data: userItemsData, isSuccess: isUserItemsSuccess, fetchNextPage: fetchUserItemsNextPage, hasNextPage: hasUserItemsNextPage } = fetchMeItems({ page: 1, limit: 15, category: currentCategory === RoomCategory.MY_ITEM ? currentSubCategory : undefined });
     const {data: roomTemplatesData, isSuccess: isRoomTemplatesSuccess } = fetchMyroomTemplates(currentRoomInfo?.id);
-    const {data: reactionData, isSuccess: isReactionSucces, fetchNextPage : fetchReactionNextPage, hasNextPage : hasReactionNextPage } = fetchMeReactions({ page: 1, limit: 15, target_type: 'item', filter_reaction: 'like', order: 'desc', orderby: 'like' });
+    const {data: reactionData, isSuccess: isReactionSucces, hasNextPage : hasReactionNextPage } = fetchMeReactions({ page: 1, limit: 15, target_type: 'item', filter_reaction: 'like', order: 'desc', orderby: 'like' });
 
 
-    /**
-     * ????: 왜 인피니티 스크롤를 안한건지 확인필요.
-     */
-    const {data : followingsData, isSuccess: isFollowingsDataSuccess} = fetchMeFollowings();
     
 
     const handleToggle = useCallback(() => {
@@ -194,9 +188,9 @@ const usePlace = () => {
 
         switch(currentCategory) {
             case RoomCategory.FIGURE: 
-                if(isFollowingsDataSuccess && followingsData?.list) {
-                    return followingsData?.list;
-                }
+                // if(isFollowingsDataSuccess && followingsData?.list) {
+                //     return followingsData?.list;
+                // }
                 break;
             case RoomCategory.MY_ITEM:
                 if(isUserItemsSuccess) {
@@ -222,7 +216,7 @@ const usePlace = () => {
         }
 
         return [];
-    }, [showTrash, currentCategory, currentTrashCategory, itemList, figureList, isFollowingsDataSuccess, followingsData, isUserItemsSuccess, isRoomTemplatesSuccess, isReactionSucces, isProductsDataSuccess, userItemsData, roomTemplatesData, reactionData, productsData]);
+    }, [showTrash, currentCategory, currentTrashCategory, itemList, figureList, isUserItemsSuccess, isRoomTemplatesSuccess, isReactionSucces, isProductsDataSuccess, userItemsData, roomTemplatesData, reactionData, productsData]);
 
     /**
      * 아이템 갯수

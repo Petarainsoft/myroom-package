@@ -1,13 +1,12 @@
 import { AUTH_API_KEY, AUTH_SERVER_URL } from '@/common/constants';
 // import { IAuth, AuthConfig, Credential } from '@colorverse/auth';
-import Cookies from 'js-cookie';
-import { now } from '../date';
 
 
-const REFRESH_TOKEN_NAME = "REFRESH_TOKEN";
 
-export let ACCESS_TOKEN: string | null = null;
-export let ACCESS_TOKEN_EXPIRES: number = 0;
+// const REFRESH_TOKEN_NAME = "REFRESH_TOKEN";
+
+export const ACCESS_TOKEN: string | null = null;
+export const ACCESS_TOKEN_EXPIRES: number = 0;
 
 // class Auth implements IAuth {
 //     config: AuthConfig;
@@ -69,14 +68,14 @@ class Auth {
     }
 
     isLogined(): boolean {
-        return false;
+        return true;
     }
 
     getRefreshToken(): string | null {
         return null;
     }
 
-    setCredential(credential: any): void {
+    setCredential(): void {
         // Do nothing
     }
 

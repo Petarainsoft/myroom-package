@@ -3,10 +3,7 @@ import style from './style.module.scss';
 import View from '../_shared/layouts/View';
 import RoomScene from '../Room_LEGACY/RoomScene';
 import { Outlet } from 'react-router-dom';
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { auth } from '@/common/utils/auth';
-import useAuthAPI from "@/apis/User/Auth";
-import useAuth from "@/common/hooks/use-auth";
+import { atom, useAtom} from 'jotai';
 import useRoom from '../Room_LEGACY/useRoom';
 import useSelectionEvent from '../Room_LEGACY/useSelectionEvent';
 import { ItemController, EFuntionType, ConstantsEx } from 'client-core';
@@ -18,14 +15,10 @@ import { SceneManager } from '@/common/utils/client';
 const isLoadedAtom = atom(false);
 
 export const LANG = 'ko';
-const id = "joysam005";
-const password = "joysam005";
 
 const Joysam = () => {
     const [isLoaded, setIsLoaded] = useAtom(isLoadedAtom);
     const isInitializedRoomScene = useAtom(isInitializedRoomSceneAtom);
-    const { mutationPostAuthSigninEmail } = useAuthAPI();
-    const { signin, isLogined } = useAuth();
     const JoysamModelListModal = useModal('JoysamModelListModal');
     const JoysamModelInfoModal = useModal('JoysamModelInfoModal');
     const DialogModal = useModal('DialogModal');
@@ -65,30 +58,7 @@ const Joysam = () => {
 
     React.useEffect(() => {
         console.log("Joysam - init");
-        auth.clearCredential();
-
-        const res = mutationPostAuthSigninEmail.mutateAsync({
-            data: {
-                id,
-                password
-            },
-            params: {
-                p: "", w: ""
-            }
-        }).then((res) => {
-            if (res) {
-                console.log("Joysam - setCredential", res);
-                const { access_token, expires, refresh_token, token_type } = res.credential;
-                auth.setCredential({
-                    accessToken: access_token,
-                    expires: expires,
-                    refreshToken: refresh_token,
-                    tokenType: token_type
-                });
-                signin();
-                setIsLoaded(true);
-            }
-        });
+        setIsLoaded(true);
 
     }, []);
 

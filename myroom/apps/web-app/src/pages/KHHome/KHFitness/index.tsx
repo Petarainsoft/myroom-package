@@ -3,14 +3,12 @@ import style from './style.module.scss';
 import View from '../../_shared/layouts/View';
 import RoomScene from '../../Room_LEGACY/RoomScene';
 import { Outlet } from 'react-router-dom';
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtom  } from 'jotai';
 import { auth } from '@/common/utils/auth';
-import useAuthAPI from "@/apis/User/Auth";
 import useAuth from "@/common/hooks/use-auth";
 import useRoom from '../../Room_LEGACY/useRoom';
 import useSelectionEvent from '../../Room_LEGACY/useSelectionEvent';
-import { ItemController, EFuntionType, ConstantsEx } from 'client-core';
-import useModal from '@/common/hooks/Modal/useModal';
+import { ItemController, ConstantsEx } from 'client-core';
 import { setMaxWidth } from '@/App';
 import { isInitializedRoomSceneAtom } from '@/common/stores';
 import { SceneManager } from '@/common/utils/client';
@@ -22,24 +20,21 @@ import { KHHomeUrl } from '..';
 const isLoadedAtom = atom(false);
 
 export const LANG = 'ko';
-const id = "kh002";
-const password = "kh002";
 
 const KHFitness = () => {
     const [isLoaded, setIsLoaded] = useAtom(isLoadedAtom);
     const isInitializedRoomScene = useAtom(isInitializedRoomSceneAtom);
-    const { mutationPostAuthSigninEmail } = useAuthAPI();
-    const { signin, isLogined, signout } = useAuth();
+    const { signout } = useAuth();
     const [isShowRoomLoading, setIsShowRoomLoading] = React.useState(false);
     const navigate = useNavigate();
 
     useRoom(false, ConstantsEx.SERVICE_KH);
     useSelectionEvent((controller?: ItemController) => {
         console.log("KHFitness - useRoom", controller);
-        const itemData = controller?.getItemTableData();
-        if (controller && itemData) {
+        // const itemData = controller?.getItemTableData();
+        // if (controller && itemData) {
 
-        }
+        // }
     });
 
     React.useLayoutEffect(() => {
@@ -54,28 +49,7 @@ const KHFitness = () => {
             setIsLoaded(false);
         }
 
-        const res = mutationPostAuthSigninEmail.mutateAsync({
-            data: {
-                id,
-                password
-            },
-            params: {
-                p: "", w: ""
-            }
-        }).then((res) => {
-            if (res) {
-                console.log("KHFitness - setCredential", res);
-                const { access_token, expires, refresh_token, token_type } = res.credential;
-                auth.setCredential({
-                    accessToken: access_token,
-                    expires: expires,
-                    refreshToken: refresh_token,
-                    tokenType: token_type
-                });
-                signin();
-                setIsLoaded(true);
-            }
-        });
+        setIsLoaded(true);
 
     }, []);
 

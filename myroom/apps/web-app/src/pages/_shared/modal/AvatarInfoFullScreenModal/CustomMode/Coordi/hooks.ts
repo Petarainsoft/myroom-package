@@ -13,7 +13,7 @@ type useCoordiProps = {
 }
 
 const useCoordi = ({ data } : useCoordiProps) => {
-  const { showConfirmPopup, showToastPopup } = usePopup();
+  const { showConfirmPopup } = usePopup();
   const { mutationPostCoordis, mutationDelCoordi } = useCoordiAPI();
   const setCurrentEquipItems = useSetAtom(currentEquipItemsAtom);
   

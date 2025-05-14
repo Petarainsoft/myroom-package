@@ -3,7 +3,6 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { currentMyRoomIdAtom, followTabAtom, meProfileIdAtom } from "@/common/stores";
 import useModal from "@/common/hooks/Modal/useModal";
 import useProfileAPI from "@/apis/User/Profile";
-import useFollowAPI from "@/apis/User/Follow";
 import { ProfileCardProps } from "./type";
 
 
@@ -14,16 +13,6 @@ const useProfileCard = ({ profileId }: ProfileCardProps) => {
   const meProfileId = useAtomValue(meProfileIdAtom);
   const selectedTab = useAtomValue(followTabAtom);
 
-  const {
-    fetchMeFollowings,
-    mutationPutFollowings,
-    mutationDelFollowings,
-  } = useFollowAPI();
-
-  const { 
-    data: followMeData, 
-    isLoading: isLoadingFollowMeData 
-  } = fetchMeFollowings();
 
   const { 
     fetchProfileCount, 
@@ -33,27 +22,9 @@ const useProfileCard = ({ profileId }: ProfileCardProps) => {
   const { data: profileData, isLoading: isProfileLoading } = fetchProfile(profileId);
   const { data: profileCnt } = fetchProfileCount(profileId);
 
-  const handleFollow = (profileId: string, isFollow: boolean) => async () => {
+  const handleFollow = () => async () => {
     console.log('handleFollow tab ', selectedTab);
-    if (isFollow) {
-      if(selectedTab === 'recommend') {
-        const isInvalidate = true;
-        await mutationDelFollowings.mutateAsync({ profileId, meProfileId, isInvalidate});
-      } else {
-        const isInvalidate = false;
-        await mutationDelFollowings.mutateAsync({ profileId, meProfileId, isInvalidate });
-      }
-      return false;
-    } else {
-      if(selectedTab === 'recommend') {
-        const isInvalidate = true;
-        await mutationPutFollowings.mutateAsync({ profileId, meProfileId, isInvalidate});
-      } else {
-        const isInvalidate = false;
-        await mutationPutFollowings.mutateAsync({ profileId, meProfileId, isInvalidate});  
-      }
-      return true;
-    }
+    return false;
   }
 
   const handleProfileClick = () => {
@@ -67,15 +38,12 @@ const useProfileCard = ({ profileId }: ProfileCardProps) => {
   };
   
   
-  const getIsFollowing = (itemId: string) => {
-    if (isLoadingFollowMeData) return false;
-    const myFollowList = followMeData?.list;
-    if (myFollowList) return myFollowList.some((item) => item._id === itemId);
+  const getIsFollowing = () => {
     return false;
   };
   
 
-  const isFollowing = getIsFollowing(profileId) // 팔로잉 여부판단
+  const isFollowing = getIsFollowing() // 팔로잉 여부판단
 
   return {
     setCurrentRoom,
@@ -83,10 +51,6 @@ const useProfileCard = ({ profileId }: ProfileCardProps) => {
     navigate,
     meProfileId,
     selectedTab,
-    mutationPutFollowings,
-    mutationDelFollowings,
-    followMeData,
-    isLoadingFollowMeData,
     fetchProfileCount,
     fetchProfile,
     profileData,
