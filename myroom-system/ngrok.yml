@@ -1,0 +1,22 @@
+version: "1"
+authtoken: "1ykOOkEWNNRCZL95VE8yrGckqbA_5N9M3dsooQ6MGQfVP35xM"
+tunnels:
+  myroom-dev:
+    proto: http
+    addr: 5173
+    host_header: "localhost:5173"
+    headers:
+      add:
+        - "Access-Control-Allow-Origin: *"
+        - "Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"
+        - "Access-Control-Allow-Headers: Content-Type, Authorization"
+        - "Access-Control-Allow-Credentials: true"
+  myroom-build:
+    proto: http
+    addr: 4173
+    host_header: "localhost:4173"
+    headers:
+      add:
+        - "Access-Control-Allow-Origin: *"
+        - "Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"
+        - "Access-Control-Allow-Headers: Content-Type, Authorization"

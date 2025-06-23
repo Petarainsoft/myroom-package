@@ -50,8 +50,18 @@ export default defineConfig({
       'localhost',
       '127.0.0.1',
       'myroom.petarainsoft.com',
-      'ffb5-116-110-43-199.ngrok-free.app'
-    ]
+      '2620-116-110-43-199.ngrok-free.app'
+    ],
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    }
   },
   define: {
     // Ensure compatibility
