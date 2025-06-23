@@ -18,6 +18,7 @@ import {
 import '@babylonjs/loaders';
 
 import { ActiveMovement, TouchMovement } from './types/AvatarTypes';
+import { domainConfig } from './shared/config/appConfig';
 import { availablePartsData, AvatarConfig } from './data/avatarPartsData';
 import { findMappedBone } from './skeletonMapping';
 
@@ -155,7 +156,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       console.log(`🎬 Loading ${animationName} animation from all_animation.glb...`);
       
       // Load animation file using Babylon.js SceneLoader
-      const result = await SceneLoader.ImportMeshAsync("", "/animations/", "all_animation.glb", sceneRef.current);
+      const animationUrl = `${domainConfig.baseDomain}/animations/all_animation.glb`;
+      const result = await SceneLoader.ImportMeshAsync("", animationUrl, "", sceneRef.current);
 
       // Check if animation groups exist in the result
       if (result.animationGroups && result.animationGroups.length > 0) {

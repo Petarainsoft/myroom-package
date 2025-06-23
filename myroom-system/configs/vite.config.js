@@ -49,7 +49,8 @@ export default defineConfig({
     allowedHosts: [
       'localhost',
       '127.0.0.1',
-      'myroom.petarainsoft.com'
+      'myroom.petarainsoft.com',
+      'ffb5-116-110-43-199.ngrok-free.app'
     ]
   },
   define: {

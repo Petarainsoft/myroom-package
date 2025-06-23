@@ -207,7 +207,7 @@ class MyRoomWebComponent extends HTMLElement {
       const [React, ReactDOM, IntegratedBabylonScene] = await Promise.all([
         import('react'),
         import('react-dom/client'),
-        import('../../IntegratedBabylonScene')
+        import('../../shared/components/babylon/IntegratedBabylonScene')
       ]);
 
       // Create React component

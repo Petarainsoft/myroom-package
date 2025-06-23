@@ -17,7 +17,7 @@ const getConfiguredDomain = () => {
   }
   
   // Default domain (used during development or if not configured)
-  return 'https://your-domain.com';
+  return 'https://ffb5-116-110-43-199.ngrok-free.app';
 };
 
 // Base domain configuration

@@ -1,20 +1,20 @@
-import { useState, useEffect, useRef } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import {
   Engine,
   Scene,
   ArcRotateCamera,
   Vector3,
   HemisphericLight,
-  MeshBuilder,
-  StandardMaterial,
-  Color3,
   SceneLoader,
-  PointerEventTypes,
-  TransformNode,
+  Color3,
   UtilityLayerRenderer,
+  PositionGizmo,
+  RotationGizmo,
+  ScaleGizmo,
+  TransformNode
 } from '@babylonjs/core'
-import { PositionGizmo, RotationGizmo, ScaleGizmo } from '@babylonjs/core/Gizmos'
 import '@babylonjs/loaders'
+import { domainConfig } from '../../config/appConfig'
 
 export default function InteractiveRoom() {
   const canvasRef = useRef(null)
@@ -152,7 +152,9 @@ export default function InteractiveRoom() {
 
   useEffect(() => {
     if (!sceneRef.current || !roomPath) return
-    const { root, file } = splitPath(roomPath)
+    // Create full URL with domain
+    const fullRoomUrl = roomPath.startsWith('http') ? roomPath : `${domainConfig.baseDomain}${roomPath}`;
+    const { root, file } = splitPath(fullRoomUrl)
     SceneLoader.ImportMeshAsync('', root, file, sceneRef.current).then((res) => {
       if (roomRef.current) {
         roomRef.current.dispose()

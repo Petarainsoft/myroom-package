@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { SceneLoader, TransformNode, Scene, Vector3 } from '@babylonjs/core';
 import { LoadedItem } from '../../types/LoadedItem';
+import { domainConfig } from '../../config/appConfig';
 
 interface ItemLoaderProps {
   scene: Scene | null;
@@ -29,9 +30,12 @@ export const useItemLoader = ({
 
         // Load new items
         for (const item of loadedItems) {
+          // Create full URL with domain
+          const fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+          
           const result = await SceneLoader.ImportMeshAsync(
             '',
-            item.path,
+            fullItemUrl,
             '',
             scene
           );

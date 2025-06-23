@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRoom Simple Demo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    my-room-scene {
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>MyRoom Web Component - Simple Demo</h1>
+    
+    <my-room-scene 
+      room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+      gender="male"
+      width="800px"
+      height="600px"
+      autoplay="true"
+      enable-controls="true"
+      camera-controls="true">
+    </my-room-scene>
+  </div>
+
+  <!-- Load domain configuration -->
+  <script src="/config-domain.js"></script>
+  
+  <!-- Load MyRoom WebComponent UMD -->
+  <script src="/dist/myroom-webcomponent.umd.js"></script>
+</body>
+</html>

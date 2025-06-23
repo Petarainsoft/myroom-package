@@ -27,6 +27,7 @@ import { useItemManipulator } from '../items/ItemManipulator';
 
 import { useSkybox } from '../../hooks/useSkybox';
 import { usePostProcessing } from '../../hooks/usePostProcessing';
+import { domainConfig } from '../../config/appConfig';
 
 import { LoadedItem } from '../../types/LoadedItem';
 import { ClonedAnimation } from '../../types/ClonedAnimation';
@@ -154,8 +155,9 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       // Log animation loading start
       console.log(`🎬 Loading ${animationName} animation from all_animation.glb...`);
       
-      // Load animation file using Babylon.js SceneLoader
-      const result = await SceneLoader.ImportMeshAsync("", "/animations/", "all_animation.glb", sceneRef.current);
+      // Load animation file using Babylon.js SceneLoader with full URL
+      const animationUrl = `${domainConfig.baseDomain}/animations/all_animation.glb`;
+      const result = await SceneLoader.ImportMeshAsync("", animationUrl, "", sceneRef.current);
 
       // Check if animation groups exist in the result
       if (result.animationGroups && result.animationGroups.length > 0) {
@@ -1395,10 +1397,11 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               avatarRef.current = avatarContainer;
             }
 
-            // Load new body
+            // Load new body with full URL
+            const fullBodyUrl = bodyPath.startsWith('http') ? bodyPath : `${domainConfig.baseDomain}${bodyPath}`;
             const bodyResult = await SceneLoader.ImportMeshAsync(
               '',
-              bodyPath,
+              fullBodyUrl,
               '',
               sceneRef.current!
             );
@@ -1443,10 +1446,12 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                 // Create promise to load part
                 const loadPartPromise = (async () => {
                   try {
-                    // Load new part
+                    // Load new part with full URL
+                    const partFileName = partData.fileName as string;
+                    const fullPartUrl = partFileName.startsWith('http') ? partFileName : `${domainConfig.baseDomain}${partFileName}`;
                     const partResult = await SceneLoader.ImportMeshAsync(
                       '',
-                      partData.fileName as string, // Ensure fileName is a string
+                      fullPartUrl,
                       '',
                       sceneRef.current!
                     );
@@ -1538,9 +1543,10 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               }
 
               // Load body with timeout to ensure scene is ready
+              const fullBodyUrl = bodyPath.startsWith('http') ? bodyPath : `${domainConfig.baseDomain}${bodyPath}`;
               const bodyResult = await SceneLoader.ImportMeshAsync(
                 '',
-                bodyPath,
+                fullBodyUrl,
                 '',
                 sceneRef.current!
               );
@@ -1618,9 +1624,11 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                   }
 
                   // Step 2: Load new part and hide it initially
+                  const partFileName = partData.fileName as string;
+                  const fullPartUrl = partFileName.startsWith('http') ? partFileName : `${domainConfig.baseDomain}${partFileName}`;
                   const partResult = await SceneLoader.ImportMeshAsync(
                     '',
-                    partData.fileName as string,
+                    fullPartUrl,
                     '',
                     sceneRef.current!
                   );

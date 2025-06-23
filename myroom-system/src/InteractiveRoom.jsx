@@ -15,6 +15,7 @@ import {
 } from '@babylonjs/core'
 import { PositionGizmo, RotationGizmo, ScaleGizmo } from '@babylonjs/core/Gizmos'
 import '@babylonjs/loaders'
+import { domainConfig } from './shared/config/appConfig'
 
 export default function InteractiveRoom() {
   const canvasRef = useRef(null)
@@ -152,7 +153,8 @@ export default function InteractiveRoom() {
 
   useEffect(() => {
     if (!sceneRef.current || !roomPath) return
-    const { root, file } = splitPath(roomPath)
+    const fullRoomUrl = roomPath.startsWith('http') ? roomPath : `${domainConfig.baseDomain}${roomPath}`
+    const { root, file } = splitPath(fullRoomUrl)
     SceneLoader.ImportMeshAsync('', root, file, sceneRef.current).then((res) => {
       if (roomRef.current) {
         roomRef.current.dispose()
@@ -217,7 +219,8 @@ export default function InteractiveRoom() {
 
   const handleAddItem = () => {
     if (!sceneRef.current || !itemPath) return
-    const { root, file } = splitPath(itemPath)
+    const fullItemUrl = itemPath.startsWith('http') ? itemPath : `${domainConfig.baseDomain}${itemPath}`
+    const { root, file } = splitPath(fullItemUrl)
     SceneLoader.ImportMeshAsync('', root, file, sceneRef.current).then((res) => {
       const m = res.meshes[0]
       m.position = new Vector3(0, 0, 0)
