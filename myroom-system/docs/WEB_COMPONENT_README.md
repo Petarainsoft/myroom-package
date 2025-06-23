@@ -292,10 +292,10 @@ npm run build:webcomponent
 npm run preview
 
 # Test demo
-open http://localhost:3000/webcomponent-demo.html
+open http://localhost:5173/webcomponent-demo.html
 ```
 
-## 🌐 Browser Support
+<!-- ## 🌐 Browser Support
 
 - ✅ Chrome 54+, Firefox 63+, Safari 10.1+, Edge 79+
 - ✅ Mobile browsers (iOS Safari, Chrome Mobile)
@@ -311,6 +311,6 @@ open http://localhost:3000/webcomponent-demo.html
 - **License**: MIT License
 - **Email**: support@example.com
 - **Documentation**: [Full docs](https://docs.example.com)
-- **Issues**: [GitHub Issues](https://github.com/example/issues)
+- **Issues**: [GitHub Issues](https://github.com/example/issues) -->
 
 ---

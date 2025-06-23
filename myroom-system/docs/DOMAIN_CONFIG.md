@@ -24,7 +24,7 @@ window.MyRoomConfig = {
 
 // Local development
 window.MyRoomConfig = {
-  baseDomain: 'http://localhost:3000'
+  baseDomain: 'http://localhost:5173'
 };
 
 // CDN

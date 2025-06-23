@@ -4,9 +4,9 @@ Integrate 3D avatar rooms into your website easily.
 
 ## 🚀 Demo URLs
 
-- **Main Demo**: `http://localhost:3000/`
-- **Embed Demo**: `http://localhost:3000/embed-demo.html`
-- **Web Component Demo**: `http://localhost:3000/webcomponent-demo.html`
+- **Main Demo**: `http://localhost:5173/`
+- **Embed Demo**: `http://localhost:5173/embed-demo.html`
+- **Web Component Demo**: `http://localhost:5173/webcomponent-demo.html`
 
 ## 📋 Integration Methods
 
@@ -14,7 +14,7 @@ Integrate 3D avatar rooms into your website easily.
 
 ```html
 <iframe 
-  src="http://localhost:3000/embed-demo.html?room=cate001&gender=female&width=800&height=600" 
+  src="http://localhost:5173/embed-demo.html?room=cate001&gender=female&width=800&height=600" 
   width="800" 
   height="600" 
   frameborder="0">
@@ -25,7 +25,7 @@ Integrate 3D avatar rooms into your website easily.
 
 ```html
 <div id="myroom-container"></div>
-<script src="http://localhost:3000/myroom-embed.js"></script>
+<script src="http://localhost:5173/myroom-embed.js"></script>
 <script>
   MyRoom.create({
     container: '#myroom-container',
@@ -56,16 +56,16 @@ Integrate 3D avatar rooms into your website easily.
 
 ```html
 <!-- Basic room -->
-<iframe src="http://localhost:3000/embed-demo.html?room=cate001&gender=female"></iframe>
+<iframe src="http://localhost:5173/embed-demo.html?room=cate001&gender=female"></iframe>
 
 <!-- Custom size -->
 <iframe 
-  src="http://localhost:3000/embed-demo.html?width=1200&height=800" 
+  src="http://localhost:5173/embed-demo.html?width=1200&height=800" 
   width="1200" height="800">
 </iframe>
 
 <!-- No controls -->
-<iframe src="http://localhost:3000/embed-demo.html?controls=false&camera=false"></iframe>
+<iframe src="http://localhost:5173/embed-demo.html?controls=false&camera=false"></iframe>
 ```
 
 ## 🔗 Communication API
@@ -116,7 +116,7 @@ window.addEventListener('message', function(event) {
 ```html
 <!-- Responsive iframe -->
 <iframe 
-  src="http://localhost:3000/embed-demo.html?width=100%&height=400px" 
+  src="http://localhost:5173/embed-demo.html?width=100%&height=400px" 
   style="width: 100%; height: 400px; max-width: 800px;"
   frameborder="0">
 </iframe>
@@ -146,9 +146,9 @@ window.addEventListener('message', function(event) {
 }
 ```
 
-## 🚀 Production Setup
+<!-- ## 🚀 Production Setup
 
-1. Replace `localhost:3000` with your domain
+1. Replace `localhost:5173` with your domain
 2. Configure HTTPS and SSL
 3. Set up CDN for faster loading
 4. Add error tracking and monitoring
@@ -158,7 +158,7 @@ window.addEventListener('message', function(event) {
 
 - 📧 Email: support@myroom.com
 - 📖 Docs: [Full Documentation](https://docs.myroom.com)
-- 🐛 Issues: [Report bugs](https://github.com/myroom/issues)
+- 🐛 Issues: [Report bugs](https://github.com/myroom/issues) -->
 
 ---
 **Start with iframe for quick testing, upgrade to JavaScript API for advanced features!**
