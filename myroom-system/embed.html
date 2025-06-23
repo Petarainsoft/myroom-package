@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MyRoom 3D Embed Demo</title>
+  <!-- Domain Configuration Script - Edit this file to change domain after deployment -->
+  <script src="/config-domain.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: #000;
+      overflow: hidden;
+    }
+    
+    #root {
+      width: 100vw;
+      height: 100vh;
+    }
+    
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 18px;
+    }
+    
+    .embed-info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="loading">Loading MyRoom 3D Scene...</div>
+  </div>
+  
+  <!-- Embed Info Panel -->
+  <div class="embed-info" id="embedInfo">
+    <div><strong>MyRoom 3D Embed Demo</strong></div>
+    <div id="embedParams"></div>
+  </div>
+
+  <script type="module">
+    // Display embed parameters
+    const params = new URLSearchParams(window.location.search);
+    const embedParams = document.getElementById('embedParams');
+    
+    const paramsList = [];
+    params.forEach((value, key) => {
+      paramsList.push(`${key}: ${value}`);
+    });
+    
+    if (paramsList.length > 0) {
+      embedParams.innerHTML = paramsList.join('<br>');
+    } else {
+      embedParams.innerHTML = 'Default settings';
+    }
+    
+    // Hide info panel after 3 seconds
+    setTimeout(() => {
+      const info = document.getElementById('embedInfo');
+      if (info) {
+        info.style.opacity = '0';
+        info.style.transition = 'opacity 0.5s';
+        setTimeout(() => info.style.display = 'none', 500);
+      }
+    }, 3000);
+    
+    // Listen for messages from 3D scene
+    window.addEventListener('message', (event) => {
+      if (event.data.type === 'MYROOM_3D_READY') {
+        console.log('3D Scene is ready!', event.data);
+        document.querySelector('.loading')?.remove();
+        
+        // Notify parent if this is embedded in iframe
+        if (window.parent !== window) {
+          window.parent.postMessage({
+            type: 'MYROOM_EMBED_READY',
+            data: event.data
+          }, '*');
+        }
+      }
+    });
+  </script>
+  
+  <script type="module" src="/src/apps/embed/index.tsx"></script>
+</body>
+</html>

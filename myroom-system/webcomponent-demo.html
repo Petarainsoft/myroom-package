@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRoom Integration</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .demo-section {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    .demo-section h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .demo-item {
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .demo-item h3 {
+      background: #f8fafc;
+      padding: 15px;
+      margin: 0;
+      color: #334155;
+      font-size: 1.1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .controls {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .control-group {
+      margin-bottom: 15px;
+    }
+    
+    .control-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #374151;
+    }
+    
+    .control-group select,
+    .control-group input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .btn {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      transition: background 0.2s;
+    }
+    
+    .btn:hover {
+      background: #2563eb;
+    }
+    
+    .btn-secondary {
+      background: #6b7280;
+    }
+    
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+    
+    .code-section {
+      background: #1f2937;
+      color: #f9fafb;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+    
+    .code-section pre {
+      margin: 0;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    
+    .status.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    
+    .status.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+    
+    @media (max-width: 768px) {
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>MyRoom Web Component Integration Demo</h1>
+      <p>This page demonstrates how to integrate MyRoom Web Component from external domain</p>
+      <p style="font-size: 0.9rem; opacity: 0.8;">Loading from: <span id="domain-info">Loading...</span></p>
+    </div>
+    
+    <!-- Single Web Component Demo -->
+    <div class="demo-section">
+      <h2>3D Web Component Demo</h2>
+      
+      <div class="demo-item">
+        <!-- Status display area -->
+        <div id="status" class="status info">Loading scene...</div>
+        
+        <!-- Controls -->
+        <!-- <div class="controls" style="margin-bottom: 15px;">
+          <select id="roomSelect" class="select">
+            <option value="/models/rooms/cate001/MR_KHROOM_0001.glb">Room 1</option>
+            <option value="/models/rooms/cate002/MR_KHROOM_0002.glb">Room 2</option>
+          </select>
+          
+          <select id="genderSelect" class="select">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+          
+          <select id="gizmoSelect" class="select">
+            <option value="position">Position</option>
+            <option value="rotation">Rotation</option>
+            <option value="scale">Scale</option>
+          </select>
+          
+          <button onclick="updateScene()" class="btn">Update Scene</button>
+          <button onclick="resetCamera()" class="btn btn-secondary">Reset Camera</button>
+        </div> -->
+        
+        <my-room-scene 
+          id="mainScene"
+          room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+          gender="male"
+          width="100%"
+          height="600px"
+          autoplay="true"
+          enable-controls="true"
+          camera-controls="true">
+        </my-room-scene>
+      </div>
+    </div>
+    
+    <!-- How to Use -->
+    <div class="demo-section" style="display: none;">
+      <h2>How to Use</h2>
+      
+      <h3>1. Add domain configuration and script to your website:</h3>
+      <div class="code-section">
+        <pre>&lt;!-- Load domain configuration --&gt;
+&lt;script src="/config-domain.js"&gt;&lt;/script&gt;
+
+&lt;!-- Load MyRoom WebComponent --&gt;
+&lt;script&gt;
+  document.addEventListener('myroom-domain-configured', function(event) {
+    const config = event.detail;
+    const script = document.createElement('script');
+    script.type = 'module';
+    script.src = config.baseDomain + '/dist/myroom-webcomponent.es.js';
+    document.head.appendChild(script);
+  });
+&lt;/script&gt;</pre>
+      </div>
+      
+      <h3>2. Use HTML tag:</h3>
+      <div class="code-section">
+        <pre>&lt;my-room-scene 
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="male"
+  width="800px"
+  height="600px"
+  autoplay="true"
+  enable-controls="true"&gt;
+&lt;/my-room-scene&gt;</pre>
+      </div>
+      
+      <h3>3. Or create with JavaScript (after WebComponent loads):</h3>
+      <div class="code-section">
+        <pre>// Wait for WebComponent to be available
+document.addEventListener('myroom-webcomponent-ready', function() {
+  const container = document.getElementById('my-container');
+  const scene = window.MyRoom.create(container, {
+    room: '/models/rooms/cate001/MR_KHROOM_0001.glb',
+    gender: 'male',
+    width: '800px',
+    height: '600px',
+    onSceneReady: (event) => {
+      console.log('Scene ready!', event.detail.scene);
+    }
+  });
+});</pre>
+      </div>
+      
+      <h3>4. API Methods:</h3>
+      <div class="code-section">
+        <pre>// Reset camera
+scene.resetCamera();
+
+// Change avatar
+scene.changeAvatar({
+  gender: 'male',
+  parts: { /* avatar config */ }
+});
+
+// Load items
+scene.loadItems([/* item array */]);
+
+// Get Babylon.js objects
+const babylonScene = scene.getScene();
+const engine = scene.getEngine();</pre>
+      </div>
+    </div>
+    
+    <!-- Attributes reference -->
+    <div class="demo-section" style="display: none;">
+      <h2>Attributes</h2>
+      
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background: #f8fafc;">
+            <th style="padding: 12px; text-align: left; border: 1px solid #e2e8f0;">Attribute</th>
+            <th style="padding: 12px; text-align: left; border: 1px solid #e2e8f0;">Type</th>
+            <th style="padding: 12px; text-align: left; border: 1px solid #e2e8f0;">Default</th>
+            <th style="padding: 12px; text-align: left; border: 1px solid #e2e8f0;">Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><code>room</code></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">string</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">/models/rooms/cate001/MR_KHROOM_0001.glb</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Path to the 3D room model file</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><code>gender</code></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">male | female</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">female</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Gender of the avatar</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><code>width</code></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">string</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">800px</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Width of the component</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><code>height</code></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">string</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">600px</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Height of the component</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><code>autoplay</code></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">boolean</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">true</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Start the scene automatically</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><code>enable-controls</code></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">boolean</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">true</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Show control buttons</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><code>camera-controls</code></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">boolean</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">true</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Allow camera control</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;"><code>gizmo-mode</code></td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">position | rotation | scale</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">position</td>
+            <td style="padding: 12px; border: 1px solid #e2e8f0;">Gizmo mode for object control</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Use Cases -->
+    <div class="demo-section" style="display: none;">
+      <h2>🎯 Real Uses</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div style="background: #eff6ff; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6;">
+          <h3 style="color: #1e40af; margin-bottom: 10px;">📱 Social Media</h3>
+          <p>3D avatar for profile, story, live streaming</p>
+        </div>
+        
+        <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #22c55e;">
+          <h3 style="color: #14532d; margin-bottom: 10px;">🛒 E-commerce</h3>
+          <p>Virtual try-on, product visualization</p>
+        </div>
+        
+        <div style="background: #fefce8; padding: 20px; border-radius: 8px; border-left: 4px solid #eab308;">
+          <h3 style="color: #713f12; margin-bottom: 10px;">🎓 Education</h3>
+          <p>Virtual classroom, interactive learning</p>
+        </div>
+        
+        <div style="background: #fdf2f8; padding: 20px; border-radius: 8px; border-left: 4px solid #ec4899;">
+          <h3 style="color: #831843; margin-bottom: 10px;">💼 Business</h3>
+          <p>Virtual meetings, presentations</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Links -->
+    <div class="demo-section" style="display: none;">
+      <h2>🔗 Quick Setup</h2>
+      <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+        <a href="/iframe-demo.html" class="btn" style="text-decoration: none;">🖼️ Iframe Demo</a>
+        <a href="#" class="btn btn-secondary" style="text-decoration: none;">📖 Documentation</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Load domain configuration -->
+  <script src="/config-domain.js"></script>
+  
+  <!-- Load web component from baseDomain -->
+  <script>
+     // Wait for domain config to load
+     document.addEventListener('myroom-domain-configured', function(event) {
+       const config = event.detail;
+       console.log('Loading MyRoom WebComponent from:', config.baseDomain);
+       
+       // Update domain info in header
+       const domainInfo = document.getElementById('domain-info');
+       if (domainInfo) {
+          domainInfo.textContent = config.baseDomain + '/dist/myroom-webcomponent.es.js';
+        }
+       
+       // Create and load the webcomponent script from baseDomain
+       const script = document.createElement('script');
+       script.type = 'module';
+       script.src = config.baseDomain + '/dist/myroom-webcomponent.es.js';
+       script.onload = function() {
+         console.log('MyRoom WebComponent loaded successfully from external domain');
+         // Dispatch event to notify that webcomponent is ready
+         document.dispatchEvent(new CustomEvent('myroom-webcomponent-ready', {
+           detail: { source: 'external', domain: config.baseDomain }
+         }));
+       };
+       script.onerror = function() {
+         console.error('Failed to load MyRoom WebComponent from external domain. Falling back to local version.');
+         if (domainInfo) {
+           domainInfo.textContent = 'External failed, using local version';
+           domainInfo.style.color = '#f59e0b';
+         }
+         // Fallback to local version if external fails
+         const fallbackScript = document.createElement('script');
+         fallbackScript.type = 'module';
+         fallbackScript.src = '/src/apps/webcomponent/index.ts';
+         fallbackScript.onload = function() {
+           document.dispatchEvent(new CustomEvent('myroom-webcomponent-ready', {
+             detail: { source: 'local', domain: 'localhost' }
+           }));
+         };
+         document.head.appendChild(fallbackScript);
+       };
+       document.head.appendChild(script);
+     });
+   </script>
+  
+  <script>
+    // Simple demo controls
+    function updateScene() {
+      const scene = document.getElementById('mainScene');
+      const room = document.getElementById('roomSelect').value;
+      const gender = document.getElementById('genderSelect').value;
+      const gizmo = document.getElementById('gizmoSelect').value;
+      
+      scene.setAttribute('room', room);
+      scene.setAttribute('gender', gender);
+      scene.setAttribute('gizmo-mode', gizmo);
+      
+      updateStatus('Updating scene...', 'info');
+    }
+    
+    function resetCamera() {
+      const scene = document.getElementById('mainScene');
+      scene.resetCamera();
+      updateStatus('Camera reset', 'success');
+    }
+    
+    function updateStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = `status ${type}`;
+    }
+    
+    // Listen for events
+    document.addEventListener('DOMContentLoaded', () => {
+      const scene = document.getElementById('mainScene');
+      
+      scene.addEventListener('scene-ready', (event) => {
+        updateStatus('Scene loaded successfully!', 'success');
+        console.log('Scene ready:', event.detail);
+      });
+      
+      scene.addEventListener('error', (event) => {
+        updateStatus(`Error: ${event.detail.message}`, 'error');
+        console.error('Scene error:', event.detail);
+      });
+      
+      scene.addEventListener('avatar-changed', (event) => {
+        updateStatus('Avatar changed', 'success');
+        console.log('Avatar changed:', event.detail);
+      });
+      
+      scene.addEventListener('camera-moved', (event) => {
+        console.log('Camera moved:', event.detail);
+      });
+    });
+  </script>
+</body>
+</html>

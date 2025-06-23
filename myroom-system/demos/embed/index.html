@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRoom 3D Embed - Demo</title>
+  <!-- Domain Configuration Script - Edit this file to change domain after deployment -->
+  <script src="/config-domain.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .demo-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .embed-container {
+      border: 2px dashed #ddd;
+      padding: 10px;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    label {
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    select, input, button {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    button:hover {
+      background: #0056b3;
+    }
+    
+    .code-section {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+    
+    .code {
+      background: #2d3748;
+      color: #e2e8f0;
+      padding: 15px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    
+    .status.ready {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .status.loading {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎮 MyRoom 3D Embed - Customer Demo</h1>
+      <p>Test embedding MyRoom 3D scenes into your website</p>
+    </div>
+    
+    <!-- Live Demo Section -->
+    <div class="demo-section">
+      <h2>🚀 Live Demo</h2>
+      
+      <div class="controls">
+        <div class="control-group">
+          <label>Room:</label>
+          <select id="roomSelect">
+            <option value="/models/rooms/cate001/MR_KHROOM_0001.glb">Room 1</option>
+            <option value="/models/rooms/room2.glb">Room 2</option>
+            <option value="/models/rooms/room3.glb">Room 3</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label>Avatar:</label>
+          <select id="genderSelect">
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label>Width:</label>
+          <input type="text" id="widthInput" value="800px" placeholder="800px">
+        </div>
+        
+        <div class="control-group">
+          <label>Height:</label>
+          <input type="text" id="heightInput" value="600px" placeholder="600px">
+        </div>
+        
+        <div class="control-group">
+          <label>&nbsp;</label>
+          <button onclick="updateEmbed()">🔄 Update Embed</button>
+        </div>
+      </div>
+      
+      <div class="embed-container" id="embedContainer">
+        <!-- Embed will be inserted here -->
+      </div>
+      
+      <div id="status" class="status loading">⏳ Loading embed...</div>
+    </div>
+    
+    <!-- Integration Code Section -->
+    <div class="demo-section">
+      <h2>📋 Integration Code</h2>
+      <p>Copy this code to embed MyRoom 3D into your website:</p>
+      
+      <div class="code-section">
+        <h3>Method 1: Simple iframe</h3>
+        <div class="code" id="iframeCode"></div>
+      </div>
+      
+      <div class="code-section">
+        <h3>Method 2: JavaScript API (Advanced)</h3>
+        <div class="code" id="jsCode"></div>
+      </div>
+    </div>
+    
+    <!-- Features Section -->
+    <div class="demo-section">
+      <h2>✨ Features</h2>
+      <ul>
+        <li>🎯 <strong>Easy Integration:</strong> Just copy & paste iframe code</li>
+        <li>🎨 <strong>Customizable:</strong> Choose rooms, avatars, and dimensions</li>
+        <li>📱 <strong>Responsive:</strong> Works on desktop and mobile</li>
+        <li>⚡ <strong>Fast Loading:</strong> Optimized 3D rendering</li>
+        <li>🔧 <strong>API Control:</strong> JavaScript API for advanced control</li>
+        <li>🛡️ <strong>Secure:</strong> Isolated iframe environment</li>
+      </ul>
+    </div>
+  </div>
+  
+  <script>
+    let currentEmbed = null;
+    
+    function updateEmbed() {
+      const room = document.getElementById('roomSelect').value;
+      const gender = document.getElementById('genderSelect').value;
+      const width = document.getElementById('widthInput').value;
+      const height = document.getElementById('heightInput').value;
+      
+      const container = document.getElementById('embedContainer');
+      const status = document.getElementById('status');
+      
+      // Clear previous embed
+      container.innerHTML = '';
+      status.className = 'status loading';
+      status.textContent = '⏳ Loading new embed...';
+      
+      // Create new embed
+      const params = new URLSearchParams({
+        room,
+        gender,
+        width,
+        height,
+        autoplay: 'true'
+      });
+      
+      const iframe = document.createElement('iframe');
+      iframe.src = `./embed.html?${params.toString()}`;
+      iframe.width = width;
+      iframe.height = height;
+      iframe.style.border = 'none';
+      iframe.style.borderRadius = '8px';
+      
+      container.appendChild(iframe);
+      
+      // Update code examples
+      updateCodeExamples(room, gender, width, height);
+      
+      // Listen for ready message
+      const messageHandler = (event) => {
+        if (event.data.type === 'MYROOM_EMBED_READY') {
+          status.className = 'status ready';
+          status.textContent = '✅ Embed loaded successfully!';
+          window.removeEventListener('message', messageHandler);
+        }
+      };
+      
+      window.addEventListener('message', messageHandler);
+      
+      // Timeout fallback
+      setTimeout(() => {
+        if (status.className.includes('loading')) {
+          status.className = 'status ready';
+          status.textContent = '✅ Embed should be ready (timeout reached)';
+        }
+      }, 5000);
+    }
+    
+    function updateCodeExamples(room, gender, width, height) {
+      const baseUrl = window.location.origin;
+      const params = new URLSearchParams({ room, gender, width, height, autoplay: 'true' });
+      
+      // iframe code
+      const iframeCode = `<iframe 
+  src="${baseUrl}/embed.html?${params.toString()}"
+  width="${width}" 
+  height="${height}"
+  frameborder="0"
+  style="border: none; border-radius: 8px;">
+</iframe>`;
+      
+      document.getElementById('iframeCode').textContent = iframeCode;
+      
+      // JavaScript API code
+      const jsCode = `<!-- Include MyRoom 3D API -->
+<script src="${baseUrl}/embed.html"></script>
+
+<div id="my-3d-container"></div>
+
+<script>
+  // Create embed programmatically
+  const container = document.getElementById('my-3d-container');
+  const embed = window.MyRoomEmbed.createEmbed(container, {
+    room: '${room}',
+    gender: '${gender}',
+    width: '${width}',
+    height: '${height}',
+    autoplay: true
+  });
+  
+  // Send commands to 3D scene
+  embed.sendCommand('RESET_CAMERA');
+  embed.sendCommand('CHANGE_AVATAR', { gender: 'male' });
+</script>`;
+      
+      document.getElementById('jsCode').textContent = jsCode;
+    }
+    
+    // Initialize with default embed
+    updateEmbed();
+  </script>
+</body>
+</html>

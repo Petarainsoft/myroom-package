@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple MyRoom Integration</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .scene-container {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #2563eb;
+    }
+    
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #4b5563;
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    
+    .status.success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .status.info {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎮 Simple MyRoom Integration</h1>
+      <p>Simple example of how to use MyRoom Web Component</p>
+    </div>
+    
+    <!-- Example 1: Basic HTML Tag -->
+    <div class="scene-container">
+      <h2>1. Using HTML Tag</h2>
+      <p>The easiest way - just add the tag to HTML:</p>
+      
+      <my-room-scene 
+        id="basicScene"
+        room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+        gender="male"
+        width="100%"
+        height="400px"
+        autoplay="true">
+      </my-room-scene>
+    </div>
+    
+    <!-- Example 2: JavaScript API -->
+    <div class="scene-container">
+      <h2>2. Using JavaScript API</h2>
+      <p>Create and control scene with JavaScript:</p>
+      
+      <div class="controls">
+        <button class="btn btn-primary" onclick="createScene()">Create Scene</button>
+        <button class="btn btn-secondary" onclick="changeToMale()">Change to Male</button>
+        <button class="btn btn-secondary" onclick="changeToFemale()">Change to Female</button>
+        <button class="btn btn-secondary" onclick="resetCamera()">Reset Camera</button>
+        <button class="btn btn-secondary" onclick="destroyScene()">Remove Scene</button>
+      </div>
+      
+      <div id="status" class="status info">Click "Create Scene" to start</div>
+      
+      <div id="jsSceneContainer" style="width: 100%; height: 400px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280;">
+        Scene will be created here...
+      </div>
+    </div>
+    
+    <!-- Example 3: Multiple Scenes -->
+    <div class="scene-container">
+      <h2>3. Multiple Scenes at Once</h2>
+      <p>You can have many scenes on the same page:</p>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+          <h4>Scene A - Female</h4>
+          <my-room-scene 
+            room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+            gender="male"
+            width="100%"
+            height="300px">
+          </my-room-scene>
+        </div>
+        
+        <div>
+          <h4>Scene B - Male</h4>
+          <my-room-scene 
+            room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+            gender="male"
+            width="100%"
+            height="300px">
+          </my-room-scene>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Code Examples -->
+    <div class="scene-container">
+      <h2>📝 Code Examples</h2>
+      
+      <h3>HTML:</h3>
+      <pre style="background: #f8f9fa; padding: 15px; border-radius: 6px; overflow-x: auto;"><code>&lt;!-- Load web component --&gt;
+&lt;script src="/dist/myroom-webcomponent.umd.js"&gt;&lt;/script&gt;
+
+&lt;!-- Use in HTML --&gt;
+&lt;my-room-scene 
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="female"
+  width="800px"
+  height="600px"
+  autoplay="true"&gt;
+&lt;/my-room-scene&gt;</code></pre>
+      
+      <h3>JavaScript:</h3>
+      <pre style="background: #f8f9fa; padding: 15px; border-radius: 6px; overflow-x: auto;"><code>// Create scene with JavaScript
+const container = document.getElementById('container');
+const scene = MyRoom.create(container, {
+  room: '/models/rooms/cate001/MR_KHROOM_0001.glb',
+  gender: 'female',
+  width: '800px',
+  height: '600px',
+  onSceneReady: (event) => {
+    console.log('Scene ready!', event.detail.scene);
+  }
+});
+
+// Control scene
+scene.resetCamera();
+scene.changeAvatar({ gender: 'male' });</code></pre>
+    </div>
+  </div>
+  
+  <!-- Load web component -->
+  <script type="module" src="/src/webcomponent-main.ts"></script>
+  
+  <script>
+    let jsScene = null;
+    
+    function updateStatus(message, type = 'info') {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = `status ${type}`;
+    }
+    
+    function createScene() {
+      if (jsScene) {
+        updateStatus('Scene already exists! Remove old scene first.', 'error');
+        return;
+      }
+      
+      const container = document.getElementById('jsSceneContainer');
+      container.innerHTML = ''; // Clear container
+      
+      try {
+        jsScene = MyRoom.create(container, {
+          room: '/models/rooms/cate001/MR_KHROOM_0001.glb',
+          gender: 'female',
+          width: '100%',
+          height: '400px',
+          autoplay: true,
+          
+          onSceneReady: (event) => {
+            updateStatus('Scene created successfully!', 'success');
+            console.log('JS Scene ready:', event.detail);
+          },
+          
+          onError: (event) => {
+            updateStatus(`Error: ${event.detail.message}`, 'error');
+            console.error('JS Scene error:', event.detail);
+          },
+          
+          onAvatarChanged: (event) => {
+            updateStatus('Avatar has been changed!', 'success');
+          }
+        });
+        
+        updateStatus('Creating scene...', 'info');
+        
+      } catch (error) {
+        updateStatus(`Error creating scene: ${error.message}`, 'error');
+        console.error('Create scene error:', error);
+      }
+    }
+    
+    function changeToMale() {
+      if (!jsScene) {
+        updateStatus('No scene yet! Create scene first.', 'error');
+        return;
+      }
+      
+      jsScene.changeAvatar({
+        gender: 'male',
+        parts: MyRoom.getDefaultAvatarConfig('male').parts
+      });
+      updateStatus('Changing to male avatar...', 'info');
+    }
+    
+    function changeToFemale() {
+      if (!jsScene) {
+        updateStatus('No scene yet! Create scene first.', 'error');
+        return;
+      }
+      
+      jsScene.changeAvatar({
+        gender: 'female',
+        parts: MyRoom.getDefaultAvatarConfig('female').parts
+      });
+      updateStatus('Changing to female avatar...', 'info');
+    }
+    
+    function resetCamera() {
+      if (!jsScene) {
+        updateStatus('Chưa có scene! Tạo scene trước.', 'error');
+        return;
+      }
+      
+      jsScene.resetCamera();
+      updateStatus('Camera has been reset!', 'success');
+    }
+    
+    function destroyScene() {
+      if (!jsScene) {
+        updateStatus('No scene to remove!', 'error');
+        return;
+      }
+      
+      const container = document.getElementById('jsSceneContainer');
+      container.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #6b7280;">Scene đã được xóa</div>';
+      
+      jsScene = null;
+      updateStatus('Scene has been removed!', 'success');
+    }
+    
+    // Event listeners cho basic scene
+    document.addEventListener('DOMContentLoaded', () => {
+      const basicScene = document.getElementById('basicScene');
+      
+      basicScene.addEventListener('scene-ready', (event) => {
+        console.log('Basic scene ready:', event.detail);
+      });
+      
+      basicScene.addEventListener('error', (event) => {
+        console.error('Basic scene error:', event.detail);
+      });
+    });
+  </script>
+</body>
+</html>

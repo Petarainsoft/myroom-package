@@ -1,0 +1,70 @@
+{
+  "items": [
+    {
+      "id": "MR_CHAIR_0001",
+      "name": "Chair 0001",
+      "imageUrl": "/images/items/MR_CHAIR_0001.jpg",
+      "categoryLv1": "catelv1_01",
+      "categoryLv2": "catelv2_01",
+      "categoryLv3": "catelv3_01",
+      "modelPath": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb"
+    },
+    {
+      "id": "MR_CHAIR_0002",
+      "name": "Chair 0002",
+      "imageUrl": "/images/items/MR_CHAIR_0002.jpg",
+      "categoryLv1": "catelv1_01",
+      "categoryLv2": "catelv2_01",
+      "categoryLv3": "catelv3_02",
+      "modelPath": "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_CHAIR_0002.glb"
+    },
+    {
+      "id": "TABLE_0001",
+      "name": "Table 0001",
+      "imageUrl": "/images/items/TABLE_0001.jpg",
+      "categoryLv1": "catelv1_02",
+      "categoryLv2": "catelv2_02",
+      "categoryLv3": "catelv3_02",
+      "modelPath": "/models/items/catelv1_02/catelv2_02/catelv3_02/Table.glb"
+    },
+    {
+      "id": "TABLE_0002",
+      "name": "Table 0002",
+      "imageUrl": "/images/items/TABLE_0002.jpg",
+      "categoryLv1": "catelv1_02",
+      "categoryLv2": "catelv2_03",
+      "categoryLv3": "catelv3_02",
+      "modelPath": "/models/items/catelv1_02/catelv2_03/catelv3_02/Table.glb"
+    }
+  ],
+  "categories": {
+    "catelv1_01": {
+      "name": "Furniture",
+      "description": "Furniture Category Level 1"
+    },
+    "catelv1_02": {
+      "name": "Tables",
+      "description": "Tables Category Level 1"
+    },
+    "catelv2_01": {
+      "name": "Seating",
+      "description": "Seating Category Level 2"
+    },
+    "catelv2_02": {
+      "name": "Dining Tables",
+      "description": "Dining Tables Category Level 2"
+    },
+    "catelv2_03": {
+      "name": "Work Tables",
+      "description": "Work Tables Category Level 2"
+    },
+    "catelv3_01": {
+      "name": "Office Chairs",
+      "description": "Office Chairs Category Level 3"
+    },
+    "catelv3_02": {
+      "name": "Standard Items",
+      "description": "Standard Items Category Level 3"
+    }
+  }
+}
