@@ -37,10 +37,11 @@ This is a simple method for quick embedding using an `<iframe>` tag. It's ideal 
 
 ```html
 <iframe 
-  src="https://myroom.petarainsoft.com/embed-demo.html?room=cate001&gender=female&width=800&height=600" 
+  src="/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female&autoplay=true" 
   width="800" 
   height="600" 
-  frameborder="0">
+  frameborder="0"
+  style="border: none; border-radius: 8px;">
 </iframe>
 ```
 
@@ -48,25 +49,48 @@ This is a simple method for quick embedding using an `<iframe>` tag. It's ideal 
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `room` | `cate001` | Room model ID |
+| `room` | `/models/rooms/cate001/MR_KHROOM_0001.glb` | Full path to 3D room model |
 | `gender` | `female` | Avatar gender (`male`/`female`) |
-| `width` | `800px` | Container width |
-| `height` | `600px` | Container height |
 | `autoplay` | `true` | Auto start scene |
+| `width` | Not used in URL | Set via iframe width attribute |
+| `height` | Not used in URL | Set via iframe height attribute |
 | `controls` | `true` | Show UI controls |
 | `camera` | `true` | Enable camera controls |
 
 **Communication API (JavaScript):**
 
-- **Send Messages**: Use `postMessage` to control the iframe (e.g., `changeAvatar`, `resetCamera`).
-- **Listen to Events**: Add `message` event listener to `window` to receive events like `sceneReady` and `avatarChanged`.
+```javascript
+// Listen for iframe ready event
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'MYROOM_EMBED_READY') {
+    console.log('3D Scene is ready!', event.data);
+    // Scene is now ready for interaction
+  }
+});
+
+// The iframe automatically displays embed parameters
+// Parameters are shown in the info panel for 5 seconds
+```
+
+**Iframe Features:**
+- Automatic parameter display in info panel
+- Responsive fullscreen design
+- Loading indicator
+- Auto-hide info panel after 5 seconds
+- Parent-child communication via postMessage
 
 ### 4.2. Web Component
 
 This method uses a custom HTML element (`<my-room-scene>`) for modern and easy integration. It's built with Babylon.js and React.
 
-**Installation (CDN Recommended):**
+**Installation:**
 
+For local development:
+```html
+<script src="http://localhost:5173/dist/myroom-webcomponent.umd.js"></script>
+```
+
+For production (CDN):
 ```html
 <script src="https://myroom.petarainsoft.com/dist/myroom-webcomponent.umd.js"></script>
 ```
@@ -75,11 +99,11 @@ This method uses a custom HTML element (`<my-room-scene>`) for modern and easy i
 
 ```html
 <my-room-scene 
+  id="mainScene"
   room="/models/rooms/cate001/MR_KHROOM_0001.glb"
   gender="female"
-  width="800px"
+  width="100%"
   height="600px"
-  autoplay="true"
   enable-controls="true"
   camera-controls="true"
   gizmo-mode="position">
@@ -90,11 +114,11 @@ This method uses a custom HTML element (`<my-room-scene>`) for modern and easy i
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
+| `id` | string | - | Unique identifier for the component |
 | `room` | string | `/models/rooms/cate001/MR_KHROOM_0001.glb` | Path to 3D room model |
 | `gender` | `male` \| `female` | `female` | Avatar gender |
-| `width` | string | `800px` | Component width |
-| `height` | string | `600px` | Component height |
-| `autoplay` | boolean | `true` | Auto-start scene |
+| `width` | string | `100%` | Component width (supports %, px) |
+| `height` | string | `600px` | Component height (supports %, px) |
 | `avatar-config` | string (JSON) | auto | Detailed avatar configuration |
 | `loaded-items` | string (JSON) | `[]` | List of items to load |
 | `enable-controls` | boolean | `true` | Show controls UI |
@@ -103,35 +127,105 @@ This method uses a custom HTML element (`<my-room-scene>`) for modern and easy i
 
 **JavaScript API (Programmatic Control):**
 
-- **Create Component**: Use `MyRoom.create(container, options)` to programmatically create and configure the component.
-- **Control Methods**: Access methods like `resetCamera()`, `changeAvatar()`, `loadItems()`.
-- **Access Babylon.js Objects**: Get the underlying Babylon.js `Scene` and `Engine` objects.
+```javascript
+// Get reference to the web component
+const mainScene = document.getElementById('mainScene');
+
+// Control Methods
+mainScene.resetCamera();                    // Reset camera position
+mainScene.changeAvatar(avatarConfig);       // Change avatar configuration
+mainScene.loadItems(itemsArray);           // Load items into scene
+mainScene.setAttribute('gender', 'male');   // Change gender
+mainScene.setAttribute('gizmo-mode', 'rotation'); // Change gizmo mode
+
+// Access Babylon.js Objects
+const scene = mainScene.getScene();         // Get Babylon.js Scene
+const engine = mainScene.getEngine();       // Get Babylon.js Engine
+```
 
 **Events:**
 
-- `scene-ready`: Fired when the 3D scene is loaded and ready.
-- `avatar-changed`: Fired when the avatar configuration changes.
-- `item-selected`: Fired when an item in the scene is selected.
-- `camera-moved`: Fired when the camera position changes.
-- `error`: Fired when an error occurs.
-
-### 4.3. JavaScript API (Advanced)
-
-This method provides advanced integration with full control over the MyRoom instance.
-
-**Example JavaScript:**
-
 ```javascript
-MyRoom.create({
-  container: '#myroom-container',
-  room: 'cate001',
-  gender: 'female',
-  width: 800,
-  height: 600,
-  onReady: function(scene) {
-    console.log('MyRoom ready!', scene);
-  }
+// Scene Events
+mainScene.addEventListener('scene-ready', (e) => {
+  console.log('Scene loaded:', e.detail.scene);
+  console.log('Engine available:', e.detail.engine);
 });
+
+mainScene.addEventListener('error', (e) => {
+  console.log('Error occurred:', e.detail.message);
+});
+
+// Avatar Events
+mainScene.addEventListener('avatar-changed', (e) => {
+  console.log('Avatar changed:', e.detail.config);
+});
+
+// Camera Events
+mainScene.addEventListener('camera-moved', (e) => {
+  console.log('Camera moved:', e.detail.position);
+});
+
+// Item Events
+mainScene.addEventListener('item-selected', (e) => {
+  console.log('Item selected:', e.detail.item);
+});
+```
+
+**Available Events:**
+- `scene-ready`: Fired when the 3D scene is loaded and ready
+- `avatar-changed`: Fired when the avatar configuration changes
+- `item-selected`: Fired when an item in the scene is selected
+- `camera-moved`: Fired when the camera position changes
+- `error`: Fired when an error occurs
+
+### 4.3. Practical Examples
+
+**Multiple Scenes:**
+
+```html
+<!-- Scene 1 - Kitchen with Male Avatar -->
+<my-room-scene 
+  id="scene1"
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="male"
+  width="100%"
+  height="300px"
+  enable-controls="true">
+</my-room-scene>
+
+<!-- Scene 2 - Bedroom with Female Avatar -->
+<my-room-scene 
+  id="scene2"
+  room="/models/rooms/cate002/MR_BEDROOM_0001.glb"
+  gender="female"
+  width="100%"
+  height="300px"
+  enable-controls="true">
+</my-room-scene>
+```
+
+**Pre-loaded Items:**
+
+```html
+<my-room-scene 
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="male"
+  loaded-items='[{"id":"item1","path":"/models/items/chair.glb","position":{"x":0,"y":0,"z":2}}]'
+  width="100%"
+  height="400px">
+</my-room-scene>
+```
+
+**Custom Avatar Configuration:**
+
+```html
+<my-room-scene 
+  avatar-config='{"hair":"style1","top":"shirt2","bottom":"pants1","shoes":"sneakers"}'
+  gender="female"
+  width="100%"
+  height="400px">
+</my-room-scene>
 ```
 
 ## 5. Security and Mobile Support
@@ -143,7 +237,25 @@ MyRoom.create({
 
 For local development and building:
 
-- `npm install`: Install dependencies.
-- `npm run dev`: Start development server.
-- `npm run build:webcomponent`: Build for production.
-- `npm run preview`: Preview the build.
+- `npm install`: Install dependencies
+- `npm run dev`: Start development server (http://localhost:5173)
+- `npm run build:webcomponent`: Build web component for production
+- `npm run preview`: Preview the build
+
+**Demo Files:**
+
+- `iframe-demo.html`: Complete iframe integration demo
+- `webcomponent-demo-fullapi.html`: Full web component API demonstration
+- `embed.html`: Iframe embed page with parameter display
+
+**Local Development URLs:**
+
+- Main app: `http://localhost:5173/`
+- Iframe demo: `http://localhost:5173/iframe-demo.html`
+- Web component demo: `http://localhost:5173/webcomponent-demo-fullapi.html`
+- Embed page: `http://localhost:5173/embed.html`
+
+**Build Output:**
+
+- Web component: `dist/myroom-webcomponent.umd.js`
+- Ready for CDN deployment or local hosting

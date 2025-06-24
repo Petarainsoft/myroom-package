@@ -818,21 +818,21 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       <div className="code-block">
                         <pre><code>
 {`<iframe 
-  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=male" 
+  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female&autoplay=true" 
   width="800" 
   height="600" 
-  allow="fullscreen" 
-  frameborder="1">
+  style="border: none; border-radius: 8px;" 
+  allow="fullscreen">
 </iframe>`}
                         </code></pre>
                         <button 
                            className="copy-button" 
                            onClick={() => handleCopyCode(`<iframe 
-  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=male" 
+  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female&autoplay=true" 
   width="800" 
   height="600" 
-  allow="fullscreen" 
-  frameborder="1">
+  style="border: none; border-radius: 8px;" 
+  allow="fullscreen">
 </iframe>`)}
                          >
                            Copy Code
@@ -865,9 +865,9 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             <td>female</td>
                           </tr>
                           <tr>
-                            <td>controls</td>
-                            <td>Show UI controls (true/false)</td>
-                            <td>false</td>
+                            <td>autoplay</td>
+                            <td>Auto-start the scene (true/false)</td>
+                            <td>true</td>
                           </tr>
                         </tbody>
                       </table>
@@ -936,23 +936,23 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                       <p>Step 2:  Use the Component.</p>
                       <div className="code-block">
                         <pre><code>
-{`<my-room-component 
-  room-path="/models/rooms/cate001/MR_KHROOM_0001.glb"
-  avatar-gender="female"
-  show-controls="false"
-  width="800px"
+{`<my-room-scene> 
+  id="mainScene"
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="female"
+  width="100%"
   height="600px">
-</my-room-component>`}
+</my-room-scene>`}
                         </code></pre>
                         <button 
                            className="copy-button"
-                           onClick={() => handleCopyCode(`<my-room-component 
-  room-path="/models/rooms/cate001/MR_KHROOM_0001.glb"
-  avatar-gender="female"
-  show-controls="false"
-  width="800px"
+                           onClick={() => handleCopyCode(`<my-room-scene> 
+  id="mainScene"
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="female"
+  width="100%"
   height="600px">
-</my-room-component>`)}
+</my-room-scene>`)}
                          >
                            Copy Code
                          </button>
@@ -970,7 +970,12 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                         </thead>
                         <tbody>
                           <tr>
-                            <td>room-path</td>
+                            <td>id</td>
+                            <td>Unique identifier for the component</td>
+                            <td>mainScene</td>
+                          </tr>
+                          <tr>
+                            <td>room</td>
                             <td>Path to the room model</td>
                             <td>/models/rooms/cate001/MR_KHROOM_0001.glb
                               <br />/models/rooms/cate001/MR_KHROOM_0002.glb
@@ -978,84 +983,153 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                             </td>
                           </tr>
                           <tr>
-                            <td>avatar-gender</td>
+                            <td>gender</td>
                             <td>Avatar gender (male/female)</td>
                             <td>female</td>
                           </tr>
                           <tr>
-                            <td>show-controls</td>
-                            <td>Show UI controls (true/false)</td>
-                            <td>false</td>
+                            <td>width</td>
+                            <td>Component width</td>
+                            <td>100%</td>
+                          </tr>
+                          <tr>
+                            <td>height</td>
+                            <td>Component height</td>
+                            <td>600px</td>
                           </tr>
                         </tbody>
                       </table>
-                      {/* <h4>3. JavaScript API</h4>
+                      
+                      <h4>JavaScript API</h4>
                       <p>Interact with the component using JavaScript:</p>
                       
                       <div className="code-block">
                         <pre><code>
 {`// Get reference to the component
-const myRoom = document.querySelector('my-room-component');
-
-// Change room
-myRoom.changeRoom('/models/rooms/cate001/MR_KHROOM_0002.glb');
+const mainScene = document.getElementById('mainScene');
 
 // Change avatar gender
-myRoom.changeAvatarGender('male');
+mainScene.setAttribute('gender', 'male');
+// or
+mainScene.setAttribute('gender', 'female');
 
-// Add item to room
-myRoom.addItem({
-  name: 'Chair',
-  path: '/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb',
-  position: { x: 0, y: 0, z: 0 }
-});
+// Change room
+mainScene.setAttribute('room', '/models/rooms/cate002/MR_BEDROOM_0001.glb');
+
+// Customize avatar with detailed configuration
+const avatarConfig = {
+  "gender": "male",
+  "parts": {
+    "body": "/models/male/male_body/male_body.glb",
+    "hair": "/models/male/male_hair/male_hair_001.glb",
+    "fullset": "/models/male/male_fullset/male_fullset_003.glb"
+  },
+  "colors": {
+    "hair": "#4A301B",
+    "top": "#1E90FF"
+  }
+};
+if (mainScene && mainScene.changeAvatar) {
+  mainScene.changeAvatar(avatarConfig);
+}
+
+// Add items to the scene
+const items = [{
+  "id": "item_001",
+  "name": "Chair",
+  "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+  "position": { "x": 0.37, "y": 0, "z": -0.67 },
+  "rotation": { "x": 0, "y": 0, "z": 0 },
+  "scale": { "x": 1, "y": 1, "z": 1 }
+}];
+if (mainScene && mainScene.loadItems) {
+  mainScene.loadItems(items);
+}
 
 // Listen for events
-myRoom.addEventListener('roomReady', (event) => {
-  console.log('Room is ready!');
+mainScene.addEventListener('scene-ready', (event) => {
+  console.log('Scene loaded:', event.detail.scene);
 });
 
-myRoom.addEventListener('avatarChanged', (event) => {
+mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
+});
+
+mainScene.addEventListener('item-selected', (event) => {
+  console.log('Item selected:', event.detail.item);
 });`}
                         </code></pre>
                         <button 
                            className="copy-button"
                            onClick={() => handleCopyCode(`// Get reference to the component
-const myRoom = document.querySelector('my-room-component');
-
-// Change room
-myRoom.changeRoom('/models/rooms/cate001/MR_KHROOM_0002.glb');
+const mainScene = document.getElementById('mainScene');
 
 // Change avatar gender
-myRoom.changeAvatarGender('male');
+mainScene.setAttribute('gender', 'male');
+// or
+mainScene.setAttribute('gender', 'female');
 
-// Add item to room
-myRoom.addItem({
-  name: 'Chair',
-  path: '/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb',
-  position: { x: 0, y: 0, z: 0 }
-});
+// Change room
+mainScene.setAttribute('room', '/models/rooms/cate002/MR_BEDROOM_0001.glb');
+
+// Customize avatar with detailed configuration
+const avatarConfig = {
+  "gender": "male",
+  "parts": {
+    "body": "/models/male/male_body/male_body.glb",
+    "hair": "/models/male/male_hair/male_hair_001.glb",
+    "fullset": "/models/male/male_fullset/male_fullset_003.glb"
+  },
+  "colors": {
+    "hair": "#4A301B",
+    "top": "#1E90FF"
+  }
+};
+if (mainScene && mainScene.changeAvatar) {
+  mainScene.changeAvatar(avatarConfig);
+}
+
+// Add items to the scene
+const items = [{
+  "id": "item_001",
+  "name": "Chair",
+  "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+  "position": { "x": 0.37, "y": 0, "z": -0.67 },
+  "rotation": { "x": 0, "y": 0, "z": 0 },
+  "scale": { "x": 1, "y": 1, "z": 1 }
+}];
+if (mainScene && mainScene.loadItems) {
+  mainScene.loadItems(items);
+}
+
+// Camera controls
+if (mainScene && mainScene.resetCamera) {
+  mainScene.resetCamera();
+}
 
 // Listen for events
-myRoom.addEventListener('roomReady', (event) => {
-  console.log('Room is ready!');
+mainScene.addEventListener('scene-ready', (event) => {
+  console.log('Scene loaded:', event.detail.scene);
 });
 
-myRoom.addEventListener('avatarChanged', (event) => {
+mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
+});
+
+mainScene.addEventListener('item-selected', (event) => {
+  console.log('Item selected:', event.detail.item);
 });`)}
                          >
                            Copy Code
                          </button>
-                      </div> */}
+                      </div>
                       
                       {/* <h4>4. Styling</h4>
                       <p>The component can be styled using CSS:</p>
                       
                       <div className="code-block">
                         <pre><code>
-{`my-room-component {
+{`my-room-scene {
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   overflow: hidden;
@@ -1063,7 +1137,7 @@ myRoom.addEventListener('avatarChanged', (event) => {
                         </code></pre>
                         <button 
                            className="copy-button"
-                           onClick={() => handleCopyCode(`my-room-component {
+                           onClick={() => handleCopyCode(`my-room-scene {
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   overflow: hidden;
