@@ -120,10 +120,10 @@ const availableRooms = [
 
 // Available items data
 const availableItems = [
-  { name: "Chair 1", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair" },
-    { name: "Chair 2", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_CHAIR_0002.glb", category: "Chair" },
-    { name: "Table 1", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/Table.glb", category: "Table" },
-    { name: "Table 2", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/Table.glb", category: "Table" },
+  { name: "Chair", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair" },
+    { name: "Light stand", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb", category: "Light" },
+    { name: "Board", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb", category: "Decor" },
+    { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor" },
 ];
 
 interface LoadedItem {

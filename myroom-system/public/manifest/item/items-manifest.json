@@ -11,30 +11,30 @@
     },
     {
       "id": "MR_CHAIR_0002",
-      "name": "Chair 0002",
+      "name": "Light Stand",
       "imageUrl": "/images/items/MR_CHAIR_0002.jpg",
       "categoryLv1": "catelv1_01",
       "categoryLv2": "catelv2_01",
       "categoryLv3": "catelv3_02",
-      "modelPath": "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_CHAIR_0002.glb"
+      "modelPath": "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb"
     },
     {
       "id": "TABLE_0001",
-      "name": "Table 0001",
+      "name": "Board",
       "imageUrl": "/images/items/TABLE_0001.jpg",
       "categoryLv1": "catelv1_02",
       "categoryLv2": "catelv2_02",
       "categoryLv3": "catelv3_02",
-      "modelPath": "/models/items/catelv1_02/catelv2_02/catelv3_02/Table.glb"
+      "modelPath": "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb"
     },
     {
       "id": "TABLE_0002",
-      "name": "Table 0002",
+      "name": "Mirror",
       "imageUrl": "/images/items/TABLE_0002.jpg",
       "categoryLv1": "catelv1_02",
       "categoryLv2": "catelv2_03",
       "categoryLv3": "catelv3_02",
-      "modelPath": "/models/items/catelv1_02/catelv2_03/catelv3_02/Table.glb"
+      "modelPath": "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb"
     }
   ],
   "categories": {
