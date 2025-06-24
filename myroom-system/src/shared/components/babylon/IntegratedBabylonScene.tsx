@@ -846,8 +846,14 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   };
 
 
+  // Avatar movement boundary constraint (4-unit radius square)
+  const AVATAR_BOUNDARY_LIMIT = 2.2;
+  
+  // Camera target offset to focus on avatar's head instead of feet
+  const CAMERA_TARGET_HEAD_OFFSET = 1.7;
+  
   // Setup default camera target - updated to match new initial position
-  const defaultCameraTarget = Vector3.Zero();
+  const defaultCameraTarget = new Vector3(0, 1, 0);
 
   // Function to reset camera with smooth animation
   const resetCamera = () => {
@@ -861,7 +867,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       const defaultAlpha = Math.PI / 2;
       const defaultBeta = Math.PI / 3;
       const defaultRadius = 10;
-      const defaultTarget = Vector3.Zero();
+      const defaultTarget = new Vector3(0, 1, 0);
 
       // Animation duration in frames (60fps)
       const animationDuration = 60; // 1 second
@@ -1000,7 +1006,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         Math.PI / 2,  // Changed from -Math.PI / 2 to Math.PI / 2 for opposite side
         Math.PI / 3,
         10,
-        Vector3.Zero(),  // Looking at center (0,0,0)
+        new Vector3(0, 1, 0),  // Looking at (0,1,0) instead of center
         scene
       );
       camera.attachControl(canvasRef.current!, true);
@@ -1119,8 +1125,12 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                 const intersectionPoint = ray.origin.add(ray.direction.scale(t));
                 console.log('Moving avatar to position:', intersectionPoint);
 
+                // Apply movement constraints: limit avatar to boundary square centered at (0,0,0)
+                const constrainedX = Math.max(-AVATAR_BOUNDARY_LIMIT, Math.min(AVATAR_BOUNDARY_LIMIT, intersectionPoint.x));
+                const constrainedZ = Math.max(-AVATAR_BOUNDARY_LIMIT, Math.min(AVATAR_BOUNDARY_LIMIT, intersectionPoint.z));
+                
                 // Start smooth movement animation to new position (can change destination while moving)
-                const targetPos = new Vector3(intersectionPoint.x, 0, intersectionPoint.z);
+                const targetPos = new Vector3(constrainedX, 0, constrainedZ);
                 const currentPos = avatarRef.current.position;
 
                 // Calculate rotation angle for avatar to face destination
@@ -2040,7 +2050,9 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
       // Initialize camera follow target if not set
       if (cameraFollowStateRef.current.currentTarget.equals(Vector3.Zero())) {
-        cameraFollowStateRef.current.currentTarget = avatarRef.current.position.clone();
+        const headPosition = avatarRef.current.position.clone();
+        headPosition.y += CAMERA_TARGET_HEAD_OFFSET;
+        cameraFollowStateRef.current.currentTarget = headPosition;
       }
 
       // Variable to track movement state
@@ -2083,9 +2095,13 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           }
         }
 
-        // Move avatar
-        avatarRef.current.position.x += moveX;
-        avatarRef.current.position.z += moveZ;
+        // Move avatar with boundary constraints
+        const newX = avatarRef.current.position.x + moveX;
+        const newZ = avatarRef.current.position.z + moveZ;
+        
+        // Apply constraints: limit to boundary square centered at (0,0,0)
+        avatarRef.current.position.x = Math.max(-AVATAR_BOUNDARY_LIMIT, Math.min(AVATAR_BOUNDARY_LIMIT, newX));
+        avatarRef.current.position.z = Math.max(-AVATAR_BOUNDARY_LIMIT, Math.min(AVATAR_BOUNDARY_LIMIT, newZ));
       }
 
       // Handle movement animation to target position (from double-click) with fixed speed
@@ -2142,9 +2158,11 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           }
 
           // Update camera target (only when shouldFollowAvatar is true)
-          if (cameraRef.current && cameraFollowStateRef.current.shouldFollowAvatar) {
-            cameraRef.current.setTarget(avatarRef.current.position);
-          }
+        if (cameraRef.current && cameraFollowStateRef.current.shouldFollowAvatar) {
+          const headPosition = avatarRef.current.position.clone();
+          headPosition.y += CAMERA_TARGET_HEAD_OFFSET;
+          cameraRef.current.setTarget(headPosition);
+        }
         }
       }
 
@@ -2245,12 +2263,13 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       // Camera follow with damping (only when shouldFollowAvatar is true and not using right mouse)
       if (cameraRef.current && avatarRef.current && !isRightMouseDownRef.current && cameraFollowStateRef.current.shouldFollowAvatar) {
         const cameraFollowState = cameraFollowStateRef.current;
-        const targetPosition = avatarRef.current.position;
+        const avatarHeadPosition = avatarRef.current.position.clone();
+        avatarHeadPosition.y += CAMERA_TARGET_HEAD_OFFSET;
 
         // Lerp camera target with damping
         cameraFollowState.currentTarget = Vector3.Lerp(
           cameraFollowState.currentTarget,
-          targetPosition,
+          avatarHeadPosition,
           cameraFollowState.dampingFactor
         );
 
