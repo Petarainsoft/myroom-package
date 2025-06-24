@@ -132,15 +132,10 @@ For production (CDN):
 const mainScene = document.getElementById('mainScene');
 
 // Control Methods
-mainScene.resetCamera();                    // Reset camera position
 mainScene.changeAvatar(avatarConfig);       // Change avatar configuration
 mainScene.loadItems(itemsArray);           // Load items into scene
 mainScene.setAttribute('gender', 'male');   // Change gender
-mainScene.setAttribute('gizmo-mode', 'rotation'); // Change gizmo mode
 
-// Access Babylon.js Objects
-const scene = mainScene.getScene();         // Get Babylon.js Scene
-const engine = mainScene.getEngine();       // Get Babylon.js Engine
 ```
 
 **Events:**
@@ -161,10 +156,6 @@ mainScene.addEventListener('avatar-changed', (e) => {
   console.log('Avatar changed:', e.detail.config);
 });
 
-// Camera Events
-mainScene.addEventListener('camera-moved', (e) => {
-  console.log('Camera moved:', e.detail.position);
-});
 
 // Item Events
 mainScene.addEventListener('item-selected', (e) => {
@@ -176,7 +167,6 @@ mainScene.addEventListener('item-selected', (e) => {
 - `scene-ready`: Fired when the 3D scene is loaded and ready
 - `avatar-changed`: Fired when the avatar configuration changes
 - `item-selected`: Fired when an item in the scene is selected
-- `camera-moved`: Fired when the camera position changes
 - `error`: Fired when an error occurs
 
 ### 4.3. Practical Examples

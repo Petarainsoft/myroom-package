@@ -1672,22 +1672,22 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                     meshNames: partResult.meshes.map(m => m.name)
                   });
 
-                  // Assign parent and hide new part until animation is ready
+                  // Assign parent and show new part immediately for seamless transition
                   partResult.meshes.forEach(mesh => {
                     if (mesh.parent === null && avatarRef.current) {
                       mesh.parent = avatarRef.current;
                       console.log(`[AVATAR_PARTS] Assigned parent for mesh ${mesh.name}`);
                     }
-                    // Hide part until animation is ready
-                    mesh.setEnabled(false);
-                    mesh.isVisible = false;
+                    // Show part immediately to eliminate visible delay
+                    mesh.setEnabled(true);
+                    mesh.isVisible = true;
                     mesh.metadata = { fileName: partData.fileName };
-                    console.log(`[AVATAR_PARTS] ${partType} part hidden until animation ready`);
+                    console.log(`[AVATAR_PARTS] ${partType} part activated immediately for seamless transition`);
                   });
 
-                  // Save new part to pending list
-                  pendingPartsRef.current[partType] = partResult.meshes;
-                  console.log(`[AVATAR_PARTS] Added ${partType} to pending list`);
+                  // Move directly to loaded parts instead of pending
+                  loadedAvatarPartsRef.current[partType] = partResult.meshes;
+                  console.log(`[AVATAR_PARTS] ${partType} part immediately added to loaded list`);
 
                   // Handle animation synchronization and part activation
                   const activatePartAfterAnimationSync = async () => {
@@ -1734,47 +1734,29 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                           console.log(`[AVATAR_PARTS] Animations loaded and synchronized for ${partType}`);
                         }
                         
-                        // Step 2: Update loaded parts list and remove from pending
-                        loadedAvatarPartsRef.current[partType] = partResult.meshes;
-                        delete pendingPartsRef.current[partType];
-                        console.log(`[AVATAR_PARTS] Moved ${partType} from pending to loaded`);
+                        // Step 2: Part is already in loaded list and activated immediately
+                        console.log(`[AVATAR_PARTS] ${partType} part already activated and in loaded list`);
                         
-                        // Step 3: Hide old parts if they exist (safety check)
-                        // This ensures clean transition between old and new parts
-                        
-                        // Step 4: Activate new part only after animation sync is complete
-                        if (isAnimationReady && idleAnimRef.current) {
-                          // Play current animation on new part
-                          if (currentAnimRef.current) {
-                            console.log(`[AVATAR_PARTS] Syncing ${partType} with current animation: ${currentAnimRef.current.name}`);
-                          }
-                          
-                          // Enable and show new part
-                          partResult.meshes.forEach(mesh => {
-                            mesh.setEnabled(true);
-                            mesh.isVisible = true;
-                            console.log(`[AVATAR_PARTS] ✅ Activated mesh ${mesh.name} after animation sync`);
-                          });
-                          
-                          console.log(`[AVATAR_PARTS] ✅ ${partType} part successfully activated with synchronized animations`);
-                           
-                           // Step 5: Safely dispose of old part after new part is activated
-                            if (oldPartToDispose) {
-                              console.log(`[AVATAR_PARTS] Disposing old ${partType} part after successful activation`);
-                              oldPartToDispose.forEach(mesh => {
-                                if (!mesh.isDisposed()) {
-                                  mesh.dispose();
-                                }
-                              });
-                              // Remove from disposal tracking since it's disposed now
-                              delete oldPartsToDisposeRef.current[partType];
-                              console.log(`[AVATAR_PARTS] ✅ Old ${partType} part safely disposed`);
+                        // Step 3: Dispose old part immediately since new part is already active
+                        if (oldPartToDispose) {
+                          console.log(`[AVATAR_PARTS] Disposing old ${partType} part immediately after new part activation`);
+                          oldPartToDispose.forEach(mesh => {
+                            if (!mesh.isDisposed()) {
+                              mesh.dispose();
                             }
-                         } else {
-                           console.log(`[AVATAR_PARTS] ⏳ ${partType} loaded but waiting for animation ready state`);
-                           // Parts will be enabled later when animation ready state changes
-                           // Note: oldPartToDispose will be handled when animation becomes ready
-                         }
+                          });
+                          // Remove from disposal tracking since it's disposed now
+                          delete oldPartsToDisposeRef.current[partType];
+                          console.log(`[AVATAR_PARTS] ✅ Old ${partType} part safely disposed immediately`);
+                        }
+                        
+                        // Step 4: Sync animations in background without affecting visibility
+                        if (currentAnimRef.current) {
+                          console.log(`[AVATAR_PARTS] Background syncing ${partType} with current animation: ${currentAnimRef.current.name}`);
+                          // Animation sync happens in background, part is already visible
+                        }
+                        
+                        console.log(`[AVATAR_PARTS] ✅ ${partType} part successfully activated with immediate transition`);
                       } else {
                         console.warn(`[AVATAR_PARTS] ⚠️ No skeleton found for ${partType}, cannot sync animations`);
                         // Still move to loaded parts but without animation
@@ -1789,8 +1771,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                     }
                   };
                   
-                  // Execute animation sync and activation with a small delay to ensure mesh is ready
-                  setTimeout(activatePartAfterAnimationSync, 100);
+                  // Execute animation sync immediately for seamless transition
+                  setTimeout(activatePartAfterAnimationSync, 0);
                 }
               }
             } else {
@@ -1870,7 +1852,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               setTimeout(() => {
                 setIsAnimationReady(true);
                 console.log('✅ Idle animation ready after avatar loaded - setting animation ready state');
-              }, 100);
+              }, 10);
             } else {
               console.log('⚠️ No idle animation found after avatar loaded, loading from all_animation.glb...');
 
@@ -1900,7 +1882,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                   setTimeout(() => {
                     setIsAnimationReady(true);
                     console.log('✅ Idle animation from GLB ready - setting animation ready state');
-                  }, 100);
+                  }, 10);
                 } else {
                   console.log('❌ No suitable idle animation found in all_animation.glb');
                 }
