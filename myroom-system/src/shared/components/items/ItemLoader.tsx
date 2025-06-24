@@ -45,6 +45,12 @@ export const useItemLoader = ({
 
         // Load new items
         for (const item of loadedItems) {
+          // Validate item has required properties
+          if (!item || !item.path || typeof item.path !== 'string') {
+            console.warn('Skipping invalid item:', item);
+            continue;
+          }
+          
           // Create full URL with domain
           const fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
           

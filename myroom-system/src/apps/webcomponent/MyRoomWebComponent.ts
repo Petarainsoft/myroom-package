@@ -161,7 +161,9 @@ class MyRoomWebComponent extends HTMLElement {
   connectedCallback() {
     this.updateSize();
     if (!this.isInitialized) {
-      this.initialize();
+      setTimeout(() => {
+        this.initialize();
+      }, 0);
     }
   }
 
@@ -201,7 +203,21 @@ class MyRoomWebComponent extends HTMLElement {
 
   private async initialize() {
     try {
+      if (!this.isConnected) {
+        console.warn('Component not connected to DOM, skipping initialization');
+        return;
+      }
+      
+      if (!this.container || !this.canvas) {
+        throw new Error('Required DOM elements not found');
+      }
+      
       this.showLoading();
+      
+      const targetContainer = this.canvas.parentElement || this.container;
+      if (!targetContainer || !(targetContainer instanceof HTMLElement)) {
+        throw new Error('Invalid container for React root');
+      }
       
       // Dynamically import React and dependencies
       const [React, ReactDOM, IntegratedBabylonScene] = await Promise.all([
@@ -231,14 +247,20 @@ class MyRoomWebComponent extends HTMLElement {
         }
       });
 
-      // Render React component
-      this.reactRoot = ReactDOM.createRoot(this.canvas.parentElement!);
+      this.reactRoot = ReactDOM.createRoot(targetContainer);
       this.reactRoot.render(App);
       
       this.isInitialized = true;
       
     } catch (error) {
       console.error('Failed to initialize MyRoom component:', error);
+      console.debug('Debug info:', {
+        isConnected: this.isConnected,
+        hasContainer: !!this.container,
+        hasCanvas: !!this.canvas,
+        canvasParent: this.canvas?.parentElement
+      });
+      
       this.showError('Failed to initialize 3D component');
       this.dispatchEvent(new CustomEvent('error', {
         detail: { message: 'Initialization failed', error }
@@ -271,8 +293,30 @@ class MyRoomWebComponent extends HTMLElement {
     let loadedItems: LoadedItem[] = [];
     try {
       const itemsStr = this.getAttribute('loaded-items');
-      loadedItems = itemsStr ? JSON.parse(itemsStr) : [];
-    } catch {
+      if (itemsStr) {
+        const parsedItems = JSON.parse(itemsStr);
+        // Validate and filter items to ensure required properties exist
+        loadedItems = parsedItems.filter((item: any) => {
+          return item && 
+                 typeof item.id === 'string' && 
+                 typeof item.name === 'string' && 
+                 typeof item.path === 'string' && 
+                 item.path.trim() !== '' &&
+                 item.position && 
+                 typeof item.position.x === 'number' && 
+                 typeof item.position.y === 'number' && 
+                 typeof item.position.z === 'number';
+        }).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          path: item.path,
+          position: item.position,
+          rotation: item.rotation || undefined,
+          scale: item.scale || undefined
+        }));
+      }
+    } catch (error) {
+      console.warn('Failed to parse loaded-items attribute:', error);
       loadedItems = [];
     }
 

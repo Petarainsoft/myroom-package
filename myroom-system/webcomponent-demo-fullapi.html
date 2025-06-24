@@ -191,7 +191,7 @@
         <div id="status" class="status info">Loading scene...</div>
         
         <!-- Only one script tag is needed -->
-        <script src="https://myroom.petarainsoft.com/dist/myroom-webcomponent.umd.js"></script>
+        <script src="http://localhost:5173/dist/myroom-webcomponent.umd.js"></script>
         
         <!-- Main scene with all features enabled -->
         <my-room-scene 
@@ -476,11 +476,30 @@ scene.addEventListener('item-selected', (e) => {
     
     function customizeAvatar() {
       // Generate random avatar configuration
+
+      // const avatarConfig = {
+      //   hair: `style${Math.floor(Math.random() * 5) + 1}`,
+      //   top: `shirt${Math.floor(Math.random() * 3) + 1}`,
+      //   bottom: `pants${Math.floor(Math.random() * 3) + 1}`,
+      //   shoes: `shoes${Math.floor(Math.random() * 3) + 1}`
+      // };
+
+      
       const avatarConfig = {
-        hair: `style${Math.floor(Math.random() * 5) + 1}`,
-        top: `shirt${Math.floor(Math.random() * 3) + 1}`,
-        bottom: `pants${Math.floor(Math.random() * 3) + 1}`,
-        shoes: `shoes${Math.floor(Math.random() * 3) + 1}`
+          "gender": "male",
+          "parts": {
+              "body": "/models/male/male_body/male_body.glb",
+              "hair": "/models/male/male_hair/male_hair_001.glb",
+              "top": null,
+              "bottom": null,
+              "shoes": null,
+              "fullset": "/models/male/male_fullset/male_fullset_003.glb",
+              "accessory": null
+          },
+          "colors": {
+              "hair": "#4A301B",
+              "top": "#1E90FF"
+          }
       };
       
       if (mainScene && mainScene.changeAvatar) {
@@ -497,14 +516,30 @@ scene.addEventListener('item-selected', (e) => {
     }
     
     function addRandomItem() {
+      console.log('Adding random item...');
       const sampleItems = [
-        {
-          id: `item_${Date.now()}`,
-          path: '/models/items/chair.glb',
-          position: { x: Math.random() * 4 - 2, y: 0, z: Math.random() * 4 - 2 },
-          rotation: { x: 0, y: Math.random() * Math.PI * 2, z: 0 },
-          scale: { x: 1, y: 1, z: 1 }
-        }
+      [
+          {
+            "id": "item_1750782980676",
+            "name": "Chair",
+            "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+            "position": {
+              "x": 0.3753031302800913,
+              "y": 0,
+              "z": -0.6778354887437805
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
       ];
       
       // Get current items
@@ -527,27 +562,26 @@ scene.addEventListener('item-selected', (e) => {
     
     function loadSampleItems() {
       const sampleItems = [
-        {
-          id: 'chair1',
-          path: '/models/items/chair.glb',
-          position: { x: 1, y: 0, z: 1 },
-          rotation: { x: 0, y: 0, z: 0 },
-          scale: { x: 1, y: 1, z: 1 }
-        },
-        {
-          id: 'table1',
-          path: '/models/items/table.glb',
-          position: { x: -1, y: 0, z: -1 },
-          rotation: { x: 0, y: Math.PI / 4, z: 0 },
-          scale: { x: 1.2, y: 1.2, z: 1.2 }
-        },
-        {
-          id: 'lamp1',
-          path: '/models/items/lamp.glb',
-          position: { x: 0, y: 0, z: 2 },
-          rotation: { x: 0, y: 0, z: 0 },
-          scale: { x: 0.8, y: 0.8, z: 0.8 }
-        }
+      {
+            "id": "item_1750782980676",
+            "name": "Chair",
+            "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+            "position": {
+              "x": 0.3753031302800913,
+              "y": 0,
+              "z": -0.6778354887437805
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
       ];
       
       if (mainScene && mainScene.loadItems) {
