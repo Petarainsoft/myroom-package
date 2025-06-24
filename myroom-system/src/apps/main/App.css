@@ -540,7 +540,7 @@ html, body {
 
 .interactive-room-container {
   position: relative;
-  background: #000;
+  background: #9fceda;
   border-radius: 12px;
   overflow: hidden;
   min-height: 600px;

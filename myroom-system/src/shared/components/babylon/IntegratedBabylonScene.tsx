@@ -2491,50 +2491,79 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     };
   }, []);
 
-  // Listen for container resize events
+  // Listen for container and window resize events
   useEffect(() => {
+    if (!canvasRef.current || !engineRef.current) return;
+
+    const handleResize = () => {
+      if (engineRef.current && cameraRef.current && canvasRef.current) {
+        // Force engine resize to match canvas size
+        engineRef.current.resize();
+        
+        // Get actual canvas dimensions
+        const canvas = canvasRef.current;
+        const rect = canvas.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+        
+        // Update camera aspect ratio to prevent distortion
+        const aspectRatio = width / height;
+        cameraRef.current.fov = 0.8; // Base FOV
+        
+        // Adjust FOV based on aspect ratio to maintain proper view
+        if (aspectRatio < 1) {
+          // Portrait mode - increase FOV slightly
+          cameraRef.current.fov = 0.9;
+        } else if (aspectRatio > 1.5) {
+          // Wide screen - decrease FOV slightly
+          cameraRef.current.fov = 0.7;
+        }
+        
+        // Force camera to update its projection matrix
+        cameraRef.current.getProjectionMatrix(true);
+      }
+    };
+
+    // Add window resize listener
+    window.addEventListener('resize', handleResize);
+
+    // Try to observe the canvas parent container
+    let resizeObserver: ResizeObserver | null = null;
+    const canvasParent = canvasRef.current.parentElement;
+    
+    if (canvasParent) {
+      resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          handleResize();
+        }
+      });
+      resizeObserver.observe(canvasParent);
+    }
+
+    // Also try to observe specific containers if they exist
     const interactiveContainer = document.querySelector('.interactive-room-container');
     const babylonContainer = document.querySelector('.babylon-scene-container');
     
-    if (!interactiveContainer || !babylonContainer) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        
-        // Update babylon container size to match interactive container
-        (babylonContainer as HTMLElement).style.width = `${width}px`;
-        (babylonContainer as HTMLElement).style.height = `${height}px`;
-        
-        // Resize babylon engine and update camera viewport
-        if (engineRef.current && cameraRef.current) {
-          // Force engine resize
-          engineRef.current.resize();
+    if (interactiveContainer && babylonContainer && !resizeObserver) {
+      resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const { width, height } = entry.contentRect;
           
-          // Update camera aspect ratio to prevent distortion
-          const aspectRatio = width / height;
-          cameraRef.current.fov = 0.8; // Base FOV
+          // Update babylon container size to match interactive container
+          (babylonContainer as HTMLElement).style.width = `${width}px`;
+          (babylonContainer as HTMLElement).style.height = `${height}px`;
           
-          // Adjust FOV based on aspect ratio to maintain proper view
-          if (aspectRatio < 1) {
-            // Portrait mode - increase FOV slightly
-            cameraRef.current.fov = 0.9;
-          } else if (aspectRatio > 1.5) {
-            // Wide screen - decrease FOV slightly
-            cameraRef.current.fov = 0.7;
-          }
-          
-          // Force camera to update its projection matrix
-          cameraRef.current.getProjectionMatrix(true);
+          handleResize();
         }
-      }
-    });
-
-    // Start observing the interactive container
-    resizeObserver.observe(interactiveContainer);
+      });
+      resizeObserver.observe(interactiveContainer);
+    }
 
     return () => {
-      resizeObserver.disconnect();
+      window.removeEventListener('resize', handleResize);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
     };
   }, []);
 
