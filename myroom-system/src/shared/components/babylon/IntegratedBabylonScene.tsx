@@ -140,7 +140,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   // Ref to observer monitoring avatar movement
   const avatarMovementObserverRef = useRef<any>(null);
 
-  // Function to load and apply animations from all_animation.glb to the avatar
+  // Function to load and apply animations from gender-specific animation files to the avatar
   const loadAnimationFromGLB = async (animationName: string, options?: {
     playImmediately?: boolean; // Play animation immediately after loading
     synchronizeAnimations?: boolean; // Synchronize animations across all avatar parts
@@ -152,11 +152,15 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     }
 
     try {
+      // Determine animation file based on avatar gender
+      const currentGender = avatarConfig.gender;
+      const animationFileName = currentGender === 'male' ? 'male_anims.glb' : 'female_anims.glb';
+      
       // Log animation loading start
-      console.log(`🎬 Loading ${animationName} animation from all_animation.glb...`);
+      console.log(`🎬 Loading ${animationName} animation from ${animationFileName} for ${currentGender} avatar...`);
       
       // Load animation file using Babylon.js SceneLoader with full URL
-      const animationUrl = `${domainConfig.baseDomain}/animations/all_animation.glb`;
+      const animationUrl = `${domainConfig.baseDomain}/animations/${animationFileName}`;
       const result = await SceneLoader.ImportMeshAsync("", animationUrl, "", sceneRef.current);
 
       // Check if animation groups exist in the result
@@ -167,7 +171,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
         // If no matching animation found, log error and exit
         if (!targetAnimGroup) {
-          console.log(`⚠️ No ${animationName} animation found in all_animation.glb`);
+          console.log(`⚠️ No ${animationName} animation found in ${animationFileName}`);
           return;
         }
 
@@ -791,7 +795,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           console.log('❌ No animations were successfully cloned');
         }
 
-        // Dispose original meshes from all_animation.glb (keep only animations)
+        // Dispose original meshes from animation file (keep only animations)
         result.meshes.forEach(mesh => {
           // Check if mesh hasn't been disposed yet
           if (!mesh.isDisposed()) {
@@ -816,8 +820,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           };
         }
       } else {
-        // No animations found in all_animation.glb file
-        console.log(`⚠️ No animations found in all_animation.glb`);
+        // No animations found in animation file
+        console.log(`⚠️ No animations found in ${animationFileName}`);
       }
     } catch (error) {
       // Handle animation loading error
