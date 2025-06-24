@@ -2561,10 +2561,20 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         left: '0',
         width: '100%',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         zIndex: 100,
-        gap: '8px'
+        paddingLeft: '20px',
+        paddingRight: '20px'
       }}>
+        {/* Empty div for left spacing */}
+        <div></div>
+        
+        {/* Center group with first 2 buttons */}
+        <div style={{
+          display: 'flex',
+          gap: '8px'
+        }}>
         {/* Reset Button */}
         <button
           onClick={resetAll}
@@ -2591,30 +2601,6 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         
         {/* Toggle UI Overlay Button */}
         <button
-          onClick={onToggleUIOverlay}
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '8px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            width: '36px',
-            height: '36px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backdropFilter: 'blur(2px)',
-            transition: 'background-color 0.2s ease'
-          }}
-          title="Toggle UI Controls"
-        >
-          ⚙️
-        </button>
-
-        {/* Fullscreen Toggle Button */}
-        <button
           onClick={toggleFullscreen}
           style={{
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -2635,6 +2621,32 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
         >
           {isFullscreen ? '⤓' : '⤢'}
+        </button>
+        </div>
+
+        {/* Fullscreen Toggle Button - Aligned to right */}
+        <button
+          onClick={onToggleUIOverlay}
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            padding: '8px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            width: '36px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backdropFilter: 'blur(2px)',
+            transition: 'background-color 0.2s ease'
+          }}
+          
+          title="Toggle UI Controls"
+        >
+          ⚙️
         </button>
       </div>
 

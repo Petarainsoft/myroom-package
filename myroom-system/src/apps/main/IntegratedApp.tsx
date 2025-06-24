@@ -527,26 +527,13 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     {/* Mouse right Click hold / 2 fingers to pan camera */}
                   </span>
                 </div>
+                
                   
-                  {/* Debug Info - Hidden when touch controller is active */}
-                  {/* {debugInfo && !touchMovement.isMoving && (
-                    <div className="debug-info">
-                      <h4>Debug Info</h4>
-                      <p>Touch: {touchMovement.isMoving ? 'Active' : 'Inactive'}</p>
-                      <p>X: {touchMovement.x.toFixed(2)}, Y: {touchMovement.y.toFixed(2)}</p>
-                      <p>Active: {Object.entries(activeMovement)
-                        .filter(([_, active]) => active)
-                        .map(([action]) => action)
-                        .join(', ') || 'None'}
-                      </p>
-                    </div>
-                  )} */}
-                  
-                  {/* Integrated UI Controls Overlay */}
-                  {showControls && (
-                    <div className={`integrated-ui-overlay ${
-                      ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
-                    }`}>
+                {/* Integrated UI Controls Overlay - Docked to Right */}
+                {showControls && (
+                  <div className={`integrated-ui-overlay ${
+                    ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
+                  }`}>
                       {/* Avatar Controls */}
                       <AvatarControls
                         avatarConfig={avatarConfig}
