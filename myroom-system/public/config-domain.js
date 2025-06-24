@@ -8,7 +8,7 @@
 (function() {
   // Set this to your actual domain after deployment
   window.MYROOM_CONFIG = {
-    baseDomain: 'https://2620-116-110-43-199.ngrok-free.app'
+    baseDomain: 'myroom.petarainsoft.com'
   };
   
   console.log('MyRoom domain configuration loaded:', window.MYROOM_CONFIG.baseDomain);

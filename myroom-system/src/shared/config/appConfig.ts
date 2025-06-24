@@ -17,7 +17,7 @@ const getConfiguredDomain = () => {
   }
   
   // Default domain (used during development or if not configured)
-  return 'https://2620-116-110-43-199.ngrok-free.app';
+  return 'myroom.petarainsoft.com';
 };
 
 // Base domain configuration
