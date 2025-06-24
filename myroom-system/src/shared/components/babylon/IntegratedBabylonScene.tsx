@@ -45,6 +45,7 @@ interface IntegratedSceneProps {
   selectedItem?: any; // Currently selected item
   onSelectItem?: (item: any) => void; // Callback when an item is selected
   onItemTransformChange?: (itemId: string, transform: { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }) => void; // Callback when item transform changes
+  onToggleUIOverlay?: () => void; // Callback to toggle UI overlay visibility
 }
 
 // Define externally exposed ref interface for the component
@@ -63,7 +64,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     onGizmoModeChange, // Callback when gizmo mode changes
     selectedItem, // Currently selected item
     onSelectItem, // Callback when item is selected
-    onItemTransformChange // Callback when item transform changes
+    onItemTransformChange, // Callback when item transform changes
+    onToggleUIOverlay // Callback to toggle UI overlay visibility
   },
   ref // Ref passed from parent component
 ) => {
@@ -2587,6 +2589,30 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           🔄
         </button>
         
+        {/* Toggle UI Overlay Button */}
+        <button
+          onClick={onToggleUIOverlay}
+          style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            padding: '8px',
+            cursor: 'pointer',
+            fontSize: '16px',
+            width: '36px',
+            height: '36px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backdropFilter: 'blur(2px)',
+            transition: 'background-color 0.2s ease'
+          }}
+          title="Toggle UI Controls"
+        >
+          ⚙️
+        </button>
+
         {/* Fullscreen Toggle Button */}
         <button
           onClick={toggleFullscreen}

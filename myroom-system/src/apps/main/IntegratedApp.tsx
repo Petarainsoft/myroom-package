@@ -499,6 +499,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     selectedItem={selectedItem}
                     onSelectItem={setSelectedItem}
                     onItemTransformChange={handleItemTransformChange}
+                    onToggleUIOverlay={() => setShowControls(!showControls)}
                   />
                   
 
@@ -671,15 +672,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     </div>
                   )}
                   
-                  {/* Show Controls Button */}
-                  {!showControls && (
-                    <button 
-                      className="show-controls-btn"
-                      onClick={() => setShowControls(true)}
-                    >
-                      ⚙️ Show Controls
-                    </button>
-                  )}
+
                 </div>
               </div>
             </div>

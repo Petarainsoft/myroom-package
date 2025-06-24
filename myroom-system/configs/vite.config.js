@@ -50,7 +50,8 @@ export default defineConfig({
       'localhost',
       '127.0.0.1',
       'myroom.petarainsoft.com',
-      '2620-116-110-43-199.ngrok-free.app'
+      '2620-116-110-43-199.ngrok-free.app',
+      '192.168.1.5'
     ],
     cors: {
       origin: '*',

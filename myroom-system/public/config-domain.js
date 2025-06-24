@@ -8,7 +8,7 @@
 (function() {
   // Set this to your actual domain after deployment
   window.MYROOM_CONFIG = {
-    baseDomain: 'http://localhost:5173'
+    baseDomain: 'http://192.168.1.5:5173'
   };
   
   console.log('MyRoom domain configuration loaded:', window.MYROOM_CONFIG.baseDomain);
