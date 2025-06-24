@@ -1255,6 +1255,15 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         console.log('Canvas clicked directly:', e);
       });
 
+      // Add wheel event listener to prevent page scroll when mouse is over canvas
+      const handleWheel = (e: WheelEvent) => {
+        // Prevent default page scroll behavior
+        e.preventDefault();
+        e.stopPropagation();
+      };
+
+      canvasRef.current!.addEventListener('wheel', handleWheel, { passive: false });
+
       console.log('Scene setup complete, pointer observable added');
       setIsSceneReady(true);
     };
@@ -1263,6 +1272,15 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
     // Cleanup
     return () => {
+      // Remove wheel event listener
+      // if (canvasRef.current) {
+      if (canvasRef.current) {
+        canvasRef.current.removeEventListener('wheel', (event: WheelEvent) => {
+          event.preventDefault();
+        });
+      }
+      // }
+      
       if (gizmoRef.current) {
         gizmoRef.current.dispose();
       }
