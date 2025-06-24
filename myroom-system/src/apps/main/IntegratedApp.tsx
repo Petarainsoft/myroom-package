@@ -113,9 +113,9 @@ const IntegratedApp: React.FC = () => {
 
 // Available rooms data
 const availableRooms = [
-  { name: "Living Room 1", path: "/models/rooms/cate001/MR_KHROOM_0001.glb" },
-  { name: "Living Room 2", path: "/models/rooms/cate001/MR_KHROOM_0002.glb" },
-  { name: "Bedroom", path: "/models/rooms/cate002/MR_KHROOM_0003.glb" },
+  { name: "Living Room", path: "/models/rooms/cate001/MR_KHROOM_0001.glb" },
+  { name: "Exercise Room", path: "/models/rooms/cate001/MR_KHROOM_0002.glb" },
+  { name: "Lounge Room", path: "/models/rooms/cate002/MR_KHROOM_0003.glb" },
 ];
 
 // Available items data
