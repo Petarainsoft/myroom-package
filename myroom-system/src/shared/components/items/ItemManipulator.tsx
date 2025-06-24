@@ -70,10 +70,22 @@ export const useItemManipulator = ({
     selectedItemRef.current = null;
     onSelectItem?.(null);
     
-    // Hide gizmo
+    // Hide and dispose gizmo immediately
     if (gizmoRef.current) {
-      gizmoRef.current.dispose();
-      gizmoRef.current = null;
+      try {
+        // First hide the gizmo immediately
+        if (gizmoRef.current.setEnabled) {
+          gizmoRef.current.setEnabled(false);
+        }
+        // Then dispose it
+        gizmoRef.current.dispose();
+        gizmoRef.current = null;
+        console.log('Gizmo hidden and disposed in deselectItem');
+      } catch (error) {
+        console.warn('Error disposing gizmo:', error);
+        // Force set to null even if dispose fails
+        gizmoRef.current = null;
+      }
     }
   };
 
@@ -89,23 +101,39 @@ export const useItemManipulator = ({
       onItemTransformChange(itemId, transform);
     };
     
-    if (immediate || !isDraggingRef.current) {
+    if (immediate) {
+      // Clear any pending updates and execute immediately
+      if (transformTimeoutRef.current) {
+        clearTimeout(transformTimeoutRef.current);
+        transformTimeoutRef.current = null;
+      }
       doUpdate();
-    } else {
-      // Debounce updates during dragging to reduce re-renders
+    } else if (isDraggingRef.current) {
+      // During dragging, debounce heavily to prevent flickering
       if (transformTimeoutRef.current) {
         clearTimeout(transformTimeoutRef.current);
       }
-      transformTimeoutRef.current = setTimeout(doUpdate, 16); // ~60fps
+      transformTimeoutRef.current = setTimeout(doUpdate, 150); // Increased debounce time during drag
+    } else {
+      // Not dragging, update normally but still debounced
+      if (transformTimeoutRef.current) {
+        clearTimeout(transformTimeoutRef.current);
+      }
+      transformTimeoutRef.current = setTimeout(doUpdate, 50); // Slightly increased for stability
     }
   }, [onItemTransformChange]);
 
   const updateGizmo = (mesh: any) => {
     if (!utilityLayerRef.current) return;
     
-    // Dispose existing gizmo
+    // Dispose existing gizmo safely
     if (gizmoRef.current) {
-      gizmoRef.current.dispose();
+      try {
+        gizmoRef.current.dispose();
+      } catch (error) {
+        console.warn('Error disposing existing gizmo:', error);
+      }
+      gizmoRef.current = null;
     }
     
     // Create new gizmo based on mode
@@ -211,18 +239,45 @@ export const useItemManipulator = ({
     }
   };
 
-  // Update gizmo when mode changes
+  // Update gizmo when mode changes - only if we have a selected item
   useEffect(() => {
-    if (selectedItemRef.current) {
+    if (selectedItemRef.current && utilityLayerRef.current) {
+      console.log('Updating gizmo due to mode change:', gizmoMode);
       updateGizmo(selectedItemRef.current);
     }
   }, [gizmoMode]);
 
-  // Hide gizmo when no item is selected
+  // Handle selectedItem changes - hide and dispose gizmo if item no longer exists
   useEffect(() => {
+    console.log('selectedItem changed effect triggered', { selectedItem });
+    
     if (!selectedItem && gizmoRef.current) {
-      gizmoRef.current.dispose();
-      gizmoRef.current = null;
+      console.log('Attempting to hide and dispose gizmo', {
+        gizmoExists: !!gizmoRef.current,
+        gizmoType: gizmoRef.current?.constructor.name,
+        hasSetEnabled: 'setEnabled' in gizmoRef.current
+      });
+
+      try {
+        // First hide the gizmo immediately
+        if (gizmoRef.current && 'setEnabled' in gizmoRef.current) {
+          gizmoRef.current.setEnabled(false);
+          console.log('Gizmo disabled successfully');
+        }
+        // Then dispose it
+        gizmoRef.current.dispose();
+        gizmoRef.current = null;
+        console.log('Gizmo hidden and disposed due to selectedItem being null');
+      } catch (error) {
+        console.warn('Error disposing gizmo when selectedItem changed:', error);
+        console.log('Error details:', {
+          errorName: error.name,
+          errorMessage: error.message,
+          stack: error.stack
+        });
+        // Force set to null even if dispose fails
+        gizmoRef.current = null;
+      }
     }
   }, [selectedItem]);
 
@@ -233,7 +288,11 @@ export const useItemManipulator = ({
         clearTimeout(transformTimeoutRef.current);
       }
       if (gizmoRef.current) {
-        gizmoRef.current.dispose();
+        try {
+          gizmoRef.current.dispose();
+        } catch (error) {
+          console.warn('Error disposing gizmo on unmount:', error);
+        }
         gizmoRef.current = null;
       }
     };

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { SceneLoader, TransformNode, Scene, Vector3 } from '@babylonjs/core';
 import { LoadedItem } from '../../types/LoadedItem';
 import { domainConfig } from '../../config/appConfig';
@@ -24,9 +24,24 @@ export const useItemLoader = ({
 
     const loadItems = async () => {
       try {
-        // Clear existing items
-        itemsRef.current!.getChildMeshes().forEach(mesh => mesh.dispose());
-        loadedItemMeshesRef.current = [];
+        // Clear existing items properly
+        if (loadedItemMeshesRef.current.length > 0) {
+          loadedItemMeshesRef.current.forEach(container => {
+            if (container && container.dispose) {
+              container.dispose();
+            }
+          });
+          loadedItemMeshesRef.current = [];
+        }
+        
+        // Also clear any remaining child meshes
+        if (itemsRef.current) {
+          itemsRef.current.getChildMeshes().forEach(mesh => {
+            if (mesh && mesh.dispose) {
+              mesh.dispose();
+            }
+          });
+        }
 
         // Load new items
         for (const item of loadedItems) {

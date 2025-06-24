@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { IntegratedBabylonScene } from '../../shared/components/babylon/IntegratedBabylonScene';
 import { AvatarControls } from '../../shared/components/avatar/AvatarControls';
 import { AvatarConfig, getDefaultConfigForGender, availablePartsData } from '../../shared/data/avatarPartsData';
@@ -137,14 +137,33 @@ interface LoadedItem {
 
 // Component integrating room and avatar with full UI controls
 const InteractiveRoomWithAvatar: React.FC = () => {
+  const [selectedItemToAdd, setSelectedItemToAdd] = useState(availableItems[0]);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+
   // Room state management
   const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
   
   // Items state management
   const [loadedItems, setLoadedItems] = useState<LoadedItem[]>([]);
   const [gizmoMode, setGizmoMode] = useState<'position' | 'rotation' | 'scale'>('position');
-  const [selectedItemToAdd, setSelectedItemToAdd] = useState(availableItems[0]);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  
+  // Reset gizmo mode to 'position' when a new item is selected
+  useEffect(() => {
+    if (selectedItem) {
+      setGizmoMode('position');
+    }
+  }, [selectedItem]);
+  
+  // Check if selected item still exists in loaded items
+  useEffect(() => {
+    if (selectedItem) {
+      const itemExists = loadedItems.some(item => item.id === selectedItem.name);
+      if (!itemExists) {
+        setSelectedItem(null);
+      }
+    }
+  }, [loadedItems, selectedItem]);
+
   
   // Avatar state management
   const [avatarConfig, setAvatarConfig] = useState<AvatarConfig>(
@@ -226,7 +245,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   };
 
   const handlePartChange = (partType: string, fileName: string | null) => {
-    console.log(`👁️👣💔 handlePartChange IN INTEGRATED APP TSX: partType=${partType}, fileName=${fileName}`);
+    console.log(` handlePartChange IN INTEGRATED APP TSX: partType=${partType}, fileName=${fileName}`);
     setAvatarConfig(prev => {
       const newConfig = { ...prev };
       
@@ -314,15 +333,44 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     linkElement.click();
   };
 
-  const handleItemTransformChange = (itemId: string, transform: { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }) => {
-    setLoadedItems(prevItems => 
-      prevItems.map(item => 
+  const handleItemTransformChange = useCallback((itemId: string, transform: { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }) => {
+    setLoadedItems(prevItems => {
+      const itemIndex = prevItems.findIndex(item => item.id === itemId);
+      if (itemIndex === -1) return prevItems;
+      
+      const currentItem = prevItems[itemIndex];
+      
+      // Check if transform actually changed to prevent unnecessary updates
+      const positionChanged = 
+        !currentItem.position ||
+        Math.abs(currentItem.position.x - transform.position.x) > 0.001 ||
+        Math.abs(currentItem.position.y - transform.position.y) > 0.001 ||
+        Math.abs(currentItem.position.z - transform.position.z) > 0.001;
+      
+      const rotationChanged = 
+        !currentItem.rotation ||
+        Math.abs(currentItem.rotation.x - transform.rotation.x) > 0.001 ||
+        Math.abs(currentItem.rotation.y - transform.rotation.y) > 0.001 ||
+        Math.abs(currentItem.rotation.z - transform.rotation.z) > 0.001;
+      
+      const scaleChanged = 
+        !currentItem.scale ||
+        Math.abs(currentItem.scale.x - transform.scale.x) > 0.001 ||
+        Math.abs(currentItem.scale.y - transform.scale.y) > 0.001 ||
+        Math.abs(currentItem.scale.z - transform.scale.z) > 0.001;
+      
+      // Only update if something actually changed
+      if (!positionChanged && !rotationChanged && !scaleChanged) {
+        return prevItems;
+      }
+      
+      return prevItems.map(item => 
         item.id === itemId 
           ? { ...item, position: transform.position, rotation: transform.rotation, scale: transform.scale }
           : item
-      )
-    );
-  };
+      );
+    });
+  }, []);
 
   const handleLoadAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -373,10 +421,16 @@ const InteractiveRoomWithAvatar: React.FC = () => {
 
   const handleRemoveItem = (itemId: string) => {
     setLoadedItems(prev => prev.filter(item => item.id !== itemId));
+    // Reset selected item if it's the one being removed
+    if (selectedItem && selectedItem.name === itemId) {
+      setSelectedItem(null);
+    }
   };
 
   const handleClearAllItems = () => {
     setLoadedItems([]);
+    // Reset selected item when clearing all items
+    setSelectedItem(null);
   };
 
 

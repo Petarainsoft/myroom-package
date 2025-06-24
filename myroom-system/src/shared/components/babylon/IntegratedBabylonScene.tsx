@@ -966,6 +966,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     loadedItemMeshesRef,
     utilityLayerRef,
     gizmoMode,
+    selectedItem,
     onSelectItem,
     onItemTransformChange
   });
