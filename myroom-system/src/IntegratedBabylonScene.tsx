@@ -17,20 +17,20 @@ import {
 } from '@babylonjs/core';
 import '@babylonjs/loaders';
 
-import { ActiveMovement, TouchMovement } from './types/AvatarTypes';
+import { ActiveMovement, TouchMovement } from './shared/types/AvatarTypes';
 import { domainConfig } from './shared/config/appConfig';
-import { availablePartsData, AvatarConfig } from './data/avatarPartsData';
-import { findMappedBone } from './skeletonMapping';
+import { availablePartsData, AvatarConfig } from './shared/data/avatarPartsData';
+import { findMappedBone } from './shared/data/skeletonMapping';
 
 import { useRoomLoader } from './components/RoomLoader';
 import { useItemLoader } from './components/ItemLoader';
 import { useItemManipulator } from './components/ItemManipulator';
 
-import { useSkybox } from './hooks/useSkybox';
-import { usePostProcessing } from './hooks/usePostProcessing';
+import { useSkybox } from './shared/hooks/useSkybox';
+import { usePostProcessing } from './shared/hooks/usePostProcessing';
 
-import { LoadedItem } from './types/LoadedItem';
-import { ClonedAnimation } from './types/ClonedAnimation';
+import { LoadedItem } from './shared/types/LoadedItem';
+import { ClonedAnimation } from './shared/types/ClonedAnimation';
 
 // Props cho component IntegratedBabylonScene
 interface IntegratedSceneProps {

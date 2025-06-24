@@ -1,6 +1,6 @@
 import React from 'react';
-import { AvatarConfig, AvailableParts, Gender } from '../types/AvatarTypes';
-import { getDefaultConfigForGender } from '../data/avatarPartsData';
+import { AvatarConfig, AvailableParts, Gender } from '../shared/types/AvatarTypes';
+import { getDefaultConfigForGender } from '../shared/data/avatarPartsData';
 
 interface AvatarControlsProps {
     avatarConfig: AvatarConfig;

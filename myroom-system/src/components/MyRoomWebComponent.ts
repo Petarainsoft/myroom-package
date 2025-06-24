@@ -1,7 +1,7 @@
 import { Engine, Scene, AbstractEngine } from '@babylonjs/core';
-import { getDefaultConfigForGender } from '../data/avatarPartsData';
-import { AvatarConfig } from '../types/AvatarTypes';
-import { LoadedItem } from '../types/LoadedItem';
+import { getDefaultConfigForGender } from '../shared/data/avatarPartsData';
+import { AvatarConfig } from '../shared/types/AvatarTypes';
+import { LoadedItem } from '../shared/types/LoadedItem';
 
 // Interface for web component properties
 interface MyRoomComponentAttributes {
