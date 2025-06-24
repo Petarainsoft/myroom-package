@@ -141,20 +141,31 @@ export const useItemManipulator = ({
     switch (currentGizmoMode) {
       case 'position':
         gizmoRef.current = new PositionGizmo(utilityLayerRef.current);
-        // Improve position gizmo sensitivity
+        // Improve position gizmo sensitivity and hide Y axis
         if (gizmoRef.current) {
           (gizmoRef.current as any).scaleRatio = 1.2;
           (gizmoRef.current as any).sensitivity = 1.5;
+          // Hide Y axis gizmo to prevent vertical movement
+          if ((gizmoRef.current as any).yGizmo) {
+            (gizmoRef.current as any).yGizmo.attachedMesh = null;
+          }
         }
         break;
       case 'rotation':
         gizmoRef.current = new RotationGizmo(utilityLayerRef.current);
-        // Improve rotation gizmo settings
+        // Only allow Y-axis rotation, hide X and Z axes
         if (gizmoRef.current) {
           (gizmoRef.current as any).scaleRatio = 1.2;
           (gizmoRef.current as any).sensitivity = 2.0;
           // Enable snap to grid for better control
           (gizmoRef.current as any).snapDistance = Math.PI / 12; // 15 degrees
+          // Hide X and Z rotation gizmos, only allow Y rotation
+          if ((gizmoRef.current as any).xGizmo) {
+            (gizmoRef.current as any).xGizmo.attachedMesh = null;
+          }
+          if ((gizmoRef.current as any).zGizmo) {
+            (gizmoRef.current as any).zGizmo.attachedMesh = null;
+          }
         }
         break;
       case 'scale':
@@ -189,20 +200,32 @@ export const useItemManipulator = ({
         });
       }
       
-      // Throttled updates during drag (reduced frequency)
+      // Throttled updates during drag (reduced frequency) with boundary constraints
       if (gizmo.onDragObservable) {
         gizmo.onDragObservable.add(() => {
+          // Constrain position within 4x4 area centered at (0,0,0)
+          if (mesh.position) {
+            mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
+            mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
+            // Keep Y position unchanged to prevent vertical movement
+            // mesh.position.y remains as is
+          }
           updateItemTransform(mesh.name, mesh, false);
         });
       }
       
-      // Final update on drag end (immediate)
+      // Final update on drag end (immediate) with boundary constraints
       if (gizmo.onDragEndObservable) {
         gizmo.onDragEndObservable.add(() => {
           isDraggingRef.current = false;
           if (transformTimeoutRef.current) {
             clearTimeout(transformTimeoutRef.current);
             transformTimeoutRef.current = null;
+          }
+          // Final constraint check on drag end
+          if (mesh.position) {
+            mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
+            mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
           }
           updateItemTransform(mesh.name, mesh, true);
         });
@@ -217,6 +240,11 @@ export const useItemManipulator = ({
             });
             
             axisGizmo.dragBehavior.onDragObservable.add(() => {
+              // Apply boundary constraints during axis drag
+              if (mesh.position) {
+                mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
+                mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
+              }
               updateItemTransform(mesh.name, mesh, false);
             });
             
@@ -225,6 +253,11 @@ export const useItemManipulator = ({
               if (transformTimeoutRef.current) {
                 clearTimeout(transformTimeoutRef.current);
                 transformTimeoutRef.current = null;
+              }
+              // Final boundary check on axis drag end
+              if (mesh.position) {
+                mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
+                mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
               }
               updateItemTransform(mesh.name, mesh, true);
             });

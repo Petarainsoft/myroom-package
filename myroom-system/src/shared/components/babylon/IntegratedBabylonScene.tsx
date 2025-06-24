@@ -2557,15 +2557,15 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         <button
           onClick={() => onGizmoModeChange?.('position')}
           style={{
-            backgroundColor: gizmoMode === 'position' ? 'rgba(33, 150, 243, 0.8)' : 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: gizmoMode === 'position' ? 'rgba(33, 150, 243, 0.8)' : 'rgba(0, 0, 0, 0.15)',
             color: 'white',
             border: gizmoMode === 'position' ? '2px solid #2196F3' : 'none',
-            borderRadius: '6px',
-            padding: '10px',
+            borderRadius: '1px',
+            padding: '5px',
             cursor: 'pointer',
-            fontSize: '18px',
-            width: '44px',
-            height: '44px',
+            fontSize: '13px',
+            width: '50px',
+            height: '25px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -2585,21 +2585,21 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
             }
           }}
         >
-          📍
+          Pos
         </button>
         
         <button
           onClick={() => onGizmoModeChange?.('rotation')}
           style={{
-            backgroundColor: gizmoMode === 'rotation' ? 'rgba(255, 152, 0, 0.8)' : 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: gizmoMode === 'rotation' ? 'rgba(255, 152, 0, 0.8)' : 'rgba(0, 0, 0, 0.15)',
             color: 'white',
             border: gizmoMode === 'rotation' ? '2px solid #FF9800' : 'none',
-            borderRadius: '6px',
-            padding: '10px',
+            borderRadius: '1px',
+            padding: '5px',
             cursor: 'pointer',
-            fontSize: '18px',
-            width: '44px',
-            height: '44px',
+            fontSize: '13px',
+            width: '50px',
+            height: '25px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -2619,21 +2619,21 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
             }
           }}
         >
-          🔄
+          Rot
         </button>
         
         <button
           onClick={() => onGizmoModeChange?.('scale')}
           style={{
-            backgroundColor: gizmoMode === 'scale' ? 'rgba(156, 39, 176, 0.8)' : 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: gizmoMode === 'scale' ? 'rgba(156, 39, 176, 0.8)' : 'rgba(0, 0, 0, 0.15)',
             color: 'white',
             border: gizmoMode === 'scale' ? '2px solid #9C27B0' : 'none',
-            borderRadius: '6px',
-            padding: '10px',
+            borderRadius: '1px',
+            padding: '5px',
             cursor: 'pointer',
-            fontSize: '18px',
-            width: '44px',
-            height: '44px',
+            fontSize: '13px',
+            width: '50px',
+            height: '25px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -2653,7 +2653,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
             }
           }}
         >
-          📏
+          Scale
         </button>
         </div>
       )}

@@ -147,7 +147,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   const [loadedItems, setLoadedItems] = useState<LoadedItem[]>([]);
   const [gizmoMode, setGizmoMode] = useState<'position' | 'rotation' | 'scale'>('position');
   
-  // Reset gizmo mode to 'position' when a new item is selected
+  // Auto-reset gizmo mode to position when item is selected
   useEffect(() => {
     if (selectedItem) {
       setGizmoMode('position');
@@ -410,12 +410,25 @@ const InteractiveRoomWithAvatar: React.FC = () => {
 
   // Item management handlers
   const handleAddItem = () => {
+    // Constrain position within 4x4 area centered at (0,0,0)
+    // Random position between -2 and 2 for both X and Z
+    const randomX = Math.random() * 4 - 2;
+    const randomZ = Math.random() * 4 - 2;
+    
+    // Ensure position is within bounds
+    const constrainedX = Math.max(-2, Math.min(2, randomX));
+    const constrainedZ = Math.max(-2, Math.min(2, randomZ));
+    
     const newItem: LoadedItem = {
       id: `item_${Date.now()}`,
       name: selectedItemToAdd.name,
       path: selectedItemToAdd.path,
-      position: { x: Math.random() * 4 - 2, y: 0, z: Math.random() * 4 - 2 }
+      position: { x: constrainedX, y: 0, z: constrainedZ },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 }
     };
+    
+    console.log(`Adding new item at position: (${constrainedX.toFixed(2)}, 0, ${constrainedZ.toFixed(2)})`);
     setLoadedItems(prev => [...prev, newItem]);
   };
 
@@ -700,12 +713,12 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 marginLeft: '8px', 
                 padding: '2px 8px', 
                 borderRadius: '4px', 
-                background: gizmoMode === 'position' ? '#2196F3' : gizmoMode === 'rotation' ? '#FF9800' : '#9C27B0',
+                // background: gizmoMode === 'position' ? '#2196F3' : gizmoMode === 'rotation' ? '#FF9800' : '#9C27B0',
                 fontSize: '12px'
               }}>
-                {gizmoMode === 'position' && '📍 Move'}
-                {gizmoMode === 'rotation' && '🔄 Rotate'}
-                {gizmoMode === 'scale' && '📏 Scale'}
+                {gizmoMode === 'position' && 'Move'}
+                {gizmoMode === 'rotation' && 'Rotate'}
+                {gizmoMode === 'scale' && 'Scale'}
               </span>
             </div>
             <div style={{ fontSize: '12px', color: '#ccc', lineHeight: '1.4' }}>
