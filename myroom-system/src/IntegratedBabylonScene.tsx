@@ -2441,6 +2441,53 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     };
   }, []);
 
+  // Listen for container resize events
+  useEffect(() => {
+    const interactiveContainer = document.querySelector('.interactive-room-container');
+    const babylonContainer = document.querySelector('.babylon-scene-container');
+    
+    if (!interactiveContainer || !babylonContainer) return;
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        
+        // Update babylon container size to match interactive container
+        (babylonContainer as HTMLElement).style.width = `${width}px`;
+        (babylonContainer as HTMLElement).style.height = `${height}px`;
+        
+        // Resize babylon engine and update camera viewport
+        if (engineRef.current && cameraRef.current) {
+          // Force engine resize
+          engineRef.current.resize();
+          
+          // Update camera aspect ratio to prevent distortion
+          const aspectRatio = width / height;
+          cameraRef.current.fov = 0.8; // Base FOV
+          
+          // Adjust FOV based on aspect ratio to maintain proper view
+          if (aspectRatio < 1) {
+            // Portrait mode - increase FOV slightly
+            cameraRef.current.fov = 0.9;
+          } else if (aspectRatio > 1.5) {
+            // Wide screen - decrease FOV slightly
+            cameraRef.current.fov = 0.7;
+          }
+          
+          // Force camera to update its projection matrix
+          cameraRef.current.getProjectionMatrix(true);
+        }
+      }
+    });
+
+    // Start observing the interactive container
+    resizeObserver.observe(interactiveContainer);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   return (
     <div>
       <canvas

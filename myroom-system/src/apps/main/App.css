@@ -545,6 +545,9 @@ html, body {
   overflow: hidden;
   min-height: 600px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  resize: both; /* Allow manual resizing */
+  max-width: 100%;
+  max-height: 80vh;
 }
 
 .babylon-scene-container {
@@ -553,6 +556,7 @@ html, body {
   height: 100%;
   min-height: 600px;
   overflow: hidden;
+  transition: width 0.2s ease, height 0.2s ease; /* Smooth resize transition */
 }
 
 .babylon-canvas {
