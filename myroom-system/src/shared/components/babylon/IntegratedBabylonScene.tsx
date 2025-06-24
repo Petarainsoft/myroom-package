@@ -2590,21 +2590,11 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         left: '0',
         width: '100%',
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         zIndex: 100,
-        paddingLeft: '20px',
-        paddingRight: '20px'
+        gap: '10px'
       }}>
-        {/* Empty div for left spacing */}
-        <div></div>
-        
-        {/* Center group with first 2 buttons */}
-        <div style={{
-          display: 'flex',
-          gap: '8px'
-        }}>
-        {/* Reset Button */}
         <button
           onClick={resetAll}
           style={{
@@ -2651,10 +2641,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         >
           {isFullscreen ? '⤓' : '⤢'}
         </button>
-        </div>
-
-        {/* Fullscreen Toggle Button - Aligned to right */}
-        <button
+           {/* Fullscreen Toggle Button - Aligned to right */}
+           <button
           onClick={onToggleUIOverlay}
           style={{
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -2675,8 +2663,11 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           
           title="Toggle UI Controls"
         >
-          ⚙️
+          ⚙
         </button>
+ 
+
+     
       </div>
 
       {/* Item Manipulation Toggle Buttons - Only show when item is selected */}

@@ -2592,7 +2592,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           }}
           title="Toggle UI Controls"
         >
-          ⚙️
+          👥
         </button>
 
         {/* Fullscreen Toggle Button */}
