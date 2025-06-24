@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { UtilityLayerRenderer, PositionGizmo, RotationGizmo, ScaleGizmo } from '@babylonjs/core';
 
 interface ItemManipulatorProps {
@@ -24,6 +24,8 @@ export const useItemManipulator = ({
 }: ItemManipulatorProps) => {
   const gizmoRef = useRef<PositionGizmo | RotationGizmo | ScaleGizmo | null>(null);
   const selectedItemRef = useRef<any>(null);
+  const transformTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isDraggingRef = useRef<boolean>(false);
 
   // Update selected item ref when selectedItem changes
   useEffect(() => {
@@ -75,16 +77,28 @@ export const useItemManipulator = ({
     }
   };
 
-  const updateItemTransform = (itemId: string, mesh: any) => {
-    if (onItemTransformChange) {
+  const updateItemTransform = useCallback((itemId: string, mesh: any, immediate: boolean = false) => {
+    if (!onItemTransformChange) return;
+    
+    const doUpdate = () => {
       const transform = {
         position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
         rotation: { x: mesh.rotation.x, y: mesh.rotation.y, z: mesh.rotation.z },
         scale: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z }
       };
       onItemTransformChange(itemId, transform);
+    };
+    
+    if (immediate || !isDraggingRef.current) {
+      doUpdate();
+    } else {
+      // Debounce updates during dragging to reduce re-renders
+      if (transformTimeoutRef.current) {
+        clearTimeout(transformTimeoutRef.current);
+      }
+      transformTimeoutRef.current = setTimeout(doUpdate, 16); // ~60fps
     }
-  };
+  }, [onItemTransformChange]);
 
   const updateGizmo = (mesh: any) => {
     if (!utilityLayerRef.current) return;
@@ -136,55 +150,63 @@ export const useItemManipulator = ({
       (gizmoRef.current as any).updateGizmoPositionToMatchAttachedMesh = true;
     }
 
-    // Add drag callbacks for real-time updates
+    // Add optimized drag callbacks to reduce re-renders
     if (gizmoRef.current) {
       const gizmo = gizmoRef.current as any;
       
-      // Real-time updates during drag
+      // Track drag start/end to optimize updates
+      if (gizmo.onDragStartObservable) {
+        gizmo.onDragStartObservable.add(() => {
+          isDraggingRef.current = true;
+        });
+      }
+      
+      // Throttled updates during drag (reduced frequency)
       if (gizmo.onDragObservable) {
         gizmo.onDragObservable.add(() => {
-          updateItemTransform(mesh.name, mesh);
+          updateItemTransform(mesh.name, mesh, false);
         });
       }
       
-      // Final update on drag end
+      // Final update on drag end (immediate)
       if (gizmo.onDragEndObservable) {
         gizmo.onDragEndObservable.add(() => {
-          updateItemTransform(mesh.name, mesh);
+          isDraggingRef.current = false;
+          if (transformTimeoutRef.current) {
+            clearTimeout(transformTimeoutRef.current);
+            transformTimeoutRef.current = null;
+          }
+          updateItemTransform(mesh.name, mesh, true);
         });
       }
       
-      // For rotation gizmo, add specific rotation callbacks
-      if (currentGizmoMode === 'rotation' && gizmo.xGizmo && gizmo.yGizmo && gizmo.zGizmo) {
-        [gizmo.xGizmo, gizmo.yGizmo, gizmo.zGizmo].forEach(axisGizmo => {
-          if (axisGizmo.dragBehavior) {
+      // Setup axis-specific drag behaviors with optimized callbacks
+      const setupAxisDragBehaviors = (axisGizmos: any[]) => {
+        axisGizmos.forEach(axisGizmo => {
+          if (axisGizmo?.dragBehavior) {
+            axisGizmo.dragBehavior.onDragStartObservable.add(() => {
+              isDraggingRef.current = true;
+            });
+            
             axisGizmo.dragBehavior.onDragObservable.add(() => {
-              updateItemTransform(mesh.name, mesh);
+              updateItemTransform(mesh.name, mesh, false);
+            });
+            
+            axisGizmo.dragBehavior.onDragEndObservable.add(() => {
+              isDraggingRef.current = false;
+              if (transformTimeoutRef.current) {
+                clearTimeout(transformTimeoutRef.current);
+                transformTimeoutRef.current = null;
+              }
+              updateItemTransform(mesh.name, mesh, true);
             });
           }
         });
-      }
+      };
       
-      // For position gizmo, add specific position callbacks
-      if (currentGizmoMode === 'position' && gizmo.xGizmo && gizmo.yGizmo && gizmo.zGizmo) {
-        [gizmo.xGizmo, gizmo.yGizmo, gizmo.zGizmo].forEach(axisGizmo => {
-          if (axisGizmo.dragBehavior) {
-            axisGizmo.dragBehavior.onDragObservable.add(() => {
-              updateItemTransform(mesh.name, mesh);
-            });
-          }
-        });
-      }
-      
-      // For scale gizmo, add specific scale callbacks
-      if (currentGizmoMode === 'scale' && gizmo.xGizmo && gizmo.yGizmo && gizmo.zGizmo) {
-        [gizmo.xGizmo, gizmo.yGizmo, gizmo.zGizmo].forEach(axisGizmo => {
-          if (axisGizmo.dragBehavior) {
-            axisGizmo.dragBehavior.onDragObservable.add(() => {
-              updateItemTransform(mesh.name, mesh);
-            });
-          }
-        });
+      // Apply to all gizmo types
+      if (gizmo.xGizmo && gizmo.yGizmo && gizmo.zGizmo) {
+        setupAxisDragBehaviors([gizmo.xGizmo, gizmo.yGizmo, gizmo.zGizmo]);
       }
     }
   };
@@ -204,9 +226,12 @@ export const useItemManipulator = ({
     }
   }, [selectedItem]);
 
-  // Cleanup gizmo on unmount
+  // Cleanup gizmo and timeouts on unmount
   useEffect(() => {
     return () => {
+      if (transformTimeoutRef.current) {
+        clearTimeout(transformTimeoutRef.current);
+      }
       if (gizmoRef.current) {
         gizmoRef.current.dispose();
         gizmoRef.current = null;
