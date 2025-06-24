@@ -17,7 +17,7 @@ const getConfiguredDomain = () => {
   }
   
   // Default domain (used during development or if not configured)
-  return 'myroom.petarainsoft.com';
+  return 'https://myroom.petarainsoft.com';
 };
 
 // Base domain configuration

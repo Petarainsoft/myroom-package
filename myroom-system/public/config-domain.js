@@ -8,7 +8,7 @@
 (function() {
   // Set this to your actual domain after deployment
   window.MYROOM_CONFIG = {
-    baseDomain: 'myroom.petarainsoft.com'
+    baseDomain: 'https://myroom.petarainsoft.com'
   };
   
   console.log('MyRoom domain configuration loaded:', window.MYROOM_CONFIG.baseDomain);
