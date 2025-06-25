@@ -15,13 +15,11 @@ export const availablePartsData: AvailableParts = {
       ],
   
       top: [
-        { name: "No Top",               fileName: null },
         { name: "Male T-Shirt 1",       fileName: "/models/male/male_top/male_top_001.glb" },
         { name: "Male Jacket 1",        fileName: "/models/male/male_top/male_top_002.glb" },
       ],
   
       bottom: [
-        { name: "No Bottom",            fileName: null },
         { name: "Male Pant 1",          fileName: "/models/male/male_bottom/male_bottom_001.glb" },
       ],
   
@@ -67,13 +65,11 @@ export const availablePartsData: AvailableParts = {
       ],
   
       top: [
-        { name: "No Top",                fileName: null },
         { name: "Blazer",          fileName: "/models/female/female_top/female_top_001.glb" },
         { name: "Shirt",          fileName: "/models/female/female_top/female_top_002.glb" },
       ],
   
       bottom: [
-        { name: "No Bottom",             fileName: null },
         { name: "Cute Pants",       fileName: "/models/female/female_bottom/female_bottom_001.glb" },
         { name: "Flower Pants",       fileName: "/models/female/female_bottom/female_bottom_002.glb" },
       ],
