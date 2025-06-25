@@ -1,3 +1,5 @@
 *.pem
 colorverse-apis-private/
 colorverse-apis-white/
+node_modules/
+apps/
