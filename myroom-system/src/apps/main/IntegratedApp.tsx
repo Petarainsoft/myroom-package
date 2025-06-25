@@ -527,10 +527,10 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                   boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
                   backdropFilter: 'blur(5px)'
                 }}>
-                  <strong>Control Guide</strong><br />
+                  <strong>Control instructions:</strong><br />
                   <span>
-                    Left mouse click and hold to orbit the camera<br />
-                    Left mouse double click to move avatar<br />
+                    Click and hold the left mouse button to orbit the camera <br/>
+                    Double-click to move your character  <br/>
                     {/* Mouse right Click hold / 2 fingers to pan camera */}
                   </span>
                 </div>
