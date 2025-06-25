@@ -36,6 +36,7 @@ class MyRoomWebComponent extends HTMLElement {
   private scene: Scene | null = null;
   private reactRoot: any = null;
   private isInitialized = false;
+  private isUpdatingProgrammatically = false;
 
   // Observed attributes
   static get observedAttributes() {
@@ -172,7 +173,7 @@ class MyRoomWebComponent extends HTMLElement {
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    if (oldValue !== newValue) {
+    if (oldValue !== newValue && !this.isUpdatingProgrammatically) {
       switch (name) {
         case 'width':
         case 'height':
@@ -180,9 +181,19 @@ class MyRoomWebComponent extends HTMLElement {
           break;
         case 'room':
         case 'gender':
-        case 'avatar-config':
+          // These require full reinitialization as they change core scene structure
           if (this.isInitialized) {
             this.reinitialize();
+          }
+          break;
+        case 'avatar-config':
+        case 'loaded-items':
+        case 'gizmo-mode':
+        case 'enable-controls':
+        case 'camera-controls':
+          // These can be updated without full reinitialization
+          if (this.isInitialized) {
+            this.updateProps();
           }
           break;
         default:
@@ -330,10 +341,35 @@ class MyRoomWebComponent extends HTMLElement {
     };
   }
 
-  private updateProps() {
+  private async updateProps() {
     if (this.reactRoot && this.isInitialized) {
-      // Re-render with new props
-      this.reinitialize();
+      // Re-render with new props without full reinitialization
+      const [React, IntegratedBabylonScene] = await Promise.all([
+        import('react'),
+        import('../../shared/components/babylon/IntegratedBabylonScene')
+      ]);
+      
+      const props = this.getReactProps();
+      
+      const App = React.createElement(IntegratedBabylonScene.default, {
+        ...props,
+        onSceneReady: (scene: Scene) => {
+          this.scene = scene;
+          this.engine = scene.getEngine();
+          this.hideLoading();
+          this.dispatchEvent(new CustomEvent('scene-ready', {
+            detail: { scene, engine: this.engine }
+          }));
+        },
+        onError: (error: any) => {
+          this.showError(error.message || 'Failed to load 3D scene');
+          this.dispatchEvent(new CustomEvent('error', {
+            detail: { message: error.message, error }
+          }));
+        }
+      });
+      
+      this.reactRoot.render(App);
     }
   }
 
@@ -393,15 +429,38 @@ class MyRoomWebComponent extends HTMLElement {
     }
   }
 
-  public changeAvatar(config: AvatarConfig) {
-    this.setAttribute('avatar-config', JSON.stringify(config));
-    this.dispatchEvent(new CustomEvent('avatar-changed', {
-      detail: { config }
-    }));
+  public async changeAvatar(config: AvatarConfig) {
+    if (this.reactRoot && this.isInitialized) {
+      // Update attribute silently for state persistence
+      this.isUpdatingProgrammatically = true;
+      this.setAttribute('avatar-config', JSON.stringify(config));
+      this.isUpdatingProgrammatically = false;
+      
+      // Update React component directly
+      await this.updateProps();
+      
+      this.dispatchEvent(new CustomEvent('avatar-changed', {
+        detail: { config }
+      }));
+    } else {
+      // Fallback for non-initialized component
+      this.setAttribute('avatar-config', JSON.stringify(config));
+    }
   }
 
-  public loadItems(items: LoadedItem[]) {
-    this.setAttribute('loaded-items', JSON.stringify(items));
+  public async loadItems(items: LoadedItem[]) {
+    if (this.reactRoot && this.isInitialized) {
+      // Update attribute silently for state persistence
+      this.isUpdatingProgrammatically = true;
+      this.setAttribute('loaded-items', JSON.stringify(items));
+      this.isUpdatingProgrammatically = false;
+      
+      // Update React component directly without full reload
+      await this.updateProps();
+    } else {
+      // Fallback for non-initialized component
+      this.setAttribute('loaded-items', JSON.stringify(items));
+    }
   }
 
   public getScene(): Scene | null {
