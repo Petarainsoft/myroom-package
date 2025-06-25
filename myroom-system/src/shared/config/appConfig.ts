@@ -17,7 +17,9 @@ const getConfiguredDomain = () => {
   }
   
   // Default domain (used during development or if not configured)
-  return 'http://localhost:5173';
+  // return 'http://localhost:5173'; // local test, should change port accordingly
+  //return 'http://192.168.1.x:5173'; change to deployed url to LAN test, for example: mobile device access. Change Port accordingly
+  return 'https://myroom.petarainsoft.com';
 };
 
 // Base domain configuration
