@@ -825,7 +825,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       <div className="code-block">
                         <pre><code>
 {`<iframe 
-  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female&autoplay=true" 
+  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female" 
   width="800" 
   height="600" 
   style="border: none; border-radius: 8px;" 
@@ -835,7 +835,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                         <button 
                            className="copy-button" 
                            onClick={() => handleCopyCode(`<iframe 
-  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female&autoplay=true" 
+  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female" 
   width="800" 
   height="600" 
   style="border: none; border-radius: 8px;" 
@@ -863,7 +863,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             <td>Path to the room model</td>
                             <td>/models/rooms/cate001/MR_KHROOM_0001.glb
                               <br />/models/rooms/cate001/MR_KHROOM_0002.glb
-                              <br />/models/rooms/cate002/MR_KHROOM_0001.glb
+                              <br />/models/rooms/cate002/MR_KHROOM_0003glb
                             </td>
                           </tr>
                           <tr>
@@ -871,11 +871,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             <td>Avatar gender (male/female)</td>
                             <td>female</td>
                           </tr>
-                          <tr>
+                          {/* <tr>
                             <td>autoplay</td>
                             <td>Auto-start the scene (true/false)</td>
                             <td>true</td>
-                          </tr>
+                          </tr> */}
                         </tbody>
                       </table>
                       
@@ -986,7 +986,7 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                             <td>Path to the room model</td>
                             <td>/models/rooms/cate001/MR_KHROOM_0001.glb
                               <br />/models/rooms/cate001/MR_KHROOM_0002.glb
-                              <br />/models/rooms/cate002/MR_KHROOM_0001.glb
+                              <br />/models/rooms/cate002/MR_KHROOM_0003.glb
                             </td>
                           </tr>
                           <tr>
@@ -1021,7 +1021,7 @@ mainScene.setAttribute('gender', 'male');
 mainScene.setAttribute('gender', 'female');
 
 // Change room
-mainScene.setAttribute('room', '/models/rooms/cate002/MR_BEDROOM_0001.glb');
+mainScene.setAttribute('room', '/models/rooms/cate002/MR_KHROOM_0003.glb');
 
 // Customize avatar with detailed configuration
 const avatarConfig = {
@@ -1030,10 +1030,6 @@ const avatarConfig = {
     "body": "/models/male/male_body/male_body.glb",
     "hair": "/models/male/male_hair/male_hair_001.glb",
     "fullset": "/models/male/male_fullset/male_fullset_003.glb"
-  },
-  "colors": {
-    "hair": "#4A301B",
-    "top": "#1E90FF"
   }
 };
 if (mainScene && mainScene.changeAvatar) {

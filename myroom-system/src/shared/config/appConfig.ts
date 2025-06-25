@@ -31,7 +31,7 @@ export const domainConfig = {
   
   // Paths for different resources
   paths: {
-    webComponent: '/myroom-component.js',
+    webComponent: '/dist/myroom-webcomponent.umd.js',
     embedHtml: '/embed.html',
     models: {
       rooms: '/models/rooms',
