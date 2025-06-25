@@ -476,6 +476,13 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             <h2>Welcome to MyRoom Service</h2>
             <p>Explore our 3D room and avatar system embedded seamlessly into any website</p>
           </div>
+          <div><br></br></div>
+          <div><br></br></div>
+          <div className="container">
+            {/* <h3>Ready to Get Started?</h3> */}
+            {/* <p>It only takes a couple of minutes to integrate our 3D room and avatar into your website.</p> */}
+            <button className="cta-button" onClick={() => setShowIntegrationGuide(true)}>Get Started Now</button>
+          </div>
         </section>
         
         {/* Embedded 3D Application Container */}
@@ -777,13 +784,13 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           </div>
         </section> */}
         
-        <section className="cta-section">
+        {/* <section className="cta-section">
           <div className="container">
             <h3>Ready to Get Started?</h3>
             <p>It only takes a couple of minutes to integrate our 3D room and avatar into your website.</p>
             <button className="cta-button" onClick={() => setShowIntegrationGuide(true)}>Get Started Now</button>
           </div>
-        </section>
+        </section> */}
         
         {/* Integration Guide Modal */}
         {showIntegrationGuide && (
@@ -1177,7 +1184,7 @@ mainScene.addEventListener('item-selected', (event) => {
               <h4>Company</h4>
               <ul>
                 <li><a href="https://petarainsoft.com">About Us</a></li>
-                <li><a href="https://petarainsoft.com">Careers</a></li>
+                {/* <li><a href="https://petarainsoft.com">Careers</a></li> */}
                 {/* <li><a href="#">Press</a></li> */}
               </ul>
             </div>
