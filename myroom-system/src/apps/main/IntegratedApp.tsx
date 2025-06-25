@@ -55,7 +55,7 @@ const IntegratedApp: React.FC = () => {
 
   const renderIntegratedMode = () => (
     <div className="integrated-container">
-      <div className="integrated-header">
+      {/* <div className="integrated-header"> */}
         {/* <h1>🎮 Integrated Room & Avatar System</h1> */}
         {/* <button 
           className="back-btn"
@@ -63,7 +63,7 @@ const IntegratedApp: React.FC = () => {
         >
           ← Back
         </button> */}
-      </div>
+      {/* </div> */}
       
       <div className="integrated-content">
         {/* Main content area without tabs */}
