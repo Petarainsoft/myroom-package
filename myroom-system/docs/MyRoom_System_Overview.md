@@ -142,18 +142,12 @@ mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
 });
 
-mainScene.addEventListener('item-selected', (event) => {
-  console.log('Item selected:', event.detail.item);
-});
-
 ```
 
 **Available Events:**
 
 - `scene-ready`: Fired when the 3D scene is loaded and ready
 - `avatar-changed`: Fired when the avatar configuration changes
-- `item-selected`: Fired when an item in the scene is selected
-- `error`: Fired when an error occurs
 
 **Demo Pages:**
 

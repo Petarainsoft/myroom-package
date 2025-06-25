@@ -1057,10 +1057,7 @@ mainScene.addEventListener('scene-ready', (event) => {
 mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
 });
-
-mainScene.addEventListener('item-selected', (event) => {
-  console.log('Item selected:', event.detail.item);
-});`}
+`}
                         </code></pre>
                         <button 
                            className="copy-button"
@@ -1117,10 +1114,6 @@ mainScene.addEventListener('scene-ready', (event) => {
 
 mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
-});
-
-mainScene.addEventListener('item-selected', (event) => {
-  console.log('Item selected:', event.detail.item);
 });`)}
                          >
                            Copy Code
