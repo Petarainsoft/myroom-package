@@ -819,6 +819,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                    
                    <div className="tab-content">
                      <div className={`tab-pane ${activeTab === 'iframe' ? 'active' : ''}`}>
+                      <h4>Demo Page</h4>
+                      <p><a href="https://myroom.petarainsoft.com/iframe-demo.html">Iframe integration demo</a></p>
                       <h4>Instruction</h4>
                       <p>The simplest way to embed MyRoom into the website is using an iframe.</p>
                       
@@ -924,6 +926,8 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                     </div>
                     
                     <div className={`tab-pane ${activeTab === 'webcomponent' ? 'active' : ''}`}>
+                      <h4>Demo Page</h4>
+                      <p><a href="https://myroom.petarainsoft.com/webcomponent-simple-demo.html">Web Component integration demo</a> </p>
                       <h4>Instruction</h4>
                       <p>You can use Web Componen for coming advanced features and deeper integration.</p>
                       

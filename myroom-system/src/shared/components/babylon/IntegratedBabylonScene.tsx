@@ -2633,7 +2633,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           {isFullscreen ? '⤓' : '⤢'}
         </button>
            {/* Fullscreen Toggle Button - Aligned to right */}
-           {/* <button
+           <button
           onClick={onToggleUIOverlay}
           style={{
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -2655,7 +2655,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           title="Toggle UI Controls"
         >
           ⚙
-        </button> */}
+        </button>
  
 
      
