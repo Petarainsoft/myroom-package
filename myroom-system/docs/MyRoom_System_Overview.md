@@ -157,5 +157,5 @@ mainScene.addEventListener('item-selected', (event) => {
 
 **Demo Pages:**
 
-- `iframe-demo.html`: Complete iframe integration demo
-- `webcomponent-simple-demo.html`: Full web component API demonstration
+- `iframe-demo.html`: https://myroom.petarainsoft.com/iframe-demo.html simple iframe integration demo
+- `webcomponent-simple-demo.html`: https://myroom.petarainsoft.com/webcomponent-simple-demo.html  simple web component API demonstration

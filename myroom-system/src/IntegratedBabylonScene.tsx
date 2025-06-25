@@ -1710,11 +1710,18 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                             console.log(`[AVATAR_PARTS] Syncing ${partType} with current animation: ${currentAnimRef.current.name}`);
                           }
                           
-                          // Enable and show new part
+                          // Show part based on animation readiness
+                          // If animations are already ready, show immediately; otherwise keep hidden
                           partResult.meshes.forEach(mesh => {
-                            mesh.setEnabled(true);
-                            mesh.isVisible = true;
-                            console.log(`[AVATAR_PARTS] ✅ Activated mesh ${mesh.name} after animation sync`);
+                            if (isAnimationReady && idleAnimRef.current) {
+                              mesh.setEnabled(true);
+                              mesh.isVisible = true;
+                              console.log(`[AVATAR_PARTS] ✅ Part ${mesh.name} shown immediately - animations already ready`);
+                            } else {
+                              mesh.setEnabled(false);
+                              mesh.isVisible = false;
+                              console.log(`[AVATAR_PARTS] ✅ Part ${mesh.name} loaded but kept hidden until all parts ready`);
+                            }
                           });
                           
                           console.log(`[AVATAR_PARTS] ✅ ${partType} part successfully activated with synchronized animations`);

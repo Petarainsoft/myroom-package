@@ -1672,17 +1672,26 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                     meshNames: partResult.meshes.map(m => m.name)
                   });
 
-                  // Assign parent and show new part immediately for seamless transition
+                  // Assign parent and show part based on animation readiness
                   partResult.meshes.forEach(mesh => {
                     if (mesh.parent === null && avatarRef.current) {
                       mesh.parent = avatarRef.current;
                       console.log(`[AVATAR_PARTS] Assigned parent for mesh ${mesh.name}`);
                     }
-                    // Show part immediately to eliminate visible delay
-                    mesh.setEnabled(true);
-                    mesh.isVisible = true;
+                    
+                    // If animations are already ready, show the part immediately
+                    // Otherwise, keep it hidden until animations are ready
+                    if (isAnimationReady && idleAnimRef.current) {
+                      mesh.setEnabled(true);
+                      mesh.isVisible = true;
+                      console.log(`[AVATAR_PARTS] ${partType} part shown immediately - animations already ready`);
+                    } else {
+                      mesh.setEnabled(false);
+                      mesh.isVisible = false;
+                      console.log(`[AVATAR_PARTS] ${partType} part loaded but kept hidden until animation ready`);
+                    }
+                    
                     mesh.metadata = { fileName: partData.fileName };
-                    console.log(`[AVATAR_PARTS] ${partType} part activated immediately for seamless transition`);
                   });
 
                   // Move directly to loaded parts instead of pending
