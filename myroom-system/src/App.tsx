@@ -1,4 +1,4 @@
-import IntegratedApp from './IntegratedApp';
+import IntegratedApp from './apps/main/IntegratedApp';
 import './App.css';
 
 export default function App() {

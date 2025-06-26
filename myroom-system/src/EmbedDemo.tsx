@@ -1,5 +1,5 @@
 import React from 'react';
-import { IntegratedBabylonScene } from './IntegratedBabylonScene';
+import { IntegratedBabylonScene } from './shared/components/babylon/IntegratedBabylonScene';
 import { getDefaultConfigForGender } from './shared/data/avatarPartsData';
 
 // Props from URL parameters for embed
