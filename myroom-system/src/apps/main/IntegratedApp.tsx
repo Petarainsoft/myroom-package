@@ -514,26 +514,28 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 </div>
                 
                 {/* Movement Instructions */}
-                <div className="movement-instructions" style={{ 
-                  position: 'absolute', 
-                  bottom: '20px', 
-                  left: '20px', 
-                  fontSize: '0.9em', 
-                  textAlign: 'left', 
-                  padding: '10px', 
-                  background: 'rgba(249, 249, 249, 0.8)', 
-                  borderRadius: '4px',
-                  zIndex: 1000,
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  backdropFilter: 'blur(5px)'
-                }}>
-                  <strong>Control instructions:</strong><br />
-                  <span>
-                    Click and hold the left mouse button to orbit the camera <br/>
-                    Double-click to move your character  <br/>
-                    {/* Mouse right Click hold / 2 fingers to pan camera */}
-                  </span>
-                </div>
+                {showControls && (
+                  <div className="movement-instructions" style={{ 
+                    position: 'absolute', 
+                    bottom: '20px', 
+                    left: '20px', 
+                    fontSize: '0.9em', 
+                    textAlign: 'left', 
+                    padding: '10px', 
+                    background: 'rgba(249, 249, 249, 0.8)', 
+                    borderRadius: '4px',
+                    zIndex: 1000,
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(5px)'
+                  }}>
+                    <strong>Control instructions:</strong><br />
+                    <span>
+                      Click and hold the left mouse button to orbit the camera <br/>
+                      Double-click to move your character  <br/>
+                      {/* Mouse right Click hold / 2 fingers to pan camera */}
+                    </span>
+                  </div>
+                  )}
                 
                   
                 {/* Integrated UI Controls Overlay - Docked to Right */}

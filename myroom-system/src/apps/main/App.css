@@ -545,7 +545,7 @@ html, body {
   overflow: hidden;
   min-height: 600px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  resize: both; /* Allow manual resizing */
+  resize: none;
   max-width: 100%;
   max-height: 80vh;
 }
@@ -567,6 +567,7 @@ html, body {
   height: 100% !important;
   display: block;
   pointer-events: auto;
+  outline: none;
 }
 
 /* Features Section */

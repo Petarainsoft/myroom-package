@@ -1010,8 +1010,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       // Create camera - positioned to look from opposite side towards center
       const camera = new ArcRotateCamera(
         'camera',
-        Math.PI / 1.34,  // Changed from -Math.PI / 2 to Math.PI / 2 for opposite side
-        Math.PI / 3,
+        Math.PI / 1.335,  // Changed from -Math.PI / 2 to Math.PI / 2 for opposite side
+        Math.PI / 2.8,
         10,
         DEFAULT_CAMERA_TARGET_POSITION,
         scene
@@ -1021,7 +1021,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       camera.fov = 0.8; // Slightly narrower FOV for better detail
       camera.wheelPrecision = 50; // More precise zooming
       camera.lowerRadiusLimit = 2; // Limit how close camera can get
-      camera.upperRadiusLimit = 20; // Limit how far camera can go
+      camera.upperRadiusLimit = 15; // Limit how far camera can go
       cameraRef.current = camera;
 
       // Create enhanced lighting with increased brightness
@@ -2594,20 +2594,21 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         <button
           onClick={resetAll}
           style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
             padding: '8px',
             cursor: 'pointer',
             fontSize: '16px',
-            width: '36px',
-            height: '36px',
+            width: '32px',
+            height: '32px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             backdropFilter: 'blur(2px)',
-            transition: 'background-color 0.2s ease'
+            transition: 'background-color 0.2s ease',
+            outline: 'none'
           }}
           title="Reset Camera and Avatar"
         >
@@ -2618,20 +2619,21 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         <button
           onClick={toggleFullscreen}
           style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
             padding: '8px',
             cursor: 'pointer',
             fontSize: '16px',
-            width: '36px',
-            height: '36px',
+            width: '32px',
+            height: '32px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             backdropFilter: 'blur(2px)',
-            transition: 'background-color 0.2s ease'
+            transition: 'background-color 0.2s ease',
+            outline: 'none'
           }}
           title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
         >
@@ -2641,20 +2643,21 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
            <button
           onClick={onToggleUIOverlay}
           style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.3)',
             color: 'white',
             border: 'none',
             borderRadius: '4px',
             padding: '8px',
             cursor: 'pointer',
             fontSize: '16px',
-            width: '36px',
-            height: '36px',
+            width: '32px',
+            height: '32px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             backdropFilter: 'blur(2px)',
-            transition: 'background-color 0.2s ease'
+            transition: 'background-color 0.2s ease',
+            outline: 'none'
           }}
           
           title="Toggle UI Controls"
