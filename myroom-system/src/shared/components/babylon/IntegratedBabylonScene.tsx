@@ -856,10 +856,10 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   const AVATAR_BOUNDARY_LIMIT = 2.2;
   
   // Camera target offset to focus on avatar's head instead of feet
-  const CAMERA_TARGET_HEAD_OFFSET = 1.7;
+  const CAMERA_TARGET_HEAD_OFFSET = 1;
   
   // Setup default camera target - updated to match new initial position
-  const defaultCameraTarget = new Vector3(0, 1, 0);
+  const DEFAULT_CAMERA_TARGET_POSITION = new Vector3(0, 1, 0);
 
   // Function to reset camera with smooth animation
   const resetCamera = () => {
@@ -873,7 +873,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       const defaultAlpha = Math.PI / 2;
       const defaultBeta = Math.PI / 3;
       const defaultRadius = 10;
-      const defaultTarget = new Vector3(0, 1, 0);
+      const defaultTarget = DEFAULT_CAMERA_TARGET_POSITION;
 
       // Animation duration in frames (60fps)
       const animationDuration = 60; // 1 second
@@ -1010,10 +1010,10 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       // Create camera - positioned to look from opposite side towards center
       const camera = new ArcRotateCamera(
         'camera',
-        Math.PI / 2,  // Changed from -Math.PI / 2 to Math.PI / 2 for opposite side
+        Math.PI / 1.34,  // Changed from -Math.PI / 2 to Math.PI / 2 for opposite side
         Math.PI / 3,
         10,
-        new Vector3(0, 1, 0),  // Looking at (0,1,0) instead of center
+        DEFAULT_CAMERA_TARGET_POSITION,
         scene
       );
       camera.attachControl(canvasRef.current!, true);
@@ -1054,6 +1054,11 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       // Create avatar container
       const avatarContainer = new TransformNode('avatarContainer', scene);
       avatarContainer.position = new Vector3(0, 0, 0);
+      // Calculate rotation to face the camera
+      const cameraPosition = camera.position.clone();
+      const directionToCamera = cameraPosition.subtract(avatarContainer.position);
+      avatarContainer.rotation.y = Math.atan2(directionToCamera.x, directionToCamera.z); // Adjust rotation to face the camera
+      
       avatarRef.current = avatarContainer;
 
       // Create items container
