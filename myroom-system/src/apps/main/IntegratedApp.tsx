@@ -193,7 +193,16 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   const [babylonScene, setBabylonScene] = useState<any>(null);
   const integratedSceneRef = useRef<any>(null);
   const [showIntegrationGuide, setShowIntegrationGuide] = useState(false);
+  const [isClosing, setIsClosing] = useState(false); // New state for fade-out effect
   const [activeTab, setActiveTab] = useState('iframe');
+
+  const closeIntegrationGuide = () => {
+    setIsClosing(true); // Start fade-out animation
+    setTimeout(() => {
+      setShowIntegrationGuide(false); // Hide modal after animation completes
+      setIsClosing(false); // Reset closing state
+    }, 150); // Match the duration of the fade-out animation
+  };
   
   // Apply modal styles
   useEffect(() => {
@@ -228,7 +237,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && showIntegrationGuide) {
-        setShowIntegrationGuide(false);
+        closeIntegrationGuide();
       }
     };
     
@@ -453,9 +462,22 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       {/* Website Header - Pure Web Content */}
       <header className="website-header">
         <div className="container">
-          <h1><img src="/icon/petarainlogo.png" alt="Petarainsoft - MyRoom Service" style={{height: '40px', verticalAlign: 'middle'}} /></h1>
+        <h1>
+          <img 
+            src="/icon/petarainlogo.png" 
+            alt="Petarainsoft - MyRoom Service" 
+            style={{ height: '40px', verticalAlign: 'middle', cursor: 'pointer' }} 
+            onClick={() => window.location.reload()} // Refresh the page when clicking the logo
+          />
+        </h1>
           <nav className="main-nav">
-            <a href="#">Home</a>
+            <a 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.reload(); // Refresh the page when clicking Home
+              }}
+            >Home</a>
             <a href="#" onClick={(e) => {
               e.preventDefault();
               document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -796,11 +818,17 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         
         {/* Integration Guide Modal */}
         {showIntegrationGuide && (
-          <div className="integration-guide-modal">
+          <div className={`integration-guide-modal ${isClosing ? 'fade-out' : ''}`}
+          onClick={(e) => {
+            // Close modal if the click is outside the modal content
+            if (e.target === e.currentTarget) {
+              closeIntegrationGuide();
+            }
+          }}>
             <div className="modal-content">
               <div className="modal-header">
                 <h2>Integration Guide</h2>
-                <button className="close-button" onClick={() => setShowIntegrationGuide(false)}>×</button>
+                <button className="close-button" onClick={() => closeIntegrationGuide()}>×</button>
               </div>
               <div className="modal-body">
                 <div className="integration-tabs">
@@ -1163,7 +1191,7 @@ mainScene.addEventListener('avatar-changed', (event) => {
                 </div> */}
               </div>
               <div className="modal-footer">
-                <button className="primary-button" onClick={() => setShowIntegrationGuide(false)}>Close</button>
+                <button className="primary-button" onClick={() => closeIntegrationGuide()}>Close</button>
                 {/* <a href="https://petarainsoft.com" className="secondary-button" target="_blank" rel="noopener noreferrer">Contact Support</a> */}
               </div>
             </div>
@@ -1222,13 +1250,28 @@ const modalStyles = `
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.15s ease-out;
+  }
+
+  .integration-guide-modal.fade-out {
+    animation: fadeOutSlideDown 0.15s ease-out; /* Fade-out animation */
   }
   
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
+
+  @keyframes fadeOutSlideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0); /* Start at the current position */
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px); /* Slide up by 20px */
+  }
+}
   
   .modal-content {
     background-color: white;
@@ -1339,15 +1382,22 @@ const modalStyles = `
     color: #666;
     cursor: pointer;
     transition: all 0.2s;
+    outline: none;
   }
   
   .tab-button:hover {
     color: #333;
+    outline: none;
+  }
+
+  .tab-button:focus {
+    outline: none;
   }
   
   .tab-button.active {
     color: #4CAF50;
     border-bottom-color: #4CAF50;
+    outline: none;
   }
   
   .tab-content {
