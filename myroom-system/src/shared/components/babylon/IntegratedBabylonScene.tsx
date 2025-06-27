@@ -33,6 +33,7 @@ import { LoadedItem } from '../../types/LoadedItem';
 import { ClonedAnimation } from '../../types/ClonedAnimation';
 import { ItemManipulationControls } from './ItemManipulationControls';
 import { useAvatarMovement } from './useAvatarMovement';
+import SceneControlButtons from './SceneControlButtons';
 
 // Props cho component IntegratedBabylonScene
 interface IntegratedSceneProps {
@@ -2225,94 +2226,12 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       />
 
       {/* Control Buttons */}
-      <div style={{
-        position: 'absolute',
-        top: '10px',
-        left: '0',
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 100,
-        gap: '10px'
-      }}>
-        <button
-          onClick={resetAll}
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '8px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            width: '32px',
-            height: '32px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backdropFilter: 'blur(2px)',
-            transition: 'background-color 0.2s ease',
-            outline: 'none'
-          }}
-          title="Reset Camera and Avatar"
-        >
-          🔄
-        </button>
-        
-        {/* Toggle UI Overlay Button */}
-        <button
-          onClick={toggleFullscreen}
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '8px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            width: '32px',
-            height: '32px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backdropFilter: 'blur(2px)',
-            transition: 'background-color 0.2s ease',
-            outline: 'none'
-          }}
-          title={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
-        >
-          {isFullscreen ? '⤓' : '⤢'}
-        </button>
-           {/* Fullscreen Toggle Button - Aligned to right */}
-           <button
-          onClick={onToggleUIOverlay}
-          style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.3)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            padding: '8px',
-            cursor: 'pointer',
-            fontSize: '16px',
-            width: '32px',
-            height: '32px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backdropFilter: 'blur(2px)',
-            transition: 'background-color 0.2s ease',
-            outline: 'none'
-          }}
-          
-          title="Toggle UI Controls"
-        >
-          ⚙
-        </button>
- 
-
-     
-      </div>
+      <SceneControlButtons
+        onReset={resetAll}
+        onToggleFullscreen={toggleFullscreen}
+        onToggleUIOverlay={onToggleUIOverlay || (() => {})}
+        isFullscreen={isFullscreen}
+      />
 
       {/* Item Manipulation Toggle Buttons - Only show when item is selected */}
       {selectedItem && (
