@@ -1,7 +1,21 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { Scene, TransformNode, SceneLoader, Vector3 } from '@babylonjs/core';
-import { availablePartsData, AvatarConfig } from '../../data/avatarPartsData';
+import { availablePartsData } from '../../data/avatarPartsData';
 import { findMappedBone } from '../../data/skeletonMapping';
+import type { AvatarConfig, AvailableParts, GenderSelectableParts } from '../../types/AvatarTypes';
+
+interface UseAvatarLoaderProps {
+  sceneRef: React.MutableRefObject<Scene | null>;
+  avatarConfig: AvatarConfig;
+  domainConfig: any;
+  idleAnimRef: React.MutableRefObject<any>;
+  walkAnimRef: React.MutableRefObject<any>;
+  currentAnimRef: React.MutableRefObject<any>;
+  allIdleAnimationsRef: React.MutableRefObject<any[]>;
+  allWalkAnimationsRef: React.MutableRefObject<any[]>;
+  allCurrentAnimationsRef: React.MutableRefObject<any[]>;
+  avatarRef: React.MutableRefObject<TransformNode | null>;
+}
 
 /**
  * Custom hook to manage avatar part loading, gender switching, and animation management.
@@ -29,7 +43,7 @@ export function useAvatarLoader({
   allWalkAnimationsRef,
   allCurrentAnimationsRef,
   avatarRef
-}) {
+}: UseAvatarLoaderProps) {
   // Refs for avatar parts
   const loadedAvatarPartsRef = useRef<Record<string, any[]>>({});
   const pendingPartsRef = useRef<Record<string, any[]>>({});
@@ -81,7 +95,7 @@ export function useAvatarLoader({
         for (const [partType, partMeshes] of Object.entries(allParts)) {
           if (partMeshes && partMeshes.length > 0) {
             for (const mesh of partMeshes) {
-              if (!mesh.skeleton) {
+              if (!mesh.skeleton && mainSkeleton) {
                 mesh.skeleton = mainSkeleton;
               }
               if (mesh.skeleton) {
@@ -97,8 +111,8 @@ export function useAvatarLoader({
         }
         // Clone animation for each skeleton
         const clonedAnimations = avatarSkeletons.map((skeletonInfo, index) => {
-          const clonedAnim = targetAnimGroup.clone(`${targetAnimGroup.name}_${skeletonInfo.partType}_${index}`, (oldTarget) => {
-            if (oldTarget.name && skeletonInfo.skeleton.bones) {
+          const clonedAnim = targetAnimGroup.clone(`${targetAnimGroup.name}_${skeletonInfo.partType}_${index}`, (oldTarget: any) => {
+            if (oldTarget.name && skeletonInfo.skeleton && skeletonInfo.skeleton.bones) {
               const mappedBone = findMappedBone(oldTarget.name, skeletonInfo.skeleton);
               if (mappedBone) {
                 return mappedBone.getTransformNode() || mappedBone;
@@ -109,7 +123,7 @@ export function useAvatarLoader({
           return clonedAnim ? { animation: clonedAnim, skeletonInfo } : null;
         }).filter(Boolean);
         // Store all animations in appropriate refs
-        const allClonedAnims = clonedAnimations.map(ca => ca.animation);
+        const allClonedAnims = clonedAnimations.map((ca: any) => ca.animation);
         if (animationName.toLowerCase().includes('walk')) {
           allWalkAnimationsRef.current.forEach(anim => anim._cleanup && anim._cleanup());
           allWalkAnimationsRef.current = allClonedAnims;
@@ -122,8 +136,9 @@ export function useAvatarLoader({
         // Synchronize animations if needed
         const shouldSynchronize = options?.synchronizeAnimations !== false;
         if (shouldSynchronize && clonedAnimations.length > 1) {
-          const mainAnim = clonedAnimations[0].animation;
-          const allAnimations = clonedAnimations.map(ca => ca.animation);
+          const mainAnim = clonedAnimations[0]?.animation;
+          const allAnimations = clonedAnimations.map((ca: any) => ca.animation);
+          if (!mainAnim) return;
           const originalPlay = mainAnim.play.bind(mainAnim);
           const originalStop = mainAnim.stop.bind(mainAnim);
           const originalPause = mainAnim.pause.bind(mainAnim);
@@ -131,7 +146,7 @@ export function useAvatarLoader({
             const result = originalPlay(loop);
             setTimeout(() => {
               for (let i = 1; i < allAnimations.length; i++) {
-                if (allAnimations[i] && mainAnim.isPlaying && !allAnimations[i].isDisposed) {
+                if (allAnimations[i] && mainAnim.isPlaying) {
                   allAnimations[i].play(loop);
                 }
               }
@@ -141,7 +156,7 @@ export function useAvatarLoader({
           mainAnim.stop = () => {
             const result = originalStop();
             for (let i = 1; i < allAnimations.length; i++) {
-              if (allAnimations[i] && !allAnimations[i].isDisposed) {
+              if (allAnimations[i]) {
                 allAnimations[i].stop();
               }
             }
@@ -150,7 +165,7 @@ export function useAvatarLoader({
           mainAnim.pause = () => {
             const result = originalPause();
             for (let i = 1; i < allAnimations.length; i++) {
-              if (allAnimations[i] && !allAnimations[i].isDisposed) {
+              if (allAnimations[i]) {
                 allAnimations[i].pause();
               }
             }
@@ -159,15 +174,15 @@ export function useAvatarLoader({
         }
         // Play animation immediately if requested
         if (options?.playImmediately === true) {
-          const animToPlay = clonedAnimations[0].animation;
+          const animToPlay = clonedAnimations[0]?.animation;
           if (currentAnimRef.current) {
             currentAnimRef.current.stop();
           }
-          clonedAnimations.forEach(clonedAnim => {
-            if (clonedAnim.animation.animatables && clonedAnim.animation.animatables.length > 0) {
-              clonedAnim.animation.animatables.forEach((animatable) => {
+          clonedAnimations.forEach((clonedAnim: any) => {
+            if (clonedAnim && clonedAnim.animation.animatables && clonedAnim.animation.animatables.length > 0) {
+              clonedAnim.animation.animatables.forEach((animatable: any) => {
                 if (animatable.getAnimations && animatable.getAnimations().length > 0) {
-                  animatable.getAnimations().forEach((animation) => {
+                  animatable.getAnimations().forEach((animation: any) => {
                     if (typeof animation.goToFrame === 'function') {
                       animation.goToFrame(0);
                     }
@@ -176,8 +191,10 @@ export function useAvatarLoader({
               });
             }
           });
-          animToPlay.play(true);
-          currentAnimRef.current = animToPlay;
+          if (animToPlay) {
+            animToPlay.play(true);
+            currentAnimRef.current = animToPlay;
+          }
         }
         // Dispose original meshes from animation file
         result.meshes.forEach(mesh => {
@@ -255,9 +272,9 @@ export function useAvatarLoader({
       const loadPromises = [];
       for (const [partType, partKey] of Object.entries(avatarConfig.parts)) {
         if (partType === 'body') continue;
-        if (partKey && genderData.selectableParts[partType]) {
-          const partsList = genderData.selectableParts[partType];
-          const partData = partsList?.find(item => item.fileName === partKey);
+        if (partKey && (genderData.selectableParts as any)[partType as keyof GenderSelectableParts]) {
+          const partsList = (genderData.selectableParts as any)[partType as keyof GenderSelectableParts];
+          const partData = partsList?.find((item: any) => item.fileName === partKey);
           if (partData && partData.fileName) {
             const loadPartPromise = (async () => {
               try {
@@ -278,6 +295,82 @@ export function useAvatarLoader({
                   mesh.metadata = { fileName: partData.fileName };
                 });
                 loadingGenderPartsRef.current.parts[partType] = partResult.meshes;
+                // --- BẮT ĐẦU: Áp dụng animation hiện tại cho part mới ---
+                // 1. Gán skeleton body cho mesh mới nếu chưa có skeleton
+                const bodyMeshes = loadedAvatarPartsRef.current['body'];
+                let mainSkeleton = null;
+                if (bodyMeshes && bodyMeshes.length > 0) {
+                  for (const mesh of bodyMeshes) {
+                    if (mesh.skeleton) {
+                      mainSkeleton = mesh.skeleton;
+                      break;
+                    }
+                  }
+                }
+                partResult.meshes.forEach(mesh => {
+                  if (!mesh.skeleton && mainSkeleton) {
+                    mesh.skeleton = mainSkeleton;
+                    console.log(`🦴 Assigned skeleton to new ${partType} part: ${mesh.name}`);
+                  }
+                });
+                
+                // 2. Clone animation hiện tại cho part mới
+                const applyAnimToNewPart = (animGroupRef: React.MutableRefObject<any>, animType: 'idle' | 'walk') => {
+                  if (!animGroupRef.current) return;
+                  const animGroup = animGroupRef.current;
+                  console.log(`🎭 Applying ${animType} animation to new ${partType} part`);
+                  // Tìm skeleton của part mới
+                  partResult.meshes.forEach((mesh: any, meshIdx: number) => {
+                    if (!mesh.skeleton) return;
+                    // Clone animation group cho skeleton mới
+                    const clonedAnim = animGroup.clone(`${animGroup.name}_${partType}_new_${meshIdx}`, (oldTarget: any) => {
+                      if (oldTarget.name && mesh.skeleton && mesh.skeleton.bones) {
+                        const mappedBone = findMappedBone(oldTarget.name, mesh.skeleton);
+                        if (mappedBone) {
+                          return mappedBone.getTransformNode() || mappedBone;
+                        }
+                      }
+                      return null;
+                    });
+                    if (clonedAnim) {
+                      console.log(`✅ Cloned ${animType} animation for ${partType} part ${meshIdx}: ${clonedAnim.name}`);
+                      // Play nếu animation hiện tại đang play
+                      if (typeof animGroup.isPlaying === 'boolean' && animGroup.isPlaying) {
+                        clonedAnim.play(true);
+                        // --- Đồng bộ frame/time với animation chính ---
+                        // Lấy frame hiện tại của animGroup
+                        let currentFrame = 0;
+                        if (animGroup.animatables && animGroup.animatables.length > 0) {
+                          // Lấy frame lớn nhất trong các animatables (phòng trường hợp nhiều animatable)
+                          currentFrame = Math.max(...animGroup.animatables.map((a: any) => a.masterFrame || 0));
+                        }
+                        if (clonedAnim.animatables && clonedAnim.animatables.length > 0) {
+                          clonedAnim.animatables.forEach((animatable: any) => {
+                            if (typeof animatable.goToFrame === 'function') {
+                              animatable.goToFrame(currentFrame);
+                            }
+                          });
+                        }
+                        console.log(`🔄 Synced ${animType} animation frame ${currentFrame} for ${partType} part`);
+                        // --- END sync frame ---
+                      }
+                      // Thêm vào mảng allIdleAnimationsRef/allWalkAnimationsRef nếu cần
+                      if (animType === 'idle') {
+                        allIdleAnimationsRef.current.push(clonedAnim);
+                      } else if (animType === 'walk') {
+                        allWalkAnimationsRef.current.push(clonedAnim);
+                      }
+                    } else {
+                      console.warn(`⚠️ Failed to clone ${animType} animation for ${partType} part ${meshIdx}`);
+                    }
+                  });
+                };
+                
+                // Áp dụng cho idle và walk nếu đang có
+                if (idleAnimRef.current) applyAnimToNewPart(idleAnimRef, 'idle');
+                if (walkAnimRef.current) applyAnimToNewPart(walkAnimRef, 'walk');
+                console.log(`🎯 Animation synchronization completed for new ${partType} part`);
+                // --- KẾT THÚC: Áp dụng animation hiện tại cho part mới ---
               } catch (error) {}
             })();
             loadPromises.push(loadPartPromise);
@@ -328,9 +421,9 @@ export function useAvatarLoader({
       }
       for (const [partType, partKey] of Object.entries(avatarConfig.parts)) {
         if (partType === 'body') continue;
-        if (partKey && genderData.selectableParts[partType]) {
-          const partsList = genderData.selectableParts[partType];
-          const partData = partsList?.find(item => item.fileName === partKey);
+        if (partKey && (genderData.selectableParts as any)[partType as keyof GenderSelectableParts]) {
+          const partsList = (genderData.selectableParts as any)[partType as keyof GenderSelectableParts];
+          const partData = partsList?.find((item: any) => item.fileName === partKey);
           if (partData && partData.fileName) {
             const currentPart = loadedAvatarPartsRef.current[partType];
             const isCurrentPartSame = currentPart && currentPart.some(mesh =>
@@ -366,6 +459,84 @@ export function useAvatarLoader({
                 mesh.metadata = { fileName: partData.fileName };
               });
               loadedAvatarPartsRef.current[partType] = partResult.meshes;
+              
+              // --- BẮT ĐẦU: Áp dụng animation hiện tại cho part mới ---
+              // 1. Gán skeleton body cho mesh mới nếu chưa có skeleton
+              const bodyMeshes = loadedAvatarPartsRef.current['body'];
+              let mainSkeleton = null;
+              if (bodyMeshes && bodyMeshes.length > 0) {
+                for (const mesh of bodyMeshes) {
+                  if (mesh.skeleton) {
+                    mainSkeleton = mesh.skeleton;
+                    break;
+                  }
+                }
+              }
+              partResult.meshes.forEach(mesh => {
+                if (!mesh.skeleton && mainSkeleton) {
+                  mesh.skeleton = mainSkeleton;
+                  console.log(`🦴 Assigned skeleton to new ${partType} part: ${mesh.name}`);
+                }
+              });
+              
+              // 2. Clone animation hiện tại cho part mới
+              const applyAnimToNewPart = (animGroupRef: React.MutableRefObject<any>, animType: 'idle' | 'walk') => {
+                if (!animGroupRef.current) return;
+                const animGroup = animGroupRef.current;
+                console.log(`🎭 Applying ${animType} animation to new ${partType} part`);
+                // Tìm skeleton của part mới
+                partResult.meshes.forEach((mesh: any, meshIdx: number) => {
+                  if (!mesh.skeleton) return;
+                  // Clone animation group cho skeleton mới
+                  const clonedAnim = animGroup.clone(`${animGroup.name}_${partType}_new_${meshIdx}`, (oldTarget: any) => {
+                    if (oldTarget.name && mesh.skeleton && mesh.skeleton.bones) {
+                      const mappedBone = findMappedBone(oldTarget.name, mesh.skeleton);
+                      if (mappedBone) {
+                        return mappedBone.getTransformNode() || mappedBone;
+                      }
+                    }
+                    return null;
+                  });
+                  if (clonedAnim) {
+                    console.log(`✅ Cloned ${animType} animation for ${partType} part ${meshIdx}: ${clonedAnim.name}`);
+                    // Play nếu animation hiện tại đang play
+                    if (typeof animGroup.isPlaying === 'boolean' && animGroup.isPlaying) {
+                      clonedAnim.play(true);
+                      // --- Đồng bộ frame/time với animation chính ---
+                      // Lấy frame hiện tại của animGroup
+                      let currentFrame = 0;
+                      if (animGroup.animatables && animGroup.animatables.length > 0) {
+                        // Lấy frame lớn nhất trong các animatables (phòng trường hợp nhiều animatable)
+                        currentFrame = Math.max(...animGroup.animatables.map((a: any) => a.masterFrame || 0));
+                      }
+                      if (clonedAnim.animatables && clonedAnim.animatables.length > 0) {
+                        clonedAnim.animatables.forEach((animatable: any) => {
+                          if (typeof animatable.goToFrame === 'function') {
+                            animatable.goToFrame(currentFrame);
+                          }
+                        });
+                      }
+                      console.log(`🔄 Synced ${animType} animation frame ${currentFrame} for ${partType} part`);
+                      // --- END sync frame ---
+                    }
+                    // Thêm vào mảng allIdleAnimationsRef/allWalkAnimationsRef nếu cần
+                    if (animType === 'idle') {
+                      allIdleAnimationsRef.current.push(clonedAnim);
+                    } else if (animType === 'walk') {
+                      allWalkAnimationsRef.current.push(clonedAnim);
+                    }
+                  } else {
+                    console.warn(`⚠️ Failed to clone ${animType} animation for ${partType} part ${meshIdx}`);
+                  }
+                });
+              };
+              
+              // Áp dụng cho idle và walk nếu đang có
+              if (idleAnimRef.current) applyAnimToNewPart(idleAnimRef, 'idle');
+              if (walkAnimRef.current) applyAnimToNewPart(walkAnimRef, 'walk');
+              console.log(`🎯 Animation synchronization completed for new ${partType} part`);
+              // --- KẾT THÚC: Áp dụng animation hiện tại cho part mới ---
+              
               if (oldPartToDispose) {
                 oldPartToDispose.forEach(mesh => {
                   if (!mesh.isDisposed()) {
@@ -374,17 +545,73 @@ export function useAvatarLoader({
                 });
                 delete oldPartsToDisposeRef.current[partType];
               }
+              
+              // --- BẮT ĐẦU: Cleanup animations cho part cũ ---
+              // Remove animations that were specific to the old part
+              const cleanupAnimationsForPart = (animArrayRef: React.MutableRefObject<any[]>, partType: string) => {
+                const animationsToRemove = animArrayRef.current.filter(anim => 
+                  anim && anim.name && anim.name.includes(`${partType}_`)
+                );
+                if (animationsToRemove.length > 0) {
+                  console.log(`🧹 Cleaning up ${animationsToRemove.length} animations for old ${partType} part`);
+                  animationsToRemove.forEach(anim => {
+                    if (anim && !anim.isDisposed) {
+                      anim.stop();
+                      if (anim._cleanup) {
+                        anim._cleanup();
+                      }
+                      console.log(`🗑️ Cleaned up animation: ${anim.name}`);
+                    }
+                  });
+                  animArrayRef.current = animArrayRef.current.filter(anim => 
+                    !anim || !anim.name || !anim.name.includes(`${partType}_`)
+                  );
+                }
+              };
+              
+              // Cleanup idle and walk animations for the old part
+              cleanupAnimationsForPart(allIdleAnimationsRef, partType);
+              cleanupAnimationsForPart(allWalkAnimationsRef, partType);
+              // --- KẾT THÚC: Cleanup animations cho part cũ ---
             }
-          }
-        } else {
-          const currentPart = loadedAvatarPartsRef.current[partType];
-          if (currentPart) {
-            currentPart.forEach(mesh => {
-              if (!mesh.isDisposed()) {
-                mesh.dispose();
-              }
-            });
-            delete loadedAvatarPartsRef.current[partType];
+          } else {
+            const currentPart = loadedAvatarPartsRef.current[partType];
+            if (currentPart) {
+              currentPart.forEach(mesh => {
+                if (!mesh.isDisposed()) {
+                  mesh.dispose();
+                }
+              });
+              delete loadedAvatarPartsRef.current[partType];
+              
+              // --- BẮT ĐẦU: Cleanup animations cho part bị xóa hoàn toàn ---
+              // Remove all animations that were specific to this part type
+              const cleanupAllAnimationsForPart = (animArrayRef: React.MutableRefObject<any[]>, partType: string) => {
+                const animationsToRemove = animArrayRef.current.filter(anim => 
+                  anim && anim.name && anim.name.includes(`${partType}_`)
+                );
+                if (animationsToRemove.length > 0) {
+                  console.log(`🧹 Cleaning up ${animationsToRemove.length} animations for removed ${partType} part`);
+                  animationsToRemove.forEach(anim => {
+                    if (anim && !anim.isDisposed) {
+                      anim.stop();
+                      if (anim._cleanup) {
+                        anim._cleanup();
+                      }
+                      console.log(`🗑️ Cleaned up animation: ${anim.name}`);
+                    }
+                  });
+                  animArrayRef.current = animArrayRef.current.filter(anim => 
+                    !anim || !anim.name || !anim.name.includes(`${partType}_`)
+                  );
+                }
+              };
+              
+              // Cleanup all idle and walk animations for the removed part
+              cleanupAllAnimationsForPart(allIdleAnimationsRef, partType);
+              cleanupAllAnimationsForPart(allWalkAnimationsRef, partType);
+              // --- KẾT THÚC: Cleanup animations cho part bị xóa hoàn toàn ---
+            }
           }
         }
       }
