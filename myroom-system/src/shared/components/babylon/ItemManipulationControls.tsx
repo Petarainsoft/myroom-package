@@ -82,7 +82,7 @@ export const ItemManipulationControls: React.FC<ItemManipulationControlsProps> =
       >
         Rot
       </button>
-      <button
+      {/* <button
         onClick={() => onGizmoModeChange?.('scale')}
         style={{
           backgroundColor: gizmoMode === 'scale' ? 'rgba(156, 39, 176, 0.8)' : 'rgba(0, 0, 0, 0.15)',
@@ -114,7 +114,7 @@ export const ItemManipulationControls: React.FC<ItemManipulationControlsProps> =
         }}
       >
         Scale
-      </button>
+      </button> */}
     </div>
   );
 }; 

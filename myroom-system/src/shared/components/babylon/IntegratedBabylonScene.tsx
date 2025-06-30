@@ -317,7 +317,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       const cameraPosition = camera.position.clone();
       const directionToCamera = cameraPosition.subtract(avatarContainer.position);
       avatarContainer.rotation.y = Math.atan2(directionToCamera.x, directionToCamera.z); // Adjust rotation to face the camera
-      
+
       avatarRef.current = avatarContainer;
 
       // Create items container
@@ -437,7 +437,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       scene.onPointerObservable.add((pointerInfo) => {
         if (pointerInfo.type === PointerEventTypes.POINTERMOVE) {
           const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
-      
+
           if (pickInfo?.hit && pickInfo.pickedMesh) {
             const isItem = loadedItemMeshesRef.current.some((itemContainer) => {
               // Check if the picked mesh is a child or descendant of any item container
@@ -450,7 +450,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               }
               return false;
             });
-      
+
             // Change cursor to pointer if hovering over an item
             if (isItem) {
               canvasRef.current!.style.cursor = 'pointer';
@@ -499,7 +499,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         });
       }
       // }
-      
+
       if (gizmoRef.current) {
         gizmoRef.current.dispose();
       }
@@ -641,17 +641,17 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       if (engineRef.current && cameraRef.current && canvasRef.current) {
         // Force engine resize to match canvas size
         engineRef.current.resize();
-        
+
         // Get actual canvas dimensions
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
         const width = rect.width;
         const height = rect.height;
-        
+
         // Update camera aspect ratio to prevent distortion
         const aspectRatio = width / height;
         cameraRef.current.fov = 0.8; // Base FOV
-        
+
         // Adjust FOV based on aspect ratio to maintain proper view
         if (aspectRatio < 1) {
           // Portrait mode - increase FOV slightly
@@ -660,7 +660,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           // Wide screen - decrease FOV slightly
           cameraRef.current.fov = 0.7;
         }
-        
+
         // Force camera to update its projection matrix
         cameraRef.current.getProjectionMatrix(true);
       }
@@ -672,7 +672,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     // Try to observe the canvas parent container
     let resizeObserver: ResizeObserver | null = null;
     const canvasParent = canvasRef.current.parentElement;
-    
+
     if (canvasParent) {
       resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
@@ -685,16 +685,16 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     // Also try to observe specific containers if they exist
     const interactiveContainer = document.querySelector('.interactive-room-container');
     const babylonContainer = document.querySelector('.babylon-scene-container');
-    
+
     if (interactiveContainer && babylonContainer && !resizeObserver) {
       resizeObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
           const { width, height } = entry.contentRect;
-          
+
           // Update babylon container size to match interactive container
           (babylonContainer as HTMLElement).style.width = `${width}px`;
           (babylonContainer as HTMLElement).style.height = `${height}px`;
-          
+
           handleResize();
         }
       });
@@ -726,8 +726,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       />
       <SceneControlButtons
         onReset={resetAll}
-        onToggleFullscreen={() => {}}
-        onToggleUIOverlay={props.onToggleUIOverlay || (() => {})}
+        onToggleFullscreen={() => { }}
+        onToggleUIOverlay={props.onToggleUIOverlay || (() => { })}
         isFullscreen={isFullscreen}
       />
       {props.selectedItem && (

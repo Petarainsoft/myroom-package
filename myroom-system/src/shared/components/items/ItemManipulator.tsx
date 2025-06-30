@@ -5,10 +5,10 @@ interface ItemManipulatorProps {
   gizmoMode?: 'position' | 'rotation' | 'scale';
   selectedItem?: any;
   utilityLayerRef: React.MutableRefObject<UtilityLayerRenderer | null>;
-  onItemTransformChange?: (itemId: string, transform: { 
-    position: { x: number; y: number; z: number }; 
-    rotation: { x: number; y: number; z: number }; 
-    scale: { x: number; y: number; z: number } 
+  onItemTransformChange?: (itemId: string, transform: {
+    position: { x: number; y: number; z: number };
+    rotation: { x: number; y: number; z: number };
+    scale: { x: number; y: number; z: number }
   }) => void;
   onSelectItem?: (item: any) => void;
   loadedItemMeshesRef: React.MutableRefObject<any[]>;
@@ -67,8 +67,7 @@ export const useItemManipulator = ({
         highlightDiscRef.current.position.y += 0.02;
         highlightDiscRef.current.isVisible = true;
       }
-      else
-      {
+      else {
         console.warn('Highlight disc ref is null, cannot position highlight disc');
       }
 
@@ -82,7 +81,7 @@ export const useItemManipulator = ({
   const deselectItem = () => {
     selectedItemRef.current = null;
     onSelectItem?.(null);
-    
+
     // Hide and dispose gizmo immediately
     if (gizmoRef.current) {
       try {
@@ -146,12 +145,12 @@ export const useItemManipulator = ({
       transformTimeoutRef.current = setTimeout(doUpdate, 50); // Slightly increased for stability
     }
   },
-  [onItemTransformChange, highlightDiscRef]
-);
+    [onItemTransformChange, highlightDiscRef]
+  );
 
   const updateGizmo = (mesh: any) => {
     if (!utilityLayerRef.current) return;
-    
+
     // Dispose existing gizmo safely
     if (gizmoRef.current) {
       try {
@@ -161,7 +160,7 @@ export const useItemManipulator = ({
       }
       gizmoRef.current = null;
     }
-    
+
     // Create new gizmo based on mode
     const currentGizmoMode = gizmoMode || 'position';
     switch (currentGizmoMode) {
@@ -205,7 +204,7 @@ export const useItemManipulator = ({
       default:
         return;
     }
-    
+
     // Attach gizmo to mesh
     gizmoRef.current.attachedMesh = mesh;
     if ('updateGizmoRotationToMatchAttachedMesh' in gizmoRef.current) {
@@ -218,14 +217,14 @@ export const useItemManipulator = ({
     // Add optimized drag callbacks to reduce re-renders
     if (gizmoRef.current) {
       const gizmo = gizmoRef.current as any;
-      
+
       // Track drag start/end to optimize updates
       if (gizmo.onDragStartObservable) {
         gizmo.onDragStartObservable.add(() => {
           isDraggingRef.current = true;
         });
       }
-      
+
       // Throttled updates during drag (reduced frequency) with boundary constraints
       if (gizmo.onDragObservable) {
         gizmo.onDragObservable.add(() => {
@@ -239,7 +238,7 @@ export const useItemManipulator = ({
           updateItemTransform(mesh.name, mesh, false);
         });
       }
-      
+
       // Final update on drag end (immediate) with boundary constraints
       if (gizmo.onDragEndObservable) {
         gizmo.onDragEndObservable.add(() => {
@@ -256,7 +255,7 @@ export const useItemManipulator = ({
           updateItemTransform(mesh.name, mesh, true);
         });
       }
-      
+
       // Setup axis-specific drag behaviors with optimized callbacks
       const setupAxisDragBehaviors = (axisGizmos: any[]) => {
         axisGizmos.forEach(axisGizmo => {
@@ -264,7 +263,7 @@ export const useItemManipulator = ({
             axisGizmo.dragBehavior.onDragStartObservable.add(() => {
               isDraggingRef.current = true;
             });
-            
+
             axisGizmo.dragBehavior.onDragObservable.add(() => {
               // Apply boundary constraints during axis drag
               if (mesh.position) {
@@ -273,7 +272,7 @@ export const useItemManipulator = ({
               }
               updateItemTransform(mesh.name, mesh, false);
             });
-            
+
             axisGizmo.dragBehavior.onDragEndObservable.add(() => {
               isDraggingRef.current = false;
               if (transformTimeoutRef.current) {
@@ -290,7 +289,7 @@ export const useItemManipulator = ({
           }
         });
       };
-      
+
       // Apply to all gizmo types
       if (gizmo.xGizmo && gizmo.yGizmo && gizmo.zGizmo) {
         setupAxisDragBehaviors([gizmo.xGizmo, gizmo.yGizmo, gizmo.zGizmo]);
@@ -309,7 +308,7 @@ export const useItemManipulator = ({
   // Handle selectedItem changes - hide and dispose gizmo if item no longer exists
   useEffect(() => {
     console.log('selectedItem changed effect triggered', { selectedItem });
-    
+
     if (!selectedItem && gizmoRef.current) {
       console.log('Attempting to hide and dispose gizmo', {
         gizmoExists: !!gizmoRef.current,

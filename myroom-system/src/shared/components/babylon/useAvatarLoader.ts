@@ -271,7 +271,7 @@ export function useAvatarLoader({
           mesh.metadata = { gender: avatarConfig.gender };
         });
         loadingGenderPartsRef.current.parts['body'] = bodyResult.meshes;
-      } catch (error) {}
+      } catch (error) { }
       const loadPromises = [];
       for (const [partType, partKey] of Object.entries(avatarConfig.parts)) {
         if (partType === 'body') continue;
@@ -316,7 +316,7 @@ export function useAvatarLoader({
                     console.log(`🦴 Assigned skeleton to new ${partType} part: ${mesh.name}`);
                   }
                 });
-                
+
                 // 2. Clone animation hiện tại cho part mới
                 const applyAnimToNewPart = (animGroupRef: React.MutableRefObject<any>, animType: 'idle' | 'walk') => {
                   if (!animGroupRef.current) return;
@@ -368,13 +368,13 @@ export function useAvatarLoader({
                     }
                   });
                 };
-                
+
                 // Áp dụng cho idle và walk nếu đang có
                 if (idleAnimRef.current) applyAnimToNewPart(idleAnimRef, 'idle');
                 if (walkAnimRef.current) applyAnimToNewPart(walkAnimRef, 'walk');
                 console.log(`🎯 Animation synchronization completed for new ${partType} part`);
                 // --- KẾT THÚC: Áp dụng animation hiện tại cho part mới ---
-              } catch (error) {}
+              } catch (error) { }
             })();
             loadPromises.push(loadPartPromise);
           }
@@ -420,7 +420,7 @@ export function useAvatarLoader({
             mesh.metadata = { gender: avatarConfig.gender };
           });
           loadedAvatarPartsRef.current['body'] = bodyResult.meshes;
-        } catch (error) {}
+        } catch (error) { }
       }
       for (const [partType, partKey] of Object.entries(avatarConfig.parts)) {
         if (partType === 'body') continue;
@@ -462,7 +462,7 @@ export function useAvatarLoader({
                 mesh.metadata = { fileName: partData.fileName };
               });
               loadedAvatarPartsRef.current[partType] = partResult.meshes;
-              
+
               // --- BẮT ĐẦU: Áp dụng animation hiện tại cho part mới ---
               // 1. Gán skeleton body cho mesh mới nếu chưa có skeleton
               const bodyMeshes = loadedAvatarPartsRef.current['body'];
@@ -481,7 +481,7 @@ export function useAvatarLoader({
                   console.log(`🦴 Assigned skeleton to new ${partType} part: ${mesh.name}`);
                 }
               });
-              
+
               // 2. Clone animation hiện tại cho part mới
               const applyAnimToNewPart = (animGroupRef: React.MutableRefObject<any>, animType: 'idle' | 'walk') => {
                 if (!animGroupRef.current) return;
@@ -533,13 +533,13 @@ export function useAvatarLoader({
                   }
                 });
               };
-              
+
               // Áp dụng cho idle và walk nếu đang có
               if (idleAnimRef.current) applyAnimToNewPart(idleAnimRef, 'idle');
               if (walkAnimRef.current) applyAnimToNewPart(walkAnimRef, 'walk');
               console.log(`🎯 Animation synchronization completed for new ${partType} part`);
               // --- KẾT THÚC: Áp dụng animation hiện tại cho part mới ---
-              
+
               if (oldPartToDispose) {
                 oldPartToDispose.forEach(mesh => {
                   if (!mesh.isDisposed()) {
@@ -548,11 +548,11 @@ export function useAvatarLoader({
                 });
                 delete oldPartsToDisposeRef.current[partType];
               }
-              
+
               // --- BẮT ĐẦU: Cleanup animations cho part cũ ---
               // Remove animations that were specific to the old part
               const cleanupAnimationsForPart = (animArrayRef: React.MutableRefObject<any[]>, partType: string) => {
-                const animationsToRemove = animArrayRef.current.filter(anim => 
+                const animationsToRemove = animArrayRef.current.filter(anim =>
                   anim && anim.name && anim.name.includes(`${partType}_`)
                 );
                 if (animationsToRemove.length > 0) {
@@ -566,12 +566,12 @@ export function useAvatarLoader({
                       console.log(`🗑️ Cleaned up animation: ${anim.name}`);
                     }
                   });
-                  animArrayRef.current = animArrayRef.current.filter(anim => 
+                  animArrayRef.current = animArrayRef.current.filter(anim =>
                     !anim || !anim.name || !anim.name.includes(`${partType}_`)
                   );
                 }
               };
-              
+
               // Cleanup idle and walk animations for the old part
               cleanupAnimationsForPart(allIdleAnimationsRef, partType);
               cleanupAnimationsForPart(allWalkAnimationsRef, partType);
@@ -586,11 +586,11 @@ export function useAvatarLoader({
                 }
               });
               delete loadedAvatarPartsRef.current[partType];
-              
+
               // --- BẮT ĐẦU: Cleanup animations cho part bị xóa hoàn toàn ---
               // Remove all animations that were specific to this part type
               const cleanupAllAnimationsForPart = (animArrayRef: React.MutableRefObject<any[]>, partType: string) => {
-                const animationsToRemove = animArrayRef.current.filter(anim => 
+                const animationsToRemove = animArrayRef.current.filter(anim =>
                   anim && anim.name && anim.name.includes(`${partType}_`)
                 );
                 if (animationsToRemove.length > 0) {
@@ -604,12 +604,12 @@ export function useAvatarLoader({
                       console.log(`🗑️ Cleaned up animation: ${anim.name}`);
                     }
                   });
-                  animArrayRef.current = animArrayRef.current.filter(anim => 
+                  animArrayRef.current = animArrayRef.current.filter(anim =>
                     !anim || !anim.name || !anim.name.includes(`${partType}_`)
                   );
                 }
               };
-              
+
               // Cleanup all idle and walk animations for the removed part
               cleanupAllAnimationsForPart(allIdleAnimationsRef, partType);
               cleanupAllAnimationsForPart(allWalkAnimationsRef, partType);
@@ -677,7 +677,7 @@ export function useAvatarLoader({
               });
             }, 10);
           }
-        } catch (error) {}
+        } catch (error) { }
       }
       if (!walkAnimRef.current) {
         loadAnimationFromGLB("standard_walk", { synchronizeAnimations: true });
