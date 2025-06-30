@@ -39,6 +39,40 @@ export function useAvatarLoader({
   // Animation readiness state
   const [isAnimationReady, setIsAnimationReady] = useState(false);
 
+  const addAnimationTargets = useCallback((newMeshes: any[]) => {
+    const newSkeletons = newMeshes
+      .filter(mesh => mesh && mesh.skeleton)
+      .map(mesh => mesh.skeleton);
+
+    if (newSkeletons.length === 0) return;
+
+    const applyToAnimGroup = (animGroup: any) => {
+      if (!animGroup || animGroup.targetedAnimations.length === 0) return;
+
+      // For each animation track in the group
+      animGroup.targetedAnimations.forEach((sourceTa: any) => {
+        const animation = sourceTa.animation;
+        const oldTargetName = sourceTa.target.name;
+
+        newSkeletons.forEach(newSkeleton => {
+          const mappedBone = findMappedBone(oldTargetName, newSkeleton);
+          if (mappedBone) {
+            const newTargetNode = mappedBone.getTransformNode() || mappedBone;
+            const alreadyExists = animGroup.targetedAnimations.some(
+              (ta: any) => ta.animation === animation && ta.target === newTargetNode
+            );
+            if (!alreadyExists) {
+              animGroup.addTargetedAnimation(animation, newTargetNode);
+            }
+          }
+        });
+      });
+    };
+
+    applyToAnimGroup(idleAnimRef.current);
+    applyToAnimGroup(walkAnimRef.current);
+  }, [idleAnimRef, walkAnimRef]);
+
   /**
    * Loads an animation from a GLB file and synchronizes it across all avatar parts.
    */
@@ -206,6 +240,8 @@ export function useAvatarLoader({
       !Array.isArray(currentBodyMeshes) ||
       currentBodyMeshes.length === 0 ||
       isGenderChanged;
+    let wasPartSwapped = false;
+    const wasWalking = walkAnimRef.current && walkAnimRef.current.isPlaying;
     if (isGenderChanged) {
       setIsAnimationReady(false);
       if (currentAnimRef.current) {
@@ -366,13 +402,14 @@ export function useAvatarLoader({
                 mesh.metadata = { fileName: partData.fileName };
               });
               loadedAvatarPartsRef.current[partType] = partResult.meshes;
-              if (oldPartToDispose) {
-                oldPartToDispose.forEach(mesh => {
-                  if (!mesh.isDisposed()) {
-                    mesh.dispose();
-                  }
-                });
-                delete oldPartsToDisposeRef.current[partType];
+              wasPartSwapped = true;
+
+              if (idleAnimRef.current && walkAnimRef.current) {
+                addAnimationTargets(partResult.meshes);
+                if (currentAnimRef.current) {
+                  currentAnimRef.current.stop();
+                  currentAnimRef.current.play(true);
+                }
               }
             }
           }
@@ -403,53 +440,30 @@ export function useAvatarLoader({
     }
     // Load animations after avatar has finished loading
     if (sceneRef.current && avatarRef.current) {
-      if (!walkAnimRef.current) {
+      const isInitialLoad = !walkAnimRef.current || !idleAnimRef.current;
+      if (isInitialLoad) {
+        if (currentAnimRef.current) {
+          currentAnimRef.current.stop();
+        }
         await loadAnimationFromGLB('standard_walk');
+        await loadAnimationFromGLB('breathing_idle', { playImmediately: true });
       }
-      if (idleAnimRef.current) {
+
+      setIsAnimationReady(true);
+      Object.entries(loadedAvatarPartsRef.current).forEach(([partType, meshes]) => {
+        meshes.forEach(mesh => {
+          if (!mesh.isDisposed()) {
+            mesh.setEnabled(true);
+            mesh.isVisible = true;
+          }
+        });
+      });
+      if (idleAnimRef.current && !currentAnimRef.current?.isPlaying) {
         idleAnimRef.current.play(true);
         currentAnimRef.current = idleAnimRef.current;
-        setTimeout(() => {
-          setIsAnimationReady(true);
-          // Bật tất cả mesh avatar khi animation đã sẵn sàng
-          Object.entries(loadedAvatarPartsRef.current).forEach(([partType, meshes]) => {
-            meshes.forEach(mesh => {
-              if (!mesh.isDisposed()) {
-                mesh.setEnabled(true);
-                mesh.isVisible = true;
-              }
-            });
-          });
-        }, 10);
-      } else {
-        try {
-          await loadAnimationFromGLB('breathing_idle', { playImmediately: true });
-          if (idleAnimRef.current) {
-            if (currentAnimRef.current) {
-              currentAnimRef.current.stop();
-            }
-            idleAnimRef.current.play(true);
-            currentAnimRef.current = idleAnimRef.current;
-            setTimeout(() => {
-              setIsAnimationReady(true);
-              // Bật tất cả mesh avatar khi animation đã sẵn sàng
-              Object.entries(loadedAvatarPartsRef.current).forEach(([partType, meshes]) => {
-                meshes.forEach(mesh => {
-                  if (!mesh.isDisposed()) {
-                    mesh.setEnabled(true);
-                    mesh.isVisible = true;
-                  }
-                });
-              });
-            }, 10);
-          }
-        } catch (error) {}
-      }
-      if (!walkAnimRef.current) {
-        loadAnimationFromGLB("standard_walk", { synchronizeAnimations: true });
       }
     }
-  }, [sceneRef, avatarConfig, domainConfig, avatarRef, loadedAvatarPartsRef, oldPartsToDisposeRef, idleAnimRef, walkAnimRef, currentAnimRef, allIdleAnimationsRef, allWalkAnimationsRef, loadAnimationFromGLB]);
+  }, [sceneRef, avatarConfig, domainConfig, avatarRef, loadedAvatarPartsRef, oldPartsToDisposeRef, idleAnimRef, walkAnimRef, currentAnimRef, allIdleAnimationsRef, allWalkAnimationsRef, loadAnimationFromGLB, addAnimationTargets]);
 
   // Effect to load avatar when config changes
   useEffect(() => {
