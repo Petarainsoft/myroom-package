@@ -17,7 +17,9 @@ const getConfiguredDomain = () => {
   }
   
   // Default domain (used during development or if not configured)
-  return 'https://your-domain.com';
+  // return 'http://localhost:5173'; // local test, should change port accordingly
+  //return 'http://192.168.1.x:5173'; change to deployed url to LAN test, for example: mobile device access. Change Port accordingly
+  return 'https://myroom.petarainsoft.com';
 };
 
 // Base domain configuration
@@ -29,7 +31,7 @@ export const domainConfig = {
   
   // Paths for different resources
   paths: {
-    webComponent: '/myroom-component.js',
+    webComponent: '/dist/myroom-webcomponent.umd.js',
     embedHtml: '/embed.html',
     models: {
       rooms: '/models/rooms',

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRoom Web Component - Complete API Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .demo-section {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    .demo-section h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    
+    .demo-section h3 {
+      color: #555;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+    
+    .demo-item {
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    
+    .controls-panel {
+      background: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .control-group {
+      margin-bottom: 15px;
+    }
+    
+    .control-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #374151;
+    }
+    
+    .control-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    
+    button:hover {
+      background: #2563eb;
+    }
+    
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    
+    select, input {
+      padding: 8px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    
+    .status.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    
+    .status.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+    
+    .code-block {
+      background: #1f2937;
+      color: #f9fafb;
+      padding: 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      overflow-x: auto;
+      margin: 10px 0;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .control-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>MyRoom Web Component - Complete API Demo</h1>
+      <p>Comprehensive demonstration of all MyRoom Web Component capabilities and APIs</p>
+    </div>
+    
+    <!-- Main 3D Scene Demo -->
+    <div class="demo-section">
+      <h2>🏠 Interactive 3D Scene</h2>
+      
+      <div class="demo-item">
+        <!-- Status display area -->
+        <div id="status" class="status info">Loading scene...</div>
+        
+        <!-- Only one script tag is needed -->
+        <script src="http://localhost:5173/dist/myroom-webcomponent.umd.js"></script>
+        
+        <!-- Main scene with all features enabled -->
+        <my-room-scene 
+          id="mainScene"
+          room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+          gender="female"
+          width="100%"
+          height="600px"
+          enable-controls="true"
+          camera-controls="true"
+          gizmo-mode="position">
+        </my-room-scene>
+      </div>
+    </div>
+    
+    <!-- API Controls Demo -->
+    <div class="demo-section">
+      <h2>🎮 JavaScript API Controls</h2>
+      
+      <div class="grid">
+        <!-- Camera Controls -->
+        <div class="controls-panel">
+          <h3>📷 Camera Controls</h3>
+          <div class="control-group">
+            <div class="control-row">
+              <button onclick="resetCamera()">Reset Camera</button>
+              <button onclick="toggleCameraControls()">Toggle Camera Controls</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Avatar Controls -->
+        <div class="controls-panel">
+          <h3>👤 Avatar Controls</h3>
+          <div class="control-group">
+            <label>Gender:</label>
+            <div class="control-row">
+              <button onclick="changeGender('male')">Male</button>
+              <button onclick="changeGender('female')">Female</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <label>Custom Avatar:</label>
+            <div class="control-row">
+              <button onclick="customizeAvatar()">Random Customization</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Room Controls -->
+        <div class="controls-panel">
+          <h3>🏠 Room Controls</h3>
+          <div class="control-group">
+            <label>Select Room:</label>
+            <div class="control-row">
+              <select id="roomSelect" onchange="changeRoom()">
+                <option value="/models/rooms/cate001/MR_KHROOM_0001.glb">Kitchen Room</option>
+                <option value="/models/rooms/cate002/MR_BEDROOM_0001.glb">Bedroom</option>
+                <option value="/models/rooms/cate003/MR_LIVINGROOM_0001.glb">Living Room</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Item Management -->
+        <div class="controls-panel">
+          <h3>📦 Item Management</h3>
+          <div class="control-group">
+            <div class="control-row">
+              <button onclick="addRandomItem()">Add Random Item</button>
+              <button onclick="loadSampleItems()">Load Sample Items</button>
+              <button onclick="clearAllItems()">Clear All Items</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <label>Gizmo Mode:</label>
+            <div class="control-row">
+              <button onclick="setGizmoMode('position')">Position</button>
+              <button onclick="setGizmoMode('rotation')">Rotation</button>
+              <button onclick="setGizmoMode('scale')">Scale</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Attributes Demo -->
+    <div class="demo-section">
+      <h2>⚙️ HTML Attributes Demo</h2>
+      
+      <h3>Basic Usage:</h3>
+      <div class="code-block">
+&lt;my-room-scene 
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="female"
+  width="100%"
+  height="600px"
+  enable-controls="true"
+  camera-controls="true"
+  gizmo-mode="position"&gt;
+&lt;/my-room-scene&gt;
+      </div>
+      
+      <h3>With Pre-loaded Items:</h3>
+      <div class="code-block">
+&lt;my-room-scene 
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="male"
+  loaded-items='[{"id":"item1","path":"/models/items/chair.glb","position":{"x":0,"y":0,"z":2}}]'
+  width="100%"
+  height="400px"&gt;
+&lt;/my-room-scene&gt;
+      </div>
+      
+      <h3>Custom Avatar Configuration:</h3>
+      <div class="code-block">
+&lt;my-room-scene 
+  avatar-config='{"hair":"style1","top":"shirt2","bottom":"pants1","shoes":"sneakers"}'
+  gender="female"
+  width="100%"
+  height="400px"&gt;
+&lt;/my-room-scene&gt;
+      </div>
+    </div>
+    
+    <!-- Events Demo -->
+    <div class="demo-section">
+      <h2>📡 Event Handling Demo</h2>
+      
+      <div class="controls-panel">
+        <h3>Event Log:</h3>
+        <div id="eventLog" style="height: 200px; overflow-y: auto; background: #f8fafc; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px;"></div>
+        <button onclick="clearEventLog()" style="margin-top: 10px;">Clear Log</button>
+      </div>
+      
+      <h3>Available Events:</h3>
+      <div class="code-block">
+// Scene Events
+scene.addEventListener('scene-ready', (e) => {
+  console.log('Scene loaded:', e.detail.scene);
+});
+
+scene.addEventListener('error', (e) => {
+  console.log('Error:', e.detail.message);
+});
+
+// Avatar Events
+scene.addEventListener('avatar-changed', (e) => {
+  console.log('Avatar changed:', e.detail.config);
+});
+
+// Camera Events
+scene.addEventListener('camera-moved', (e) => {
+  console.log('Camera moved:', e.detail.position);
+});
+
+// Item Events
+scene.addEventListener('item-selected', (e) => {
+  console.log('Item selected:', e.detail.item);
+});
+      </div>
+    </div>
+    
+    <!-- Multiple Scenes Demo -->
+    <div class="demo-section">
+      <h2>🔄 Multiple Scenes Demo</h2>
+      
+      <div class="grid">
+        <div class="demo-item">
+          <h3>Scene 1 - Kitchen (Male Avatar)</h3>
+          <my-room-scene 
+            id="scene1"
+            room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+            gender="male"
+            width="100%"
+            height="300px"
+            enable-controls="true">
+          </my-room-scene>
+        </div>
+        
+        <div class="demo-item">
+          <h3>Scene 2 - Bedroom (Female Avatar)</h3>
+          <my-room-scene 
+            id="scene2"
+            room="/models/rooms/cate002/MR_BEDROOM_0001.glb"
+            gender="female"
+            width="100%"
+            height="300px"
+            enable-controls="true">
+          </my-room-scene>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let mainScene;
+    let eventLogElement;
+    
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      mainScene = document.getElementById('mainScene');
+      eventLogElement = document.getElementById('eventLog');
+      
+      setupEventListeners();
+    });
+    
+    function updateStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = `status ${type}`;
+    }
+    
+    function logEvent(eventName, detail) {
+      const timestamp = new Date().toLocaleTimeString();
+      const logEntry = `[${timestamp}] ${eventName}: ${JSON.stringify(detail, null, 2)}`;
+      eventLogElement.innerHTML += logEntry + '\n';
+      eventLogElement.scrollTop = eventLogElement.scrollHeight;
+    }
+    
+    function setupEventListeners() {
+      // Main scene events
+      mainScene.addEventListener('scene-ready', (event) => {
+        updateStatus('Scene loaded successfully! 🎉', 'success');
+        logEvent('scene-ready', { hasScene: !!event.detail.scene, hasEngine: !!event.detail.engine });
+      });
+      
+      mainScene.addEventListener('error', (event) => {
+        updateStatus(`Error: ${event.detail.message}`, 'error');
+        logEvent('error', event.detail);
+      });
+      
+      mainScene.addEventListener('avatar-changed', (event) => {
+        updateStatus('Avatar changed successfully! 👤', 'success');
+        logEvent('avatar-changed', event.detail);
+      });
+      
+      mainScene.addEventListener('camera-moved', (event) => {
+        logEvent('camera-moved', event.detail);
+      });
+      
+      mainScene.addEventListener('item-selected', (event) => {
+        logEvent('item-selected', event.detail);
+      });
+      
+      // Setup events for multiple scenes
+      const scene1 = document.getElementById('scene1');
+      const scene2 = document.getElementById('scene2');
+      
+      [scene1, scene2].forEach((scene, index) => {
+        if (scene) {
+          scene.addEventListener('scene-ready', (event) => {
+            logEvent(`scene${index + 1}-ready`, { sceneId: scene.id });
+          });
+          
+          scene.addEventListener('error', (event) => {
+            logEvent(`scene${index + 1}-error`, event.detail);
+          });
+        }
+      });
+    }
+    
+    // API Control Functions
+    function resetCamera() {
+      if (mainScene && mainScene.resetCamera) {
+        mainScene.resetCamera();
+        updateStatus('Camera reset! 📷', 'success');
+      }
+    }
+    
+    function toggleCameraControls() {
+      const currentValue = mainScene.getAttribute('camera-controls');
+      const newValue = currentValue === 'false' ? 'true' : 'false';
+      mainScene.setAttribute('camera-controls', newValue);
+      updateStatus(`Camera controls ${newValue === 'true' ? 'enabled' : 'disabled'}! 🎮`, 'success');
+    }
+    
+    function changeGender(gender) {
+      mainScene.setAttribute('gender', gender);
+      updateStatus(`Avatar gender changed to ${gender}! 👤`, 'success');
+    }
+    
+    function customizeAvatar() {
+      // Generate random avatar configuration
+
+      // const avatarConfig = {
+      //   hair: `style${Math.floor(Math.random() * 5) + 1}`,
+      //   top: `shirt${Math.floor(Math.random() * 3) + 1}`,
+      //   bottom: `pants${Math.floor(Math.random() * 3) + 1}`,
+      //   shoes: `shoes${Math.floor(Math.random() * 3) + 1}`
+      // };
+
+      
+      const avatarConfig = {
+          "gender": "male",
+          "parts": {
+              "body": "/models/male/male_body/male_body.glb",
+              "hair": "/models/male/male_hair/male_hair_001.glb",
+              "top": null,
+              "bottom": null,
+              "shoes": null,
+              "fullset": "/models/male/male_fullset/male_fullset_003.glb",
+              "accessory": null
+          },
+          "colors": {
+              "hair": "#4A301B",
+              "top": "#1E90FF"
+          }
+      };
+      
+      if (mainScene && mainScene.changeAvatar) {
+        mainScene.changeAvatar(avatarConfig);
+        updateStatus('Avatar customized! ✨', 'success');
+      }
+    }
+    
+    function changeRoom() {
+      const roomSelect = document.getElementById('roomSelect');
+      const selectedRoom = roomSelect.value;
+      mainScene.setAttribute('room', selectedRoom);
+      updateStatus('Room changed! 🏠', 'success');
+    }
+    
+    function addRandomItem() {
+      console.log('Adding random item...');
+      const sampleItems = [
+      [
+          {
+            "id": "item_1750782980676",
+            "name": "Chair",
+            "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+            "position": {
+              "x": 0.3753031302800913,
+              "y": 0,
+              "z": -0.6778354887437805
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        ]
+      ];
+      
+      // Get current items
+      const currentItemsStr = mainScene.getAttribute('loaded-items') || '[]';
+      let currentItems = [];
+      try {
+        currentItems = JSON.parse(currentItemsStr);
+      } catch (e) {
+        currentItems = [];
+      }
+      
+      // Add new item
+      const newItems = [...currentItems, ...sampleItems];
+      
+      if (mainScene && mainScene.loadItems) {
+        mainScene.loadItems(newItems);
+        updateStatus('Random item added! 📦', 'success');
+      }
+    }
+    
+    function loadSampleItems() {
+      const sampleItems = [
+      {
+            "id": "item_1750782980676",
+            "name": "Chair",
+            "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+            "position": {
+              "x": 0.3753031302800913,
+              "y": 0,
+              "z": -0.6778354887437805
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+      ];
+      
+      if (mainScene && mainScene.loadItems) {
+        mainScene.loadItems(sampleItems);
+        updateStatus('Sample items loaded! 📦✨', 'success');
+      }
+    }
+    
+    function clearAllItems() {
+      if (mainScene && mainScene.loadItems) {
+        mainScene.loadItems([]);
+        updateStatus('All items cleared! 🧹', 'success');
+      }
+    }
+    
+    function setGizmoMode(mode) {
+      mainScene.setAttribute('gizmo-mode', mode);
+      updateStatus(`Gizmo mode set to ${mode}! 🔧`, 'success');
+    }
+    
+    function clearEventLog() {
+      eventLogElement.innerHTML = '';
+    }
+    
+    // Utility function to get scene info
+    function getSceneInfo() {
+      if (mainScene && mainScene.getScene && mainScene.getEngine) {
+        const scene = mainScene.getScene();
+        const engine = mainScene.getEngine();
+        
+        console.log('Scene Info:', {
+          scene: scene,
+          engine: engine,
+          meshCount: scene ? scene.meshes.length : 0,
+          cameraCount: scene ? scene.cameras.length : 0
+        });
+        
+        updateStatus('Scene info logged to console! 📊', 'info');
+      }
+    }
+    
+    // Expose functions to global scope for easy testing
+    window.myRoomDemo = {
+      resetCamera,
+      toggleCameraControls,
+      changeGender,
+      customizeAvatar,
+      changeRoom,
+      addRandomItem,
+      loadSampleItems,
+      clearAllItems,
+      setGizmoMode,
+      getSceneInfo,
+      clearEventLog
+    };
+  </script>
+</body>
+</html>

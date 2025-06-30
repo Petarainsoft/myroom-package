@@ -9,7 +9,9 @@
     "build:webcomponent": "vite build --config configs/vite.webcomponent.config.js",
     "preview": "vite preview --config configs/vite.config.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --config configs/eslint.config.js",
-    "type-check": "tsc --noEmit --project configs/tsconfig.json"
+    "type-check": "tsc --noEmit --project configs/tsconfig.json",
+    "cleanwindow": "rd /s /q dist || exit 0",
+    "clean": "rm -rf dist || exit 0"
   },
   "dependencies": {
     "@babylonjs/core": "^7.31.1",

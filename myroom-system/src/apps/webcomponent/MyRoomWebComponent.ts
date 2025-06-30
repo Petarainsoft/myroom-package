@@ -36,6 +36,7 @@ class MyRoomWebComponent extends HTMLElement {
   private scene: Scene | null = null;
   private reactRoot: any = null;
   private isInitialized = false;
+  private isUpdatingProgrammatically = false;
 
   // Observed attributes
   static get observedAttributes() {
@@ -161,7 +162,9 @@ class MyRoomWebComponent extends HTMLElement {
   connectedCallback() {
     this.updateSize();
     if (!this.isInitialized) {
-      this.initialize();
+      setTimeout(() => {
+        this.initialize();
+      }, 0);
     }
   }
 
@@ -170,7 +173,7 @@ class MyRoomWebComponent extends HTMLElement {
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    if (oldValue !== newValue) {
+    if (oldValue !== newValue && !this.isUpdatingProgrammatically) {
       switch (name) {
         case 'width':
         case 'height':
@@ -178,9 +181,19 @@ class MyRoomWebComponent extends HTMLElement {
           break;
         case 'room':
         case 'gender':
-        case 'avatar-config':
+          // These require full reinitialization as they change core scene structure
           if (this.isInitialized) {
             this.reinitialize();
+          }
+          break;
+        case 'avatar-config':
+        case 'loaded-items':
+        case 'gizmo-mode':
+        case 'enable-controls':
+        case 'camera-controls':
+          // These can be updated without full reinitialization
+          if (this.isInitialized) {
+            this.updateProps();
           }
           break;
         default:
@@ -201,13 +214,27 @@ class MyRoomWebComponent extends HTMLElement {
 
   private async initialize() {
     try {
+      if (!this.isConnected) {
+        console.warn('Component not connected to DOM, skipping initialization');
+        return;
+      }
+      
+      if (!this.container || !this.canvas) {
+        throw new Error('Required DOM elements not found');
+      }
+      
       this.showLoading();
+      
+      const targetContainer = this.canvas.parentElement || this.container;
+      if (!targetContainer || !(targetContainer instanceof HTMLElement)) {
+        throw new Error('Invalid container for React root');
+      }
       
       // Dynamically import React and dependencies
       const [React, ReactDOM, IntegratedBabylonScene] = await Promise.all([
         import('react'),
         import('react-dom/client'),
-        import('../../IntegratedBabylonScene')
+        import('../../shared/components/babylon/IntegratedBabylonScene')
       ]);
 
       // Create React component
@@ -231,14 +258,20 @@ class MyRoomWebComponent extends HTMLElement {
         }
       });
 
-      // Render React component
-      this.reactRoot = ReactDOM.createRoot(this.canvas.parentElement!);
+      this.reactRoot = ReactDOM.createRoot(targetContainer);
       this.reactRoot.render(App);
       
       this.isInitialized = true;
       
     } catch (error) {
       console.error('Failed to initialize MyRoom component:', error);
+      console.debug('Debug info:', {
+        isConnected: this.isConnected,
+        hasContainer: !!this.container,
+        hasCanvas: !!this.canvas,
+        canvasParent: this.canvas?.parentElement
+      });
+      
       this.showError('Failed to initialize 3D component');
       this.dispatchEvent(new CustomEvent('error', {
         detail: { message: 'Initialization failed', error }
@@ -271,8 +304,30 @@ class MyRoomWebComponent extends HTMLElement {
     let loadedItems: LoadedItem[] = [];
     try {
       const itemsStr = this.getAttribute('loaded-items');
-      loadedItems = itemsStr ? JSON.parse(itemsStr) : [];
-    } catch {
+      if (itemsStr) {
+        const parsedItems = JSON.parse(itemsStr);
+        // Validate and filter items to ensure required properties exist
+        loadedItems = parsedItems.filter((item: any) => {
+          return item && 
+                 typeof item.id === 'string' && 
+                 typeof item.name === 'string' && 
+                 typeof item.path === 'string' && 
+                 item.path.trim() !== '' &&
+                 item.position && 
+                 typeof item.position.x === 'number' && 
+                 typeof item.position.y === 'number' && 
+                 typeof item.position.z === 'number';
+        }).map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          path: item.path,
+          position: item.position,
+          rotation: item.rotation || undefined,
+          scale: item.scale || undefined
+        }));
+      }
+    } catch (error) {
+      console.warn('Failed to parse loaded-items attribute:', error);
       loadedItems = [];
     }
 
@@ -286,10 +341,35 @@ class MyRoomWebComponent extends HTMLElement {
     };
   }
 
-  private updateProps() {
+  private async updateProps() {
     if (this.reactRoot && this.isInitialized) {
-      // Re-render with new props
-      this.reinitialize();
+      // Re-render with new props without full reinitialization
+      const [React, IntegratedBabylonScene] = await Promise.all([
+        import('react'),
+        import('../../shared/components/babylon/IntegratedBabylonScene')
+      ]);
+      
+      const props = this.getReactProps();
+      
+      const App = React.createElement(IntegratedBabylonScene.default, {
+        ...props,
+        onSceneReady: (scene: Scene) => {
+          this.scene = scene;
+          this.engine = scene.getEngine();
+          this.hideLoading();
+          this.dispatchEvent(new CustomEvent('scene-ready', {
+            detail: { scene, engine: this.engine }
+          }));
+        },
+        onError: (error: any) => {
+          this.showError(error.message || 'Failed to load 3D scene');
+          this.dispatchEvent(new CustomEvent('error', {
+            detail: { message: error.message, error }
+          }));
+        }
+      });
+      
+      this.reactRoot.render(App);
     }
   }
 
@@ -349,15 +429,38 @@ class MyRoomWebComponent extends HTMLElement {
     }
   }
 
-  public changeAvatar(config: AvatarConfig) {
-    this.setAttribute('avatar-config', JSON.stringify(config));
-    this.dispatchEvent(new CustomEvent('avatar-changed', {
-      detail: { config }
-    }));
+  public async changeAvatar(config: AvatarConfig) {
+    if (this.reactRoot && this.isInitialized) {
+      // Update attribute silently for state persistence
+      this.isUpdatingProgrammatically = true;
+      this.setAttribute('avatar-config', JSON.stringify(config));
+      this.isUpdatingProgrammatically = false;
+      
+      // Update React component directly
+      await this.updateProps();
+      
+      this.dispatchEvent(new CustomEvent('avatar-changed', {
+        detail: { config }
+      }));
+    } else {
+      // Fallback for non-initialized component
+      this.setAttribute('avatar-config', JSON.stringify(config));
+    }
   }
 
-  public loadItems(items: LoadedItem[]) {
-    this.setAttribute('loaded-items', JSON.stringify(items));
+  public async loadItems(items: LoadedItem[]) {
+    if (this.reactRoot && this.isInitialized) {
+      // Update attribute silently for state persistence
+      this.isUpdatingProgrammatically = true;
+      this.setAttribute('loaded-items', JSON.stringify(items));
+      this.isUpdatingProgrammatically = false;
+      
+      // Update React component directly without full reload
+      await this.updateProps();
+    } else {
+      // Fallback for non-initialized component
+      this.setAttribute('loaded-items', JSON.stringify(items));
+    }
   }
 
   public getScene(): Scene | null {

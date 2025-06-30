@@ -2,12 +2,13 @@
  * MyRoom Domain Configuration Script
  * 
  * This script allows you to easily change the domain after build and deployment.
- * Place this file in your web server root directory and modify the baseDomain value.
  */
 
 (function() {
   // Set this to your actual domain after deployment
   window.MYROOM_CONFIG = {
+    // baseDomain: 'http://192.168.1.5:5173' // LAN test (mobile device access)
+    // baseDomain: 'http://localhost:5173' // local test only
     baseDomain: 'https://myroom.petarainsoft.com'
   };
   

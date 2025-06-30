@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { IntegratedBabylonScene } from '../../shared/components/babylon/IntegratedBabylonScene';
 import { AvatarControls } from '../../shared/components/avatar/AvatarControls';
 import { AvatarConfig, getDefaultConfigForGender, availablePartsData } from '../../shared/data/avatarPartsData';
@@ -55,7 +55,7 @@ const IntegratedApp: React.FC = () => {
 
   const renderIntegratedMode = () => (
     <div className="integrated-container">
-      <div className="integrated-header">
+      {/* <div className="integrated-header"> */}
         {/* <h1>🎮 Integrated Room & Avatar System</h1> */}
         {/* <button 
           className="back-btn"
@@ -63,7 +63,7 @@ const IntegratedApp: React.FC = () => {
         >
           ← Back
         </button> */}
-      </div>
+      {/* </div> */}
       
       <div className="integrated-content">
         {/* Main content area without tabs */}
@@ -113,17 +113,17 @@ const IntegratedApp: React.FC = () => {
 
 // Available rooms data
 const availableRooms = [
-  { name: "Living Room 1", path: "/models/rooms/cate001/MR_KHROOM_0001.glb" },
-  { name: "Living Room 2", path: "/models/rooms/cate001/MR_KHROOM_0002.glb" },
-  { name: "Bedroom", path: "/models/rooms/cate002/MR_KHROOM_0003.glb" },
+  { name: "Living Room", path: "/models/rooms/cate001/MR_KHROOM_0001.glb" },
+  { name: "Exercise Room", path: "/models/rooms/cate001/MR_KHROOM_0002.glb" },
+  { name: "Lounge Room", path: "/models/rooms/cate002/MR_KHROOM_0003.glb" },
 ];
 
 // Available items data
 const availableItems = [
-  { name: "Chair 1", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair" },
-    { name: "Chair 2", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_CHAIR_0002.glb", category: "Chair" },
-    { name: "Table 1", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/Table.glb", category: "Table" },
-    { name: "Table 2", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/Table.glb", category: "Table" },
+  { name: "Chair", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair" },
+    { name: "Light stand", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb", category: "Light" },
+    { name: "Board", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb", category: "Decor" },
+    { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor" },
 ];
 
 interface LoadedItem {
@@ -137,14 +137,33 @@ interface LoadedItem {
 
 // Component integrating room and avatar with full UI controls
 const InteractiveRoomWithAvatar: React.FC = () => {
+  const [selectedItemToAdd, setSelectedItemToAdd] = useState(availableItems[0]);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+
   // Room state management
   const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
   
   // Items state management
   const [loadedItems, setLoadedItems] = useState<LoadedItem[]>([]);
   const [gizmoMode, setGizmoMode] = useState<'position' | 'rotation' | 'scale'>('position');
-  const [selectedItemToAdd, setSelectedItemToAdd] = useState(availableItems[0]);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  
+  // Auto-reset gizmo mode to position when item is selected
+  useEffect(() => {
+    if (selectedItem) {
+      setGizmoMode('position');
+    }
+  }, [selectedItem]);
+  
+  // Check if selected item still exists in loaded items
+  useEffect(() => {
+    if (selectedItem) {
+      const itemExists = loadedItems.some(item => item.id === selectedItem.name);
+      if (!itemExists) {
+        setSelectedItem(null);
+      }
+    }
+  }, [loadedItems, selectedItem]);
+
   
   // Avatar state management
   const [avatarConfig, setAvatarConfig] = useState<AvatarConfig>(
@@ -174,7 +193,16 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   const [babylonScene, setBabylonScene] = useState<any>(null);
   const integratedSceneRef = useRef<any>(null);
   const [showIntegrationGuide, setShowIntegrationGuide] = useState(false);
+  const [isClosing, setIsClosing] = useState(false); // New state for fade-out effect
   const [activeTab, setActiveTab] = useState('iframe');
+
+  const closeIntegrationGuide = () => {
+    setIsClosing(true); // Start fade-out animation
+    setTimeout(() => {
+      setShowIntegrationGuide(false); // Hide modal after animation completes
+      setIsClosing(false); // Reset closing state
+    }, 150); // Match the duration of the fade-out animation
+  };
   
   // Apply modal styles
   useEffect(() => {
@@ -209,7 +237,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && showIntegrationGuide) {
-        setShowIntegrationGuide(false);
+        closeIntegrationGuide();
       }
     };
     
@@ -226,7 +254,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   };
 
   const handlePartChange = (partType: string, fileName: string | null) => {
-    console.log(`👁️👣💔 handlePartChange IN INTEGRATED APP TSX: partType=${partType}, fileName=${fileName}`);
+    console.log(` handlePartChange IN INTEGRATED APP TSX: partType=${partType}, fileName=${fileName}`);
     setAvatarConfig(prev => {
       const newConfig = { ...prev };
       
@@ -314,15 +342,44 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     linkElement.click();
   };
 
-  const handleItemTransformChange = (itemId: string, transform: { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }) => {
-    setLoadedItems(prevItems => 
-      prevItems.map(item => 
+  const handleItemTransformChange = useCallback((itemId: string, transform: { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }) => {
+    setLoadedItems(prevItems => {
+      const itemIndex = prevItems.findIndex(item => item.id === itemId);
+      if (itemIndex === -1) return prevItems;
+      
+      const currentItem = prevItems[itemIndex];
+      
+      // Check if transform actually changed to prevent unnecessary updates
+      const positionChanged = 
+        !currentItem.position ||
+        Math.abs(currentItem.position.x - transform.position.x) > 0.001 ||
+        Math.abs(currentItem.position.y - transform.position.y) > 0.001 ||
+        Math.abs(currentItem.position.z - transform.position.z) > 0.001;
+      
+      const rotationChanged = 
+        !currentItem.rotation ||
+        Math.abs(currentItem.rotation.x - transform.rotation.x) > 0.001 ||
+        Math.abs(currentItem.rotation.y - transform.rotation.y) > 0.001 ||
+        Math.abs(currentItem.rotation.z - transform.rotation.z) > 0.001;
+      
+      const scaleChanged = 
+        !currentItem.scale ||
+        Math.abs(currentItem.scale.x - transform.scale.x) > 0.001 ||
+        Math.abs(currentItem.scale.y - transform.scale.y) > 0.001 ||
+        Math.abs(currentItem.scale.z - transform.scale.z) > 0.001;
+      
+      // Only update if something actually changed
+      if (!positionChanged && !rotationChanged && !scaleChanged) {
+        return prevItems;
+      }
+      
+      return prevItems.map(item => 
         item.id === itemId 
           ? { ...item, position: transform.position, rotation: transform.rotation, scale: transform.scale }
           : item
-      )
-    );
-  };
+      );
+    });
+  }, []);
 
   const handleLoadAvatar = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -362,21 +419,40 @@ const InteractiveRoomWithAvatar: React.FC = () => {
 
   // Item management handlers
   const handleAddItem = () => {
+    // Constrain position within 4x4 area centered at (0,0,0)
+    // Random position between -2 and 2 for both X and Z
+    const randomX = Math.random() * 4 - 2;
+    const randomZ = Math.random() * 4 - 2;
+    
+    // Ensure position is within bounds
+    const constrainedX = Math.max(-2, Math.min(2, randomX));
+    const constrainedZ = Math.max(-2, Math.min(2, randomZ));
+    
     const newItem: LoadedItem = {
       id: `item_${Date.now()}`,
       name: selectedItemToAdd.name,
       path: selectedItemToAdd.path,
-      position: { x: Math.random() * 4 - 2, y: 0, z: Math.random() * 4 - 2 }
+      position: { x: constrainedX, y: 0, z: constrainedZ },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 }
     };
+    
+    console.log(`Adding new item at position: (${constrainedX.toFixed(2)}, 0, ${constrainedZ.toFixed(2)})`);
     setLoadedItems(prev => [...prev, newItem]);
   };
 
   const handleRemoveItem = (itemId: string) => {
     setLoadedItems(prev => prev.filter(item => item.id !== itemId));
+    // Reset selected item if it's the one being removed
+    if (selectedItem && selectedItem.name === itemId) {
+      setSelectedItem(null);
+    }
   };
 
   const handleClearAllItems = () => {
     setLoadedItems([]);
+    // Reset selected item when clearing all items
+    setSelectedItem(null);
   };
 
 
@@ -386,9 +462,22 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       {/* Website Header - Pure Web Content */}
       <header className="website-header">
         <div className="container">
-          <h1><img src="/icon/petarainlogo.png" alt="Petarainsoft - MyRoom Service" style={{height: '40px', verticalAlign: 'middle'}} /></h1>
+        <h1>
+          <img 
+            src="/icon/petarainlogo.png" 
+            alt="Petarainsoft - MyRoom Service" 
+            style={{ height: '40px', verticalAlign: 'middle', cursor: 'pointer' }} 
+            onClick={() => window.location.reload()} // Refresh the page when clicking the logo
+          />
+        </h1>
           <nav className="main-nav">
-            <a href="#">Home</a>
+            <a 
+              href="#" 
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.reload(); // Refresh the page when clicking Home
+              }}
+            >Home</a>
             <a href="#" onClick={(e) => {
               e.preventDefault();
               document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -408,6 +497,13 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           <div className="container">
             <h2>Welcome to MyRoom Service</h2>
             <p>Explore our 3D room and avatar system embedded seamlessly into any website</p>
+          </div>
+          <div><br></br></div>
+          <div><br></br></div>
+          <div className="container">
+            {/* <h3>Ready to Get Started?</h3> */}
+            {/* <p>It only takes a couple of minutes to integrate our 3D room and avatar into your website.</p> */}
+            <button className="cta-button" onClick={() => setShowIntegrationGuide(true)}>Get Started Now</button>
           </div>
         </section>
         
@@ -432,6 +528,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     selectedItem={selectedItem}
                     onSelectItem={setSelectedItem}
                     onItemTransformChange={handleItemTransformChange}
+                    onToggleUIOverlay={() => setShowControls(!showControls)}
                   />
                   
 
@@ -439,46 +536,35 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 </div>
                 
                 {/* Movement Instructions */}
-                <div className="movement-instructions" style={{ 
-                  position: 'absolute', 
-                  bottom: '20px', 
-                  left: '20px', 
-                  fontSize: '0.9em', 
-                  textAlign: 'left', 
-                  padding: '10px', 
-                  background: 'rgba(249, 249, 249, 0.8)', 
-                  borderRadius: '4px',
-                  zIndex: 1000,
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  backdropFilter: 'blur(5px)'
-                }}>
-                  <strong>Control Guide</strong><br />
-                  <span>
-                    Left mouse click and hold to orbit the camera<br />
-                    Left mouse double click to move avatar<br />
-                    {/* Mouse right Click hold / 2 fingers to pan camera */}
-                  </span>
-                </div>
+                {showControls && (
+                  <div className="movement-instructions" style={{ 
+                    position: 'absolute', 
+                    bottom: '20px', 
+                    left: '20px', 
+                    fontSize: '0.9em', 
+                    textAlign: 'left', 
+                    padding: '10px', 
+                    background: 'rgba(249, 249, 249, 0.8)', 
+                    borderRadius: '4px',
+                    zIndex: 1000,
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(5px)'
+                  }}>
+                    <strong>Control instructions:</strong><br />
+                    <span>
+                      Click and hold the left mouse button to orbit the camera <br/>
+                      Double-click to move your character  <br/>
+                      {/* Mouse right Click hold / 2 fingers to pan camera */}
+                    </span>
+                  </div>
+                  )}
+                
                   
-                  {/* Debug Info - Hidden when touch controller is active */}
-                  {/* {debugInfo && !touchMovement.isMoving && (
-                    <div className="debug-info">
-                      <h4>Debug Info</h4>
-                      <p>Touch: {touchMovement.isMoving ? 'Active' : 'Inactive'}</p>
-                      <p>X: {touchMovement.x.toFixed(2)}, Y: {touchMovement.y.toFixed(2)}</p>
-                      <p>Active: {Object.entries(activeMovement)
-                        .filter(([_, active]) => active)
-                        .map(([action]) => action)
-                        .join(', ') || 'None'}
-                      </p>
-                    </div>
-                  )} */}
-                  
-                  {/* Integrated UI Controls Overlay */}
-                  {showControls && (
-                    <div className={`integrated-ui-overlay ${
-                      ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
-                    }`}>
+                {/* Integrated UI Controls Overlay - Docked to Right */}
+                {showControls && (
+                  <div className={`integrated-ui-overlay ${
+                    ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
+                  }`}>
                       {/* Avatar Controls */}
                       <AvatarControls
                         avatarConfig={avatarConfig}
@@ -604,15 +690,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     </div>
                   )}
                   
-                  {/* Show Controls Button */}
-                  {!showControls && (
-                    <button 
-                      className="show-controls-btn"
-                      onClick={() => setShowControls(true)}
-                    >
-                      ⚙️ Show Controls
-                    </button>
-                  )}
+
                 </div>
               </div>
             </div>
@@ -646,12 +724,12 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 marginLeft: '8px', 
                 padding: '2px 8px', 
                 borderRadius: '4px', 
-                background: gizmoMode === 'position' ? '#2196F3' : gizmoMode === 'rotation' ? '#FF9800' : '#9C27B0',
+                // background: gizmoMode === 'position' ? '#2196F3' : gizmoMode === 'rotation' ? '#FF9800' : '#9C27B0',
                 fontSize: '12px'
               }}>
-                {gizmoMode === 'position' && '📍 Move'}
-                {gizmoMode === 'rotation' && '🔄 Rotate'}
-                {gizmoMode === 'scale' && '📏 Scale'}
+                {gizmoMode === 'position' && 'Move'}
+                {gizmoMode === 'rotation' && 'Rotate'}
+                {gizmoMode === 'scale' && 'Scale'}
               </span>
             </div>
             <div style={{ fontSize: '12px', color: '#ccc', lineHeight: '1.4' }}>
@@ -730,21 +808,27 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           </div>
         </section> */}
         
-        <section className="cta-section">
+        {/* <section className="cta-section">
           <div className="container">
             <h3>Ready to Get Started?</h3>
             <p>It only takes a couple of minutes to integrate our 3D room and avatar into your website.</p>
             <button className="cta-button" onClick={() => setShowIntegrationGuide(true)}>Get Started Now</button>
           </div>
-        </section>
+        </section> */}
         
         {/* Integration Guide Modal */}
         {showIntegrationGuide && (
-          <div className="integration-guide-modal">
+          <div className={`integration-guide-modal ${isClosing ? 'fade-out' : ''}`}
+          onClick={(e) => {
+            // Close modal if the click is outside the modal content
+            if (e.target === e.currentTarget) {
+              closeIntegrationGuide();
+            }
+          }}>
             <div className="modal-content">
               <div className="modal-header">
                 <h2>Integration Guide</h2>
-                <button className="close-button" onClick={() => setShowIntegrationGuide(false)}>×</button>
+                <button className="close-button" onClick={() => closeIntegrationGuide()}>×</button>
               </div>
               <div className="modal-body">
                 <div className="integration-tabs">
@@ -765,27 +849,29 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                    
                    <div className="tab-content">
                      <div className={`tab-pane ${activeTab === 'iframe' ? 'active' : ''}`}>
+                      <h4>Demo Page</h4>
+                      <p><a href="https://myroom.petarainsoft.com/iframe-demo.html">Iframe integration demo</a></p>
                       <h4>Instruction</h4>
                       <p>The simplest way to embed MyRoom into the website is using an iframe.</p>
                       
                       <div className="code-block">
                         <pre><code>
 {`<iframe 
-  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=male" 
+  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female" 
   width="800" 
   height="600" 
-  allow="fullscreen" 
-  frameborder="1">
+  style="border: none; border-radius: 8px;" 
+  allow="fullscreen">
 </iframe>`}
                         </code></pre>
                         <button 
                            className="copy-button" 
                            onClick={() => handleCopyCode(`<iframe 
-  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=male" 
+  src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female" 
   width="800" 
   height="600" 
-  allow="fullscreen" 
-  frameborder="1">
+  style="border: none; border-radius: 8px;" 
+  allow="fullscreen">
 </iframe>`)}
                          >
                            Copy Code
@@ -809,7 +895,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             <td>Path to the room model</td>
                             <td>/models/rooms/cate001/MR_KHROOM_0001.glb
                               <br />/models/rooms/cate001/MR_KHROOM_0002.glb
-                              <br />/models/rooms/cate002/MR_KHROOM_0001.glb
+                              <br />/models/rooms/cate002/MR_KHROOM_0003glb
                             </td>
                           </tr>
                           <tr>
@@ -817,11 +903,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             <td>Avatar gender (male/female)</td>
                             <td>female</td>
                           </tr>
-                          <tr>
-                            <td>controls</td>
-                            <td>Show UI controls (true/false)</td>
-                            <td>false</td>
-                          </tr>
+                          {/* <tr>
+                            <td>autoplay</td>
+                            <td>Auto-start the scene (true/false)</td>
+                            <td>true</td>
+                          </tr> */}
                         </tbody>
                       </table>
                       
@@ -870,6 +956,8 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                     </div>
                     
                     <div className={`tab-pane ${activeTab === 'webcomponent' ? 'active' : ''}`}>
+                      <h4>Demo Page</h4>
+                      <p><a href="https://myroom.petarainsoft.com/webcomponent-simple-demo.html">Web Component integration demo</a> </p>
                       <h4>Instruction</h4>
                       <p>You can use Web Componen for coming advanced features and deeper integration.</p>
                       
@@ -889,23 +977,23 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                       <p>Step 2:  Use the Component.</p>
                       <div className="code-block">
                         <pre><code>
-{`<my-room-component 
-  room-path="/models/rooms/cate001/MR_KHROOM_0001.glb"
-  avatar-gender="female"
-  show-controls="false"
-  width="800px"
+{`<my-room-scene> 
+  id="mainScene"
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="female"
+  width="100%"
   height="600px">
-</my-room-component>`}
+</my-room-scene>`}
                         </code></pre>
                         <button 
                            className="copy-button"
-                           onClick={() => handleCopyCode(`<my-room-component 
-  room-path="/models/rooms/cate001/MR_KHROOM_0001.glb"
-  avatar-gender="female"
-  show-controls="false"
-  width="800px"
+                           onClick={() => handleCopyCode(`<my-room-scene> 
+  id="mainScene"
+  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  gender="female"
+  width="100%"
   height="600px">
-</my-room-component>`)}
+</my-room-scene>`)}
                          >
                            Copy Code
                          </button>
@@ -923,92 +1011,155 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                         </thead>
                         <tbody>
                           <tr>
-                            <td>room-path</td>
+                            <td>id</td>
+                            <td>Unique identifier for the component</td>
+                            <td>mainScene</td>
+                          </tr>
+                          <tr>
+                            <td>room</td>
                             <td>Path to the room model</td>
                             <td>/models/rooms/cate001/MR_KHROOM_0001.glb
                               <br />/models/rooms/cate001/MR_KHROOM_0002.glb
-                              <br />/models/rooms/cate002/MR_KHROOM_0001.glb
+                              <br />/models/rooms/cate002/MR_KHROOM_0003.glb
                             </td>
                           </tr>
                           <tr>
-                            <td>avatar-gender</td>
+                            <td>gender</td>
                             <td>Avatar gender (male/female)</td>
                             <td>female</td>
                           </tr>
                           <tr>
-                            <td>show-controls</td>
-                            <td>Show UI controls (true/false)</td>
-                            <td>false</td>
+                            <td>width</td>
+                            <td>Component width</td>
+                            <td>100%</td>
+                          </tr>
+                          <tr>
+                            <td>height</td>
+                            <td>Component height</td>
+                            <td>600px</td>
                           </tr>
                         </tbody>
                       </table>
-                      {/* <h4>3. JavaScript API</h4>
+                      
+                      <h4>JavaScript API</h4>
                       <p>Interact with the component using JavaScript:</p>
                       
                       <div className="code-block">
                         <pre><code>
 {`// Get reference to the component
-const myRoom = document.querySelector('my-room-component');
-
-// Change room
-myRoom.changeRoom('/models/rooms/cate001/MR_KHROOM_0002.glb');
+const mainScene = document.getElementById('mainScene');
 
 // Change avatar gender
-myRoom.changeAvatarGender('male');
+mainScene.setAttribute('gender', 'male');
+// or
+mainScene.setAttribute('gender', 'female');
 
-// Add item to room
-myRoom.addItem({
-  name: 'Chair',
-  path: '/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb',
-  position: { x: 0, y: 0, z: 0 }
-});
+// Change room
+mainScene.setAttribute('room', '/models/rooms/cate002/MR_KHROOM_0003.glb');
+
+// Customize avatar with detailed configuration
+const avatarConfig = {
+  "gender": "male",
+  "parts": {
+    "body": "/models/male/male_body/male_body.glb",
+    "hair": "/models/male/male_hair/male_hair_001.glb",
+    "fullset": "/models/male/male_fullset/male_fullset_003.glb"
+  }
+};
+if (mainScene && mainScene.changeAvatar) {
+  mainScene.changeAvatar(avatarConfig);
+}
+
+// Add items to the scene
+const items = [{
+  "id": "item_001",
+  "name": "Chair",
+  "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+  "position": { "x": 0.37, "y": 0, "z": -0.67 },
+  "rotation": { "x": 0, "y": 0, "z": 0 },
+  "scale": { "x": 1, "y": 1, "z": 1 }
+}];
+if (mainScene && mainScene.loadItems) {
+  mainScene.loadItems(items);
+}
 
 // Listen for events
-myRoom.addEventListener('roomReady', (event) => {
-  console.log('Room is ready!');
+mainScene.addEventListener('scene-ready', (event) => {
+  console.log('Scene loaded:', event.detail.scene);
 });
 
-myRoom.addEventListener('avatarChanged', (event) => {
+mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
-});`}
+});
+`}
                         </code></pre>
                         <button 
                            className="copy-button"
                            onClick={() => handleCopyCode(`// Get reference to the component
-const myRoom = document.querySelector('my-room-component');
-
-// Change room
-myRoom.changeRoom('/models/rooms/cate001/MR_KHROOM_0002.glb');
+const mainScene = document.getElementById('mainScene');
 
 // Change avatar gender
-myRoom.changeAvatarGender('male');
+mainScene.setAttribute('gender', 'male');
+// or
+mainScene.setAttribute('gender', 'female');
 
-// Add item to room
-myRoom.addItem({
-  name: 'Chair',
-  path: '/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb',
-  position: { x: 0, y: 0, z: 0 }
-});
+// Change room
+mainScene.setAttribute('room', '/models/rooms/cate002/MR_BEDROOM_0001.glb');
+
+// Customize avatar with detailed configuration
+const avatarConfig = {
+  "gender": "male",
+  "parts": {
+    "body": "/models/male/male_body/male_body.glb",
+    "hair": "/models/male/male_hair/male_hair_001.glb",
+    "fullset": "/models/male/male_fullset/male_fullset_003.glb"
+  },
+  "colors": {
+    "hair": "#4A301B",
+    "top": "#1E90FF"
+  }
+};
+if (mainScene && mainScene.changeAvatar) {
+  mainScene.changeAvatar(avatarConfig);
+}
+
+// Add items to the scene
+const items = [{
+  "id": "item_001",
+  "name": "Chair",
+  "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+  "position": { "x": 0.37, "y": 0, "z": -0.67 },
+  "rotation": { "x": 0, "y": 0, "z": 0 },
+  "scale": { "x": 1, "y": 1, "z": 1 }
+}];
+if (mainScene && mainScene.loadItems) {
+  mainScene.loadItems(items);
+}
+
+// Camera controls
+if (mainScene && mainScene.resetCamera) {
+  mainScene.resetCamera();
+}
 
 // Listen for events
-myRoom.addEventListener('roomReady', (event) => {
-  console.log('Room is ready!');
+mainScene.addEventListener('scene-ready', (event) => {
+  console.log('Scene loaded:', event.detail.scene);
 });
 
-myRoom.addEventListener('avatarChanged', (event) => {
+mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
 });`)}
                          >
                            Copy Code
                          </button>
-                      </div> */}
+                      </div>
                       
                       {/* <h4>4. Styling</h4>
                       <p>The component can be styled using CSS:</p>
                       
                       <div className="code-block">
                         <pre><code>
-{`my-room-component {
+{`my-room-scene {
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   overflow: hidden;
@@ -1016,7 +1167,7 @@ myRoom.addEventListener('avatarChanged', (event) => {
                         </code></pre>
                         <button 
                            className="copy-button"
-                           onClick={() => handleCopyCode(`my-room-component {
+                           onClick={() => handleCopyCode(`my-room-scene {
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   overflow: hidden;
@@ -1040,7 +1191,7 @@ myRoom.addEventListener('avatarChanged', (event) => {
                 </div> */}
               </div>
               <div className="modal-footer">
-                <button className="primary-button" onClick={() => setShowIntegrationGuide(false)}>Close</button>
+                <button className="primary-button" onClick={() => closeIntegrationGuide()}>Close</button>
                 {/* <a href="https://petarainsoft.com" className="secondary-button" target="_blank" rel="noopener noreferrer">Contact Support</a> */}
               </div>
             </div>
@@ -1056,7 +1207,7 @@ myRoom.addEventListener('avatarChanged', (event) => {
               <h4>Company</h4>
               <ul>
                 <li><a href="https://petarainsoft.com">About Us</a></li>
-                <li><a href="https://petarainsoft.com">Careers</a></li>
+                {/* <li><a href="https://petarainsoft.com">Careers</a></li> */}
                 {/* <li><a href="#">Press</a></li> */}
               </ul>
             </div>
@@ -1099,13 +1250,28 @@ const modalStyles = `
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.15s ease-out;
+  }
+
+  .integration-guide-modal.fade-out {
+    animation: fadeOutSlideDown 0.15s ease-out; /* Fade-out animation */
   }
   
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
+
+  @keyframes fadeOutSlideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0); /* Start at the current position */
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px); /* Slide up by 20px */
+  }
+}
   
   .modal-content {
     background-color: white;
@@ -1216,15 +1382,22 @@ const modalStyles = `
     color: #666;
     cursor: pointer;
     transition: all 0.2s;
+    outline: none;
   }
   
   .tab-button:hover {
     color: #333;
+    outline: none;
+  }
+
+  .tab-button:focus {
+    outline: none;
   }
   
   .tab-button.active {
     color: #4CAF50;
     border-bottom-color: #4CAF50;
+    outline: none;
   }
   
   .tab-content {

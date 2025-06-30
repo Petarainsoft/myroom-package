@@ -27,6 +27,7 @@ const getUrlParams = (): EmbedDemoProps => {
 const EmbedDemo: React.FC = () => {
   const params = getUrlParams();
   const avatarConfig = getDefaultConfigForGender(params.gender!);
+  const sceneRef = React.useRef<any>(null);
 
   // Send message to parent window when scene is ready
   const handleSceneReady = (scene: any) => {
@@ -51,7 +52,10 @@ const EmbedDemo: React.FC = () => {
         // Handle commands from parent window
         switch (event.data.command) {
           case 'RESET_CAMERA':
-            // Reset camera logic
+            // Reset camera using scene ref
+            if (sceneRef.current && sceneRef.current.resetCamera) {
+              sceneRef.current.resetCamera();
+            }
             break;
           case 'CHANGE_AVATAR':
             // Change avatar logic
@@ -68,6 +72,7 @@ const EmbedDemo: React.FC = () => {
 
   return (
     <div 
+      className="babylon-scene-container"
       style={{ 
         width: params.width, 
         height: params.height,
@@ -78,6 +83,7 @@ const EmbedDemo: React.FC = () => {
       }}
     >
       <IntegratedBabylonScene
+        ref={sceneRef}
         roomPath={params.room}
         avatarConfig={avatarConfig}
         onSceneReady={handleSceneReady}

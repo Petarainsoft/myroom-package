@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyRoom Simple Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .demo-section {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+    
+    .demo-section h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    
+    .demo-item {
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    
+    .status.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    
+    .status.info {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #93c5fd;
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>MyRoom Web Component - Simple Demo</h1>
+      <p>This page demonstrates how to integrate MyRoom Web Component with simple script tag</p>
+    </div>
+    
+    <!-- Single Web Component Demo -->
+    <div class="demo-section">
+      <h2>3D Web Component Demo</h2>
+      
+      <div class="demo-item">
+        <!-- Status display area -->
+        <div id="status" class="status info">Loading scene...</div>
+        
+        <!-- Only one script tag is needed -->
+        <script src="http://192.168.1.5:5173/dist/myroom-webcomponent.umd.js"></script>
+        
+        <!-- Use the webcomponent normally -->
+        <my-room-scene 
+          id="mainScene"
+          room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+          gender="male"
+          width="100%"
+          height="600px">
+        </my-room-scene>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Listen for events
+    document.addEventListener('DOMContentLoaded', () => {
+      const scene = document.getElementById('mainScene');
+      
+      function updateStatus(message, type) {
+        const status = document.getElementById('status');
+        status.textContent = message;
+        status.className = `status ${type}`;
+      }
+      
+      scene.addEventListener('scene-ready', (event) => {
+        updateStatus('Scene loaded successfully!', 'success');
+        console.log('Scene ready:', event.detail);
+      });
+      
+      scene.addEventListener('error', (event) => {
+        updateStatus(`Error: ${event.detail.message}`, 'error');
+        console.error('Scene error:', event.detail);
+      });
+      
+      scene.addEventListener('avatar-changed', (event) => {
+        updateStatus('Avatar changed', 'success');
+        console.log('Avatar changed:', event.detail);
+      });
+    });
+  </script>
+</body>
+</html>

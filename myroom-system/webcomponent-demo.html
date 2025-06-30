@@ -221,7 +221,7 @@
         <my-room-scene 
           id="mainScene"
           room="/models/rooms/cate001/MR_KHROOM_0001.glb"
-          gender="male"
+          gender="female"
           width="100%"
           height="600px"
           autoplay="true"
@@ -421,8 +421,7 @@ const engine = scene.getEngine();</pre>
        
        // Create and load the webcomponent script from baseDomain
        const script = document.createElement('script');
-       script.type = 'module';
-       script.src = config.baseDomain + '/dist/myroom-webcomponent.es.js';
+       script.src = config.baseDomain + '/dist/myroom-webcomponent.umd.js';
        script.onload = function() {
          console.log('MyRoom WebComponent loaded successfully from external domain');
          // Dispatch event to notify that webcomponent is ready
@@ -438,8 +437,7 @@ const engine = scene.getEngine();</pre>
          }
          // Fallback to local version if external fails
          const fallbackScript = document.createElement('script');
-         fallbackScript.type = 'module';
-         fallbackScript.src = '/src/apps/webcomponent/index.ts';
+         fallbackScript.src = '/dist/myroom-webcomponent.umd.js';
          fallbackScript.onload = function() {
            document.dispatchEvent(new CustomEvent('myroom-webcomponent-ready', {
              detail: { source: 'local', domain: 'localhost' }

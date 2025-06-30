@@ -1,5 +1,7 @@
-import { useEffect, useRef } from 'react';
+// import { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { SceneLoader, TransformNode, Scene } from '@babylonjs/core';
+import { domainConfig } from '../../config/appConfig';
 
 interface RoomLoaderProps {
   scene: Scene | null;
@@ -18,10 +20,13 @@ export const useRoomLoader = ({ scene, roomPath, isSceneReady, roomRef }: RoomLo
         // Clear existing room
         roomRef.current!.getChildMeshes().forEach(mesh => mesh.dispose());
 
+        // Create full URL with domain
+        const fullRoomUrl = roomPath.startsWith('http') ? roomPath : `${domainConfig.baseDomain}${roomPath}`;
+        
         // Load new room
         const result = await SceneLoader.ImportMeshAsync(
           '',
-          roomPath,
+          fullRoomUrl,
           '',
           scene
         );
