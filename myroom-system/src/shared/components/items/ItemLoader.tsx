@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { SceneLoader, TransformNode, Scene, Vector3 } from '@babylonjs/core';
+import { SceneLoader, TransformNode, Scene, Vector3, ShadowGenerator } from '@babylonjs/core';
 import { LoadedItem } from '../../types/LoadedItem';
 import { domainConfig } from '../../config/appConfig';
 
@@ -9,6 +9,7 @@ interface ItemLoaderProps {
   isSceneReady: boolean;
   itemsRef: React.MutableRefObject<TransformNode | null>;
   loadedItemMeshesRef: React.MutableRefObject<any[]>;
+  shadowGeneratorRef: React.MutableRefObject<ShadowGenerator | null>;
 }
 
 export const useItemLoader = ({ 
@@ -16,7 +17,8 @@ export const useItemLoader = ({
   loadedItems, 
   isSceneReady, 
   itemsRef, 
-  loadedItemMeshesRef 
+  loadedItemMeshesRef ,
+  shadowGeneratorRef
 }: ItemLoaderProps) => {
   // Load items when loadedItems changes
   useEffect(() => {
@@ -84,6 +86,8 @@ export const useItemLoader = ({
             }
             // Make mesh pickable
             mesh.isPickable = true;
+            if (shadowGeneratorRef.current)
+              shadowGeneratorRef.current.addShadowCaster(mesh);
           });
 
           // Add container to tracking array

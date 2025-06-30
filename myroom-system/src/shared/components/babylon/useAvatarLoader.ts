@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { Scene, TransformNode, SceneLoader, Vector3 } from '@babylonjs/core';
+import { Scene, TransformNode, SceneLoader, ShadowGenerator } from '@babylonjs/core';
 import { availablePartsData } from '../../data/avatarPartsData';
 import { findMappedBone } from '../../data/skeletonMapping';
 import type { AvatarConfig, AvailableParts, GenderSelectableParts } from '../../types/AvatarTypes';
@@ -15,6 +15,7 @@ interface UseAvatarLoaderProps {
   allWalkAnimationsRef: React.MutableRefObject<any[]>;
   allCurrentAnimationsRef: React.MutableRefObject<any[]>;
   avatarRef: React.MutableRefObject<TransformNode | null>;
+  shadowGeneratorRef: React.MutableRefObject<ShadowGenerator | null>;
 }
 
 /**
@@ -29,6 +30,7 @@ interface UseAvatarLoaderProps {
  * @param {React.MutableRefObject<any[]>} params.allIdleAnimationsRef - Ref for all idle animations
  * @param {React.MutableRefObject<any[]>} params.allWalkAnimationsRef - Ref for all walk animations
  * @param {React.MutableRefObject<any[]>} params.allCurrentAnimationsRef - Ref for all current animations
+ * @param {React.MutableRefObject<ShadowGenerator|null>} params.shadowGeneratorRef - Ref for shadow generator
  * @param {React.MutableRefObject<TransformNode|null>} params.avatarRef - Ref for avatar container node
  * @returns {object} - Avatar part/animation refs, state, and loader functions
  */
@@ -42,7 +44,8 @@ export function useAvatarLoader({
   allIdleAnimationsRef,
   allWalkAnimationsRef,
   allCurrentAnimationsRef,
-  avatarRef
+  avatarRef,
+  shadowGeneratorRef
 }: UseAvatarLoaderProps) {
   // Refs for avatar parts
   const loadedAvatarPartsRef = useRef<Record<string, any[]>>({});
@@ -644,6 +647,8 @@ export function useAvatarLoader({
               if (!mesh.isDisposed()) {
                 mesh.setEnabled(true);
                 mesh.isVisible = true;
+                if (shadowGeneratorRef.current)
+                  shadowGeneratorRef.current.addShadowCaster(mesh);
               }
             });
           });
@@ -665,6 +670,8 @@ export function useAvatarLoader({
                   if (!mesh.isDisposed()) {
                     mesh.setEnabled(true);
                     mesh.isVisible = true;
+                    if (shadowGeneratorRef.current)
+                      shadowGeneratorRef.current.addShadowCaster(mesh);
                   }
                 });
               });

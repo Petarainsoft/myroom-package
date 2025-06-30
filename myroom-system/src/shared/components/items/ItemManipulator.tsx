@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { UtilityLayerRenderer, PositionGizmo, RotationGizmo, ScaleGizmo } from '@babylonjs/core';
+import { UtilityLayerRenderer, PositionGizmo, RotationGizmo, ScaleGizmo, Mesh } from '@babylonjs/core';
 
 interface ItemManipulatorProps {
   gizmoMode?: 'position' | 'rotation' | 'scale';
@@ -12,6 +12,7 @@ interface ItemManipulatorProps {
   }) => void;
   onSelectItem?: (item: any) => void;
   loadedItemMeshesRef: React.MutableRefObject<any[]>;
+  highlightDiscRef: React.MutableRefObject<Mesh | null>;
 }
 
 export const useItemManipulator = ({
@@ -20,7 +21,8 @@ export const useItemManipulator = ({
   utilityLayerRef,
   onItemTransformChange,
   onSelectItem,
-  loadedItemMeshesRef
+  loadedItemMeshesRef,
+  highlightDiscRef
 }: ItemManipulatorProps) => {
   const gizmoRef = useRef<PositionGizmo | RotationGizmo | ScaleGizmo | null>(null);
   const selectedItemRef = useRef<any>(null);
@@ -37,7 +39,7 @@ export const useItemManipulator = ({
     // Find the item container that contains this mesh
     const itemContainer = loadedItemMeshesRef.current.find(container => {
       const isDirectChild = mesh.parent === container;
-      
+
       // Check if mesh is descendant by walking up parent chain
       let isDescendant = false;
       let currentParent = mesh.parent;
@@ -47,18 +49,29 @@ export const useItemManipulator = ({
         }
         currentParent = currentParent.parent;
       }
-      
+
       console.log('Checking container in selectItem:', container.name, 'Direct child:', isDirectChild, 'Descendant:', isDescendant);
       return isDirectChild || isDescendant;
     });
-    
+
     console.log('Found item container:', itemContainer?.name);
-    
+
     if (itemContainer) {
       selectedItemRef.current = itemContainer;
       onSelectItem?.(itemContainer);
       console.log('Item selected:', itemContainer.name);
-      
+
+      // Position the highlight disc under the selected item
+      if (highlightDiscRef.current) {
+        highlightDiscRef.current.position = itemContainer.position.clone();
+        highlightDiscRef.current.position.y += 0.02;
+        highlightDiscRef.current.isVisible = true;
+      }
+      else
+      {
+        console.warn('Highlight disc ref is null, cannot position highlight disc');
+      }
+
       // Create or update gizmo
       updateGizmo(itemContainer);
     } else {
@@ -87,20 +100,31 @@ export const useItemManipulator = ({
         gizmoRef.current = null;
       }
     }
+
+    // Hide the highlight disc
+    if (highlightDiscRef.current) {
+      highlightDiscRef.current.isVisible = false;
+    }
   };
 
   const updateItemTransform = useCallback((itemId: string, mesh: any, immediate: boolean = false) => {
     if (!onItemTransformChange) return;
-    
+
     const doUpdate = () => {
       const transform = {
         position: { x: mesh.position.x, y: mesh.position.y, z: mesh.position.z },
         rotation: { x: mesh.rotation.x, y: mesh.rotation.y, z: mesh.rotation.z },
-        scale: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z }
+        scale: { x: mesh.scaling.x, y: mesh.scaling.y, z: mesh.scaling.z },
       };
       onItemTransformChange(itemId, transform);
+
+      // Update the highlight disc position
+      if (highlightDiscRef.current) {
+        highlightDiscRef.current.position = mesh.position.clone();
+        highlightDiscRef.current.position.y += 0.02; // Slightly above the ground
+      }
     };
-    
+
     if (immediate) {
       // Clear any pending updates and execute immediately
       if (transformTimeoutRef.current) {
@@ -121,7 +145,9 @@ export const useItemManipulator = ({
       }
       transformTimeoutRef.current = setTimeout(doUpdate, 50); // Slightly increased for stability
     }
-  }, [onItemTransformChange]);
+  },
+  [onItemTransformChange, highlightDiscRef]
+);
 
   const updateGizmo = (mesh: any) => {
     if (!utilityLayerRef.current) return;

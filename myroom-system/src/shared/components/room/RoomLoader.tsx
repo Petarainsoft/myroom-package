@@ -36,6 +36,7 @@ export const useRoomLoader = ({ scene, roomPath, isSceneReady, roomRef }: RoomLo
           if (mesh.parent === null) {
             mesh.parent = roomRef.current;
           }
+          mesh.receiveShadows = true;
         });
 
         console.log('Room loaded:', roomPath);

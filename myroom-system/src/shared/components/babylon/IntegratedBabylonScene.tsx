@@ -5,6 +5,7 @@ import {
   ArcRotateCamera,
   Vector3,
   HemisphericLight, DirectionalLight,
+  ShadowGenerator,
   SceneLoader,
   TransformNode,
   PointerEventTypes,
@@ -13,7 +14,8 @@ import {
   PositionGizmo, RotationGizmo, ScaleGizmo,
   EasingFunction, CubicEase,
   Color4, Matrix,
-  Animation
+  Animation,
+  Mesh, MeshBuilder, StandardMaterial
 } from '@babylonjs/core';
 import '@babylonjs/loaders';
 
@@ -70,6 +72,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   const gizmoRef = useRef<PositionGizmo | RotationGizmo | ScaleGizmo | null>(null);
   const selectedItemRef = useRef<any>(null);
   const loadedItemMeshesRef = useRef<any[]>([]);
+  const highlightDiscRef = useRef<Mesh | null>(null);
+  const shadowGeneratorRef = useRef<ShadowGenerator | null>(null);
 
   // Animation-related refs
   const idleAnimRef = useRef<any>(null);
@@ -124,7 +128,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     allIdleAnimationsRef,
     allWalkAnimationsRef,
     allCurrentAnimationsRef,
-    avatarRef
+    avatarRef,
+    shadowGeneratorRef: shadowGeneratorRef
   });
 
   // Debug: log trạng thái animation và mesh avatar khi animation ready thay đổi
@@ -214,7 +219,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     gizmoMode: props.gizmoMode,
     selectedItem: props.selectedItem,
     onSelectItem: props.onSelectItem,
-    onItemTransformChange: props.onItemTransformChange
+    onItemTransformChange: props.onItemTransformChange,
+    highlightDiscRef: highlightDiscRef
   });
 
   // Initialize Babylon scene
@@ -266,22 +272,35 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
       // Create enhanced lighting with increased brightness
       const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
-      light.intensity = 2.2; // Increased from 1.8 for more brightness
+      light.intensity = 1.4; // Increased from 1.8 for more brightness
       light.diffuse = new Color3(1, 0.98, 0.95); // Slightly warm light
       light.specular = new Color3(1, 1, 1);
       light.groundColor = new Color3(0.25, 0.25, 0.3); // Slightly brighter ground reflection
 
       // Add directional light for shadows with improved settings
-      const directionalLight = new DirectionalLight('directionalLight', new Vector3(-0.5, -1, -0.5), scene);
-      directionalLight.intensity = 1.2; // Increased from 0.9 for more brightness
+      const directionalLight = new DirectionalLight('directionalLight', new Vector3(-1, -2, -1), scene);
+      directionalLight.intensity = 2.2; // Increased from 0.9 for more brightness
       directionalLight.diffuse = new Color3(1, 0.97, 0.9); // Slightly warm sunlight
       directionalLight.specular = new Color3(1, 1, 1);
 
-      // Add a fill light from opposite direction for better overall illumination
-      const fillLight = new HemisphericLight('fillLight', new Vector3(0.5, 0.5, 0.5), scene);
-      fillLight.intensity = 0.7;
-      fillLight.diffuse = new Color3(0.9, 0.9, 1.0); // Slightly cool fill light
-      fillLight.specular = new Color3(0.5, 0.5, 0.5);
+      // Create a shadow generator
+      const shadowGenerator = new ShadowGenerator(1024, directionalLight);
+      shadowGenerator.useBlurExponentialShadowMap = true; // Optional: Enable soft shadows
+      shadowGenerator.blurKernel = 32; // Optional: Adjust shadow softness
+      shadowGeneratorRef.current = shadowGenerator;
+
+      // Create a highlight disc
+      const highlightDisc = MeshBuilder.CreateDisc(
+        'highlightDisc',
+        { radius: 1, tessellation: 64 },
+        scene
+      );
+      highlightDisc.rotation.x = Math.PI / 2; // Rotate to lie flat on the ground
+      highlightDisc.isVisible = false; // Initially hidden
+      highlightDisc.material = new StandardMaterial('highlightMaterial', scene);
+      (highlightDisc.material as StandardMaterial).diffuseColor = new Color3(0, 0, 1); // Blue color
+      (highlightDisc.material as StandardMaterial).alpha = 0.5; // Semi-transparent
+      highlightDiscRef.current = highlightDisc;
 
       // Skybox will be handled by useSkybox hook
 
@@ -415,6 +434,35 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         }
       });
 
+      scene.onPointerObservable.add((pointerInfo) => {
+        if (pointerInfo.type === PointerEventTypes.POINTERMOVE) {
+          const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
+      
+          if (pickInfo?.hit && pickInfo.pickedMesh) {
+            const isItem = loadedItemMeshesRef.current.some((itemContainer) => {
+              // Check if the picked mesh is a child or descendant of any item container
+              let currentParent = pickInfo.pickedMesh?.parent;
+              while (currentParent) {
+                if (currentParent === itemContainer) {
+                  return true;
+                }
+                currentParent = currentParent.parent;
+              }
+              return false;
+            });
+      
+            // Change cursor to pointer if hovering over an item
+            if (isItem) {
+              canvasRef.current!.style.cursor = 'pointer';
+            } else {
+              canvasRef.current!.style.cursor = 'default';
+            }
+          } else {
+            canvasRef.current!.style.cursor = 'default';
+          }
+        }
+      });
+
       // Start render loop
       engine.runRenderLoop(() => {
         scene.render();
@@ -492,7 +540,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     loadedItems: props.loadedItems,
     isSceneReady,
     itemsRef,
-    loadedItemMeshesRef
+    loadedItemMeshesRef,
+    shadowGeneratorRef
   });
 
   // Use skybox hook
