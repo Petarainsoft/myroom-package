@@ -22,7 +22,7 @@ export const useRoomLoader = ({ scene, roomPath, isSceneReady, roomRef }: RoomLo
 
         // Create full URL with domain
         const fullRoomUrl = roomPath.startsWith('http') ? roomPath : `${domainConfig.baseDomain}${roomPath}`;
-        
+
         // Load new room
         const result = await SceneLoader.ImportMeshAsync(
           '',
@@ -36,6 +36,7 @@ export const useRoomLoader = ({ scene, roomPath, isSceneReady, roomRef }: RoomLo
           if (mesh.parent === null) {
             mesh.parent = roomRef.current;
           }
+          mesh.receiveShadows = true;
         });
 
         console.log('Room loaded:', roomPath);

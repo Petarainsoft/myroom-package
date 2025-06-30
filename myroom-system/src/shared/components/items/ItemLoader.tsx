@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { SceneLoader, TransformNode, Scene, Vector3 } from '@babylonjs/core';
+import { SceneLoader, TransformNode, Scene, Vector3, ShadowGenerator } from '@babylonjs/core';
 import { LoadedItem } from '../../types/LoadedItem';
 import { domainConfig } from '../../config/appConfig';
 
@@ -9,14 +9,16 @@ interface ItemLoaderProps {
   isSceneReady: boolean;
   itemsRef: React.MutableRefObject<TransformNode | null>;
   loadedItemMeshesRef: React.MutableRefObject<any[]>;
+  shadowGeneratorRef: React.MutableRefObject<ShadowGenerator | null>;
 }
 
-export const useItemLoader = ({ 
-  scene, 
-  loadedItems, 
-  isSceneReady, 
-  itemsRef, 
-  loadedItemMeshesRef 
+export const useItemLoader = ({
+  scene,
+  loadedItems,
+  isSceneReady,
+  itemsRef,
+  loadedItemMeshesRef,
+  shadowGeneratorRef
 }: ItemLoaderProps) => {
   // Load items when loadedItems changes
   useEffect(() => {
@@ -33,7 +35,7 @@ export const useItemLoader = ({
           });
           loadedItemMeshesRef.current = [];
         }
-        
+
         // Also clear any remaining child meshes
         if (itemsRef.current) {
           itemsRef.current.getChildMeshes().forEach(mesh => {
@@ -50,10 +52,10 @@ export const useItemLoader = ({
             console.warn('Skipping invalid item:', item);
             continue;
           }
-          
+
           // Create full URL with domain
           const fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
-          
+
           const result = await SceneLoader.ImportMeshAsync(
             '',
             fullItemUrl,
@@ -64,17 +66,17 @@ export const useItemLoader = ({
           // Create a container for this item
           const itemContainer = new TransformNode(item.id, scene);
           itemContainer.position = new Vector3(item.position.x, item.position.y, item.position.z);
-          
+
           // Apply rotation if available
           if (item.rotation) {
             itemContainer.rotation = new Vector3(item.rotation.x, item.rotation.y, item.rotation.z);
           }
-          
+
           // Apply scale if available
           if (item.scale) {
             itemContainer.scaling = new Vector3(item.scale.x, item.scale.y, item.scale.z);
           }
-          
+
           itemContainer.parent = itemsRef.current;
 
           // Parent all meshes to the container and make them pickable
@@ -84,6 +86,8 @@ export const useItemLoader = ({
             }
             // Make mesh pickable
             mesh.isPickable = true;
+            if (shadowGeneratorRef.current)
+              shadowGeneratorRef.current.addShadowCaster(mesh);
           });
 
           // Add container to tracking array

@@ -1,5 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
-import { Scene, TransformNode, SceneLoader, Vector3 } from '@babylonjs/core';
+import { Scene, TransformNode, SceneLoader, Vector3, ShadowGenerator } from '@babylonjs/core';
 import { availablePartsData, AvatarConfig } from '../../data/avatarPartsData';
 import { findMappedBone } from '../../data/skeletonMapping';
 
@@ -28,7 +28,8 @@ export function useAvatarLoader({
   allIdleAnimationsRef,
   allWalkAnimationsRef,
   allCurrentAnimationsRef,
-  avatarRef
+  avatarRef,
+  shadowGeneratorRef
 }) {
   // Refs for avatar parts
   const loadedAvatarPartsRef = useRef<Record<string, any[]>>({});
@@ -455,6 +456,8 @@ export function useAvatarLoader({
           if (!mesh.isDisposed()) {
             mesh.setEnabled(true);
             mesh.isVisible = true;
+            if (shadowGeneratorRef.current)
+              shadowGeneratorRef.current.addShadowCaster(mesh);
           }
         });
       });
