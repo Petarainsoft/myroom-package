@@ -271,15 +271,21 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       cameraRef.current = camera;
 
       // Create enhanced lighting with increased brightness
-      const light = new HemisphericLight('light', new Vector3(0, 1, 0), scene);
-      light.intensity = 1.4; // Increased from 1.8 for more brightness
+      const light = new HemisphericLight('light', new Vector3(0, -1, 0), scene);
+      light.intensity = 1.15; // Increased from 1.8 for more brightness
       light.diffuse = new Color3(1, 0.98, 0.95); // Slightly warm light
       light.specular = new Color3(1, 1, 1);
       light.groundColor = new Color3(0.25, 0.25, 0.3); // Slightly brighter ground reflection
 
+      // Add a fill light from opposite direction for better overall illumination
+      const fillLight = new HemisphericLight('fillLight', new Vector3(0, 1, 0), scene);
+      fillLight.intensity = 1.15;
+      fillLight.diffuse = new Color3(0.9, 0.9, 1.0); // Slightly cool fill light
+      fillLight.specular = new Color3(0.5, 0.5, 0.5);
+
       // Add directional light for shadows with improved settings
-      const directionalLight = new DirectionalLight('directionalLight', new Vector3(-1, -2, -1), scene);
-      directionalLight.intensity = 2.2; // Increased from 0.9 for more brightness
+      const directionalLight = new DirectionalLight('directionalLight', new Vector3(-0.8, -2, -1), scene);
+      directionalLight.intensity = 1.15; // Increased from 0.9 for more brightness
       directionalLight.diffuse = new Color3(1, 0.97, 0.9); // Slightly warm sunlight
       directionalLight.specular = new Color3(1, 1, 1);
 
