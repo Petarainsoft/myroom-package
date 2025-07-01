@@ -67,9 +67,6 @@ export const useItemManipulator = ({
         highlightDiscRef.current.position.y += 0.02;
         highlightDiscRef.current.isVisible = true;
       }
-      else {
-        console.warn('Highlight disc ref is null, cannot position highlight disc');
-      }
 
       // Create or update gizmo
       updateGizmo(itemContainer);

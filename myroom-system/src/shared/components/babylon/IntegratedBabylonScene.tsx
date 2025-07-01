@@ -74,6 +74,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   const loadedItemMeshesRef = useRef<any[]>([]);
   const highlightDiscRef = useRef<Mesh | null>(null);
   const shadowGeneratorRef = useRef<ShadowGenerator | null>(null);
+  const targetDiscRef = useRef<Mesh | null>(null);
 
   // Animation-related refs
   const idleAnimRef = useRef<any>(null);
@@ -268,6 +269,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       camera.wheelPrecision = 50; // More precise zooming
       camera.lowerRadiusLimit = 2; // Limit how close camera can get
       camera.upperRadiusLimit = 15; // Limit how far camera can go
+      camera.upperBetaLimit = Math.PI / 1.95;
       cameraRef.current = camera;
 
       // Create enhanced lighting with increased brightness
@@ -307,6 +309,39 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       (highlightDisc.material as StandardMaterial).diffuseColor = new Color3(0, 0, 1); // Blue color
       (highlightDisc.material as StandardMaterial).alpha = 0.5; // Semi-transparent
       highlightDiscRef.current = highlightDisc;
+
+      // Create a green circle for the target position
+      const targetDisc = MeshBuilder.CreateDisc(
+        'targetDisc',
+        { radius: 0.1, tessellation: 64 },
+        scene
+      );
+      targetDisc.rotation.x = Math.PI / 2; // Rotate to lie flat on the ground
+      targetDisc.isVisible = false; // Initially hidden
+      targetDisc.material = new StandardMaterial('targetMaterial', scene);
+      (targetDisc.material as StandardMaterial).diffuseColor = new Color3(0, 1, 0); // Green color
+      (targetDisc.material as StandardMaterial).alpha = 0.5; // Semi-transparent
+
+      // Create an animation for the radius
+      const radiusAnimation = new Animation(
+        'radiusAnimation',
+        'scaling', // Animating the scaling of the disc
+        45, // Frames per second
+        Animation.ANIMATIONTYPE_VECTOR3,
+        Animation.ANIMATIONLOOPMODE_CYCLE
+      );
+
+      // Define keyframes for the animation
+      const radiusKeys = [
+        { frame: 0, value: new Vector3(1, 1, 1) }, // Start with normal size
+        { frame: 15, value: new Vector3(2, 2, 1) }, // Scale up uniformly
+        { frame: 30, value: new Vector3(1, 1, 1) }, // Scale back down
+      ];
+      radiusAnimation.setKeys(radiusKeys);
+
+      // Attach the animation to the targetDisc
+      targetDisc.animations = [radiusAnimation];
+      scene.beginAnimation(targetDisc, 0, 30, true); // Loop the animation
 
       // Skybox will be handled by useSkybox hook
 
@@ -357,6 +392,33 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
             cameraFollowStateRef.current.shouldFollowAvatar = true;
           }
         }
+
+        if (pointerInfo.type === PointerEventTypes.POINTERMOVE) {
+          const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
+
+          if (pickInfo?.hit && pickInfo.pickedMesh) {
+            const isItem = loadedItemMeshesRef.current.some((itemContainer) => {
+              // Check if the picked mesh is a child or descendant of any item container
+              let currentParent = pickInfo.pickedMesh?.parent;
+              while (currentParent) {
+                if (currentParent === itemContainer) {
+                  return true;
+                }
+                currentParent = currentParent.parent;
+              }
+              return false;
+            });
+
+            // Change cursor to pointer if hovering over an item
+            if (isItem) {
+              canvasRef.current!.style.cursor = 'pointer';
+            } else {
+              canvasRef.current!.style.cursor = 'default';
+            }
+          } else {
+            canvasRef.current!.style.cursor = 'default';
+          }
+        }
       });
 
       // Setup click/touch selection for items and double click for avatar movement
@@ -393,8 +455,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               if (t >= 0) {
                 // Calculate intersection point
                 const intersectionPoint = ray.origin.add(ray.direction.scale(t));
-                console.log('[DEBUG] moveAvatarToPosition will be called with:', intersectionPoint);
-                moveAvatarToPosition(intersectionPoint);
+                moveAvatarToPosition(intersectionPoint, targetDisc);
               }
             }
             return; // Don't handle item selection if it's double click
@@ -436,35 +497,6 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           } else {
             console.log('No mesh picked, deselecting');
             deselectItem();
-          }
-        }
-      });
-
-      scene.onPointerObservable.add((pointerInfo) => {
-        if (pointerInfo.type === PointerEventTypes.POINTERMOVE) {
-          const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
-
-          if (pickInfo?.hit && pickInfo.pickedMesh) {
-            const isItem = loadedItemMeshesRef.current.some((itemContainer) => {
-              // Check if the picked mesh is a child or descendant of any item container
-              let currentParent = pickInfo.pickedMesh?.parent;
-              while (currentParent) {
-                if (currentParent === itemContainer) {
-                  return true;
-                }
-                currentParent = currentParent.parent;
-              }
-              return false;
-            });
-
-            // Change cursor to pointer if hovering over an item
-            if (isItem) {
-              canvasRef.current!.style.cursor = 'pointer';
-            } else {
-              canvasRef.current!.style.cursor = 'default';
-            }
-          } else {
-            canvasRef.current!.style.cursor = 'default';
           }
         }
       });

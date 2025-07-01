@@ -1,5 +1,5 @@
 import { useRef, useEffect, useCallback } from 'react';
-import { Vector3, Scene, ArcRotateCamera, TransformNode, Matrix } from '@babylonjs/core';
+import { Vector3, Scene, ArcRotateCamera, TransformNode, Matrix, Mesh } from '@babylonjs/core';
 import { TouchMovement } from '../../types/AvatarTypes';
 
 interface UseAvatarMovementProps {
@@ -72,7 +72,7 @@ export function useAvatarMovement({
   const avatarMovementObserverRef = useRef<any>(null);
 
   // Function to move avatar to target position (for double-click movement)
-  const moveAvatarToPosition = useCallback((targetPosition: Vector3) => {
+  const moveAvatarToPosition = useCallback((targetPosition: Vector3, targetDisc: Mesh) => {
     if (!avatarRef.current || !sceneRef.current) return;
 
     console.log('Moving avatar to position:', targetPosition);
@@ -83,6 +83,13 @@ export function useAvatarMovement({
     
     const targetPos = new Vector3(constrainedX, 0, constrainedZ);
     const currentPos = avatarRef.current.position;
+
+    // Show and position the target circle
+    if (targetDisc) {
+      targetDisc.position = targetPos.clone();
+      targetDisc.position.y += 0.02;
+      targetDisc.isVisible = true;
+    }
 
     // Calculate rotation angle for avatar to face destination
     const direction = targetPos.subtract(currentPos);
@@ -131,6 +138,18 @@ export function useAvatarMovement({
 
     // Set shouldFollowAvatar to true when avatar moves
     cameraFollowStateRef.current.shouldFollowAvatar = true;
+
+    // Hide the target circle after the avatar reaches the target
+    if (targetDisc) {
+      const movementObserver = sceneRef.current.onBeforeRenderObservable.add(() => {
+        const movementState = avatarMovementStateRef.current;
+  
+        if (movementState.targetPosition && Vector3.Distance(avatarRef.current!.position, movementState.targetPosition) < 0.1) {
+          targetDisc.isVisible = false; // Hide the circle
+          sceneRef.current!.onBeforeRenderObservable.remove(movementObserver);
+        }
+      });
+    }
   }, [avatarRef, sceneRef, AVATAR_BOUNDARY_LIMIT]);
 
   // Function to reset avatar movement state
