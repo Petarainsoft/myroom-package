@@ -150,147 +150,105 @@ export const useItemManipulator = ({
 
     // Dispose existing gizmo safely
     if (gizmoRef.current) {
-      try {
-        gizmoRef.current.dispose();
-      } catch (error) {
-        console.warn('Error disposing existing gizmo:', error);
-      }
-      gizmoRef.current = null;
+        try {
+            gizmoRef.current.dispose();
+        } catch (error) {
+            console.warn('Error disposing existing gizmo:', error);
+        }
+        gizmoRef.current = null;
     }
 
     // Create new gizmo based on mode
     const currentGizmoMode = gizmoMode || 'position';
     switch (currentGizmoMode) {
-      case 'position':
-        gizmoRef.current = new PositionGizmo(utilityLayerRef.current);
-        // Improve position gizmo sensitivity and hide Y axis
-        if (gizmoRef.current) {
-          (gizmoRef.current as any).scaleRatio = 1.2;
-          (gizmoRef.current as any).sensitivity = 1.5;
-          // Hide Y axis gizmo to prevent vertical movement
-          if ((gizmoRef.current as any).yGizmo) {
-            (gizmoRef.current as any).yGizmo.attachedMesh = null;
-          }
-        }
-        break;
-      case 'rotation':
-        gizmoRef.current = new RotationGizmo(utilityLayerRef.current);
-        // Only allow Y-axis rotation, hide X and Z axes
-        if (gizmoRef.current) {
-          (gizmoRef.current as any).scaleRatio = 1.2;
-          (gizmoRef.current as any).sensitivity = 2.0;
-          // Enable snap to grid for better control
-          (gizmoRef.current as any).snapDistance = Math.PI / 12; // 15 degrees
-          // Hide X and Z rotation gizmos, only allow Y rotation
-          if ((gizmoRef.current as any).xGizmo) {
-            (gizmoRef.current as any).xGizmo.attachedMesh = null;
-          }
-          if ((gizmoRef.current as any).zGizmo) {
-            (gizmoRef.current as any).zGizmo.attachedMesh = null;
-          }
-        }
-        break;
-      case 'scale':
-        gizmoRef.current = new ScaleGizmo(utilityLayerRef.current);
-        // Improve scale gizmo sensitivity
-        if (gizmoRef.current) {
-          (gizmoRef.current as any).scaleRatio = 1.2;
-          (gizmoRef.current as any).sensitivity = 1.8;
-        }
-        break;
-      default:
-        return;
+        case 'position':
+            gizmoRef.current = new PositionGizmo(utilityLayerRef.current);
+            if (gizmoRef.current) {
+                (gizmoRef.current as any).scaleRatio = 1.2;
+                (gizmoRef.current as any).sensitivity = 1.5;
+                // Disable Y-axis for position changes
+                if ((gizmoRef.current as any).yGizmo) {
+                    (gizmoRef.current as any).yGizmo.isEnabled = false; // Disable Y-axis
+                }
+            }
+            break;
+        case 'rotation':
+            gizmoRef.current = new RotationGizmo(utilityLayerRef.current);
+            if (gizmoRef.current) {
+                (gizmoRef.current as any).scaleRatio = 1.2;
+                (gizmoRef.current as any).sensitivity = 2.0;
+                (gizmoRef.current as any).snapDistance = Math.PI / 12; // 15 degrees
+                if ((gizmoRef.current as any).xGizmo) {
+                    (gizmoRef.current as any).xGizmo.isEnabled = false; // Disable X-axis
+                }
+                if ((gizmoRef.current as any).zGizmo) {
+                    (gizmoRef.current as any).zGizmo.isEnabled = false; // Disable Z-axis
+                }
+                if ((gizmoRef.current as any).yGizmo) {
+                    (gizmoRef.current as any).yGizmo.isEnabled = true; // Enable Y-axis
+                }
+            }
+            break;
+        case 'scale':
+            gizmoRef.current = new ScaleGizmo(utilityLayerRef.current);
+            if (gizmoRef.current) {
+                (gizmoRef.current as any).scaleRatio = 1.2;
+                (gizmoRef.current as any).sensitivity = 1.8;
+            }
+            break;
+        default:
+            return;
     }
 
     // Attach gizmo to mesh
     gizmoRef.current.attachedMesh = mesh;
     if ('updateGizmoRotationToMatchAttachedMesh' in gizmoRef.current) {
-      (gizmoRef.current as any).updateGizmoRotationToMatchAttachedMesh = true;
+        (gizmoRef.current as any).updateGizmoRotationToMatchAttachedMesh = true;
     }
     if ('updateGizmoPositionToMatchAttachedMesh' in gizmoRef.current) {
-      (gizmoRef.current as any).updateGizmoPositionToMatchAttachedMesh = true;
+        (gizmoRef.current as any).updateGizmoPositionToMatchAttachedMesh = true;
     }
 
-    // Add optimized drag callbacks to reduce re-renders
+    // Add optimized drag callbacks for real-time updates
     if (gizmoRef.current) {
-      const gizmo = gizmoRef.current as any;
+        const gizmo = gizmoRef.current as any;
 
-      // Track drag start/end to optimize updates
-      if (gizmo.onDragStartObservable) {
-        gizmo.onDragStartObservable.add(() => {
-          isDraggingRef.current = true;
-        });
-      }
-
-      // Throttled updates during drag (reduced frequency) with boundary constraints
-      if (gizmo.onDragObservable) {
-        gizmo.onDragObservable.add(() => {
-          // Constrain position within 4x4 area centered at (0,0,0)
-          if (mesh.position) {
-            mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
-            mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
-            // Keep Y position unchanged to prevent vertical movement
-            // mesh.position.y remains as is
-          }
-          updateItemTransform(mesh.name, mesh, false);
-        });
-      }
-
-      // Final update on drag end (immediate) with boundary constraints
-      if (gizmo.onDragEndObservable) {
-        gizmo.onDragEndObservable.add(() => {
-          isDraggingRef.current = false;
-          if (transformTimeoutRef.current) {
-            clearTimeout(transformTimeoutRef.current);
-            transformTimeoutRef.current = null;
-          }
-          // Final constraint check on drag end
-          if (mesh.position) {
-            mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
-            mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
-          }
-          updateItemTransform(mesh.name, mesh, true);
-        });
-      }
-
-      // Setup axis-specific drag behaviors with optimized callbacks
-      const setupAxisDragBehaviors = (axisGizmos: any[]) => {
-        axisGizmos.forEach(axisGizmo => {
-          if (axisGizmo?.dragBehavior) {
-            axisGizmo.dragBehavior.onDragStartObservable.add(() => {
-              isDraggingRef.current = true;
+        // Track drag start
+        if (gizmo.onDragStartObservable) {
+            gizmo.onDragStartObservable.add(() => {
+                isDraggingRef.current = true;
             });
+        }
 
-            axisGizmo.dragBehavior.onDragObservable.add(() => {
-              // Apply boundary constraints during axis drag
-              if (mesh.position) {
-                mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
-                mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
-              }
-              updateItemTransform(mesh.name, mesh, false);
+        // Real-time updates during drag
+        if (gizmo.onDragObservable) {
+            gizmo.onDragObservable.add(() => {
+                // Apply boundary constraints during drag (for position)
+                if (mesh.position) {
+                    mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
+                    mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
+                }
+                // Real-time update for position and rotation
+                updateItemTransform(mesh.name, mesh, false);
             });
+        }
 
-            axisGizmo.dragBehavior.onDragEndObservable.add(() => {
-              isDraggingRef.current = false;
-              if (transformTimeoutRef.current) {
-                clearTimeout(transformTimeoutRef.current);
-                transformTimeoutRef.current = null;
-              }
-              // Final boundary check on axis drag end
-              if (mesh.position) {
-                mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
-                mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
-              }
-              updateItemTransform(mesh.name, mesh, true);
+        // Final update on drag end
+        if (gizmo.onDragEndObservable) {
+            gizmo.onDragEndObservable.add(() => {
+                isDraggingRef.current = false;
+                if (transformTimeoutRef.current) {
+                    clearTimeout(transformTimeoutRef.current);
+                    transformTimeoutRef.current = null;
+                }
+                // Final boundary check on drag end (for position)
+                if (mesh.position) {
+                    mesh.position.x = Math.max(-2, Math.min(2, mesh.position.x));
+                    mesh.position.z = Math.max(-2, Math.min(2, mesh.position.z));
+                }
+                updateItemTransform(mesh.name, mesh, true); // Final update
             });
-          }
-        });
-      };
-
-      // Apply to all gizmo types
-      if (gizmo.xGizmo && gizmo.yGizmo && gizmo.zGizmo) {
-        setupAxisDragBehaviors([gizmo.xGizmo, gizmo.yGizmo, gizmo.zGizmo]);
-      }
+        }
     }
   };
 

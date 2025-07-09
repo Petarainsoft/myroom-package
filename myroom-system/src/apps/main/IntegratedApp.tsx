@@ -1278,7 +1278,7 @@ const modalStyles = `
     border-radius: 8px;
     width: 90%;
     max-width: 900px;
-    max-height: 90vh;
+    height: 70vh;
     display: flex;
     flex-direction: column;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);

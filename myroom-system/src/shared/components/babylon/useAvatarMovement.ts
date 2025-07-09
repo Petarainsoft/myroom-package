@@ -50,7 +50,7 @@ export function useAvatarMovement({
 
   // Camera follow state
   const cameraFollowStateRef = useRef({
-    currentTarget: new Vector3(0, 0, 0),
+    currentTarget: new Vector3(0, 1, 0),
     dampingFactor: 0.1,
     shouldFollowAvatar: false
   });

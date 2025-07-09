@@ -86,6 +86,8 @@ export const useItemLoader = ({
             }
             // Make mesh pickable
             mesh.isPickable = true;
+            // Add metadata to identify furniture
+            mesh.metadata = { isFurniture: true };
             if (shadowGeneratorRef.current)
               shadowGeneratorRef.current.addShadowCaster(mesh);
           });

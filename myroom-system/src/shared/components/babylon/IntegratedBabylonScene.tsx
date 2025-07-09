@@ -15,7 +15,7 @@ import {
   EasingFunction, CubicEase,
   Color4, Matrix,
   Animation,
-  Mesh, MeshBuilder, StandardMaterial
+  Mesh, MeshBuilder, StandardMaterial, AbstractMesh
 } from '@babylonjs/core';
 import '@babylonjs/loaders';
 
@@ -300,7 +300,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       // Create a highlight disc
       const highlightDisc = MeshBuilder.CreateDisc(
         'highlightDisc',
-        { radius: 1, tessellation: 64 },
+        { radius: 0.7, tessellation: 64 },
         scene
       );
       highlightDisc.rotation.x = Math.PI / 2; // Rotate to lie flat on the ground
@@ -421,6 +421,145 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         }
       });
 
+      // // Ground
+      let ground = MeshBuilder.CreateBox("ground", {
+        width: 4.5,
+        depth: 4.5,
+        height: 0.09
+      }, scene);
+      ground.position.y = -0.1 / 2;
+      ground.receiveShadows = true;
+
+      // // Wall 1
+      // let wall1 = MeshBuilder.CreateBox("wall1", {
+      //   width: 6,
+      //   height: 3,
+      //   depth: 0.1
+      // }, scene);
+      // wall1.position.y = 3 / 2;
+      // wall1.position.z = -6 / 2 + 0.1 / 2;
+
+      // // Wall 2
+      // let wall2 = MeshBuilder.CreateBox("wall2", {
+      //   width: 6,
+      //   height: 3,
+      //   depth: 0.1
+      // }, scene);
+      // wall2.rotation.y = Math.PI / 2;
+      // wall2.position.y = 3 / 2;
+      // wall2.position.x = -6 / 2 + 0.1 / 2;
+
+      let selectedMesh: AbstractMesh | null = null;
+      let isDragging = false;
+      let dragStartPoint: Vector3 | null = null; // Store the starting point of the drag
+      let initialMeshPosition: Vector3 | null = null; // Store the initial position of the mesh
+
+      const setAvatarVisibility = (isVisible: boolean) => {
+        if (avatarRef.current) {
+          avatarRef.current.getChildMeshes().forEach((mesh) => {
+            mesh.isVisible = isVisible;
+          });
+        }
+      };
+
+      const deselectItem = () => {
+        if (selectedMesh)
+        {
+          selectedMesh = null;
+          isDragging = false;
+          dragStartPoint = null;
+          initialMeshPosition = null;
+          // Show the avatar if not dragging
+          setAvatarVisibility(true);
+        }
+      }
+
+      const setHighlightDiscPosition = (position: Vector3) => {
+        if (highlightDiscRef.current) {
+          highlightDiscRef.current.position.copyFrom(position);
+          highlightDiscRef.current.position.y += 0.02; // Slightly above ground to avoid z-fighting
+          highlightDiscRef.current.isVisible = true; // Show the disc
+        }
+      }
+
+      const hideHighlightDisc = () => {
+        if (highlightDiscRef.current) {
+          highlightDiscRef.current.isVisible = false;
+        }
+      }
+
+      scene.onPointerObservable.add((pointerInfo) => {
+        switch (pointerInfo.type) {
+          case PointerEventTypes.POINTERDOWN: {
+            const pickResult = scene.pick(scene.pointerX, scene.pointerY);
+            if (pickResult?.hit) {
+              if (pickResult.pickedMesh?.metadata && pickResult.pickedMesh?.metadata.isFurniture) {
+                // Find the top-most parent mesh
+                let currentMesh = pickResult.pickedMesh;
+                while (currentMesh.parent && currentMesh.parent instanceof AbstractMesh) {
+                  currentMesh = currentMesh.parent;
+                }
+
+                selectedMesh = currentMesh;
+                isDragging = true;
+                dragStartPoint = pickResult.pickedPoint?.clone() || null; // Store the drag start point
+                initialMeshPosition = selectedMesh.position.clone(); // Store the initial position of the mesh
+                setHighlightDiscPosition(selectedMesh.getAbsolutePosition());
+
+                // Hide the avatar while dragging
+                setAvatarVisibility(false);
+
+                // Detach camera controls to prevent rotation while dragging
+                camera.detachControl();
+              }
+              else {
+                // If clicked on ground or other non-item mesh, deselect any selected item
+                deselectItem();
+                hideHighlightDisc();
+              }
+            }
+            else {
+              deselectItem();
+              hideHighlightDisc();
+            }
+            break;
+          }
+
+          case PointerEventTypes.POINTERUP: {
+            deselectItem();
+
+            // Reattach camera controls after dragging ends
+            camera.attachControl(canvasRef.current!, true);
+            break;
+          }
+
+          case PointerEventTypes.POINTERMOVE: {
+            if (isDragging && selectedMesh && dragStartPoint && initialMeshPosition) {
+              const pickResult = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === ground);
+              if (pickResult?.hit && pickResult.pickedPoint) {
+                // Calculate the relative movement of the cursor
+                const delta = pickResult.pickedPoint.subtract(dragStartPoint);
+
+                // Apply the relative movement to the initial position of the mesh
+                const newPosition = initialMeshPosition.add(delta);
+
+                // Apply boundary constraints
+                // newPosition.x = Math.max(-2.5, Math.min(2.5, newPosition.x));
+                // newPosition.z = Math.max(-4, Math.min(3.3, newPosition.z));
+                newPosition.y = selectedMesh.position.y; // Keep Y constant
+
+                selectedMesh.position = newPosition;
+                setHighlightDiscPosition(selectedMesh.getAbsolutePosition());
+              }
+            }
+            break;
+          }
+
+          default:
+            break;
+        }
+      });
+
       // Setup click/touch selection for items and double click for avatar movement
       scene.onPointerObservable.add((pointerInfo) => {
         if (pointerInfo.type === PointerEventTypes.POINTERDOWN) {
@@ -459,44 +598,6 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               }
             }
             return; // Don't handle item selection if it's double click
-          }
-
-          // Handle item selection (single click)
-          if (pickInfo.hit && pickInfo.pickedMesh) {
-            const mesh = pickInfo.pickedMesh;
-            console.log('Picked mesh:', mesh.name, mesh);
-
-            // Check if clicked mesh is an item
-            const isItem = loadedItemMeshesRef.current.some(itemContainer => {
-              // Check if the picked mesh is a child of any item container
-              const isDirectChild = mesh.parent === itemContainer;
-
-              // Check if mesh is descendant by walking up parent chain
-              let isDescendant = false;
-              let currentParent = mesh.parent;
-              while (currentParent && !isDescendant) {
-                if (currentParent === itemContainer) {
-                  isDescendant = true;
-                }
-                currentParent = currentParent.parent;
-              }
-
-              console.log('Checking container:', itemContainer.name, 'Direct child:', isDirectChild, 'Descendant:', isDescendant);
-              return isDirectChild || isDescendant;
-            });
-
-            console.log('Is item:', isItem);
-
-            if (isItem) {
-              console.log('Selecting item');
-              selectItem(mesh);
-            } else {
-              console.log('Deselecting item');
-              deselectItem();
-            }
-          } else {
-            console.log('No mesh picked, deselecting');
-            deselectItem();
           }
         }
       });
