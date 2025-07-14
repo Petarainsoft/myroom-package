@@ -17,23 +17,23 @@ const IntegratedApp: React.FC = () => {
     <div className="mode-selector">
       <h2>Select Application Mode</h2>
       <div className="mode-buttons">
-        <button 
+        <button
           className={`mode-btn ${currentMode === 'room' ? 'active' : ''}`}
           onClick={() => setCurrentMode('room')}
         >
           🏠 Interactive Room
           <span>Manage rooms and items</span>
         </button>
-        
-        <button 
+
+        <button
           className={`mode-btn ${currentMode === 'avatar' ? 'active' : ''}`}
           onClick={() => setCurrentMode('avatar')}
         >
           👤 Avatar System
           <span>Customize and control avatar</span>
         </button>
-        
-        <button 
+
+        <button
           className={`mode-btn ${currentMode === 'integrated' ? 'active' : ''}`}
           onClick={() => setCurrentMode('integrated')}
         >
@@ -41,9 +41,9 @@ const IntegratedApp: React.FC = () => {
           <span>Combine both systems</span>
         </button>
       </div>
-      
+
       {currentMode !== 'integrated' && (
-        <button 
+        <button
           className="start-btn"
           onClick={() => setShowModeSelector(false)}
         >
@@ -56,15 +56,15 @@ const IntegratedApp: React.FC = () => {
   const renderIntegratedMode = () => (
     <div className="integrated-container">
       {/* <div className="integrated-header"> */}
-        {/* <h1>🎮 Integrated Room & Avatar System</h1> */}
-        {/* <button 
+      {/* <h1>🎮 Integrated Room & Avatar System</h1> */}
+      {/* <button 
           className="back-btn"
           onClick={() => setShowModeSelector(true)}
         >
           ← Back
         </button> */}
       {/* </div> */}
-      
+
       <div className="integrated-content">
         {/* Main content area without tabs */}
         <div className="main-content">
@@ -82,7 +82,7 @@ const IntegratedApp: React.FC = () => {
     case 'room':
       return (
         <div className="app-container">
-          <button 
+          <button
             className="back-btn"
             onClick={() => setShowModeSelector(true)}
           >
@@ -90,11 +90,11 @@ const IntegratedApp: React.FC = () => {
           </button>
         </div>
       );
-      
+
     case 'avatar':
       return (
         <div className="app-container">
-          <button 
+          <button
             className="back-btn"
             onClick={() => setShowModeSelector(true)}
           >
@@ -102,10 +102,10 @@ const IntegratedApp: React.FC = () => {
           </button>
         </div>
       );
-      
+
     case 'integrated':
       return renderIntegratedMode();
-      
+
     default:
       return renderModeSelector();
   }
@@ -121,9 +121,9 @@ const availableRooms = [
 // Available items data
 const availableItems = [
   { name: "Chair", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair" },
-    { name: "Light stand", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb", category: "Light" },
-    { name: "Board", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb", category: "Decor" },
-    { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor" },
+  { name: "Light stand", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb", category: "Light" },
+  { name: "Board", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb", category: "Decor" },
+  { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor" },
 ];
 
 interface LoadedItem {
@@ -142,18 +142,18 @@ const InteractiveRoomWithAvatar: React.FC = () => {
 
   // Room state management
   const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
-  
+
   // Items state management
   const [loadedItems, setLoadedItems] = useState<LoadedItem[]>([]);
   const [gizmoMode, setGizmoMode] = useState<'position' | 'rotation' | 'scale'>('position');
-  
+
   // Auto-reset gizmo mode to position when item is selected
   useEffect(() => {
     if (selectedItem) {
       setGizmoMode('position');
     }
   }, [selectedItem]);
-  
+
   // Check if selected item still exists in loaded items
   useEffect(() => {
     if (selectedItem) {
@@ -164,7 +164,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     }
   }, [loadedItems, selectedItem]);
 
-  
+
   // Avatar state management
   const [avatarConfig, setAvatarConfig] = useState<AvatarConfig>(
     getDefaultConfigForGender('male')
@@ -203,25 +203,25 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       setIsClosing(false); // Reset closing state
     }, 150); // Match the duration of the fade-out animation
   };
-  
+
   // Apply modal styles
   useEffect(() => {
     // Create style element for modal styles
     const styleElement = document.createElement('style');
     styleElement.innerHTML = modalStyles;
     document.head.appendChild(styleElement);
-    
+
     // Clean up on component unmount
     return () => {
       document.head.removeChild(styleElement);
     };
   }, []);
-  
+
   // Handle tab switching in integration guide
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
-  
+
   // Handle copy code functionality
   const handleCopyCode = (code: string) => {
     navigator.clipboard.writeText(code)
@@ -232,7 +232,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         console.error('Failed to copy code: ', err);
       });
   };
-  
+
   // Close modal when pressing Escape key
   useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
@@ -240,9 +240,9 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         closeIntegrationGuide();
       }
     };
-    
+
     window.addEventListener('keydown', handleEscKey);
-    
+
     return () => {
       window.removeEventListener('keydown', handleEscKey);
     };
@@ -257,7 +257,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     console.log(` handlePartChange IN INTEGRATED APP TSX: partType=${partType}, fileName=${fileName}`);
     setAvatarConfig(prev => {
       const newConfig = { ...prev };
-      
+
       // Handle fullset logic
       if (partType === 'fullset') {
         if (fileName) {
@@ -297,7 +297,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           [partType]: fileName
         };
       }
-      
+
       return newConfig;
     });
   };
@@ -331,11 +331,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         scale: item.scale || { x: 1, y: 1, z: 1 }
       }))
     };
-    
+
     const dataStr = JSON.stringify(saveData, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = `scene-${avatarConfig.gender}-${Date.now()}.json`;
-    
+
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -346,35 +346,35 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     setLoadedItems(prevItems => {
       const itemIndex = prevItems.findIndex(item => item.id === itemId);
       if (itemIndex === -1) return prevItems;
-      
+
       const currentItem = prevItems[itemIndex];
-      
+
       // Check if transform actually changed to prevent unnecessary updates
-      const positionChanged = 
+      const positionChanged =
         !currentItem.position ||
         Math.abs(currentItem.position.x - transform.position.x) > 0.001 ||
         Math.abs(currentItem.position.y - transform.position.y) > 0.001 ||
         Math.abs(currentItem.position.z - transform.position.z) > 0.001;
-      
-      const rotationChanged = 
+
+      const rotationChanged =
         !currentItem.rotation ||
         Math.abs(currentItem.rotation.x - transform.rotation.x) > 0.001 ||
         Math.abs(currentItem.rotation.y - transform.rotation.y) > 0.001 ||
         Math.abs(currentItem.rotation.z - transform.rotation.z) > 0.001;
-      
-      const scaleChanged = 
+
+      const scaleChanged =
         !currentItem.scale ||
         Math.abs(currentItem.scale.x - transform.scale.x) > 0.001 ||
         Math.abs(currentItem.scale.y - transform.scale.y) > 0.001 ||
         Math.abs(currentItem.scale.z - transform.scale.z) > 0.001;
-      
+
       // Only update if something actually changed
       if (!positionChanged && !rotationChanged && !scaleChanged) {
         return prevItems;
       }
-      
-      return prevItems.map(item => 
-        item.id === itemId 
+
+      return prevItems.map(item =>
+        item.id === itemId
           ? { ...item, position: transform.position, rotation: transform.rotation, scale: transform.scale }
           : item
       );
@@ -388,7 +388,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       reader.onload = (e) => {
         try {
           const data = JSON.parse(e.target?.result as string);
-          
+
           // Check if it's the new format with room, avatar, and items
           if (data.version && data.room && data.avatar && data.items) {
             // Load room
@@ -396,10 +396,10 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             if (roomToLoad) {
               setSelectedRoom(roomToLoad);
             }
-            
+
             // Load avatar
             setAvatarConfig(data.avatar);
-            
+
             // Load items
             setLoadedItems(data.items);
           } else {
@@ -423,11 +423,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     // Random position between -2 and 2 for both X and Z
     const randomX = Math.random() * 4 - 2;
     const randomZ = Math.random() * 4 - 2;
-    
+
     // Ensure position is within bounds
     const constrainedX = Math.max(-2, Math.min(2, randomX));
     const constrainedZ = Math.max(-2, Math.min(2, randomZ));
-    
+
     const newItem: LoadedItem = {
       id: `item_${Date.now()}`,
       name: selectedItemToAdd.name,
@@ -436,7 +436,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       rotation: { x: 0, y: 0, z: 0 },
       scale: { x: 1, y: 1, z: 1 }
     };
-    
+
     console.log(`Adding new item at position: (${constrainedX.toFixed(2)}, 0, ${constrainedZ.toFixed(2)})`);
     setLoadedItems(prev => [...prev, newItem]);
   };
@@ -462,17 +462,17 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       {/* Website Header - Pure Web Content */}
       <header className="website-header">
         <div className="container">
-        <h1>
-          <img 
-            src="/icon/petarainlogo.png" 
-            alt="Petarainsoft - MyRoom Service" 
-            style={{ height: '40px', verticalAlign: 'middle', cursor: 'pointer' }} 
-            onClick={() => window.location.reload()} // Refresh the page when clicking the logo
-          />
-        </h1>
+          <h1>
+            <img
+              src="/icon/petarainlogo.png"
+              alt="Petarainsoft - MyRoom Service"
+              style={{ height: '40px', verticalAlign: 'middle', cursor: 'pointer' }}
+              onClick={() => window.location.reload()} // Refresh the page when clicking the logo
+            />
+          </h1>
           <nav className="main-nav">
-            <a 
-              href="#" 
+            <a
+              href="#"
               onClick={(e) => {
                 e.preventDefault();
                 window.location.reload(); // Refresh the page when clicking Home
@@ -489,7 +489,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           </nav>
         </div>
       </header>
-      
+
       {/* Website Main Content */}
       <main className="website-main">
         {/* Hero Section */}
@@ -506,7 +506,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             <button className="cta-button" onClick={() => setShowIntegrationGuide(true)}>Get Started Now</button>
           </div>
         </section>
-        
+
         {/* Embedded 3D Application Container */}
         <section className="embedded-app-section">
           <div className="container">
@@ -530,21 +530,21 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     onItemTransformChange={handleItemTransformChange}
                     onToggleUIOverlay={() => setShowControls(!showControls)}
                   />
-                  
 
-                  
+
+
                 </div>
-                
+
                 {/* Movement Instructions */}
                 {showControls && (
-                  <div className="movement-instructions" style={{ 
-                    position: 'absolute', 
-                    bottom: '20px', 
-                    left: '20px', 
-                    fontSize: '0.9em', 
-                    textAlign: 'left', 
-                    padding: '10px', 
-                    background: 'rgba(249, 249, 249, 0.8)', 
+                  <div className="movement-instructions" style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    left: '20px',
+                    fontSize: '0.9em',
+                    textAlign: 'left',
+                    padding: '10px',
+                    background: 'rgba(249, 249, 249, 0.8)',
                     borderRadius: '4px',
                     zIndex: 1000,
                     boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
@@ -552,115 +552,114 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                   }}>
                     <strong>Control instructions:</strong><br />
                     <span>
-                      Click and hold the left mouse button to orbit the camera <br/>
-                      Double-click to move your character  <br/>
+                      Click and hold the left mouse button to orbit the camera <br />
+                      Double-click to move your character  <br />
                       {/* Mouse right Click hold / 2 fingers to pan camera */}
                     </span>
                   </div>
-                  )}
-                
-                  
+                )}
+
+
                 {/* Integrated UI Controls Overlay - Docked to Right */}
                 {showControls && (
-                  <div className={`integrated-ui-overlay ${
-                    ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
-                  }`}>
-                      {/* Avatar Controls */}
-                      <AvatarControls
-                        avatarConfig={avatarConfig}
-                        availableParts={availablePartsData}
-                        onGenderChange={handleGenderChange}
-                        onPartChange={handlePartChange}
-                        onColorChange={handleColorChange}
-                        onSaveAvatar={handleSaveAvatar}
-                        onLoadAvatar={handleLoadAvatar}
-                      />
-                      
-                      {/* Room Controls */}
-                      <div className="control-section">
-                        <div className="section-header">
-                          <h3>🏠 Room</h3>
-                        </div>
-                        <div className="room-selector">
-                          {/* <label>Select Room:</label> */}
-                          <select 
-                            value={selectedRoom.path} 
-                            onChange={(e) => {
-                              const room = availableRooms.find(r => r.path === e.target.value);
-                              if (room) setSelectedRoom(room);
-                            }}
-                            className="room-select"
-                          >
-                            {availableRooms.map((room) => (
-                              <option key={room.path} value={room.path}>
-                                {room.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        {/* <div className="camera-controls">
+                  <div className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
+                    }`}>
+                    {/* Avatar Controls */}
+                    <AvatarControls
+                      avatarConfig={avatarConfig}
+                      availableParts={availablePartsData}
+                      onGenderChange={handleGenderChange}
+                      onPartChange={handlePartChange}
+                      onColorChange={handleColorChange}
+                      onSaveAvatar={handleSaveAvatar}
+                      onLoadAvatar={handleLoadAvatar}
+                    />
+
+                    {/* Room Controls */}
+                    <div className="control-section">
+                      <div className="section-header">
+                        <h3>🏠 Room</h3>
+                      </div>
+                      <div className="room-selector">
+                        {/* <label>Select Room:</label> */}
+                        <select
+                          value={selectedRoom.path}
+                          onChange={(e) => {
+                            const room = availableRooms.find(r => r.path === e.target.value);
+                            if (room) setSelectedRoom(room);
+                          }}
+                          className="room-select"
+                        >
+                          {availableRooms.map((room) => (
+                            <option key={room.path} value={room.path}>
+                              {room.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      {/* <div className="camera-controls">
                           <button onClick={() => integratedSceneRef.current?.resetCamera()} className="reset-camera-btn">
                             📷 Reset Camera View
                           </button>
                         </div> */}
+                    </div>
+
+                    {/* Items Controls */}
+                    <div className="control-section">
+                      <div className="section-header">
+                        <h3>🪑 Items</h3>
                       </div>
-                      
-                      {/* Items Controls */}
-                      <div className="control-section">
-                        <div className="section-header">
-                          <h3>🪑 Items</h3>
+                      <div className="items-controls">
+                        <div className="item-selector">
+                          {/* <label>Select Item:</label> */}
+                          <select
+                            value={selectedItemToAdd.path}
+                            onChange={(e) => {
+                              const item = availableItems.find(i => i.path === e.target.value);
+                              if (item) setSelectedItemToAdd(item);
+                            }}
+                            className="item-select"
+                          >
+                            {availableItems.map((item) => (
+                              <option key={item.path} value={item.path}>
+                                {item.name} ({item.category})
+                              </option>
+                            ))}
+                          </select>
                         </div>
-                        <div className="items-controls">
-                          <div className="item-selector">
-                            {/* <label>Select Item:</label> */}
-                            <select 
-                              value={selectedItemToAdd.path} 
-                              onChange={(e) => {
-                                const item = availableItems.find(i => i.path === e.target.value);
-                                if (item) setSelectedItemToAdd(item);
-                              }}
-                              className="item-select"
-                            >
-                              {availableItems.map((item) => (
-                                <option key={item.path} value={item.path}>
-                                  {item.name} ({item.category})
-                                </option>
+
+                        <div className="item-actions">
+                          <button onClick={handleAddItem} className="add-item-btn">
+                            ➕ Add Item
+                          </button>
+                          <button onClick={handleClearAllItems} className="clear-items-btn">
+                            🗑️ Clear All
+                          </button>
+                        </div>
+
+                        <div className="loaded-items-list">
+                          <h4>Items ({loadedItems.length}):</h4>
+                          {loadedItems.length === 0 ? (
+                            <p className="no-items">No items yet</p>
+                          ) : (
+                            <ul className="items-list">
+                              {loadedItems.map((item) => (
+                                <li key={item.id} className="item-entry">
+                                  <span>{item.name}</span>
+                                  <button
+                                    onClick={() => handleRemoveItem(item.id)}
+                                    className="remove-item-btn"
+                                  >
+                                    ✕
+                                  </button>
+                                </li>
                               ))}
-                            </select>
-                          </div>
-                          
-                          <div className="item-actions">
-                            <button onClick={handleAddItem} className="add-item-btn">
-                              ➕ Add Item
-                            </button>
-                            <button onClick={handleClearAllItems} className="clear-items-btn">
-                              🗑️ Clear All
-                            </button>
-                          </div>
-                          
-                          <div className="loaded-items-list">
-                            <h4>Items ({loadedItems.length}):</h4>
-                            {loadedItems.length === 0 ? (
-                              <p className="no-items">No items yet</p>
-                            ) : (
-                              <ul className="items-list">
-                                {loadedItems.map((item) => (
-                                  <li key={item.id} className="item-entry">
-                                    <span>{item.name}</span>
-                                    <button 
-                                      onClick={() => handleRemoveItem(item.id)}
-                                      className="remove-item-btn"
-                                    >
-                                      ✕
-                                    </button>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                          
-                          {/* Item Manipulation Controls */}
-                          {/* <div className="item-manipulation-controls">
+                            </ul>
+                          )}
+                        </div>
+
+                        {/* Item Manipulation Controls */}
+                        {/* <div className="item-manipulation-controls">
                             <h4>🎛️ Item Manipulation</h4>
                             <div className="gizmo-mode-selector">
                               <label>Transform Mode:</label>
@@ -685,17 +684,17 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                               </p>
                             </div>
                           </div> */}
-                        </div>
                       </div>
                     </div>
-                  )}
-                  
+                  </div>
+                )}
 
-                </div>
+
               </div>
             </div>
+          </div>
         </section>
-        
+
         {/* Selected Item Transform Panel */}
         {selectedItem && (
           <div className="selected-item-panel" style={{
@@ -719,11 +718,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
               <strong>Name:</strong> {selectedItem.name || 'Unknown Item'}
             </div>
             <div style={{ marginBottom: '15px', fontSize: '14px' }}>
-              <strong>Mode:</strong> 
-              <span style={{ 
-                marginLeft: '8px', 
-                padding: '2px 8px', 
-                borderRadius: '4px', 
+              <strong>Mode:</strong>
+              <span style={{
+                marginLeft: '8px',
+                padding: '2px 8px',
+                borderRadius: '4px',
                 // background: gizmoMode === 'position' ? '#2196F3' : gizmoMode === 'rotation' ? '#FF9800' : '#9C27B0',
                 fontSize: '12px'
               }}>
@@ -734,38 +733,38 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             </div>
             <div style={{ fontSize: '12px', color: '#ccc', lineHeight: '1.4' }}>
               <div style={{ marginBottom: '5px' }}>
-                <strong>Position:</strong> 
+                <strong>Position:</strong>
                 <div style={{ marginLeft: '10px' }}>
-                  X: {selectedItem.position?.x?.toFixed(2) || '0.00'}<br/>
-                  Y: {selectedItem.position?.y?.toFixed(2) || '0.00'}<br/>
+                  X: {selectedItem.position?.x?.toFixed(2) || '0.00'}<br />
+                  Y: {selectedItem.position?.y?.toFixed(2) || '0.00'}<br />
                   Z: {selectedItem.position?.z?.toFixed(2) || '0.00'}
                 </div>
               </div>
               <div style={{ marginBottom: '5px' }}>
                 <strong>Rotation:</strong>
                 <div style={{ marginLeft: '10px' }}>
-                  X: {selectedItem.rotation?.x?.toFixed(2) || '0.00'}<br/>
-                  Y: {selectedItem.rotation?.y?.toFixed(2) || '0.00'}<br/>
+                  X: {selectedItem.rotation?.x?.toFixed(2) || '0.00'}<br />
+                  Y: {selectedItem.rotation?.y?.toFixed(2) || '0.00'}<br />
                   Z: {selectedItem.rotation?.z?.toFixed(2) || '0.00'}
                 </div>
               </div>
               <div style={{ marginBottom: '15px' }}>
                 <strong>Scale:</strong>
                 <div style={{ marginLeft: '10px' }}>
-                  X: {selectedItem.scaling?.x?.toFixed(2) || '1.00'}<br/>
-                  Y: {selectedItem.scaling?.y?.toFixed(2) || '1.00'}<br/>
+                  X: {selectedItem.scaling?.x?.toFixed(2) || '1.00'}<br />
+                  Y: {selectedItem.scaling?.y?.toFixed(2) || '1.00'}<br />
                   Z: {selectedItem.scaling?.z?.toFixed(2) || '1.00'}
                 </div>
               </div>
             </div>
-            <button 
+            <button
               onClick={() => setSelectedItem(null)}
-              style={{ 
+              style={{
                 width: '100%',
-                background: '#f44336', 
-                color: 'white', 
-                border: 'none', 
-                padding: '8px 12px', 
+                background: '#f44336',
+                color: 'white',
+                border: 'none',
+                padding: '8px 12px',
                 borderRadius: '4px',
                 cursor: 'pointer',
                 fontSize: '12px',
@@ -778,7 +777,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             </button>
           </div>
         )}
-        
+
         {/* Features Section */}
         <section id="features-section" className="features-section">
           <div className="container">
@@ -799,7 +798,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             </div>
           </div>
         </section>
-        
+
         {/* Simple Info Section */}
         {/* <section className="info-section">
           <div className="container">
@@ -807,7 +806,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             <p>This 3D experience is powered by Babylon.js and React, providing smooth 60fps performance across all modern browsers. Perfect for embedding interactive 3D content into any website.</p>
           </div>
         </section> */}
-        
+
         {/* <section className="cta-section">
           <div className="container">
             <h3>Ready to Get Started?</h3>
@@ -815,16 +814,16 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             <button className="cta-button" onClick={() => setShowIntegrationGuide(true)}>Get Started Now</button>
           </div>
         </section> */}
-        
+
         {/* Integration Guide Modal */}
         {showIntegrationGuide && (
           <div className={`integration-guide-modal ${isClosing ? 'fade-out' : ''}`}
-          onClick={(e) => {
-            // Close modal if the click is outside the modal content
-            if (e.target === e.currentTarget) {
-              closeIntegrationGuide();
-            }
-          }}>
+            onClick={(e) => {
+              // Close modal if the click is outside the modal content
+              if (e.target === e.currentTarget) {
+                closeIntegrationGuide();
+              }
+            }}>
             <div className="modal-content">
               <div className="modal-header">
                 <h2>Integration Guide</h2>
@@ -833,30 +832,30 @@ const InteractiveRoomWithAvatar: React.FC = () => {
               <div className="modal-body">
                 <div className="integration-tabs">
                   <div className="tab-headers">
-                     <button 
-                       className={`tab-button ${activeTab === 'iframe' ? 'active' : ''}`}
-                       onClick={() => handleTabChange('iframe')}
-                     >
-                       Iframe Integration
-                     </button>
-                     <button 
-                       className={`tab-button ${activeTab === 'webcomponent' ? 'active' : ''}`}
-                       onClick={() => handleTabChange('webcomponent')}
-                     >
-                       Web Component
-                     </button>
-                   </div>
-                   
-                   <div className="tab-content">
-                     <div className={`tab-pane ${activeTab === 'iframe' ? 'active' : ''}`}>
+                    <button
+                      className={`tab-button ${activeTab === 'iframe' ? 'active' : ''}`}
+                      onClick={() => handleTabChange('iframe')}
+                    >
+                      Iframe Integration
+                    </button>
+                    <button
+                      className={`tab-button ${activeTab === 'webcomponent' ? 'active' : ''}`}
+                      onClick={() => handleTabChange('webcomponent')}
+                    >
+                      Web Component
+                    </button>
+                  </div>
+
+                  <div className="tab-content">
+                    <div className={`tab-pane ${activeTab === 'iframe' ? 'active' : ''}`}>
                       <h4>Demo Page</h4>
                       <p><a href="https://myroom.petarainsoft.com/iframe-demo.html">Iframe integration demo</a></p>
                       <h4>Instruction</h4>
                       <p>The simplest way to embed MyRoom into the website is using an iframe.</p>
-                      
+
                       <div className="code-block">
                         <pre><code>
-{`<iframe 
+                          {`<iframe 
   src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female" 
   width="800" 
   height="600" 
@@ -864,23 +863,23 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   allow="fullscreen">
 </iframe>`}
                         </code></pre>
-                        <button 
-                           className="copy-button" 
-                           onClick={() => handleCopyCode(`<iframe 
+                        <button
+                          className="copy-button"
+                          onClick={() => handleCopyCode(`<iframe 
   src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female" 
   width="800" 
   height="600" 
   style="border: none; border-radius: 8px;" 
   allow="fullscreen">
 </iframe>`)}
-                         >
-                           Copy Code
-                         </button>
+                        >
+                          Copy Code
+                        </button>
                       </div>
-                      
+
                       <h4>URL Parameters</h4>
                       <p>Customize your embedded MyRoom content with these parameters:</p>
-                      
+
                       <table className="params-table">
                         <thead>
                           <tr>
@@ -910,7 +909,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                           </tr> */}
                         </tbody>
                       </table>
-                      
+
                       {/* <h4>Communication with Parent Window</h4>
                       <p>The iframe can communicate with your parent window using postMessage:</p>
                       
@@ -954,30 +953,30 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                          </button>
                       </div> */}
                     </div>
-                    
+
                     <div className={`tab-pane ${activeTab === 'webcomponent' ? 'active' : ''}`}>
                       <h4>Demo Page</h4>
                       <p><a href="https://myroom.petarainsoft.com/webcomponent-simple-demo.html">Web Component integration demo</a> </p>
                       <h4>Instruction</h4>
                       <p>You can use Web Componen for coming advanced features and deeper integration.</p>
-                      
+
                       <p>Step 1: Include the Script.</p>
                       <div className="code-block">
                         <pre><code>
-{`<script src="${getWebComponentUrl()}"></script>`}
+                          {`<script src="${getWebComponentUrl()}"></script>`}
                         </code></pre>
-                        <button 
-                           className="copy-button"
-                           onClick={() => handleCopyCode(`<script src="${getWebComponentUrl()}"></script>`)}
-                         >
-                           Copy Code
-                         </button>
+                        <button
+                          className="copy-button"
+                          onClick={() => handleCopyCode(`<script src="${getWebComponentUrl()}"></script>`)}
+                        >
+                          Copy Code
+                        </button>
                       </div>
-                      
+
                       <p>Step 2:  Use the Component.</p>
                       <div className="code-block">
                         <pre><code>
-{`<my-room-scene> 
+                          {`<my-room-scene> 
   id="mainScene"
   room="/models/rooms/cate001/MR_KHROOM_0001.glb"
   gender="female"
@@ -985,22 +984,22 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
   height="600px">
 </my-room-scene>`}
                         </code></pre>
-                        <button 
-                           className="copy-button"
-                           onClick={() => handleCopyCode(`<my-room-scene> 
+                        <button
+                          className="copy-button"
+                          onClick={() => handleCopyCode(`<my-room-scene> 
   id="mainScene"
   room="/models/rooms/cate001/MR_KHROOM_0001.glb"
   gender="female"
   width="100%"
   height="600px">
 </my-room-scene>`)}
-                         >
-                           Copy Code
-                         </button>
+                        >
+                          Copy Code
+                        </button>
                       </div>
 
                       <p>Step 3: Customize the web component with these parameters:</p>
-                      
+
                       <table className="params-table">
                         <thead>
                           <tr>
@@ -1040,13 +1039,13 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                           </tr>
                         </tbody>
                       </table>
-                      
+
                       <h4>JavaScript API</h4>
                       <p>Interact with the component using JavaScript:</p>
-                      
+
                       <div className="code-block">
                         <pre><code>
-{`// Get reference to the component
+                          {`// Get reference to the component
 const mainScene = document.getElementById('mainScene');
 
 // Change avatar gender
@@ -1093,9 +1092,9 @@ mainScene.addEventListener('avatar-changed', (event) => {
 });
 `}
                         </code></pre>
-                        <button 
-                           className="copy-button"
-                           onClick={() => handleCopyCode(`// Get reference to the component
+                        <button
+                          className="copy-button"
+                          onClick={() => handleCopyCode(`// Get reference to the component
 const mainScene = document.getElementById('mainScene');
 
 // Change avatar gender
@@ -1149,11 +1148,11 @@ mainScene.addEventListener('scene-ready', (event) => {
 mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
 });`)}
-                         >
-                           Copy Code
-                         </button>
+                        >
+                          Copy Code
+                        </button>
                       </div>
-                      
+
                       {/* <h4>4. Styling</h4>
                       <p>The component can be styled using CSS:</p>
                       
@@ -1179,7 +1178,7 @@ mainScene.addEventListener('avatar-changed', (event) => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* <div className="integration-notes">
                   <h4>📝 Notes</h4>
                   <ul>
@@ -1198,12 +1197,12 @@ mainScene.addEventListener('avatar-changed', (event) => {
           </div>
         )}
       </main>
-      
+
       {/* Website Footer */}
       <footer id="footer-section" className="website-footer">
         <div className="container">
           <div className="footer-content">
-            <div  id="feature-section-id" className="footer-section">
+            <div id="feature-section-id" className="footer-section">
               <h4>Company</h4>
               <ul>
                 <li><a href="https://petarainsoft.com">About Us</a></li>
