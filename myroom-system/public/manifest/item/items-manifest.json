@@ -23,17 +23,31 @@
     },
     {
       "id": "KIOSK_0001",
-      "name": "Kiosk",
+      "name": "Small Kiosk",
       "imageUrl": "/images/items/KIOSK_0001.jpg",
       "category": "Accessories",
       "path": "/models/items/Accessories/MR_KH_KIOSK_0001.glb"
     },
     {
       "id": "KIOSK_0002",
-      "name": "Kiosk",
+      "name": "Big Kiosk",
       "imageUrl": "/images/items/KIOSK_0002.jpg",
       "category": "Accessories",
       "path": "/models/items/Accessories/MR_KH_KIOSK_0002.glb"
+    },
+    {
+      "id": "BASKET_0001",
+      "name": "Basket",
+      "imageUrl": "/images/items/BASKET_0001.jpg",
+      "category": "Accessories",
+      "path": "/models/items/Accessories/MR_BASKET_0001_JOYSAM.glb"
+    },
+    {
+      "id": "BALL_0001",
+      "name": "Ball",
+      "imageUrl": "/images/items/BALL_0001.jpg",
+      "category": "Accessories",
+      "path": "/models/items/Accessories/MR_KH_BALL_0001.glb"
     },
     {
       "id": "TELEVISION_0001",
@@ -41,13 +55,6 @@
       "imageUrl": "/images/items/TELEVISION_0001.jpg",
       "category": "Display",
       "path": "/models/items/Display/MR_TELEVISION_0001.glb"
-    },
-    {
-      "id": "TABLE_0003",
-      "name": "Table",
-      "imageUrl": "/images/items/TABLE_0001.jpg",
-      "category": "Tables",
-      "path": "/models/items/Tables/MR_TABLE_0001_JOYSAM.glb"
     }
   ]
 }

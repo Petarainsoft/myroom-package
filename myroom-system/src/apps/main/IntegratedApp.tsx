@@ -744,8 +744,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             key={category}
                             className={`item-category-btn${selectedCategory === category ? ' selected' : ''}`}
                             style={{
-                              padding: '6px 14px',
-                              borderRadius: 16,
+                              padding: '5px 14px 8px',
+                              borderRadius: 12,
                               border: '1px solid #d9d9d9',
                               background: selectedCategory === category ? '#1890ff' : '#fff',
                               color: selectedCategory === category ? '#fff' : '#333',
@@ -753,6 +753,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                               fontWeight: 500,
                               fontSize: 14,
                               transition: 'all 0.2s',
+                              marginBottom: 2
                             }}
                             onClick={() => setSelectedCategory(category)}
                           >
@@ -763,32 +764,44 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       {/* Item List for selected category */}
                       {selectedCategory && (
                         <div className="item-selector" style={{ marginBottom: 12 }}>
-                          <select
-                            value={selectedItemPerCategory[selectedCategory]?.path || ""}
-                            onChange={(e) => {
-                              const item = filteredItems.find(i => i.path === e.target.value);
-                              setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: item }));
-                            }}
-                            className="item-select"
-                          >
+                          <div className="item-list-buttons" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                             {filteredItems.map((item) => (
-                              <option key={item.path} value={item.path}>
+                              <button
+                                key={item.path}
+                                type="button"
+                                className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.path === item.path ? ' selected' : ''}`}
+                                style={{
+                                  padding: '8px 12px',
+                                  borderRadius: 6,
+                                  border: selectedItemPerCategory[selectedCategory]?.path === item.path ? '2px solid #1890ff' : '1px solid #d9d9d9',
+                                  background: selectedItemPerCategory[selectedCategory]?.path === item.path ? '#e6f7ff' : '#fff',
+                                  color: '#333',
+                                  textAlign: 'left',
+                                  fontWeight: 500,
+                                  fontSize: 15,
+                                  cursor: 'pointer',
+                                  outline: 'none',
+                                  transition: 'all 0.2s',
+                                  marginBottom: 2
+                                }}
+                                onClick={() => {
+                                  setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: item }));
+                                }}
+                              >
                                 {item.name}
-                              </option>
+                              </button>
                             ))}
-                          </select>
+                          </div>
                         </div>
                       )}
                       <div className="item-actions">
                         <button onClick={handleAddItem} className="add-item-btn" disabled={!selectedCategory || !selectedItemPerCategory[selectedCategory]}>
                           ➕ Add Item
                         </button>
-                        <button onClick={handleClearAllItems} className="clear-items-btn">
-                          🗑️ Clear All
-                        </button>
                       </div>
                       <div className="loaded-items-list">
-                        <h4>Items ({loadedItems.length}):</h4>
+                        <hr />
+                        <h4>Items in Room ({loadedItems.length}):</h4>
                         {loadedItems.length === 0 ? (
                           <p className="no-items">No items yet</p>
                         ) : (
@@ -806,6 +819,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             ))}
                           </ul>
                         )}
+                        <div className="item-actions">
+                          <button onClick={handleClearAllItems} className="clear-items-btn">
+                            🗑️ Clear All
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
