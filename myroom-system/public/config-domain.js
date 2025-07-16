@@ -8,8 +8,8 @@
   // Set this to your actual domain after deployment
   window.MYROOM_CONFIG = {
     // baseDomain: 'http://192.168.1.5:5173' // LAN test (mobile device access)
-    // baseDomain: 'http://localhost:5173' // local test only
-    baseDomain: 'https://myroom.petarainsoft.com'
+    baseDomain: 'http://localhost:5175' // local test only
+    // baseDomain: 'https://myroom.petarainsoft.com'
   };
   
   console.log('MyRoom domain configuration loaded:', window.MYROOM_CONFIG.baseDomain);
