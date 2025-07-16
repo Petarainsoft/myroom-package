@@ -735,7 +735,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     {/* Items Controls */}
                     <div className="control-section">
                       <div className="section-header">
-                        <h3>🪑 Items</h3>
+                        <h3>🪑 Categories</h3>
                       </div>
                       {/* Category List */}
                       <div className="item-categories" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
@@ -777,8 +777,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                                   background: selectedItemPerCategory[selectedCategory]?.path === item.path ? '#e6f7ff' : '#fff',
                                   color: '#333',
                                   textAlign: 'left',
-                                  fontWeight: 500,
-                                  fontSize: 15,
+                                  fontWeight: 400,
+                                  fontSize: 14,
                                   cursor: 'pointer',
                                   outline: 'none',
                                   transition: 'all 0.2s',

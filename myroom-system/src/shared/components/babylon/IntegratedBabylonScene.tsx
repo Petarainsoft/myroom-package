@@ -73,6 +73,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   const selectedItemRef = useRef<any>(null);
   const loadedItemMeshesRef = useRef<any[]>([]);
   const highlightDiscRef = useRef<Mesh | null>(null);
+  const highlightCirclesRef = useRef<Mesh[] | null>(null);
   const shadowGeneratorRef = useRef<ShadowGenerator | null>(null);
   const targetDiscRef = useRef<Mesh | null>(null);
 
@@ -299,7 +300,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       (highlightDisc.material as StandardMaterial).diffuseColor = new Color3(0, 0, 1); // Blue color
       (highlightDisc.material as StandardMaterial).alpha = 0.5; // Semi-transparent
       highlightDiscRef.current = highlightDisc;
-
+      
       // Add 4 small colored circles at 0, 90, 180, 270 degrees around the highlightDisc
       const smallCircleRadius = 0.15;
       const angles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
@@ -323,6 +324,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         circle.isVisible = false; // Initially hidden
         highlightDiscCircles.push(circle);
       });
+      highlightCirclesRef.current = highlightDiscCircles;
 
       // Create a green circle for the target position
       const targetDisc = MeshBuilder.CreateDisc(

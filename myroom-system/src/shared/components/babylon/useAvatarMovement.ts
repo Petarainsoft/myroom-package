@@ -72,7 +72,7 @@ export function useAvatarMovement({
   const avatarMovementObserverRef = useRef<any>(null);
 
   // Function to move avatar to target position (for double-click movement)
-  const moveAvatarToPosition = useCallback((targetPosition: Vector3, targetDisc: Mesh) => {
+  const moveAvatarToPosition = useCallback((targetPosition: Vector3, targetDisc: Mesh | null) => {
     if (!avatarRef.current || !sceneRef.current) return;
 
     console.log('Moving avatar to position:', targetPosition);
@@ -132,7 +132,9 @@ export function useAvatarMovement({
         avatarMovementStateRef.current.shouldRotate = false;
         avatarMovementStateRef.current.animationProgress = 0;
 
-        sceneRef.current.unregisterBeforeRender(rotateBeforeMove);
+        if (sceneRef.current) {
+          sceneRef.current.unregisterBeforeRender(rotateBeforeMove);
+        }
       }
     });
 
