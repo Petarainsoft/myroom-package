@@ -3,14 +3,16 @@ import React from 'react';
 interface SceneControlButtonsProps {
   onReset: () => void;
   onToggleFullscreen: () => void;
-  onToggleUIOverlay: () => void;
+  onToggleAvatarOverlay: () => void;
+  onToggleRoomOverlay: () => void;
   isFullscreen: boolean;
 }
 
 const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
   onReset,
   onToggleFullscreen,
-  onToggleUIOverlay,
+  onToggleAvatarOverlay: onToggleAvatarOverlay,
+  onToggleRoomOverlay: onToggleRoomOverlay,
   isFullscreen,
 }) => {
   return (
@@ -74,7 +76,7 @@ const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
         {isFullscreen ? '⤓' : '⤢'}
       </button>
       <button
-        onClick={onToggleUIOverlay}
+        onClick={onToggleAvatarOverlay}
         style={{
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
           color: 'white',
@@ -92,9 +94,32 @@ const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
           transition: 'background-color 0.2s ease',
           outline: 'none',
         }}
-        title="Toggle UI Controls"
+        title="Toggle Avatar"
       >
-        ⚙
+        👥
+      </button>
+      <button
+        onClick={onToggleRoomOverlay}
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          padding: '8px',
+          cursor: 'pointer',
+          fontSize: '16px',
+          width: '32px',
+          height: '32px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backdropFilter: 'blur(2px)',
+          transition: 'background-color 0.2s ease',
+          outline: 'none',
+        }}
+        title="Toggle Room"
+      >
+        🏠
       </button>
     </div>
   );

@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { IntegratedBabylonScene } from '../../shared/components/babylon/IntegratedBabylonScene';
-import { AvatarControls } from '../../shared/components/avatar/AvatarControls';
-import { AvatarConfig, getDefaultConfigForGender, availablePartsData } from '../../shared/data/avatarPartsData';
+// AvatarControls inlined below
+import { getDefaultConfigForGender, availablePartsData } from '../../shared/data/avatarPartsData';
+import { AvatarConfig, AvailableParts, Gender } from '../../shared/types/AvatarTypes';
 import { ActiveMovement, TouchMovement } from '../../shared/types/AvatarTypes';
 import { domainConfig, getEmbedUrl, getWebComponentUrl } from '../../shared/config/appConfig';
 import './App.css';
-import '../../shared/components/avatar/AvatarControls.css';
+import './IntegratedApp.css';
 
 type AppMode = 'room' | 'avatar' | 'integrated';
 
@@ -119,12 +120,12 @@ const availableRooms = [
 ];
 
 // Available items data
-const availableItems = [
-  { name: "Chair", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair" },
-  { name: "Light stand", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb", category: "Light" },
-  { name: "Board", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb", category: "Decor" },
-  { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor" },
-];
+// const availableItems = [
+//   { name: "Chair", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair" },
+//   { name: "Light stand", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb", category: "Light" },
+//   { name: "Board", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb", category: "Decor" },
+//   { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor" },
+// ];
 
 interface LoadedItem {
   id: string;
@@ -137,7 +138,9 @@ interface LoadedItem {
 
 // Component integrating room and avatar with full UI controls
 const InteractiveRoomWithAvatar: React.FC = () => {
-  const [selectedItemToAdd, setSelectedItemToAdd] = useState(availableItems[0]);
+  // Add state for availableItems
+  const [availableItems, setAvailableItems] = useState<any[]>([]);
+  const [selectedItemToAdd, setSelectedItemToAdd] = useState<any>(null);
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
   // Room state management
@@ -164,6 +167,18 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     }
   }, [loadedItems, selectedItem]);
 
+  // Fetch available items from items-manifest.json
+  useEffect(() => {
+    fetch('/manifest/item/items-manifest.json')
+      .then((res) => res.json())
+      .then((data) => {
+        setAvailableItems(data.items || []);
+        // Set default selected item if not already set
+        if (!selectedItemToAdd && data.items && data.items.length > 0) {
+          setSelectedItemToAdd(data.items[0]);
+        }
+      });
+  }, []);
 
   // Avatar state management
   const [avatarConfig, setAvatarConfig] = useState<AvatarConfig>(
@@ -186,7 +201,9 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     y: 0,
     isMoving: false
   });
-  const [showControls, setShowControls] = useState(true);
+  // Set default: only Avatar overlay is visible
+  const [showAvatarOverlay, setShowAvatarOverlay] = useState(false);
+  const [showRoomOverlay, setShowRoomOverlay] = useState(false);
   const [debugInfo, setDebugInfo] = useState('');
   const [compactMode, setCompactMode] = useState(false);
   const [ultraCompactMode, setUltraCompactMode] = useState(true);
@@ -255,7 +272,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
 
   const handlePartChange = (partType: string, fileName: string | null) => {
     console.log(` handlePartChange IN INTEGRATED APP TSX: partType=${partType}, fileName=${fileName}`);
-    setAvatarConfig(prev => {
+    setAvatarConfig((prev: AvatarConfig) => {
       const newConfig = { ...prev };
 
       // Handle fullset logic
@@ -303,7 +320,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   };
 
   const handleColorChange = (partType: string, color: string) => {
-    setAvatarConfig(prev => ({
+    setAvatarConfig((prev: AvatarConfig) => ({
       ...prev,
       colors: {
         ...prev.colors,
@@ -418,16 +435,34 @@ const InteractiveRoomWithAvatar: React.FC = () => {
 
 
   // Item management handlers
+  // Add state for selected item category
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // Compute categories from availableItems
+  const categories = Array.from(new Set(availableItems.map(item => item.category).filter(Boolean)));
+  // Filter items by selected category
+  const filteredItems = selectedCategory
+    ? availableItems.filter(item => item.category === selectedCategory)
+    : [];
+  // Add state for selected item per category
+  const [selectedItemPerCategory, setSelectedItemPerCategory] = useState<{ [category: string]: any | null }>({});
+  // When category changes, set default selected item for that category if not already set
+  useEffect(() => {
+    if (selectedCategory && filteredItems.length > 0 && !selectedItemPerCategory[selectedCategory]) {
+      setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: filteredItems[0] }));
+    }
+  }, [selectedCategory, filteredItems]);
+
+  // Update handleAddItem to use the selected item for the current category
   const handleAddItem = () => {
+    if (!selectedCategory) return;
+    const selectedItemToAdd = selectedItemPerCategory[selectedCategory];
+    if (!selectedItemToAdd) return;
     // Constrain position within 4x4 area centered at (0,0,0)
     // Random position between -2 and 2 for both X and Z
     const randomX = Math.random() * 4 - 2;
     const randomZ = Math.random() * 4 - 2;
-
-    // Ensure position is within bounds
     const constrainedX = Math.max(-2, Math.min(2, randomX));
     const constrainedZ = Math.max(-2, Math.min(2, randomZ));
-
     const newItem: LoadedItem = {
       id: `item_${Date.now()}`,
       name: selectedItemToAdd.name,
@@ -436,8 +471,6 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       rotation: { x: 0, y: 0, z: 0 },
       scale: { x: 1, y: 1, z: 1 }
     };
-
-    console.log(`Adding new item at position: (${constrainedX.toFixed(2)}, 0, ${constrainedZ.toFixed(2)})`);
     setLoadedItems(prev => [...prev, newItem]);
   };
 
@@ -455,7 +488,29 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     setSelectedItem(null);
   };
 
+  // Handler to toggle Avatar overlay
+  const handleToggleAvatarOverlay = () => {
+    setShowAvatarOverlay((prev) => {
+      if (!prev) {
+        setShowRoomOverlay(false);
+        return true;
+      } else {
+        return false;
+      }
+    });
+  };
 
+  // Handler to toggle Room overlay
+  const handleToggleRoomOverlay = () => {
+    setShowRoomOverlay((prev) => {
+      if (!prev) {
+        setShowAvatarOverlay(false);
+        return true;
+      } else {
+        return false;
+      }
+    });
+  };
 
   return (
     <div className="website-layout">
@@ -528,7 +583,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     selectedItem={selectedItem}
                     onSelectItem={setSelectedItem}
                     onItemTransformChange={handleItemTransformChange}
-                    onToggleUIOverlay={() => setShowControls(!showControls)}
+                    onToggleUIOverlay={handleToggleAvatarOverlay}
+                    onToggleRoomPanel={handleToggleRoomOverlay}
                   />
 
 
@@ -536,45 +592,117 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 </div>
 
                 {/* Movement Instructions */}
-                {showControls && (
-                  <div className="movement-instructions" style={{
-                    position: 'absolute',
-                    bottom: '20px',
-                    left: '20px',
-                    fontSize: '0.9em',
-                    textAlign: 'left',
-                    padding: '10px',
-                    background: 'rgba(249, 249, 249, 0.8)',
-                    borderRadius: '4px',
-                    zIndex: 1000,
-                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                    backdropFilter: 'blur(5px)'
-                  }}>
-                    <strong>Control instructions:</strong><br />
-                    <span>
-                      Click and hold the left mouse button to orbit the camera <br />
-                      Double-click to move your character  <br />
-                      {/* Mouse right Click hold / 2 fingers to pan camera */}
-                    </span>
+                <div className="movement-instructions" style={{
+                  position: 'absolute',
+                  bottom: '20px',
+                  left: '20px',
+                  fontSize: '0.9em',
+                  textAlign: 'left',
+                  padding: '10px',
+                  background: 'rgba(249, 249, 249, 0.8)',
+                  borderRadius: '4px',
+                  zIndex: 1000,
+                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                  backdropFilter: 'blur(5px)'
+                }}>
+                  <strong>Control instructions:</strong><br />
+                  <span>
+                    Click and hold the left mouse button to orbit the camera <br />
+                    Double-click to move your character  <br />
+                    {/* Mouse right Click hold / 2 fingers to pan camera */}
+                  </span>
+                </div>
+
+                {/* Integrated UI Controls Overlay - Docked to Right */}
+                {showAvatarOverlay && (
+                  <div className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''}`}>
+                    {/* Avatar Controls */}
+                    {availablePartsData[avatarConfig.gender] ? (
+                      <div className="control-section">
+                        <div className="section-header">
+                          <h3>👥 Avatar</h3>
+                        </div>
+                        <div className="parts-grid">
+                          {/* Gender Control as first item */}
+                          <div className="control-group compact-control">
+                            <div className="control-row">
+                              <label htmlFor="gender-select">Gender:</label>
+                              <select
+                                id="gender-select"
+                                value={avatarConfig.gender}
+                                onChange={(e) => handleGenderChange(e.target.value as Gender)}
+                              >
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                              </select>
+                            </div>
+                          </div>
+                          {/* Render selectable parts */}
+                          {Object.entries(availablePartsData[avatarConfig.gender].selectableParts).map(([partType, items]: [string, any[]]) => {
+                            const currentSelection = avatarConfig.parts[partType] || null;
+                            const currentColor = avatarConfig.colors[partType] || availablePartsData[avatarConfig.gender].defaultColors[partType] || "#ffffff";
+                            return (
+                              <div key={partType} className="control-group">
+                                <div className="control-row">
+                                  <label htmlFor={`${partType}-select`}>
+                                    {partType.charAt(0).toUpperCase() + partType.slice(1)}:
+                                  </label>
+                                  <select
+                                    id={`${partType}-select`}
+                                    value={currentSelection || ""}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
+                                      handlePartChange(partType, value === "" ? null : value);
+                                    }}
+                                  >
+                                    {items.map((item: any, index: number) => (
+                                      <option key={index} value={item.fileName || ""}>
+                                        {item.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </div>
+                                {/* Uncomment for color picker
+                              <div className="control-row">
+                                <label htmlFor={`${partType}-color`}>Color:</label>
+                                <input
+                                  id={`${partType}-color`}
+                                  type="color"
+                                  value={currentColor}
+                                  onChange={(e) => handleColorChange(partType, e.target.value)}
+                                />
+                              </div> */}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {/* Save/Load Controls */}
+                        <div className="control-group">
+                          <button onClick={handleSaveAvatar} className="save-button">
+                            💾 Save Avatar
+                          </button>
+                          <div className="file-input-wrapper">
+                            <input
+                              type="file"
+                              accept=".json"
+                              onChange={handleLoadAvatar}
+                              id="load-avatar-input"
+                              className="file-input"
+                            />
+                            <label htmlFor="load-avatar-input" className="load-button">
+                              📁 Load Avatar
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="control-section">Error: Core avatar data unavailable.</div>
+                    )}
                   </div>
                 )}
 
-
-                {/* Integrated UI Controls Overlay - Docked to Right */}
-                {showControls && (
-                  <div className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
-                    }`}>
-                    {/* Avatar Controls */}
-                    <AvatarControls
-                      avatarConfig={avatarConfig}
-                      availableParts={availablePartsData}
-                      onGenderChange={handleGenderChange}
-                      onPartChange={handlePartChange}
-                      onColorChange={handleColorChange}
-                      onSaveAvatar={handleSaveAvatar}
-                      onLoadAvatar={handleLoadAvatar}
-                    />
-
+                {showRoomOverlay && (
+                  <div className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''}`}>
                     {/* Room Controls */}
                     <div className="control-section">
                       <div className="section-header">
@@ -609,86 +737,79 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       <div className="section-header">
                         <h3>🪑 Items</h3>
                       </div>
-                      <div className="items-controls">
-                        <div className="item-selector">
-                          {/* <label>Select Item:</label> */}
+                      {/* Category List */}
+                      <div className="item-categories" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                        {categories.map(category => (
+                          <button
+                            key={category}
+                            className={`item-category-btn${selectedCategory === category ? ' selected' : ''}`}
+                            style={{
+                              padding: '6px 14px',
+                              borderRadius: 16,
+                              border: '1px solid #d9d9d9',
+                              background: selectedCategory === category ? '#1890ff' : '#fff',
+                              color: selectedCategory === category ? '#fff' : '#333',
+                              cursor: 'pointer',
+                              fontWeight: 500,
+                              fontSize: 14,
+                              transition: 'all 0.2s',
+                            }}
+                            onClick={() => setSelectedCategory(category)}
+                          >
+                            {category}
+                          </button>
+                        ))}
+                      </div>
+                      {/* Item List for selected category */}
+                      {selectedCategory && (
+                        <div className="item-selector" style={{ marginBottom: 12 }}>
                           <select
-                            value={selectedItemToAdd.path}
+                            value={selectedItemPerCategory[selectedCategory]?.path || ""}
                             onChange={(e) => {
-                              const item = availableItems.find(i => i.path === e.target.value);
-                              if (item) setSelectedItemToAdd(item);
+                              const item = filteredItems.find(i => i.path === e.target.value);
+                              setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: item }));
                             }}
                             className="item-select"
                           >
-                            {availableItems.map((item) => (
+                            {filteredItems.map((item) => (
                               <option key={item.path} value={item.path}>
-                                {item.name} ({item.category})
+                                {item.name}
                               </option>
                             ))}
                           </select>
                         </div>
-
-                        <div className="item-actions">
-                          <button onClick={handleAddItem} className="add-item-btn">
-                            ➕ Add Item
-                          </button>
-                          <button onClick={handleClearAllItems} className="clear-items-btn">
-                            🗑️ Clear All
-                          </button>
-                        </div>
-
-                        <div className="loaded-items-list">
-                          <h4>Items ({loadedItems.length}):</h4>
-                          {loadedItems.length === 0 ? (
-                            <p className="no-items">No items yet</p>
-                          ) : (
-                            <ul className="items-list">
-                              {loadedItems.map((item) => (
-                                <li key={item.id} className="item-entry">
-                                  <span>{item.name}</span>
-                                  <button
-                                    onClick={() => handleRemoveItem(item.id)}
-                                    className="remove-item-btn"
-                                  >
-                                    ✕
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-
-                        {/* Item Manipulation Controls */}
-                        {/* <div className="item-manipulation-controls">
-                            <h4>🎛️ Item Manipulation</h4>
-                            <div className="gizmo-mode-selector">
-                              <label>Transform Mode:</label>
-                              <select 
-                                value={gizmoMode} 
-                                onChange={(e) => setGizmoMode(e.target.value as 'position' | 'rotation' | 'scale')}
-                                className="gizmo-select"
-                              >
-                                <option value="position">📍 Move (Position)</option>
-                                <option value="rotation">🔄 Rotate</option>
-                                <option value="scale">📏 Scale</option>
-                              </select>
-                            </div>
-                            <div className="manipulation-instructions">
-                              <p className="instruction-text">
-                                {gizmoMode === 'position' && '📍 Click and drag the arrows to move items'}
-                                {gizmoMode === 'rotation' && '🔄 Click and drag the rings to rotate items'}
-                                {gizmoMode === 'scale' && '📏 Click and drag the cubes to scale items'}
-                              </p>
-                              <p className="instruction-note">
-                                💡 Click on any item in the 3D scene to select it for manipulation
-                              </p>
-                            </div>
-                          </div> */}
+                      )}
+                      <div className="item-actions">
+                        <button onClick={handleAddItem} className="add-item-btn" disabled={!selectedCategory || !selectedItemPerCategory[selectedCategory]}>
+                          ➕ Add Item
+                        </button>
+                        <button onClick={handleClearAllItems} className="clear-items-btn">
+                          🗑️ Clear All
+                        </button>
+                      </div>
+                      <div className="loaded-items-list">
+                        <h4>Items ({loadedItems.length}):</h4>
+                        {loadedItems.length === 0 ? (
+                          <p className="no-items">No items yet</p>
+                        ) : (
+                          <ul className="items-list">
+                            {loadedItems.map((item) => (
+                              <li key={item.id} className="item-entry">
+                                <span>{item.name}</span>
+                                <button
+                                  onClick={() => handleRemoveItem(item.id)}
+                                  className="remove-item-btn"
+                                >
+                                  ✕
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
                     </div>
                   </div>
                 )}
-
 
               </div>
             </div>
@@ -770,8 +891,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 fontSize: '12px',
                 transition: 'background-color 0.2s'
               }}
-              onMouseOver={(e) => e.target.style.backgroundColor = '#d32f2f'}
-              onMouseOut={(e) => e.target.style.backgroundColor = '#f44336'}
+              onMouseOver={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = '#d32f2f')}
+              onMouseOut={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = '#f44336')}
             >
               ❌ Deselect Item
             </button>
@@ -1089,8 +1210,7 @@ mainScene.addEventListener('scene-ready', (event) => {
 
 mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
-});
-`}
+});`}
                         </code></pre>
                         <button
                           className="copy-button"

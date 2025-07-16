@@ -50,6 +50,7 @@ interface IntegratedSceneProps {
   onSelectItem?: (item: any) => void; // Callback when an item is selected
   onItemTransformChange?: (itemId: string, transform: { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }) => void; // Callback when item transform changes
   onToggleUIOverlay?: () => void; // Callback to toggle UI overlay visibility
+  onToggleRoomPanel?: () => void; // Callback to toggle room panel visibility
 }
 
 // Define externally exposed ref interface for the component
@@ -401,19 +402,32 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         }
       };
 
-      const setHighlightDiscPosition = (position: Vector3) => {
+      const setHighlightDiscPosition = (selectedMesh: AbstractMesh) => {
         if (highlightDiscRef.current) {
-          highlightDiscRef.current.position.copyFrom(position);
+          highlightDiscRef.current.position.copyFrom(selectedMesh.getAbsolutePosition());
           highlightDiscRef.current.position.y += 0.02;
-          highlightDiscRef.current.isVisible = true;
-          highlightDiscCircles.forEach(circle => circle.isVisible = true);
         }
       };
 
-      const hideHighlightDisc = () => {
+      const setHighlightDiscRotation = (selectedMesh: AbstractMesh) => {
         if (highlightDiscRef.current) {
-          highlightDiscRef.current.isVisible = false;
-          highlightDiscCircles.forEach(circle => circle.isVisible = false);
+          let topMost = selectedMesh;
+          while (topMost.parent && topMost.parent instanceof AbstractMesh) {
+            topMost = topMost.parent;
+          }
+          if (topMost.rotationQuaternion) {
+            const euler = topMost.rotationQuaternion.toEulerAngles();
+            highlightDiscRef.current.rotation.y = euler.y;
+          } else {
+            highlightDiscRef.current.rotation.y = topMost.rotation.y;
+          }
+        }
+      };
+
+      const toggleHighlightDisc = (isVisible: boolean) => {
+        if (highlightDiscRef.current) {
+          highlightDiscRef.current.isVisible = isVisible;
+          highlightDiscCircles.forEach(circle => circle.isVisible = isVisible);
         }
       };
 
@@ -424,7 +438,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           dragStartPoint = null;
           initialMeshPosition = null;
           setAvatarVisibility(true);
-          hideHighlightDisc();
+          toggleHighlightDisc(false);
         }
       };
 
@@ -490,11 +504,12 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               isDragging = true;
               dragStartPoint = pickResult.pickedPoint?.clone() || null;
               initialMeshPosition = selectedMesh.position.clone();
-              setHighlightDiscPosition(selectedMesh.getAbsolutePosition());
+              setHighlightDiscPosition(selectedMesh);
+              setHighlightDiscRotation(selectedMesh);
+              toggleHighlightDisc(true);
               setAvatarVisibility(false);
               camera.detachControl();
             } else if (pickResult?.hit && ((highlightDiscRef.current && pickResult.pickedMesh === highlightDiscRef.current) || (pickResult.pickedMesh?.parent === highlightDiscRef.current))) {
-              // Clicked on the highlight disc or its children
               camera.detachControl();
               // If it's a child circle, enable rotation mode
               if (pickResult.pickedMesh?.parent === highlightDiscRef.current) {
@@ -518,18 +533,10 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           }
 
           case PointerEventTypes.POINTERUP: {
-            // Only deselect if neither dragging nor rotating
-            if (!isDragging && !isRotatingByDisc) {
-              deselectItem();
-              hideHighlightDisc();
-            }
             camera.attachControl(canvasRef.current!, true);
             isDragging = false;
             isRotatingByDisc = false;
             accumulatedRotation = 0;
-            if (highlightDiscRef.current) {
-              highlightDiscRef.current.rotation.y = 0;
-            }
             if (pointerInfo.event && pointerInfo.event.button === 2) {
               isRightMouseDownRef.current = false;
               cameraFollowStateRef.current.shouldFollowAvatar = true;
@@ -546,7 +553,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
                 const newPosition = initialMeshPosition.add(delta);
                 newPosition.y = selectedMesh.position.y;
                 selectedMesh.position = newPosition;
-                setHighlightDiscPosition(selectedMesh.getAbsolutePosition());
+                setHighlightDiscPosition(selectedMesh);
               }
             } else if (isRotatingByDisc && selectedMesh && !isDragging) {
               deltaX = scene.pointerX - lastPointerX;
@@ -558,19 +565,16 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               // Accumulate rotation
               let rotationDelta = -deltaX * rotationSpeed;
               accumulatedRotation += rotationDelta;
-              // Snap to nearest 12-degree step
+              // Snap to nearest 15-degree step
               if (Math.abs(accumulatedRotation) >= SNAP_STEP_RAD) {
                 const steps = Math.floor(accumulatedRotation / SNAP_STEP_RAD);
                 const snappedDelta = steps * SNAP_STEP_RAD;
                 if (topMost.rotationQuaternion) {
-                  topMost.rotationQuaternion = topMost.rotationQuaternion.multiply(
-                    Quaternion.RotationAxis(Axis.Y, snappedDelta)
-                  );
+                  topMost.rotationQuaternion = topMost.rotationQuaternion.multiply(Quaternion.RotationAxis(Axis.Y, snappedDelta));
                 } else {
                   topMost.rotation.y += snappedDelta;
                 }
                 accumulatedRotation -= snappedDelta;
-                setHighlightDiscPosition(topMost.getAbsolutePosition());
                 // Synchronize highlight disc rotation
                 if (highlightDiscRef.current) {
                   if (topMost.rotationQuaternion) {
@@ -864,7 +868,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       <SceneControlButtons
         onReset={resetAll}
         onToggleFullscreen={() => { }}
-        onToggleUIOverlay={props.onToggleUIOverlay || (() => { })}
+        onToggleAvatarOverlay={props.onToggleUIOverlay || (() => { })}
+        onToggleRoomOverlay={props.onToggleRoomPanel || (() => { })}
         isFullscreen={isFullscreen}
       />
       {props.selectedItem && (

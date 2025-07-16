@@ -1132,19 +1132,17 @@ html, body {
 
 .integrated-ui-overlay {
   position: absolute;
-  top: 50px;
-  right: 20px; /* Dock to right edge of parent container */
+  top: 0px;
+  right: 0px; /* Dock to right edge of parent container */
   width: 280px; /* Increased by 15% from 245px */
-  max-height: calc(100% - 70px); /* Use container height instead of viewport */
+  height: 100%;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(224, 230, 237, 0.8);
-  border-radius: 8px;
   overflow-y: auto;
   overflow-x: hidden;
   padding: 20px;
   z-index: 1000;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   scrollbar-width: thin;
   scrollbar-color: rgba(0,0,0,0.3) transparent;
   display: flex;
