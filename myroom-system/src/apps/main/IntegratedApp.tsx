@@ -6,7 +6,6 @@ import { AvatarConfig, AvailableParts, Gender } from '../../shared/types/AvatarT
 import { ActiveMovement, TouchMovement } from '../../shared/types/AvatarTypes';
 import { domainConfig, getEmbedUrl, getWebComponentUrl } from '../../shared/config/appConfig';
 import './App.css';
-import './IntegratedApp.css';
 
 type AppMode = 'room' | 'avatar' | 'integrated';
 
