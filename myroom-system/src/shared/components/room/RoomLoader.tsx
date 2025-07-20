@@ -6,11 +6,12 @@ import { domainConfig } from '../../config/appConfig';
 interface RoomLoaderProps {
   scene: Scene | null;
   roomPath?: string;
+  roomResourcePath?: string | null;
   isSceneReady: boolean;
   roomRef: React.MutableRefObject<TransformNode | null>;
 }
 
-export const useRoomLoader = ({ scene, roomPath, isSceneReady, roomRef }: RoomLoaderProps) => {
+export const useRoomLoader = ({ scene, roomPath, roomResourcePath, isSceneReady, roomRef }: RoomLoaderProps) => {
   // Load room when roomPath changes
   useEffect(() => {
     if (!isSceneReady || !scene || !roomPath || !roomRef.current) return;
@@ -20,8 +21,23 @@ export const useRoomLoader = ({ scene, roomPath, isSceneReady, roomRef }: RoomLo
         // Clear existing room
         roomRef.current!.getChildMeshes().forEach(mesh => mesh.dispose());
 
-        // Create full URL with domain
-        const fullRoomUrl = roomPath.startsWith('http') ? roomPath : `${domainConfig.baseDomain}${roomPath}`;
+        let fullRoomUrl: string;
+        if (roomResourcePath) {
+          // Call API to get S3 path
+          const apiUrl = `${domainConfig.backendDomain}/api/customer/room/${roomResourcePath}`;
+          const response = await fetch(apiUrl, {
+            headers: {
+              'Authorization': `Bearer ${domainConfig.apiKey}`
+            }
+          });
+          if (!response.ok) {
+            throw new Error(`API call failed: ${response.status}`);
+          }
+          const data = await response.json();
+          fullRoomUrl = data.path; // Assuming the API returns { path: 's3url' }
+        } else {
+          fullRoomUrl = roomPath!.startsWith('http') ? roomPath! : `${domainConfig.baseDomain}${roomPath!}`;
+        }
 
         // Load new room
         const result = await SceneLoader.ImportMeshAsync(
@@ -39,14 +55,14 @@ export const useRoomLoader = ({ scene, roomPath, isSceneReady, roomRef }: RoomLo
           mesh.receiveShadows = true;
         });
 
-        console.log('Room loaded:', roomPath);
+        console.log('Room loaded:', fullRoomUrl);
       } catch (error) {
         console.error('Error loading room:', error);
       }
     };
 
     loadRoom();
-  }, [isSceneReady, roomPath, scene, roomRef]);
+  }, [isSceneReady, roomPath, roomResourcePath, scene, roomRef]);
 };
 
 export default useRoomLoader;

@@ -113,10 +113,15 @@ const IntegratedApp: React.FC = () => {
 };
 
 // Available rooms data
-const availableRooms = [
-  { name: "Living Room", path: "/models/rooms/cate001/MR_KHROOM_0001.glb" },
-  { name: "Exercise Room", path: "/models/rooms/cate001/MR_KHROOM_0002.glb" },
-  { name: "Lounge Room", path: "/models/rooms/cate002/MR_KHROOM_0003.glb" },
+interface Room {
+  name: string;
+  path: string;
+  resourcePath?: string | null;
+}
+const availableRooms: Room[] = [
+  { name: "Living Room", path: "/models/rooms/cate001/MR_KHROOM_0001.glb", resourcePath: null },
+  { name: "Exercise Room", path: "/models/rooms/cate001/MR_KHROOM_0002.glb", resourcePath: null },
+  { name: "Lounge Room", path: "/models/rooms/cate002/MR_KHROOM_0003.glb", resourcePath: null },
 ];
 
 // Available items data
@@ -127,6 +132,19 @@ const availableRooms = [
 //   { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor" },
 // ];
 
+interface Item {
+  name: string;
+  path: string;
+  category: string;
+  resourcePath?: string | null;
+}
+const availableItems: Item[] = [
+  { name: "Chair", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair", resourcePath: null },
+  { name: "Light stand", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb", category: "Light", resourcePath: null },
+  { name: "Board", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb", category: "Decor", resourcePath: null },
+  { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor", resourcePath: null },
+];
+
 interface LoadedItem {
   id: string;
   name: string;
@@ -134,6 +152,7 @@ interface LoadedItem {
   position: { x: number; y: number; z: number };
   rotation?: { x: number; y: number; z: number };
   scale?: { x: number; y: number; z: number };
+  resourcePath?: string | null;
 }
 
 // Component integrating room and avatar with full UI controls
@@ -336,7 +355,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       timestamp: new Date().toISOString(),
       room: {
         name: selectedRoom.name,
-        path: selectedRoom.path
+        path: selectedRoom.path,
+        resourcePath: selectedRoom.resourcePath
       },
       avatar: avatarConfig,
       items: loadedItems.map(item => ({
@@ -345,7 +365,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         path: item.path,
         position: item.position,
         rotation: item.rotation || { x: 0, y: 0, z: 0 },
-        scale: item.scale || { x: 1, y: 1, z: 1 }
+        scale: item.scale || { x: 1, y: 1, z: 1 },
+        resourcePath: item.resourcePath
       }))
     };
 
@@ -464,12 +485,13 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     const constrainedX = Math.max(-2, Math.min(2, randomX));
     const constrainedZ = Math.max(-2, Math.min(2, randomZ));
     const newItem: LoadedItem = {
-      id: `item_${Date.now()}`,
+      id: `item_${Date.now()}` ,
       name: selectedItemToAdd.name,
       path: selectedItemToAdd.path,
       position: { x: constrainedX, y: 0, z: constrainedZ },
       rotation: { x: 0, y: 0, z: 0 },
-      scale: { x: 1, y: 1, z: 1 }
+      scale: { x: 1, y: 1, z: 1 },
+      resourcePath: selectedItemToAdd.resourcePath
     };
     setLoadedItems(prev => [...prev, newItem]);
   };
@@ -573,6 +595,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                   <IntegratedBabylonScene
                     ref={integratedSceneRef}
                     roomPath={selectedRoom.path}
+                    roomResourcePath={selectedRoom.resourcePath}
                     avatarConfig={avatarConfig}
                     activeMovement={activeMovement}
                     touchMovement={touchMovement}

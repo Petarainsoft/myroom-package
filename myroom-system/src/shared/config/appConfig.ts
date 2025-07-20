@@ -10,26 +10,36 @@
  */
 
 // Check if domain is configured via external script
-const getConfiguredDomain = () => {
-  // Check if running in browser environment
+const getConfiguredBaseDomain = () => {
   if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.baseDomain) {
     return window.MYROOM_CONFIG.baseDomain;
   }
   
   // Default domain (used during development or if not configured)
-  // return 'http://localhost:5173'; // local test, should change port accordingly
+  return 'http://localhost:5175'; // local test, should change port accordingly
   //return 'http://192.168.1.x:5173'; change to deployed url to LAN test, for example: mobile device access. Change Port accordingly
-  return 'https://myroom.petarainsoft.com';
+  // return 'https://myroom.petarainsoft.com';
+};
+const getConfiguredBackendDomain = () => {
+  if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.backendDomain) {
+    return window.MYROOM_CONFIG.backendDomain;
+  }
+  return 'https://api.myroom.petarainsoft.com'; // Default backend domain, to be filled later
+};
+const getConfiguredApiKey = () => {
+  if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.apiKey) {
+    return window.MYROOM_CONFIG.apiKey;
+  }
+  return ''; // Default empty, should be set securely
 };
 
 // Base domain configuration
 // This will be used for all URLs in the application
 // Can be overridden after build by updating config-domain.js
 export const domainConfig = {
-  // The base domain URL (without trailing slash)
-  baseDomain: getConfiguredDomain(),
-  
-  // Paths for different resources
+  baseDomain: getConfiguredBaseDomain(),
+  backendDomain: getConfiguredBackendDomain(),
+  apiKey: getConfiguredApiKey(),
   paths: {
     webComponent: '/dist/myroom-webcomponent.umd.js',
     embedHtml: '/embed.html',

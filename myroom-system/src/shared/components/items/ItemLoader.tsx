@@ -53,8 +53,23 @@ export const useItemLoader = ({
             continue;
           }
 
-          // Create full URL with domain
-          const fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+          let fullItemUrl: string;
+          if (item.resourcePath) {
+            // Call API to get S3 path
+            const apiUrl = `${domainConfig.backendDomain}/api/customer/item/${item.resourcePath}`;
+            const response = await fetch(apiUrl, {
+              headers: {
+                'Authorization': `Bearer ${domainConfig.apiKey}`
+              }
+            });
+            if (!response.ok) {
+              throw new Error(`API call failed: ${response.status}`);
+            }
+            const data = await response.json();
+            fullItemUrl = data.path; // Assuming the API returns { path: 's3url' }
+          } else {
+            fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+          }
 
           const result = await SceneLoader.ImportMeshAsync(
             '',

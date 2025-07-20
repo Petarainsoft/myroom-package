@@ -39,6 +39,7 @@ import { useAvatarLoader } from './useAvatarLoader';
 // Props cho component IntegratedBabylonScene
 interface IntegratedSceneProps {
   roomPath?: string; // Path to room model
+  roomResourcePath?: string | null; // Resource path for room API
   avatarConfig?: AvatarConfig; // Avatar configuration (gender, body parts)
   activeMovement?: ActiveMovement; // Current movement state
   touchMovement?: TouchMovement; // Touch control input data
@@ -680,6 +681,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   useRoomLoader({
     scene: sceneRef.current,
     roomPath: props.roomPath,
+    roomResourcePath: props.roomResourcePath,
     isSceneReady,
     roomRef
   });
