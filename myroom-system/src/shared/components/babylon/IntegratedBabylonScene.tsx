@@ -289,7 +289,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       shadowGeneratorRef.current = shadowGenerator;
 
       // Create a highlight disc
-      const highlightDiscRadius = 0.7;
+      const highlightDiscRadius = 1;
       const highlightDisc = MeshBuilder.CreateDisc(
         'highlightDisc',
         { radius: highlightDiscRadius, tessellation: 64 },
@@ -301,9 +301,9 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       (highlightDisc.material as StandardMaterial).diffuseColor = new Color3(0, 0, 1); // Blue color
       (highlightDisc.material as StandardMaterial).alpha = 0.5; // Semi-transparent
       highlightDiscRef.current = highlightDisc;
-      
+
       // Add 4 small colored circles at 0, 90, 180, 270 degrees around the highlightDisc
-      const smallCircleRadius = 0.15;
+      const smallCircleRadius = 0.12;
       const angles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
       const color = new Color3(0, 1, 0);
       const highlightDiscCircles: Mesh[] = [];
@@ -402,6 +402,81 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           avatarRef.current.getChildMeshes().forEach((mesh) => {
             mesh.isVisible = isVisible;
           });
+        }
+      };
+
+      const scaleHighlightDisc = (selectedMesh: AbstractMesh) => {
+        const scene = sceneRef.current;
+        if (!scene) return;
+        // --- FIX: Compute bounding box from all child meshes, using local size and world scale only ---
+        const childMeshes = selectedMesh.getChildMeshes ? selectedMesh.getChildMeshes() : [];
+        let maxFootprint = 0;
+        let margin = 0.65; // or 1.15 if you want a bit larger
+        if (childMeshes.length > 0) {
+          childMeshes.forEach(mesh => {
+            const b = mesh.getBoundingInfo().boundingBox;
+            const min = b.minimum;
+            const max = b.maximum;
+            // Local size
+            const sizeX = Math.abs(max.x - min.x);
+            const sizeY = Math.abs(max.y - min.y);
+            // Get world scaling (ignoring rotation)
+            let scaling = new Vector3(1, 1, 1);
+            mesh.getWorldMatrix().decompose(scaling, undefined, undefined);
+            // Scaled size in world
+            const scaledX = sizeX * Math.abs(scaling.x);
+            const scaledY = sizeY * Math.abs(scaling.y);
+            const localFootprint = Math.max(scaledX, scaledY);
+            if (localFootprint > maxFootprint) maxFootprint = localFootprint;
+          });
+        } else {
+          // fallback: use selectedMesh's own bounding box
+          const b = selectedMesh.getBoundingInfo().boundingBox;
+          const min = b.minimum;
+          const max = b.maximum;
+          const sizeX = Math.abs(max.x - min.x);
+          const sizeY = Math.abs(max.y - min.y);
+          let scaling = new Vector3(1, 1, 1);
+          selectedMesh.getWorldMatrix().decompose(scaling, undefined, undefined);
+          const scaledX = sizeX * Math.abs(scaling.x);
+          const scaledY = sizeY * Math.abs(scaling.y);
+          maxFootprint = Math.max(scaledX, scaledY);
+        }
+        const meshRadius = maxFootprint * margin
+        if (highlightDiscRef.current) {
+          // Save children (small green circles)
+          const children = highlightDiscRef.current.getChildren();
+          // Save material and rotation
+          const oldMaterial = highlightDiscRef.current.material;
+          const oldRotation = highlightDiscRef.current.rotation.clone();
+          const oldIsVisible = highlightDiscRef.current.isVisible;
+          // Remove children from parent (so they aren't disposed)
+          children.forEach(child => child.parent = null);
+          highlightDiscRef.current.dispose();
+          // Create new disc
+          const newDisc = MeshBuilder.CreateDisc(
+            'highlightDisc',
+            { radius: meshRadius, tessellation: 64 },
+            scene
+          );
+          newDisc.rotation = oldRotation;
+          newDisc.isVisible = oldIsVisible;
+          newDisc.material = oldMaterial;
+          // Re-parent children
+          children.forEach(child => child.parent = newDisc);
+          highlightDiscRef.current = newDisc;
+
+          // Update small green circles' positions to match new radius
+          if (highlightCirclesRef.current) {
+            const angles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
+            highlightCirclesRef.current.forEach((circle, i) => {
+              const x = meshRadius * Math.cos(angles[i]);
+              const y = meshRadius * Math.sin(angles[i]);
+              circle.position.x = x;
+              circle.position.y = y;
+              // Z stays at -0.01 (slightly above ground)
+            });
+          }
         }
       };
 
@@ -507,6 +582,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               isDragging = true;
               dragStartPoint = pickResult.pickedPoint?.clone() || null;
               initialMeshPosition = selectedMesh.position.clone();
+              scaleHighlightDisc(selectedMesh);
               setHighlightDiscPosition(selectedMesh);
               setHighlightDiscRotation(selectedMesh);
               toggleHighlightDisc(true);
