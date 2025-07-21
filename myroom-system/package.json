@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --config configs/vite.config.js",
+    "prepare-items-manifest": "node ./scripts/update-items-manifest.cjs",
+    "dev": "npm run prepare-items-manifest && vite --config configs/vite.config.js",
     "build": "vite build --config configs/vite.config.js",
     "build:webcomponent": "vite build --config configs/vite.webcomponent.config.js",
     "preview": "vite preview --config configs/vite.config.js",

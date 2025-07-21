@@ -6,6 +6,7 @@ import { AvatarConfig, AvailableParts, Gender } from '../../shared/types/AvatarT
 import { ActiveMovement, TouchMovement } from '../../shared/types/AvatarTypes';
 import { domainConfig, getEmbedUrl, getWebComponentUrl } from '../../shared/config/appConfig';
 import './App.css';
+import './IntegratedApp.css';
 
 type AppMode = 'room' | 'avatar' | 'integrated';
 
@@ -121,27 +122,6 @@ const availableRooms: Room[] = [
   { name: "Living Room", path: "/models/rooms/cate001/MR_KHROOM_0001.glb", resourcePath: null },
   { name: "Exercise Room", path: "/models/rooms/cate001/MR_KHROOM_0002.glb", resourcePath: null },
   { name: "Lounge Room", path: "/models/rooms/cate002/MR_KHROOM_0003.glb", resourcePath: null },
-];
-
-// Available items data
-// const availableItems = [
-//   { name: "Chair", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair" },
-//   { name: "Light stand", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb", category: "Light" },
-//   { name: "Board", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb", category: "Decor" },
-//   { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor" },
-// ];
-
-interface Item {
-  name: string;
-  path: string;
-  category: string;
-  resourcePath?: string | null;
-}
-const availableItems: Item[] = [
-  { name: "Chair", path: "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb", category: "Chair", resourcePath: null },
-  { name: "Light stand", path: "/models/items/catelv1_01/catelv2_01/catelv3_02/MR_LIGHTSTAND_0002.glb", category: "Light", resourcePath: null },
-  { name: "Board", path: "/models/items/catelv1_02/catelv2_02/catelv3_02/MR_KH_BOARD_0001.glb", category: "Decor", resourcePath: null },
-  { name: "Mirror", path: "/models/items/catelv1_02/catelv2_03/catelv3_02/MR_MIRROR_0001.glb", category: "Decor", resourcePath: null },
 ];
 
 interface LoadedItem {
