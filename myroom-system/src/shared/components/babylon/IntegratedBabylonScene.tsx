@@ -77,6 +77,14 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   const highlightCirclesRef = useRef<Mesh[] | null>(null);
   const shadowGeneratorRef = useRef<ShadowGenerator | null>(null);
   const targetDiscRef = useRef<Mesh | null>(null);
+  
+  // Refs for scene state that needs to be accessed from document click handler
+  const selectedMeshRef = useRef<AbstractMesh | null>(null);
+  const isDraggingRef = useRef<boolean>(false);
+  const isRotatingByDiscRef = useRef<boolean>(false);
+  const toggleHighlightDiscRef = useRef<((isVisible: boolean) => void) | null>(null);
+  const setAvatarVisibilityRef = useRef<((isVisible: boolean) => void) | null>(null);
+  const deselectItemRef = useRef<(() => void) | null>(null);
 
   // Animation-related refs
   const idleAnimRef = useRef<any>(null);
@@ -218,6 +226,17 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   // Initialize Babylon scene
   useEffect(() => {
     if (!canvasRef.current) return;
+
+    // Document click handler for outside canvas clicks
+    const handleDocumentClick = (event: MouseEvent) => {
+      // Check if the click is outside the canvas
+      if (canvasRef.current && !canvasRef.current.contains(event.target as Node)) {
+        // Call deselectItem to handle all deselection logic
+        if (deselectItemRef.current) {
+          deselectItemRef.current();
+        }
+      }
+    };
 
     const initScene = async () => {
       // Create engine with antialiasing and HDR texture support
@@ -404,6 +423,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           });
         }
       };
+      // Store function reference for document click handler
+      setAvatarVisibilityRef.current = setAvatarVisibility;
 
       const scaleHighlightDisc = (selectedMesh: AbstractMesh) => {
         const scene = sceneRef.current;
@@ -508,17 +529,22 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           highlightDiscCircles.forEach(circle => circle.isVisible = isVisible);
         }
       };
+      // Store function reference for document click handler
+      toggleHighlightDiscRef.current = toggleHighlightDisc;
 
       const deselectItem = () => {
-        if (selectedMesh && !isDragging) {
-          selectedMesh = null;
-          isDragging = false;
+        if (selectedMeshRef.current && !isDraggingRef.current) {
+          selectedMeshRef.current = null;
+          isDraggingRef.current = false;
+          isRotatingByDiscRef.current = false;
           dragStartPoint = null;
           initialMeshPosition = null;
           setAvatarVisibility(true);
           toggleHighlightDisc(false);
         }
       };
+      // Store function reference for document click handler
+      deselectItemRef.current = deselectItem;
 
       // --- Pointer State ---
       let isAvatarVisible = true;
@@ -568,8 +594,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
             }
 
             // Reset both flags
-            isDragging = false;
-            isRotatingByDisc = false;
+            isDraggingRef.current = false;
+            isRotatingByDiscRef.current = false;
 
             // Item selection/drag
             if (pickResult?.hit && pickResult.pickedMesh?.metadata && pickResult.pickedMesh?.metadata.isFurniture) {
@@ -577,14 +603,14 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               while (currentMesh.parent && currentMesh.parent instanceof AbstractMesh) {
                 currentMesh = currentMesh.parent;
               }
-              selectedMesh = currentMesh;
-              console.log('selectedMesh', selectedMesh, 'children', selectedMesh.getChildren());
-              isDragging = true;
+              selectedMeshRef.current = currentMesh;
+              console.log('selectedMesh', selectedMeshRef.current, 'children', selectedMeshRef.current.getChildren());
+              isDraggingRef.current = true;
               dragStartPoint = pickResult.pickedPoint?.clone() || null;
-              initialMeshPosition = selectedMesh.position.clone();
-              scaleHighlightDisc(selectedMesh);
-              setHighlightDiscPosition(selectedMesh);
-              setHighlightDiscRotation(selectedMesh);
+              initialMeshPosition = selectedMeshRef.current.position.clone();
+              scaleHighlightDisc(selectedMeshRef.current);
+              setHighlightDiscPosition(selectedMeshRef.current);
+              setHighlightDiscRotation(selectedMeshRef.current);
               toggleHighlightDisc(true);
               setAvatarVisibility(false);
               camera.detachControl();
@@ -592,11 +618,11 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               camera.detachControl();
               // If it's a child circle, enable rotation mode
               if (pickResult.pickedMesh?.parent === highlightDiscRef.current) {
-                isRotatingByDisc = true;
+                isRotatingByDiscRef.current = true;
                 lastPointerX = scene.pointerX;
               }
             } else {
-              if (!isDragging && !isRotatingByDisc) {
+              if (!isDraggingRef.current && !isRotatingByDiscRef.current) {
                 deselectItem();
               }
             }
@@ -613,8 +639,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
           case PointerEventTypes.POINTERUP: {
             camera.attachControl(canvasRef.current!, true);
-            isDragging = false;
-            isRotatingByDisc = false;
+            isDraggingRef.current = false;
+            isRotatingByDiscRef.current = false;
             accumulatedRotation = 0;
             if (pointerInfo.event && pointerInfo.event.button === 2) {
               isRightMouseDownRef.current = false;
@@ -625,19 +651,19 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
           case PointerEventTypes.POINTERMOVE: {
             // Only one action at a time
-            if (isDragging && selectedMesh && dragStartPoint && initialMeshPosition && !isRotatingByDisc) {
+            if (isDraggingRef.current && selectedMeshRef.current && dragStartPoint && initialMeshPosition && !isRotatingByDiscRef.current) {
               const pickResult = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === ground);
               if (pickResult?.hit && pickResult.pickedPoint) {
                 const delta = pickResult.pickedPoint.subtract(dragStartPoint);
                 const newPosition = initialMeshPosition.add(delta);
-                newPosition.y = selectedMesh.position.y;
-                selectedMesh.position = newPosition;
-                setHighlightDiscPosition(selectedMesh);
+                newPosition.y = selectedMeshRef.current.position.y;
+                selectedMeshRef.current.position = newPosition;
+                setHighlightDiscPosition(selectedMeshRef.current);
               }
-            } else if (isRotatingByDisc && selectedMesh && !isDragging) {
+            } else if (isRotatingByDiscRef.current && selectedMeshRef.current && !isDraggingRef.current) {
               deltaX = scene.pointerX - lastPointerX;
               // Find the top-most parent
-              let topMost = selectedMesh;
+              let topMost = selectedMeshRef.current;
               while (topMost.parent && topMost.parent instanceof AbstractMesh) {
                 topMost = topMost.parent;
               }
@@ -709,6 +735,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
       canvasRef.current!.addEventListener('wheel', handleWheel, { passive: false });
 
+      document.addEventListener('click', handleDocumentClick);
+
       console.log('Scene setup complete, pointer observable added');
 
       setIsSceneReady(true);
@@ -726,6 +754,9 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         });
       }
       // }
+
+      // Remove document click listener
+      document.removeEventListener('click', handleDocumentClick);
 
       if (gizmoRef.current) {
         gizmoRef.current.dispose();
