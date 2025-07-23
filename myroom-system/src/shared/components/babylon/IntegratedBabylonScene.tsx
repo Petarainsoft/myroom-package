@@ -90,6 +90,10 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
   const [isSceneReady, setIsSceneReady] = useState(false);
 
+  // State for camera offset when UI panels are open
+  const [cameraOffset, setCameraOffset] = useState<Vector3 | undefined>(undefined);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+
   // Use avatar movement hook
   const {
     avatarMovementStateRef,
@@ -112,7 +116,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     currentAnimRef,
     allIdleAnimationsRef,
     allWalkAnimationsRef,
-    allCurrentAnimationsRef
+    allCurrentAnimationsRef,
+    cameraOffset
   });
 
   // Setup default camera target
@@ -208,9 +213,49 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   };
 
   // Function to reset both camera and avatar to initial positions
+  // Camera offset for UI panels (offset to the left when panels are open)
+  const PANEL_CAMERA_OFFSET = new Vector3(-2, 0, 0);
+  
+  // Handle avatar panel toggle with camera offset
+  const handleToggleAvatarOverlay = () => {
+    const newPanelState = !isPanelOpen;
+    setIsPanelOpen(newPanelState);
+    setCameraOffset(newPanelState ? PANEL_CAMERA_OFFSET : undefined);
+    
+    // Enable camera following when panel is opened
+    if (newPanelState && cameraFollowStateRef.current) {
+      cameraFollowStateRef.current.shouldFollowAvatar = true;
+    }
+    
+    // Call the original callback if provided
+    if (props.onToggleUIOverlay) {
+      props.onToggleUIOverlay();
+    }
+  };
+  
+  // Handle room panel toggle with camera offset
+  const handleToggleRoomOverlay = () => {
+    const newPanelState = !isPanelOpen;
+    setIsPanelOpen(newPanelState);
+    setCameraOffset(newPanelState ? PANEL_CAMERA_OFFSET : undefined);
+    
+    // Enable camera following when panel is opened
+    if (newPanelState && cameraFollowStateRef.current) {
+      cameraFollowStateRef.current.shouldFollowAvatar = true;
+    }
+    
+    // Call the original callback if provided
+    if (props.onToggleRoomPanel) {
+      props.onToggleRoomPanel();
+    }
+  };
+
   const resetAll = () => {
     resetCamera();
     resetAvatarMovement();
+    // Reset camera offset when resetting
+    setIsPanelOpen(false);
+    setCameraOffset(undefined);
   };
 
   useImperativeHandle(ref, () => ({
@@ -663,8 +708,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       <SceneControlButtons
         onReset={resetAll}
         onToggleFullscreen={props.onToggleFullscreen || (() => { })}
-        onToggleAvatarOverlay={props.onToggleUIOverlay || (() => { })}
-        onToggleRoomOverlay={props.onToggleRoomPanel || (() => { })}
+        onToggleAvatarOverlay={handleToggleAvatarOverlay}
+        onToggleRoomOverlay={handleToggleRoomOverlay}
         isFullscreen={isFullscreen}
       />
     </div>

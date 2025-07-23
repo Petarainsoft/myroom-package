@@ -18,6 +18,8 @@ interface UseAvatarMovementProps {
   // Configuration
   AVATAR_BOUNDARY_LIMIT?: number;
   CAMERA_TARGET_HEAD_OFFSET?: number;
+  // Camera offset for UI panels
+  cameraOffset?: Vector3;
 }
 
 export function useAvatarMovement({
@@ -33,7 +35,8 @@ export function useAvatarMovement({
   allWalkAnimationsRef,
   allCurrentAnimationsRef,
   AVATAR_BOUNDARY_LIMIT = 2.2,
-  CAMERA_TARGET_HEAD_OFFSET = 1
+  CAMERA_TARGET_HEAD_OFFSET = 1,
+  cameraOffset
 }: UseAvatarMovementProps) {
   // Avatar movement state
   const avatarMovementStateRef = useRef({
@@ -51,7 +54,7 @@ export function useAvatarMovement({
   // Camera follow state
   const cameraFollowStateRef = useRef({
     currentTarget: new Vector3(0, 1, 0),
-    dampingFactor: 0.1,
+    dampingFactor: 0.25,
     shouldFollowAvatar: false
   });
 
@@ -287,6 +290,12 @@ export function useAvatarMovement({
           if (cameraRef.current && cameraFollowStateRef.current.shouldFollowAvatar) {
             const headPosition = avatarRef.current.position.clone();
             headPosition.y += CAMERA_TARGET_HEAD_OFFSET;
+            
+            // Apply camera offset if provided (for UI panels)
+            if (cameraOffset) {
+              headPosition.addInPlace(cameraOffset);
+            }
+            
             cameraRef.current.setTarget(headPosition);
           }
         }
@@ -389,6 +398,11 @@ export function useAvatarMovement({
         const avatarHeadPosition = avatarRef.current.position.clone();
         avatarHeadPosition.y += CAMERA_TARGET_HEAD_OFFSET;
 
+        // Apply camera offset if provided (for UI panels)
+        if (cameraOffset) {
+          avatarHeadPosition.addInPlace(cameraOffset);
+        }
+
         // Lerp camera target with damping
         cameraFollowState.currentTarget = Vector3.Lerp(
           cameraFollowState.currentTarget,
@@ -408,7 +422,7 @@ export function useAvatarMovement({
         avatarMovementObserverRef.current = null;
       }
     };
-  }, [isSceneReady, touchMovement, sceneRef, avatarRef, cameraRef, AVATAR_BOUNDARY_LIMIT, CAMERA_TARGET_HEAD_OFFSET, idleAnimRef, walkAnimRef, currentAnimRef, allIdleAnimationsRef, allWalkAnimationsRef, allCurrentAnimationsRef]);
+  }, [isSceneReady, touchMovement, sceneRef, avatarRef, cameraRef, AVATAR_BOUNDARY_LIMIT, CAMERA_TARGET_HEAD_OFFSET, cameraOffset, idleAnimRef, walkAnimRef, currentAnimRef, allIdleAnimationsRef, allWalkAnimationsRef, allCurrentAnimationsRef]);
 
   return {
     // State refs
@@ -426,4 +440,4 @@ export function useAvatarMovement({
     AVATAR_BOUNDARY_LIMIT,
     CAMERA_TARGET_HEAD_OFFSET
   };
-} 
+}
