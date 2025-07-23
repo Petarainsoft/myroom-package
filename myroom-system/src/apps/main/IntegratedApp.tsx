@@ -506,6 +506,32 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     });
   };
 
+  const handleToggleFullscreen = () => {
+    const container = document.querySelector('.babylon-scene-container');
+
+    if (!container) return;
+
+    if (!document.fullscreenElement) {
+      // Enter fullscreen
+      if (container.requestFullscreen) {
+        container.requestFullscreen();
+      } else if ((container as any).webkitRequestFullscreen) {
+        (container as any).webkitRequestFullscreen();
+      } else if ((container as any).msRequestFullscreen) {
+        (container as any).msRequestFullscreen();
+      }
+    } else {
+      // Exit fullscreen
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      } else if ((document as any).msExitFullscreen) {
+        (document as any).msExitFullscreen();
+      }
+    }
+  };
+
   return (
     <div className="website-layout">
       {/* Website Header - Pure Web Content */}
@@ -580,6 +606,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     onItemTransformChange={handleItemTransformChange}
                     onToggleUIOverlay={handleToggleAvatarOverlay}
                     onToggleRoomPanel={handleToggleRoomOverlay}
+                    onToggleFullscreen={handleToggleFullscreen}
                   />
 
 

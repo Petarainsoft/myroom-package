@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useImperativeHandle, forwardRef, useCallback } from 'react';
+import { useRef, useEffect, useState, useImperativeHandle, forwardRef } from 'react';
 import {
   Engine,
   Scene,
@@ -6,16 +6,14 @@ import {
   Vector3,
   HemisphericLight, DirectionalLight,
   ShadowGenerator,
-  SceneLoader,
   TransformNode,
-  PointerEventTypes,
   Color3,
   UtilityLayerRenderer,
   PositionGizmo, RotationGizmo, ScaleGizmo,
   EasingFunction, CubicEase,
-  Color4, Matrix,
+  Color4,
   Animation,
-  Mesh, MeshBuilder, StandardMaterial, AbstractMesh, Quaternion, Axis
+  Mesh, MeshBuilder, StandardMaterial, AbstractMesh
 } from '@babylonjs/core';
 import '@babylonjs/loaders';
 
@@ -30,11 +28,11 @@ import { usePostProcessing } from '../../hooks/usePostProcessing';
 import { domainConfig } from '../../config/appConfig';
 
 import { LoadedItem } from '../../types/LoadedItem';
-import { ItemManipulationControls } from './ItemManipulationControls';
 import { useAvatarMovement } from './useAvatarMovement';
 import SceneControlButtons from './SceneControlButtons';
-// Import the new avatar loader hook
+// Import the avatar loader hook
 import { useAvatarLoader } from './useAvatarLoader';
+import { PointerManager } from './PointerManager';
 
 // Props cho component IntegratedBabylonScene
 interface IntegratedSceneProps {
@@ -52,6 +50,7 @@ interface IntegratedSceneProps {
   onItemTransformChange?: (itemId: string, transform: { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }) => void; // Callback when item transform changes
   onToggleUIOverlay?: () => void; // Callback to toggle UI overlay visibility
   onToggleRoomPanel?: () => void; // Callback to toggle room panel visibility
+  onToggleFullscreen?: () => void; // Callback to toggle fullscreen visibility
 }
 
 // Define externally exposed ref interface for the component
@@ -71,20 +70,15 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   const itemsRef = useRef<TransformNode | null>(null);
   const utilityLayerRef = useRef<UtilityLayerRenderer | null>(null);
   const gizmoRef = useRef<PositionGizmo | RotationGizmo | ScaleGizmo | null>(null);
-  const selectedItemRef = useRef<any>(null);
   const loadedItemMeshesRef = useRef<any[]>([]);
   const highlightDiscRef = useRef<Mesh | null>(null);
   const highlightCirclesRef = useRef<Mesh[] | null>(null);
   const shadowGeneratorRef = useRef<ShadowGenerator | null>(null);
-  const targetDiscRef = useRef<Mesh | null>(null);
+  const pointerManagerRef = useRef<PointerManager | null>(null);
   
   // Refs for scene state that needs to be accessed from document click handler
   const selectedMeshRef = useRef<AbstractMesh | null>(null);
-  const isDraggingRef = useRef<boolean>(false);
-  const isRotatingByDiscRef = useRef<boolean>(false);
-  const toggleHighlightDiscRef = useRef<((isVisible: boolean) => void) | null>(null);
-  const setAvatarVisibilityRef = useRef<((isVisible: boolean) => void) | null>(null);
-  const deselectItemRef = useRef<(() => void) | null>(null);
+
 
   // Animation-related refs
   const idleAnimRef = useRef<any>(null);
@@ -232,8 +226,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       // Check if the click is outside the canvas
       if (canvasRef.current && !canvasRef.current.contains(event.target as Node)) {
         // Call deselectItem to handle all deselection logic
-        if (deselectItemRef.current) {
-          deselectItemRef.current();
+        if (pointerManagerRef.current) {
+          pointerManagerRef.current.handleDeselectItem();
         }
       }
     };
@@ -407,350 +401,23 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
       // --- Boundary Constraints ---
       const GROUND_SIZE = 4.8; // Ground is 4.8x4.8
-      const GROUND_HALF_SIZE = GROUND_SIZE / 2;
       
-      const clampPositionToGround = (mesh: AbstractMesh, newPosition: Vector3): Vector3 => {
-        // Get the total bounding box including all children
-        const allMeshes = [mesh, ...mesh.getChildMeshes()];
-        let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
-        
-        // Calculate the combined bounding box of all meshes
-        allMeshes.forEach(childMesh => {
-          const boundingInfo = childMesh.getBoundingInfo();
-          // Use minimumWorld and maximumWorld directly as they are already in world space
-          const min = boundingInfo.boundingBox.minimumWorld;
-          const max = boundingInfo.boundingBox.maximumWorld;
-          
-          minX = Math.min(minX, min.x);
-          maxX = Math.max(maxX, max.x);
-          minZ = Math.min(minZ, min.z);
-          maxZ = Math.max(maxZ, max.z);
-        });
-        
-        // Calculate object size relative to its center position
-        const currentCenterX = mesh.position.x;
-        const currentCenterZ = mesh.position.z;
-        
-        const objectHalfSizeX = Math.max(Math.abs(maxX - currentCenterX), Math.abs(minX - currentCenterX));
-        const objectHalfSizeZ = Math.max(Math.abs(maxZ - currentCenterZ), Math.abs(minZ - currentCenterZ));
-        
-        // Calculate the effective boundaries
-        const boundaryMinX = -GROUND_HALF_SIZE + objectHalfSizeX;
-        const boundaryMaxX = GROUND_HALF_SIZE - objectHalfSizeX;
-        const boundaryMinZ = -GROUND_HALF_SIZE + objectHalfSizeZ;
-        const boundaryMaxZ = GROUND_HALF_SIZE - objectHalfSizeZ;
-        
-        // Clamp the position within boundaries
-        const clampedPosition = newPosition.clone();
-        clampedPosition.x = Math.max(boundaryMinX, Math.min(boundaryMaxX, newPosition.x));
-        clampedPosition.z = Math.max(boundaryMinZ, Math.min(boundaryMaxZ, newPosition.z));
-        
-        return clampedPosition;
-      };
-
-      // --- Pointer Event Helpers ---
-      const setAvatarVisibility = (isVisible: boolean) => {
-        if (avatarRef.current) {
-          isAvatarVisible = isVisible;
-          avatarRef.current.getChildMeshes().forEach((mesh) => {
-            mesh.isVisible = isVisible;
-          });
-        }
-      };
-      // Store function reference for document click handler
-      setAvatarVisibilityRef.current = setAvatarVisibility;
-
-      const scaleHighlightDisc = (selectedMesh: AbstractMesh) => {
-        const scene = sceneRef.current;
-        if (!scene) return;
-        // --- FIX: Compute bounding box from all child meshes, using local size and world scale only ---
-        const childMeshes = selectedMesh.getChildMeshes ? selectedMesh.getChildMeshes() : [];
-        let maxFootprint = 0;
-        let margin = 0.65; // or 1.15 if you want a bit larger
-        if (childMeshes.length > 0) {
-          childMeshes.forEach(mesh => {
-            const b = mesh.getBoundingInfo().boundingBox;
-            const min = b.minimum;
-            const max = b.maximum;
-            // Local size
-            const sizeX = Math.abs(max.x - min.x);
-            const sizeY = Math.abs(max.y - min.y);
-            // Get world scaling (ignoring rotation)
-            let scaling = new Vector3(1, 1, 1);
-            mesh.getWorldMatrix().decompose(scaling, undefined, undefined);
-            // Scaled size in world
-            const scaledX = sizeX * Math.abs(scaling.x);
-            const scaledY = sizeY * Math.abs(scaling.y);
-            const localFootprint = Math.max(scaledX, scaledY);
-            if (localFootprint > maxFootprint) maxFootprint = localFootprint;
-          });
-        } else {
-          // fallback: use selectedMesh's own bounding box
-          const b = selectedMesh.getBoundingInfo().boundingBox;
-          const min = b.minimum;
-          const max = b.maximum;
-          const sizeX = Math.abs(max.x - min.x);
-          const sizeY = Math.abs(max.y - min.y);
-          let scaling = new Vector3(1, 1, 1);
-          selectedMesh.getWorldMatrix().decompose(scaling, undefined, undefined);
-          const scaledX = sizeX * Math.abs(scaling.x);
-          const scaledY = sizeY * Math.abs(scaling.y);
-          maxFootprint = Math.max(scaledX, scaledY);
-        }
-        const meshRadius = maxFootprint * margin
-        if (highlightDiscRef.current) {
-          // Save children (small green circles)
-          const children = highlightDiscRef.current.getChildren();
-          // Save material and rotation
-          const oldMaterial = highlightDiscRef.current.material;
-          const oldRotation = highlightDiscRef.current.rotation.clone();
-          const oldIsVisible = highlightDiscRef.current.isVisible;
-          // Remove children from parent (so they aren't disposed)
-          children.forEach(child => child.parent = null);
-          highlightDiscRef.current.dispose();
-          // Create new disc
-          const newDisc = MeshBuilder.CreateDisc(
-            'highlightDisc',
-            { radius: meshRadius, tessellation: 64 },
-            scene
-          );
-          newDisc.rotation = oldRotation;
-          newDisc.isVisible = oldIsVisible;
-          newDisc.material = oldMaterial;
-          // Re-parent children
-          children.forEach(child => child.parent = newDisc);
-          highlightDiscRef.current = newDisc;
-
-          // Update small green circles' positions to match new radius
-          if (highlightCirclesRef.current) {
-            const angles = [0, Math.PI / 2, Math.PI, 3 * Math.PI / 2];
-            highlightCirclesRef.current.forEach((circle, i) => {
-              const x = meshRadius * Math.cos(angles[i]);
-              const y = meshRadius * Math.sin(angles[i]);
-              circle.position.x = x;
-              circle.position.y = y;
-              // Z stays at -0.01 (slightly above ground)
-            });
-          }
-        }
-      };
-
-      const setHighlightDiscPosition = (selectedMesh: AbstractMesh) => {
-        if (highlightDiscRef.current) {
-          highlightDiscRef.current.position.copyFrom(selectedMesh.getAbsolutePosition());
-          highlightDiscRef.current.position.y += 0.02;
-        }
-      };
-
-      const setHighlightDiscRotation = (selectedMesh: AbstractMesh) => {
-        if (highlightDiscRef.current) {
-          let topMost = selectedMesh;
-          while (topMost.parent && topMost.parent instanceof AbstractMesh) {
-            topMost = topMost.parent;
-          }
-          if (topMost.rotationQuaternion) {
-            const euler = topMost.rotationQuaternion.toEulerAngles();
-            highlightDiscRef.current.rotation.y = euler.y;
-          } else {
-            highlightDiscRef.current.rotation.y = topMost.rotation.y;
-          }
-        }
-      };
-
-      const toggleHighlightDisc = (isVisible: boolean) => {
-        if (highlightDiscRef.current) {
-          highlightDiscRef.current.isVisible = isVisible;
-          highlightDiscCircles.forEach(circle => circle.isVisible = isVisible);
-        }
-      };
-      // Store function reference for document click handler
-      toggleHighlightDiscRef.current = toggleHighlightDisc;
-
-      const deselectItem = () => {
-        if (selectedMeshRef.current && !isDraggingRef.current) {
-          selectedMeshRef.current = null;
-          isDraggingRef.current = false;
-          isRotatingByDiscRef.current = false;
-          dragStartPoint = null;
-          initialMeshPosition = null;
-          setAvatarVisibility(true);
-          toggleHighlightDisc(false);
-        }
-      };
-      // Store function reference for document click handler
-      deselectItemRef.current = deselectItem;
-
-      // --- Pointer State ---
-      let isAvatarVisible = true;
-      let selectedMesh: AbstractMesh | null = null;
-      let isDragging = false;
-      let dragStartPoint: Vector3 | null = null;
-      let initialMeshPosition: Vector3 | null = null;
-      let lastClickTime = 0;
-      const doubleClickThreshold = 300;
-      // For disc child drag-rotate
-      let isRotatingByDisc = false;
-      let lastPointerX = 0;
-      let deltaX = 0;
-      const rotationSpeed = 0.02;
-      const SNAP_STEP_RAD = Math.PI / 12; // 15 degrees in radians
-      let accumulatedRotation = 0;
-
-      // --- Unified Pointer Observable ---
-      scene.onPointerObservable.add((pointerInfo) => {
-        switch (pointerInfo.type) {
-          case PointerEventTypes.POINTERDOWN: {
-            const currentTime = new Date().getTime();
-            const isDoubleClick = (currentTime - lastClickTime) < doubleClickThreshold;
-            lastClickTime = currentTime;
-
-            const pickResult = scene.pick(scene.pointerX, scene.pointerY);
-
-            // Double click: move avatar
-            if (isDoubleClick && avatarRef.current && isAvatarVisible) {
-              const ray = scene.createPickingRay(
-                scene.pointerX,
-                scene.pointerY,
-                Matrix.Identity(),
-                camera
-              );
-              const planeNormal = new Vector3(0, 1, 0);
-              const planePoint = new Vector3(0, 0, 0);
-              const denominator = Vector3.Dot(ray.direction, planeNormal);
-              if (Math.abs(denominator) > 0.0001) {
-                const t = Vector3.Dot(planePoint.subtract(ray.origin), planeNormal) / denominator;
-                if (t >= 0) {
-                  const intersectionPoint = ray.origin.add(ray.direction.scale(t));
-                  moveAvatarToPosition(intersectionPoint, targetDisc);
-                }
-              }
-              return;
-            }
-
-            // Reset both flags
-            isDraggingRef.current = false;
-            isRotatingByDiscRef.current = false;
-
-            // Item selection/drag
-            if (pickResult?.hit && pickResult.pickedMesh?.metadata && pickResult.pickedMesh?.metadata.isFurniture) {
-              let currentMesh = pickResult.pickedMesh;
-              while (currentMesh.parent && currentMesh.parent instanceof AbstractMesh) {
-                currentMesh = currentMesh.parent;
-              }
-              selectedMeshRef.current = currentMesh;
-              console.log('selectedMesh', selectedMeshRef.current, 'children', selectedMeshRef.current.getChildren());
-              isDraggingRef.current = true;
-              dragStartPoint = pickResult.pickedPoint?.clone() || null;
-              initialMeshPosition = selectedMeshRef.current.position.clone();
-              scaleHighlightDisc(selectedMeshRef.current);
-              setHighlightDiscPosition(selectedMeshRef.current);
-              setHighlightDiscRotation(selectedMeshRef.current);
-              toggleHighlightDisc(true);
-              setAvatarVisibility(false);
-              camera.detachControl();
-            } else if (pickResult?.hit && ((highlightDiscRef.current && pickResult.pickedMesh === highlightDiscRef.current) || (pickResult.pickedMesh?.parent === highlightDiscRef.current))) {
-              camera.detachControl();
-              // If it's a child circle, enable rotation mode
-              if (pickResult.pickedMesh?.parent === highlightDiscRef.current) {
-                isRotatingByDiscRef.current = true;
-                lastPointerX = scene.pointerX;
-              }
-            } else {
-              if (!isDraggingRef.current && !isRotatingByDiscRef.current) {
-                deselectItem();
-              }
-            }
-
-            // Camera follow/cursor state
-            if (pointerInfo.event && pointerInfo.event.button === 2) {
-              isRightMouseDownRef.current = true;
-            }
-            if (pointerInfo.event && pointerInfo.event.button === 0) {
-              cameraFollowStateRef.current.shouldFollowAvatar = true;
-            }
-            break;
-          }
-
-          case PointerEventTypes.POINTERUP: {
-            camera.attachControl(canvasRef.current!, true);
-            isDraggingRef.current = false;
-            isRotatingByDiscRef.current = false;
-            accumulatedRotation = 0;
-            if (pointerInfo.event && pointerInfo.event.button === 2) {
-              isRightMouseDownRef.current = false;
-              cameraFollowStateRef.current.shouldFollowAvatar = true;
-            }
-            break;
-          }
-
-          case PointerEventTypes.POINTERMOVE: {
-            // Only one action at a time
-            if (isDraggingRef.current && selectedMeshRef.current && dragStartPoint && initialMeshPosition && !isRotatingByDiscRef.current) {
-              const pickResult = scene.pick(scene.pointerX, scene.pointerY);
-              if (pickResult?.hit && pickResult.pickedPoint) {
-                const delta = pickResult.pickedPoint.subtract(dragStartPoint);
-                const newPosition = initialMeshPosition.add(delta);
-                newPosition.y = selectedMeshRef.current.position.y;
-                
-                // Clamp position to keep object within ground boundaries
-                const clampedPosition = clampPositionToGround(selectedMeshRef.current, newPosition);
-                selectedMeshRef.current.position = clampedPosition;
-                setHighlightDiscPosition(selectedMeshRef.current);
-              }
-            } else if (isRotatingByDiscRef.current && selectedMeshRef.current && !isDraggingRef.current) {
-              deltaX = scene.pointerX - lastPointerX;
-              // Find the top-most parent
-              let topMost = selectedMeshRef.current;
-              while (topMost.parent && topMost.parent instanceof AbstractMesh) {
-                topMost = topMost.parent;
-              }
-              // Accumulate rotation
-              let rotationDelta = -deltaX * rotationSpeed;
-              accumulatedRotation += rotationDelta;
-              // Snap to nearest 15-degree step
-              if (Math.abs(accumulatedRotation) >= SNAP_STEP_RAD) {
-                const steps = Math.floor(accumulatedRotation / SNAP_STEP_RAD);
-                const snappedDelta = steps * SNAP_STEP_RAD;
-                if (topMost.rotationQuaternion) {
-                  topMost.rotationQuaternion = topMost.rotationQuaternion.multiply(Quaternion.RotationAxis(Axis.Y, snappedDelta));
-                } else {
-                  topMost.rotation.y += snappedDelta;
-                }
-                accumulatedRotation -= snappedDelta;
-                // Synchronize highlight disc rotation
-                if (highlightDiscRef.current) {
-                  if (topMost.rotationQuaternion) {
-                    const euler = topMost.rotationQuaternion.toEulerAngles();
-                    highlightDiscRef.current.rotation.y = euler.y;
-                  } else {
-                    highlightDiscRef.current.rotation.y = topMost.rotation.y;
-                  }
-                }
-              }
-              lastPointerX = scene.pointerX;
-            }
-
-            // Cursor feedback
-            const pickInfo = scene.pick(scene.pointerX, scene.pointerY);
-            if (pickInfo?.hit && pickInfo.pickedMesh) {
-              const isItem = loadedItemMeshesRef.current.some((itemContainer) => {
-                let currentParent = pickInfo.pickedMesh?.parent;
-                while (currentParent) {
-                  if (currentParent === itemContainer) return true;
-                  currentParent = currentParent.parent;
-                }
-                return false;
-              });
-              canvasRef.current!.style.cursor = isItem ? 'pointer' : 'default';
-            } else {
-              canvasRef.current!.style.cursor = 'default';
-            }
-            break;
-          }
-
-          default:
-            break;
-        }
+      // --- Initialize Pointer Manager ---
+      pointerManagerRef.current = new PointerManager({
+        scene,
+        camera,
+        avatarRef,
+        selectedMeshRef,
+        highlightDiscRef,
+        highlightDiscCircles,
+        highlightCirclesRef,
+        canvasRef,
+        targetDisc,
+        moveAvatarToPosition,
+        onSelectItem: props.onSelectItem,
+        cameraFollowStateRef,
+        isRightMouseDownRef,
+        groundSize: GROUND_SIZE
       });
 
       // Start render loop
@@ -800,6 +467,10 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       }
       if (utilityLayerRef.current) {
         utilityLayerRef.current.dispose();
+      }
+      if (pointerManagerRef.current) {
+        pointerManagerRef.current.dispose();
+        pointerManagerRef.current = null;
       }
       if (engineRef.current) {
         engineRef.current.dispose();
@@ -867,31 +538,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const toggleFullscreen = () => {
-    const container = document.querySelector('.babylon-scene-container');
-
-    if (!container) return;
-
-    if (!document.fullscreenElement) {
-      // Enter fullscreen
-      if (container.requestFullscreen) {
-        container.requestFullscreen();
-      } else if ((container as any).webkitRequestFullscreen) {
-        (container as any).webkitRequestFullscreen();
-      } else if ((container as any).msRequestFullscreen) {
-        (container as any).msRequestFullscreen();
-      }
-    } else {
-      // Exit fullscreen
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if ((document as any).webkitExitFullscreen) {
-        (document as any).webkitExitFullscreen();
-      } else if ((document as any).msExitFullscreen) {
-        (document as any).msExitFullscreen();
-      }
-    }
-  };
+  
 
   // Listen for fullscreen change events
   useEffect(() => {
@@ -1015,17 +662,11 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       />
       <SceneControlButtons
         onReset={resetAll}
-        onToggleFullscreen={() => { }}
+        onToggleFullscreen={props.onToggleFullscreen || (() => { })}
         onToggleAvatarOverlay={props.onToggleUIOverlay || (() => { })}
         onToggleRoomOverlay={props.onToggleRoomPanel || (() => { })}
         isFullscreen={isFullscreen}
       />
-      {props.selectedItem && (
-        <ItemManipulationControls
-          gizmoMode={props.gizmoMode}
-          onGizmoModeChange={props.onGizmoModeChange}
-        />
-      )}
     </div>
   );
 });

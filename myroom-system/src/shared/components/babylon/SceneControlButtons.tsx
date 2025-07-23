@@ -10,7 +10,7 @@ interface SceneControlButtonsProps {
 
 const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
   onReset,
-  onToggleFullscreen,
+  onToggleFullscreen: onToggleFullscreen,
   onToggleAvatarOverlay: onToggleAvatarOverlay,
   onToggleRoomOverlay: onToggleRoomOverlay,
   isFullscreen,
