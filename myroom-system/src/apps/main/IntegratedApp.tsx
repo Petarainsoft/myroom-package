@@ -6,7 +6,6 @@ import { AvatarConfig, AvailableParts, Gender } from '../../shared/types/AvatarT
 import { ActiveMovement, TouchMovement } from '../../shared/types/AvatarTypes';
 import { domainConfig, getEmbedUrl, getWebComponentUrl } from '../../shared/config/appConfig';
 import './App.css';
-import './IntegratedApp.css';
 
 type AppMode = 'room' | 'avatar' | 'integrated';
 
@@ -457,17 +456,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     if (!selectedCategory) return;
     const selectedItemToAdd = selectedItemPerCategory[selectedCategory];
     if (!selectedItemToAdd) return;
-    // Constrain position within 4x4 area centered at (0,0,0)
-    // Random position between -2 and 2 for both X and Z
-    const randomX = Math.random() * 4 - 2;
-    const randomZ = Math.random() * 4 - 2;
-    const constrainedX = Math.max(-2, Math.min(2, randomX));
-    const constrainedZ = Math.max(-2, Math.min(2, randomZ));
     const newItem: LoadedItem = {
       id: `item_${Date.now()}` ,
       name: selectedItemToAdd.name,
       path: selectedItemToAdd.path,
-      position: { x: constrainedX, y: 0, z: constrainedZ },
+      position: { x: 0, y: 0, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
       scale: { x: 1, y: 1, z: 1 },
       resourcePath: selectedItemToAdd.resourcePath
@@ -739,68 +732,135 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       <div className="section-header">
                         <h3>🪑 Categories</h3>
                       </div>
-                      {/* Category List */}
-                      <div className="item-categories" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                        {categories.map(category => (
-                          <button
-                            key={category}
-                            className={`item-category-btn${selectedCategory === category ? ' selected' : ''}`}
-                            style={{
-                              padding: '5px 14px 8px',
-                              borderRadius: 12,
-                              border: '1px solid #d9d9d9',
-                              background: selectedCategory === category ? '#1890ff' : '#fff',
-                              color: selectedCategory === category ? '#fff' : '#333',
-                              cursor: 'pointer',
-                              fontWeight: 500,
-                              fontSize: 14,
-                              transition: 'all 0.2s',
-                              marginBottom: 2
-                            }}
-                            onClick={() => setSelectedCategory(category)}
-                          >
-                            {category}
-                          </button>
-                        ))}
-                      </div>
-                      {/* Item List for selected category */}
-                      {selectedCategory && (
-                        <div className="item-selector" style={{ marginBottom: 12 }}>
-                          <div className="item-list-buttons" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                            {filteredItems.map((item) => (
-                              <button
-                                key={item.path}
-                                type="button"
-                                className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.path === item.path ? ' selected' : ''}`}
-                                style={{
-                                  padding: '8px 12px',
-                                  borderRadius: 6,
-                                  border: selectedItemPerCategory[selectedCategory]?.path === item.path ? '2px solid #1890ff' : '1px solid #d9d9d9',
-                                  background: selectedItemPerCategory[selectedCategory]?.path === item.path ? '#e6f7ff' : '#fff',
-                                  color: '#333',
-                                  textAlign: 'left',
-                                  fontWeight: 400,
-                                  fontSize: 14,
-                                  cursor: 'pointer',
-                                  outline: 'none',
-                                  transition: 'all 0.2s',
-                                  marginBottom: 2
-                                }}
-                                onClick={() => {
-                                  setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: item }));
-                                }}
-                              >
-                                {item.name}
-                              </button>
-                            ))}
-                          </div>
+                  {/* Single-panel toggle: show either category or items panel */}
+                  <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                    {/* Show Category Panel if no category is selected */}
+                    {!selectedCategory && (
+                      <div style={{ minWidth: 140, flex: '0 0 220px' }}>
+                        <div className="item-categories" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
+                          {categories.map(category => (
+                            <button
+                              key={category}
+                              className={`item-category-btn`}
+                              style={{
+                                padding: '8px 14px',
+                                borderRadius: 6,
+                                border: '1px solid #d9d9d9',
+                                background: '#fff',
+                                color: '#333',
+                                cursor: 'pointer',
+                                fontWeight: 500,
+                                fontSize: 13,
+                                transition: 'all 0.2s',
+                                outline: 'none',
+                                width: 105,
+                                maxWidth: 110,
+                                boxSizing: 'border-box',
+                                textOverflow: 'ellipsis',
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
+                              }}
+                              onClick={() => setSelectedCategory(category)}
+                            >
+                              {category}
+                            </button>
+                          ))}
                         </div>
-                      )}
-                      <div className="item-actions">
-                        <button onClick={handleAddItem} className="add-item-btn" disabled={!selectedCategory || !selectedItemPerCategory[selectedCategory]}>
+                      </div>
+                    )}
+
+                    {/* Show Items Panel if a category is selected */}
+                    {selectedCategory && (
+                      <div
+                        style={{
+                          minWidth: 220,
+                          flex: '0 0 220px',
+                          background: '#fafbfc',
+                          padding: 12,
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: 10,
+                        }}
+                      >
+                        {/* Back button */}
+                        <button
+                          onClick={() => setSelectedCategory(null)}
+                          style={{
+                            alignSelf: 'flex-start',
+                            marginBottom: 8,
+                            background: 'none',
+                            border: 'none',
+                            color: '#1890ff',
+                            fontSize: 18,
+                            fontWeight: 500,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 4,
+                            padding: 0,
+                          }}
+                        >
+                          <span style={{ fontSize: 20, marginRight: 4 }}>←</span> Back
+                        </button>
+                        <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 16 }}>
+                          {selectedCategory}
+                        </div>
+                        <div className="item-list-buttons" style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 }}>
+                          {filteredItems.map((item) => (
+                            <button
+                              key={item.path}
+                              type="button"
+                              className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.path === item.path ? ' selected' : ''}`}
+                              style={{
+                                padding: '8px 12px',
+                                borderRadius: 6,
+                                border: selectedItemPerCategory[selectedCategory]?.path === item.path ? '2px solid #1890ff' : '1px solid #d9d9d9',
+                                background: selectedItemPerCategory[selectedCategory]?.path === item.path ? '#e6f7ff' : '#fff',
+                                color: '#333',
+                                textAlign: 'left',
+                                fontWeight: 400,
+                                fontSize: 14,
+                                cursor: 'pointer',
+                                outline: 'none',
+                                transition: 'all 0.2s',
+                                marginBottom: 2
+                              }}
+                              onClick={() => {
+                                setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: item }));
+                              }}
+                            >
+                              {item.name}
+                            </button>
+                          ))}
+                        </div>
+                        <button
+                          onClick={handleAddItem}
+                          className="add-item-btn"
+                          disabled={!selectedCategory || !selectedItemPerCategory[selectedCategory]}
+                          style={{
+                            marginTop: 8,
+                            padding: '8px 16px',
+                            borderRadius: 6,
+                            background: '#1890ff',
+                            color: '#fff',
+                            border: 'none',
+                            fontWeight: 500,
+                            fontSize: 15,
+                            cursor: !selectedCategory || !selectedItemPerCategory[selectedCategory] ? 'not-allowed' : 'pointer',
+                            opacity: !selectedCategory || !selectedItemPerCategory[selectedCategory] ? 0.6 : 1,
+                            transition: 'all 0.2s',
+                          }}
+                        >
                           ➕ Add Item
                         </button>
                       </div>
+                    )}
+                  </div>
+                      {/* <div className="item-actions">
+                        <button onClick={handleAddItem} className="add-item-btn" disabled={!selectedCategory || !selectedItemPerCategory[selectedCategory]}>
+                          ➕ Add Item
+                        </button>
+                      </div> */}
                       <div className="loaded-items-list">
                         <hr />
                         <h4>Items in Room ({loadedItems.length}):</h4>
