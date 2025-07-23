@@ -405,14 +405,48 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       const utilityLayer = new UtilityLayerRenderer(scene);
       utilityLayerRef.current = utilityLayer;
 
-      // // Ground
-      let ground = MeshBuilder.CreateBox("ground", {
-        width: 4.5,
-        depth: 4.5,
-        height: 0.09
-      }, scene);
-      ground.position.y = -0.1 / 2;
-      ground.receiveShadows = true;
+      // --- Boundary Constraints ---
+      const GROUND_SIZE = 4.8; // Ground is 4.8x4.8
+      const GROUND_HALF_SIZE = GROUND_SIZE / 2;
+      
+      const clampPositionToGround = (mesh: AbstractMesh, newPosition: Vector3): Vector3 => {
+        // Get the total bounding box including all children
+        const allMeshes = [mesh, ...mesh.getChildMeshes()];
+        let minX = Infinity, maxX = -Infinity, minZ = Infinity, maxZ = -Infinity;
+        
+        // Calculate the combined bounding box of all meshes
+        allMeshes.forEach(childMesh => {
+          const boundingInfo = childMesh.getBoundingInfo();
+          // Use minimumWorld and maximumWorld directly as they are already in world space
+          const min = boundingInfo.boundingBox.minimumWorld;
+          const max = boundingInfo.boundingBox.maximumWorld;
+          
+          minX = Math.min(minX, min.x);
+          maxX = Math.max(maxX, max.x);
+          minZ = Math.min(minZ, min.z);
+          maxZ = Math.max(maxZ, max.z);
+        });
+        
+        // Calculate object size relative to its center position
+        const currentCenterX = mesh.position.x;
+        const currentCenterZ = mesh.position.z;
+        
+        const objectHalfSizeX = Math.max(Math.abs(maxX - currentCenterX), Math.abs(minX - currentCenterX));
+        const objectHalfSizeZ = Math.max(Math.abs(maxZ - currentCenterZ), Math.abs(minZ - currentCenterZ));
+        
+        // Calculate the effective boundaries
+        const boundaryMinX = -GROUND_HALF_SIZE + objectHalfSizeX;
+        const boundaryMaxX = GROUND_HALF_SIZE - objectHalfSizeX;
+        const boundaryMinZ = -GROUND_HALF_SIZE + objectHalfSizeZ;
+        const boundaryMaxZ = GROUND_HALF_SIZE - objectHalfSizeZ;
+        
+        // Clamp the position within boundaries
+        const clampedPosition = newPosition.clone();
+        clampedPosition.x = Math.max(boundaryMinX, Math.min(boundaryMaxX, newPosition.x));
+        clampedPosition.z = Math.max(boundaryMinZ, Math.min(boundaryMaxZ, newPosition.z));
+        
+        return clampedPosition;
+      };
 
       // --- Pointer Event Helpers ---
       const setAvatarVisibility = (isVisible: boolean) => {
@@ -652,12 +686,15 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
           case PointerEventTypes.POINTERMOVE: {
             // Only one action at a time
             if (isDraggingRef.current && selectedMeshRef.current && dragStartPoint && initialMeshPosition && !isRotatingByDiscRef.current) {
-              const pickResult = scene.pick(scene.pointerX, scene.pointerY, (mesh) => mesh === ground);
+              const pickResult = scene.pick(scene.pointerX, scene.pointerY);
               if (pickResult?.hit && pickResult.pickedPoint) {
                 const delta = pickResult.pickedPoint.subtract(dragStartPoint);
                 const newPosition = initialMeshPosition.add(delta);
                 newPosition.y = selectedMeshRef.current.position.y;
-                selectedMeshRef.current.position = newPosition;
+                
+                // Clamp position to keep object within ground boundaries
+                const clampedPosition = clampPositionToGround(selectedMeshRef.current, newPosition);
+                selectedMeshRef.current.position = clampedPosition;
                 setHighlightDiscPosition(selectedMeshRef.current);
               }
             } else if (isRotatingByDiscRef.current && selectedMeshRef.current && !isDraggingRef.current) {

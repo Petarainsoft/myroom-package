@@ -26,27 +26,34 @@ export const useItemLoader = ({
 
     const loadItems = async () => {
       try {
-        // Clear existing items properly
-        if (loadedItemMeshesRef.current.length > 0) {
-          loadedItemMeshesRef.current.forEach(container => {
-            if (container && container.dispose) {
-              container.dispose();
-            }
-          });
-          loadedItemMeshesRef.current = [];
-        }
+        // Get currently loaded item IDs
+        const currentItemIds = new Set(
+          loadedItemMeshesRef.current.map(container => container.name)
+        );
 
-        // Also clear any remaining child meshes
-        if (itemsRef.current) {
-          itemsRef.current.getChildMeshes().forEach(mesh => {
-            if (mesh && mesh.dispose) {
-              mesh.dispose();
-            }
-          });
-        }
+        // Find items that need to be loaded (new items only)
+        const itemsToLoad = loadedItems.filter(item => !currentItemIds.has(item.id));
+        
+        // Find items that need to be removed (no longer in loadedItems)
+        const newItemIds = new Set(loadedItems.map(item => item.id));
+        const containersToRemove = loadedItemMeshesRef.current.filter(
+          container => !newItemIds.has(container.name)
+        );
 
-        // Load new items
-        for (const item of loadedItems) {
+        // Remove items that are no longer needed
+        containersToRemove.forEach(container => {
+          if (container && container.dispose) {
+            container.dispose();
+          }
+        });
+        
+        // Update the tracking array to remove disposed containers
+        loadedItemMeshesRef.current = loadedItemMeshesRef.current.filter(
+          container => newItemIds.has(container.name)
+        );
+
+        // Load only new items
+        for (const item of itemsToLoad) {
           // Validate item has required properties
           if (!item || !item.path || typeof item.path !== 'string') {
             console.warn('Skipping invalid item:', item);
@@ -111,7 +118,7 @@ export const useItemLoader = ({
           loadedItemMeshesRef.current.push(itemContainer);
         }
 
-        console.log(`Loaded ${loadedItems.length} items`);
+        console.log(`Loaded ${itemsToLoad.length} new items (${loadedItemMeshesRef.current.length} total items)`);
       } catch (error) {
         console.error('Error loading items:', error);
       }
