@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { SceneLoader, TransformNode, Scene, Vector3, ShadowGenerator } from '@babylonjs/core';
 import { LoadedItem } from '../../types/LoadedItem';
-import { domainConfig } from '../../config/appConfig';
+import { domainConfig, DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig';
 
 interface ItemLoaderProps {
   scene: Scene | null;
@@ -26,10 +26,21 @@ export const useItemLoader = ({
 
     const loadItems = async () => {
       try {
-        // Get currently loaded item IDs
-        const currentItemIds = new Set(
-          loadedItemMeshesRef.current.map(container => container.name)
-        );
+        // Check if local GLB loading is disabled
+        if (DISABLE_LOCAL_GLB_LOADING) {
+          console.warn('⚠️ [ItemLoader] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
+          // throw new Error('Local GLB item loading is temporarily disabled');
+        }
+        
+        // Clear existing items properly
+        if (loadedItemMeshesRef.current.length > 0) {
+          loadedItemMeshesRef.current.forEach(container => {
+            if (container && container.dispose) {
+              container.dispose();
+            }
+          });
+          loadedItemMeshesRef.current = [];
+        }
 
         // Find items that need to be loaded (new items only)
         const itemsToLoad = loadedItems.filter(item => !currentItemIds.has(item.id));
@@ -55,27 +66,50 @@ export const useItemLoader = ({
         // Load only new items
         for (const item of itemsToLoad) {
           // Validate item has required properties
-          if (!item || !item.path || typeof item.path !== 'string') {
-            console.warn('Skipping invalid item:', item);
+          if (!item || (!item.resourceId && !item.path)) {
+            console.warn('Skipping invalid item (missing resourceId and path):', item);
             continue;
           }
 
           let fullItemUrl: string;
-          if (item.resourcePath) {
-            // Call API to get S3 path
-            const apiUrl = `${domainConfig.backendDomain}/api/customer/item/${item.resourcePath}`;
-            const response = await fetch(apiUrl, {
-              headers: {
-                'Authorization': `Bearer ${domainConfig.apiKey}`
+          
+          // Check if useResourceId is enabled and use resourceId
+          if (domainConfig.useResourceId && item.resourceId && domainConfig.backendDomain && domainConfig.apiKey) {
+            try {
+              // Call API to get download URL using resourceId
+              const apiUrl = `${domainConfig.backendDomain}/api/customer/items/${item.resourceId}/download`;
+              console.log('🪑 Loading item from BACKEND:', { itemName: item.name, resourceId: item.resourceId, apiUrl });
+              const response = await fetch(apiUrl, {
+                headers: {
+                  'x-api-key': domainConfig.apiKey
+                }
+              });
+              if (response.ok) {
+                const data = await response.json();
+                fullItemUrl = data.presignedUrl; // Use presignedUrl from API response
+                console.log('🪑 Backend item URL obtained:', { itemName: item.name, url: fullItemUrl });
+              } else {
+                throw new Error(`API call failed: ${response.status}`);
               }
-            });
-            if (!response.ok) {
-              throw new Error(`API call failed: ${response.status}`);
+            } catch (error) {
+              console.warn('Failed to fetch item from backend, falling back to local path:', error);
+              // Fallback to path if available
+              if (item.path) {
+                fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+                console.log('🪑 Fallback to BASE DOMAIN:', { itemName: item.name, url: fullItemUrl });
+              } else {
+                console.error('No fallback path available for item:', item);
+                continue;
+              }
             }
-            const data = await response.json();
-            fullItemUrl = data.path; // Assuming the API returns { path: 's3url' }
-          } else {
+          } else if (item.path) {
+            if (DISABLE_LOCAL_GLB_LOADING) { continue;}
+            // Use old method (local path)
             fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+            console.log('🪑 Loading item from BASE DOMAIN:', { itemName: item.name, itemPath: item.path, finalUrl: fullItemUrl });
+          } else {
+            console.warn('Skipping item without resourceId or path:', item);
+            continue;
           }
 
           const result = await SceneLoader.ImportMeshAsync(

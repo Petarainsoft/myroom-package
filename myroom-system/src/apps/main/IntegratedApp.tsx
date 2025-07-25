@@ -5,8 +5,8 @@ import { getDefaultConfigForGender, availablePartsData } from '../../shared/data
 import { AvatarConfig, AvailableParts, Gender } from '../../shared/types/AvatarTypes';
 import { ActiveMovement, TouchMovement } from '../../shared/types/AvatarTypes';
 import { domainConfig, getEmbedUrl, getWebComponentUrl } from '../../shared/config/appConfig';
+import { manifestService } from '../../shared/services/ManifestService';
 import './App.css';
-import './IntegratedApp.css';
 
 type AppMode = 'room' | 'avatar' | 'integrated';
 
@@ -115,23 +115,18 @@ const IntegratedApp: React.FC = () => {
 // Available rooms data
 interface Room {
   name: string;
-  path: string;
-  resourcePath?: string | null;
+  resourceId: string;
+  path?: string; // Keep for backward compatibility
 }
-const availableRooms: Room[] = [
-  { name: "Living Room", path: "/models/rooms/cate001/MR_KHROOM_0001.glb", resourcePath: null },
-  { name: "Exercise Room", path: "/models/rooms/cate001/MR_KHROOM_0002.glb", resourcePath: null },
-  { name: "Lounge Room", path: "/models/rooms/cate002/MR_KHROOM_0003.glb", resourcePath: null },
-];
 
 interface LoadedItem {
   id: string;
   name: string;
-  path: string;
+  resourceId: string;
   position: { x: number; y: number; z: number };
   rotation?: { x: number; y: number; z: number };
   scale?: { x: number; y: number; z: number };
-  resourcePath?: string | null;
+  path?: string; // Keep for backward compatibility
 }
 
 // Component integrating room and avatar with full UI controls
@@ -142,7 +137,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
   // Room state management
-  const [selectedRoom, setSelectedRoom] = useState(availableRooms[0]);
+  const [availableRooms, setAvailableRooms] = useState<Room[]>([]);
+  const [selectedRoom, setSelectedRoom] = useState<Room>({ name: '', resourceId: '', path: '' });
 
   // Items state management
   const [loadedItems, setLoadedItems] = useState<LoadedItem[]>([]);
@@ -165,17 +161,124 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     }
   }, [loadedItems, selectedItem]);
 
-  // Fetch available items from items-manifest.json
+  // Load available rooms from manifest
   useEffect(() => {
-    fetch('/manifest/item/items-manifest.json')
-      .then((res) => res.json())
-      .then((data) => {
-        setAvailableItems(data.items || []);
-        // Set default selected item if not already set
-        if (!selectedItemToAdd && data.items && data.items.length > 0) {
-          setSelectedItemToAdd(data.items[0]);
+    const loadRooms = async () => {
+      try {
+        const roomsData = await manifestService.loadRoomsManifest();
+        setAvailableRooms(roomsData.rooms || []);
+        
+        // Set default selected room if available
+        if (roomsData.rooms && roomsData.rooms.length > 0) {
+          setSelectedRoom(roomsData.rooms[0]);
         }
-      });
+      } catch (error) {
+        console.error('Error loading rooms:', error);
+      }
+    };
+    
+    loadRooms();
+  }, []);
+
+  // Load default scene from ManifestService on startup
+  useEffect(() => {
+    const loadDefaultScene = async () => {
+      try {
+        
+        // Load default preset from ManifestService
+        const defaultPresetResponse = await fetch('/preset/default-preset.json');
+        const defaultPreset = await defaultPresetResponse.json();
+        
+        // Load room from default preset
+        if (defaultPreset.room && availableRooms.length > 0) {
+          // Prioritize resourceId over path for room loading
+          const roomToLoad = defaultPreset.room.resourceId 
+            ? availableRooms.find(room => room.resourceId === defaultPreset.room.resourceId)
+            : availableRooms.find(room => room.path === defaultPreset.room.path);
+          if (roomToLoad) {
+            setSelectedRoom(roomToLoad);
+          }
+        }
+        
+        // Load avatar from default preset
+        if (defaultPreset.avatar) {
+          // Handle different avatar formats
+          let avatarConfig = defaultPreset.avatar;
+          
+          // If avatar parts have resourceId/path structure, prioritize resourceId over path
+          if (avatarConfig.parts && typeof avatarConfig.parts.body === 'object') {
+            console.log('🔍 [IntegratedApp] Processing avatar parts from default-preset.json:', avatarConfig.parts);
+            const convertedParts: any = {};
+            Object.keys(avatarConfig.parts).forEach(partKey => {
+              const part = avatarConfig.parts[partKey];
+              if (part && typeof part === 'object') {
+                // Prioritize resourceId if available, fallback to path
+                if (part.resourceId) {
+                  convertedParts[partKey] = part.resourceId;
+                  console.log(`🔍 [IntegratedApp] Using resourceId for ${partKey}: ${part.resourceId}`);
+                } else if (part.path) {
+                  convertedParts[partKey] = part.path;
+                  console.log(`🔍 [IntegratedApp] Using path for ${partKey}: ${part.path}`);
+                } else {
+                  convertedParts[partKey] = part;
+                }
+              } else {
+                convertedParts[partKey] = part;
+              }
+            });
+            avatarConfig = {
+              ...avatarConfig,
+              parts: convertedParts
+            };
+            console.log('🔍 [IntegratedApp] Final converted avatar parts:', convertedParts);
+          }
+          
+          console.log('🔍 [IntegratedApp] Setting avatarConfig:', avatarConfig);
+          setAvatarConfig(avatarConfig);
+        }
+        
+        // Load items from default preset
+        if (defaultPreset.items) {
+          setLoadedItems(defaultPreset.items);
+        }
+        
+        console.log('Default scene loaded successfully from ManifestService:', defaultPreset);
+      } catch (error) {
+        console.error('Error loading default scene:', error);
+        // Fallback to default configuration if preset fails
+        setAvatarConfig(getDefaultConfigForGender('male'));
+      }
+    };
+    
+    loadDefaultScene();
+  }, [availableRooms]);
+
+  // Load available items from ManifestService
+  useEffect(() => {
+    const loadItems = async () => {
+      try {
+        const itemsData = await manifestService.loadItemsManifest();
+        setAvailableItems(itemsData.items || []);
+        // Set default selected item if not already set
+        if (!selectedItemToAdd && itemsData.items && itemsData.items.length > 0) {
+          setSelectedItemToAdd(itemsData.items[0]);
+        }
+      } catch (error) {
+        console.error('Error loading items from ManifestService:', error);
+        // Fallback to direct fetch if ManifestService fails
+        fetch('/manifest/item/items-manifest.json')
+          .then((res) => res.json())
+          .then((data) => {
+            setAvailableItems(data.items || []);
+            if (!selectedItemToAdd && data.items && data.items.length > 0) {
+              setSelectedItemToAdd(data.items[0]);
+            }
+          })
+          .catch(err => console.error('Fallback item loading also failed:', err));
+      }
+    };
+    
+    loadItems();
   }, []);
 
   // Avatar state management
@@ -335,17 +438,17 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       room: {
         name: selectedRoom.name,
         path: selectedRoom.path,
-        resourcePath: selectedRoom.resourcePath
+        resourceId: selectedRoom.resourceId
       },
       avatar: avatarConfig,
       items: loadedItems.map(item => ({
         id: item.id,
         name: item.name,
-        path: item.path,
+        resourceId: item.resourceId,
         position: item.position,
         rotation: item.rotation || { x: 0, y: 0, z: 0 },
         scale: item.scale || { x: 1, y: 1, z: 1 },
-        resourcePath: item.resourcePath
+        path: item.path
       }))
     };
 
@@ -409,7 +512,10 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           // Check if it's the new format with room, avatar, and items
           if (data.version && data.room && data.avatar && data.items) {
             // Load room
-            const roomToLoad = availableRooms.find(room => room.path === data.room.path);
+            const roomToLoad = availableRooms.find(room => 
+              room.resourceId === data.room.resourceId || 
+              room.path === data.room.path
+            );
             if (roomToLoad) {
               setSelectedRoom(roomToLoad);
             }
@@ -461,10 +567,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       id: `item_${Date.now()}` ,
       name: selectedItemToAdd.name,
       path: selectedItemToAdd.path,
-      position: { x: 0, y: 0, z: 0 },
+      resourceId: selectedItemToAdd.resourceId,
+      position: { x: constrainedX, y: 0, z: constrainedZ },
       rotation: { x: 0, y: 0, z: 0 },
       scale: { x: 1, y: 1, z: 1 },
-      resourcePath: selectedItemToAdd.resourcePath
+      path: selectedItemToAdd.path
     };
     setLoadedItems(prev => [...prev, newItem]);
   };
@@ -594,7 +701,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                   <IntegratedBabylonScene
                     ref={integratedSceneRef}
                     roomPath={selectedRoom.path}
-                    roomResourcePath={selectedRoom.resourcePath}
+                    roomResourceId={selectedRoom.resourceId}
                     avatarConfig={avatarConfig}
                     activeMovement={activeMovement}
                     touchMovement={touchMovement}
@@ -734,15 +841,15 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       <div className="room-selector">
                         {/* <label>Select Room:</label> */}
                         <select
-                          value={selectedRoom.path}
+                          value={selectedRoom.resourceId}
                           onChange={(e) => {
-                            const room = availableRooms.find(r => r.path === e.target.value);
+                            const room = availableRooms.find(r => r.resourceId === e.target.value);
                             if (room) setSelectedRoom(room);
                           }}
                           className="room-select"
                         >
                           {availableRooms.map((room) => (
-                            <option key={room.path} value={room.path}>
+                            <option key={room.resourceId} value={room.resourceId}>
                               {room.name}
                             </option>
                           ))}
@@ -793,6 +900,61 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                               {category}
                             </button>
                           ))}
+                      {/* Category List */}
+                      <div className="item-categories" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+                        {categories.map(category => (
+                          <button
+                            key={category}
+                            className={`item-category-btn${selectedCategory === category ? ' selected' : ''}`}
+                            style={{
+                              padding: '5px 14px 8px',
+                              borderRadius: 12,
+                              border: '1px solid #d9d9d9',
+                              background: selectedCategory === category ? '#1890ff' : '#fff',
+                              color: selectedCategory === category ? '#fff' : '#333',
+                              cursor: 'pointer',
+                              fontWeight: 500,
+                              fontSize: 14,
+                              transition: 'all 0.2s',
+                              marginBottom: 2
+                            }}
+                            onClick={() => setSelectedCategory(category)}
+                          >
+                            {category}
+                          </button>
+                        ))}
+                      </div>
+                      {/* Item List for selected category */}
+                      {selectedCategory && (
+                        <div className="item-selector" style={{ marginBottom: 12 }}>
+                          <div className="item-list-buttons" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                            {filteredItems.map((item) => (
+                              <button
+                                key={item.resourceId || item.path}
+                                type="button"
+                                className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId ? ' selected' : ''}`}
+                                style={{
+                                  padding: '8px 12px',
+                                  borderRadius: 6,
+                                  border: selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId ? '2px solid #1890ff' : '1px solid #d9d9d9',
+                                  background: selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId ? '#e6f7ff' : '#fff',
+                                  color: '#333',
+                                  textAlign: 'left',
+                                  fontWeight: 400,
+                                  fontSize: 14,
+                                  cursor: 'pointer',
+                                  outline: 'none',
+                                  transition: 'all 0.2s',
+                                  marginBottom: 2
+                                }}
+                                onClick={() => {
+                                  setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: item }));
+                                }}
+                              >
+                                {item.name}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     )}

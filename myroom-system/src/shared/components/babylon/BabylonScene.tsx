@@ -13,6 +13,7 @@ import {
 } from '@babylonjs/core'
 import { AdvancedDynamicTexture, StackPanel, Button, Image, Rectangle, ScrollViewer, TextBlock, Control } from '@babylonjs/gui'
 import '@babylonjs/loaders'
+import '@babylonjs/loaders/glTF'
 
 
 

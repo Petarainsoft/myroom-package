@@ -9,40 +9,40 @@ export const availablePartsData: AvailableParts = {
     selectableParts: {
       hair: [
         { name: "No Hair",              fileName: null },
-        { name: "Hair Style 1",    fileName: "/models/male/male_hair/male_hair_001.glb" },
-        { name: "Hair Style 2",    fileName: "/models/male/male_hair/male_hair_002.glb" },
-        { name: "Hair Style 3",    fileName: "/models/male/male_hair/male_hair_003.glb" },
+        { name: "Hair Style 1",    fileName: "/models/male/male_hair/male_hair_001.glb", resourceId: "male-male_hair-male_hair_001" },
+        { name: "Hair Style 2",    fileName: "/models/male/male_hair/male_hair_002.glb", resourceId: "male-male_hair-male_hair_002" },
+        { name: "Hair Style 3",    fileName: "/models/male/male_hair/male_hair_003.glb", resourceId: "male-male_hair-male_hair_003" },
       ],
   
       top: [
-        { name: "Male T-Shirt 1",       fileName: "/models/male/male_top/male_top_001.glb" },
-        { name: "Male Jacket 1",        fileName: "/models/male/male_top/male_top_002.glb" },
+        { name: "Male T-Shirt 1",       fileName: "/models/male/male_top/male_top_001.glb", resourceId: "male-male_top-male_top_001" },
+        { name: "Male Jacket 1",        fileName: "/models/male/male_top/male_top_002.glb", resourceId: "male-male_top-male_top_002" },
       ],
   
       bottom: [
-        { name: "Male Pant 1",          fileName: "/models/male/male_bottom/male_bottom_001.glb" },
+        { name: "Male Pant 1",          fileName: "/models/male/male_bottom/male_bottom_001.glb", resourceId: "male-male_bottom-male_bottom_001" },
       ],
   
       shoes: [
         { name: "No Shoes",             fileName: null },
-        { name: "Shoes 1",         fileName: "/models/male/male_shoes/male_shoes_001.glb" },
-        { name: "Shoes 2",         fileName: "/models/male/male_shoes/male_shoes_002.glb" },
-        { name: "Shoes 3",         fileName: "/models/male/male_shoes/male_shoes_003.glb" },
+        { name: "Shoes 1",         fileName: "/models/male/male_shoes/male_shoes_001.glb", resourceId: "male-male_shoes-male_shoes_001" },
+        { name: "Shoes 2",         fileName: "/models/male/male_shoes/male_shoes_002.glb", resourceId: "male-male_shoes-male_shoes_002" },
+        { name: "Shoes 3",         fileName: "/models/male/male_shoes/male_shoes_003.glb", resourceId: "male-male_shoes-male_shoes_003" },
       ],
   
       fullset: [
         { name: "No Fullset",           fileName: null },
-        { name: "Fullset 1",       fileName: "/models/male/male_fullset/male_fullset_001.glb" },
-        { name: "Fullset 2",       fileName: "/models/male/male_fullset/male_fullset_002.glb" },
-        { name: "Fullset 3",       fileName: "/models/male/male_fullset/male_fullset_003.glb" },
-        { name: "Fullset 4",       fileName: "/models/male/male_fullset/male_fullset_004.glb" },
-        { name: "Fullset 5",       fileName: "/models/male/male_fullset/male_fullset_005.glb" },
+        { name: "Fullset 1",       fileName: "/models/male/male_fullset/male_fullset_001.glb", resourceId: "male-male_fullset-male_fullset_001" },
+        { name: "Fullset 2",       fileName: "/models/male/male_fullset/male_fullset_002.glb", resourceId: "male-male_fullset-male_fullset_002" },
+        { name: "Fullset 3",       fileName: "/models/male/male_fullset/male_fullset_003.glb", resourceId: "male-male_fullset-male_fullset_003" },
+        { name: "Fullset 4",       fileName: "/models/male/male_fullset/male_fullset_004.glb", resourceId: "male-male_fullset-male_fullset_004" },
+        { name: "Fullset 5",       fileName: "/models/male/male_fullset/male_fullset_005.glb", resourceId: "male-male_fullset-male_fullset_005" },
       ],
   
       accessory: [
         { name: "No Accessory",         fileName: null },
-        { name: "Earing 1",     fileName: "/models/male/male_acc/male_acc_001.glb" },
-        { name: "Glasses 1",     fileName: "/models/male/male_acc/male_acc_002.glb" },
+        { name: "Earing 1",     fileName: "/models/male/male_acc/male_acc_001.glb", resourceId: "male-male_acc-male_acc_001" },
+        { name: "Glasses 1",     fileName: "/models/male/male_acc/male_acc_002.glb", resourceId: "male-male_acc-male_acc_002" },
       ],
     },
   
@@ -60,23 +60,23 @@ export const availablePartsData: AvailableParts = {
     selectableParts: {
       hair: [
         { name: "No Hair",               fileName: null },
-        { name: "Hair Style 1",   fileName: "/models/female/female_hair/female_hair_001.glb" },
-        { name: "Hair Style 2",   fileName: "/models/female/female_hair/female_hair_002.glb" },
+        { name: "Hair Style 1",   fileName: "/models/female/female_hair/female_hair_001.glb", resourceId: "female-female_hair-female_hair_001" },
+        { name: "Hair Style 2",   fileName: "/models/female/female_hair/female_hair_002.glb", resourceId: "female-female_hair-female_hair_002" },
       ],
   
       top: [
-        { name: "Blazer",          fileName: "/models/female/female_top/female_top_001.glb" },
-        { name: "Shirt",          fileName: "/models/female/female_top/female_top_002.glb" },
+        { name: "Blazer",          fileName: "/models/female/female_top/female_top_001.glb", resourceId: "female-female_top-female_top_001" },
+        { name: "Shirt",          fileName: "/models/female/female_top/female_top_002.glb", resourceId: "female-female_top-female_top_002" },
       ],
   
       bottom: [
-        { name: "Cute Pants",       fileName: "/models/female/female_bottom/female_bottom_001.glb" },
-        { name: "Flower Pants",       fileName: "/models/female/female_bottom/female_bottom_002.glb" },
+        { name: "Cute Pants",       fileName: "/models/female/female_bottom/female_bottom_001.glb", resourceId: "female-female_bottom-female_bottom_001" },
+        { name: "Flower Pants",       fileName: "/models/female/female_bottom/female_bottom_002.glb", resourceId: "female-female_bottom-female_bottom_002" },
       ],
   
       shoes: [
         { name: "No Shoes",              fileName: null },
-        { name: "Sport Shoes",        fileName: "/models/female/female_shoes/female_shoes_001.glb" },
+        { name: "Sport Shoes",        fileName: "/models/female/female_shoes/female_shoes_001.glb", resourceId: "female-female_shoes-female_shoes_001" },
       ],
   
       fullset: [
@@ -85,9 +85,9 @@ export const availablePartsData: AvailableParts = {
   
       accessory: [
         { name: "No Accessory",          fileName: null },
-        { name: "Sun Glasses",    fileName: "/models/female/female_acc/female_acc_001.glb" },
-        { name: "Earing Set",    fileName: "/models/female/female_acc/female_acc_002.glb" },
-        { name: "Camera",    fileName: "/models/female/female_acc/female_acc_003.glb" },
+        { name: "Sun Glasses",    fileName: "/models/female/female_acc/female_acc_001.glb", resourceId: "female-female_acc-female_acc_001" },
+        { name: "Earing Set",    fileName: "/models/female/female_acc/female_acc_002.glb", resourceId: "female-female_acc-female_acc_002" },
+        { name: "Camera",    fileName: "/models/female/female_acc/female_acc_003.glb", resourceId: "female-female_acc-female_acc_003" },
       ],
     },
   

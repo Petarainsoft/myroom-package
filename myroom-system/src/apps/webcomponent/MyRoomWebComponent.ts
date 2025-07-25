@@ -311,8 +311,7 @@ class MyRoomWebComponent extends HTMLElement {
           return item && 
                  typeof item.id === 'string' && 
                  typeof item.name === 'string' && 
-                 typeof item.path === 'string' && 
-                 item.path.trim() !== '' &&
+                 (typeof item.resourceId === 'string' || (typeof item.path === 'string' && item.path.trim() !== '')) &&
                  item.position && 
                  typeof item.position.x === 'number' && 
                  typeof item.position.y === 'number' && 
@@ -320,7 +319,8 @@ class MyRoomWebComponent extends HTMLElement {
         }).map((item: any) => ({
           id: item.id,
           name: item.name,
-          path: item.path,
+          resourceId: item.resourceId,
+          path: item.path, // Keep for backward compatibility
           position: item.position,
           rotation: item.rotation || undefined,
           scale: item.scale || undefined
@@ -332,7 +332,8 @@ class MyRoomWebComponent extends HTMLElement {
     }
 
     return {
-      roomPath: room,
+      roomPath: room, // Keep for backward compatibility
+      roomResourceId: this.getAttribute('room-resource-id'),
       avatarConfig,
       loadedItems,
       gizmoMode,

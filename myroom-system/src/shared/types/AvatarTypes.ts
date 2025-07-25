@@ -28,6 +28,7 @@ export interface TouchRotation {
 export interface PartItem {
     name: string;
     fileName: string | null;
+    resourceId?: string; // Optional resourceId for backend API integration
 }
 
 export interface GenderSelectableParts {

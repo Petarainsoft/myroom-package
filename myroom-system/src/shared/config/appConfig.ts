@@ -16,7 +16,7 @@ const getConfiguredBaseDomain = () => {
   }
   
   // Default domain (used during development or if not configured)
-  return 'http://localhost:5175'; // local test, should change port accordingly
+  return 'http://localhost:5175'; // assets server, should change port accordingly
   //return 'http://192.168.1.x:5173'; change to deployed url to LAN test, for example: mobile device access. Change Port accordingly
   // return 'https://myroom.petarainsoft.com';
 };
@@ -24,7 +24,7 @@ const getConfiguredBackendDomain = () => {
   if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.backendDomain) {
     return window.MYROOM_CONFIG.backendDomain;
   }
-  return 'https://api.myroom.petarainsoft.com'; // Default backend domain, to be filled later
+  return 'http://localhost:3000'; // Default backend domain, to be filled later
 };
 const getConfiguredApiKey = () => {
   if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.apiKey) {
@@ -32,6 +32,16 @@ const getConfiguredApiKey = () => {
   }
   return ''; // Default empty, should be set securely
 };
+const getConfiguredUseResourceId = () => {
+  if (typeof window !== 'undefined' && window.MYROOM_CONFIG && typeof window.MYROOM_CONFIG.useResourceId === 'boolean') {
+    return window.MYROOM_CONFIG.useResourceId;
+  }
+  return false; // Default to false for backward compatibility
+};
+
+// Static boolean to temporarily disable local GLB resource loading
+// Set to true to disable local server GLB loading (for testing/debugging)
+export const DISABLE_LOCAL_GLB_LOADING = true;
 
 // Base domain configuration
 // This will be used for all URLs in the application
@@ -40,6 +50,7 @@ export const domainConfig = {
   baseDomain: getConfiguredBaseDomain(),
   backendDomain: getConfiguredBackendDomain(),
   apiKey: getConfiguredApiKey(),
+  useResourceId: getConfiguredUseResourceId(),
   paths: {
     webComponent: '/dist/myroom-webcomponent.umd.js',
     embedHtml: '/embed.html',

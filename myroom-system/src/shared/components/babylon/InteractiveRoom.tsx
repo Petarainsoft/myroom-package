@@ -11,10 +11,11 @@ import {
   PositionGizmo,
   RotationGizmo,
   ScaleGizmo,
-  TransformNode
+  TransformNode,
+  PointerEventTypes
 } from '@babylonjs/core'
 import '@babylonjs/loaders'
-import { domainConfig } from '../../config/appConfig'
+import { domainConfig, DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig'
 
 export default function InteractiveRoom() {
   const canvasRef = useRef(null)
@@ -36,10 +37,10 @@ export default function InteractiveRoom() {
   // Temporarily disabled avatar feature
   // const [avatars, setAvatars] = useState([])
 
-  const [roomPath, setRoomPath] = useState('')
-  const [itemPath, setItemPath] = useState('')
+  const [roomResourceId, setRoomResourceId] = useState('')
+  const [itemResourceId, setItemResourceId] = useState('')
   // Temporarily disabled avatar feature
-  // const [avatarPath, setAvatarPath] = useState('')
+  // const [avatarResourceId, setAvatarResourceId] = useState('')
   const [selectedItem, setSelectedItem] = useState(null)
   const [gizmoMode, setGizmoMode] = useState('position')
   // Temporarily disabled floor and wall color features
@@ -47,16 +48,26 @@ export default function InteractiveRoom() {
   // const [wallColor, setWallColor] = useState('#ffffff')
 
   useEffect(() => {
-    fetch('/manifest/room/room-manifest.json')
-      .then((r) => r.json())
-      .then((d) => setRooms(d.rooms || []))
-    fetch('/manifest/item/items-manifest.json')
-      .then((r) => r.json())
-      .then((d) => setItems(d.items || []))
-    // Temporarily disabled avatar feature
-    // fetch('/manifest/avatar/avatar-manifest.json')
-    //   .then((r) => r.json())
-    //   .then((d) => setAvatars(d.avatars || []))
+    const loadManifests = async () => {
+      try {
+        const { manifestService } = await import('../../services/ManifestService');
+        
+        // Load rooms
+        const roomsData = await manifestService.loadRoomsManifest();
+        setRooms(roomsData.rooms || []);
+        
+        // Load items
+        const itemsData = await manifestService.loadItemsManifest();
+        setItems(itemsData.items || []);
+        
+        // Temporarily disabled avatar feature
+        // const avatarsData = await manifestService.loadAvatarsManifest();
+        // setAvatars(avatarsData.avatars || []);
+      } catch (error) {
+        console.error('Failed to load manifests:', error);
+      }
+    };
+    loadManifests();
   }, [])
 
   // Update gizmo when mode changes
@@ -151,17 +162,55 @@ export default function InteractiveRoom() {
   // }, [wallColor])
 
   useEffect(() => {
-    if (!sceneRef.current || !roomPath) return
-    // Create full URL with domain
-    const fullRoomUrl = roomPath.startsWith('http') ? roomPath : `${domainConfig.baseDomain}${roomPath}`;
-    const { root, file } = splitPath(fullRoomUrl)
-    SceneLoader.ImportMeshAsync('', root, file, sceneRef.current).then((res) => {
-      if (roomRef.current) {
-        roomRef.current.dispose()
+    if (!sceneRef.current || !roomResourceId) return
+    
+    const loadRoom = async () => {
+      try {
+        // Check if local GLB loading is disabled
+        if (DISABLE_LOCAL_GLB_LOADING) {
+          console.warn('⚠️ [InteractiveRoom] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
+          // throw new Error('Local GLB room loading is temporarily disabled');
+        }
+        
+        // Try to get presigned URL from backend if available
+        if (domainConfig.backendDomain && domainConfig.apiKey) {
+          const response = await fetch(`${domainConfig.backendDomain}/api/rooms/resource/${roomResourceId}/presigned-download`, {
+            headers: {
+              'x-api-key': domainConfig.apiKey
+            }
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            const presignedUrl = data.data.downloadUrl;
+            const { root, file } = splitPath(presignedUrl);
+            const res = await SceneLoader.ImportMeshAsync('', root, file, sceneRef.current);
+            if (roomRef.current) {
+              roomRef.current.dispose();
+            }
+            roomRef.current = res.meshes[0];
+            return;
+          }
+        }
+        if (DISABLE_LOCAL_GLB_LOADING) { return;}
+        // Fallback: find room by resourceId in manifest and use local path
+        const room = rooms.find(r => r.resourceId === roomResourceId);
+        if (room && room.path) {
+          const fullRoomUrl = room.path.startsWith('http') ? room.path : `${domainConfig.baseDomain}${room.path}`;
+          const { root, file } = splitPath(fullRoomUrl);
+          const res = await SceneLoader.ImportMeshAsync('', root, file, sceneRef.current);
+          if (roomRef.current) {
+            roomRef.current.dispose();
+          }
+          roomRef.current = res.meshes[0];
+        }
+      } catch (error) {
+        console.error('Failed to load room:', error);
       }
-      roomRef.current = res.meshes[0]
-    })
-  }, [roomPath])
+    };
+    
+    loadRoom();
+  }, [roomResourceId, rooms])
 
   const selectItem = (mesh) => {
     // Find the root mesh of the item
@@ -217,26 +266,62 @@ export default function InteractiveRoom() {
     gizmoManagerRef.current.updateGizmoPositionToMatchAttachedMesh = true
   }
 
-  const handleAddItem = () => {
-    if (!sceneRef.current || !itemPath) return
-    const { root, file } = splitPath(itemPath)
-    SceneLoader.ImportMeshAsync('', root, file, sceneRef.current).then((res) => {
-      const m = res.meshes[0]
-      m.position = new Vector3(0, 0, 0)
-      
-      // Add to items array for selection tracking
-      itemsRef.current.push(m)
-      
-      // Make mesh pickable
-      m.isPickable = true
-      if (m.getChildren) {
-        m.getChildren().forEach(child => {
-          if (child.isPickable !== undefined) {
-            child.isPickable = true
-          }
-        })
+  const handleAddItem = async () => {
+    if (!sceneRef.current || !itemResourceId) return
+    
+    try {
+      // Check if local GLB loading is disabled
+      if (DISABLE_LOCAL_GLB_LOADING) {
+        console.warn('⚠️ [InteractiveRoom.handleAddItem] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
+        throw new Error('Local GLB item loading is temporarily disabled');
       }
-    })
+      
+      let itemUrl = null;
+      
+      // Try to get presigned URL from backend if available
+      if (domainConfig.backendDomain && domainConfig.apiKey) {
+        const response = await fetch(`${domainConfig.backendDomain}/api/customer/items/${itemResourceId}/download`, {
+          headers: {
+            'x-api-key': domainConfig.apiKey
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          itemUrl = data.data.downloadUrl;
+        }
+      }
+      
+      // Fallback: find item by resourceId in manifest and use local path
+      if (!itemUrl) {
+        const item = items.find(i => i.resourceId === itemResourceId);
+        if (item && item.path) {
+          itemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+        }
+      }
+      
+      if (itemUrl) {
+        const { root, file } = splitPath(itemUrl);
+        const res = await SceneLoader.ImportMeshAsync('', root, file, sceneRef.current);
+        const m = res.meshes[0];
+        m.position = new Vector3(0, 0, 0);
+        
+        // Add to items array for selection tracking
+        itemsRef.current.push(m);
+        
+        // Make mesh pickable
+        m.isPickable = true;
+        if (m.getChildren) {
+          m.getChildren().forEach(child => {
+            if (child.isPickable !== undefined) {
+              child.isPickable = true;
+            }
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load item:', error);
+    }
   }
 
   // Temporarily disabled avatar feature
@@ -282,10 +367,10 @@ export default function InteractiveRoom() {
       <div className="overlay">
         <label>
           Room
-          <select value={roomPath} onChange={(e) => setRoomPath(e.target.value)}>
+          <select value={roomResourceId} onChange={(e) => setRoomResourceId(e.target.value)}>
             <option value="">Select...</option>
             {rooms.map((r) => (
-              <option key={r.id} value={r.modelPath}>
+              <option key={r.id} value={r.resourceId || r.id}>
                 {r.name}
               </option>
             ))}
@@ -302,10 +387,10 @@ export default function InteractiveRoom() {
         </label> */}
         <label>
           Item
-          <select value={itemPath} onChange={(e) => setItemPath(e.target.value)}>
+          <select value={itemResourceId} onChange={(e) => setItemResourceId(e.target.value)}>
             <option value="">Item...</option>
             {items.map((i) => (
-              <option key={i.id} value={i.modelPath}>
+              <option key={i.id} value={i.resourceId || i.id}>
                 {i.name}
               </option>
             ))}
@@ -315,10 +400,10 @@ export default function InteractiveRoom() {
         {/* Temporarily disabled avatar feature */}
         {/* <label>
           Avatar
-          <select value={avatarPath} onChange={(e) => setAvatarPath(e.target.value)}>
+          <select value={avatarResourceId} onChange={(e) => setAvatarResourceId(e.target.value)}>
             <option value="">Avatar...</option>
             {avatars.map((a) => (
-              <option key={a.id} value={a.modelPath}>
+              <option key={a.id} value={a.resourceId || a.id}>
                 {a.name}
               </option>
             ))}

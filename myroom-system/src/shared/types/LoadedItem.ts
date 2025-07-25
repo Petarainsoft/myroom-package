@@ -6,5 +6,5 @@ export interface LoadedItem {
   position: { x: number; y: number; z: number }; // Position in 3D space
   rotation?: { x: number; y: number; z: number }; // Rotation angles (optional)
   scale?: { x: number; y: number; z: number }; // Scale factors (optional)
-  resourcePath?: string | null; // Optional resource path for API
+  resourceId?: string; // Optional resourceId for backend API integration
 }

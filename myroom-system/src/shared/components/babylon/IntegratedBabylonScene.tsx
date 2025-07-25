@@ -16,6 +16,7 @@ import {
   Mesh, MeshBuilder, StandardMaterial, AbstractMesh
 } from '@babylonjs/core';
 import '@babylonjs/loaders';
+import '@babylonjs/loaders/glTF';
 
 import { ActiveMovement, TouchMovement } from '../../types/AvatarTypes';
 import { AvatarConfig } from '../../types/AvatarTypes';
@@ -37,7 +38,7 @@ import { PointerManager } from './PointerManager';
 // Props cho component IntegratedBabylonScene
 interface IntegratedSceneProps {
   roomPath?: string; // Path to room model
-  roomResourcePath?: string | null; // Resource path for room API
+  roomResourceId?: string; // Resource ID for room API
   avatarConfig?: AvatarConfig; // Avatar configuration (gender, body parts)
   activeMovement?: ActiveMovement; // Current movement state
   touchMovement?: TouchMovement; // Touch control input data
@@ -541,7 +542,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   useRoomLoader({
     scene: sceneRef.current,
     roomPath: props.roomPath,
-    roomResourcePath: props.roomResourcePath,
+    roomResourceId: props.roomResourceId,
     isSceneReady,
     roomRef
   });

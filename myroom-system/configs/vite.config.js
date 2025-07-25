@@ -35,6 +35,13 @@ function copyConfigDomainPlugin() {
 export default defineConfig({
   plugins: [react(), copyConfigDomainPlugin()],
   root: resolve(__dirname, '..'),
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, '..', 'src'),
+      '@/services': resolve(__dirname, '..', 'src/shared/services'),
+      '@/types': resolve(__dirname, '..', 'src/types')
+    }
+  },
   build: {
     rollupOptions: {
       input: {
