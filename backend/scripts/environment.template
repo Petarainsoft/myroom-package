@@ -1,0 +1,44 @@
+NODE_ENV=development
+PORT=3000
+HOST=localhost
+
+# Database - Update credentials for your environment
+DATABASE_URL=postgresql://anh:db123456@localhost:5432/myroom_db
+
+# Redis
+REDIS_URL=redis://:rd123456@localhost:6379
+
+# JWT - Change these in production!
+JWT_SECRET=your-super-secure-jwt-secret-change-this-in-production
+JWT_EXPIRES_IN=7d
+JWT_REFRESH_EXPIRES_IN=30d
+JWT_REFRESH_SECRET=your-super-secure-refresh-secret-change-this-in-production
+SESSION_SECRET=your-super-secure-session-secret-change-this-in-production
+
+# AWS S3 Configuration - Replace with your actual credentials
+AWS_REGION=us-east-1
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+AWS_S3_BUCKET=your-s3-bucket-name
+
+# Security
+BCRYPT_ROUNDS=12
+API_KEY_LENGTH=32
+CORS_ORIGIN=http://localhost:5173,http://localhost:5174
+CORS_CREDENTIALS=true
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=1000
+
+# File Upload
+UPLOAD_MAX_FILE_SIZE=50mb
+UPLOAD_ALLOWED_TYPES=image/jpeg,image/png,image/webp,model/gltf-binary,application/octet-stream
+
+# Features
+FEATURE_RATE_LIMITING=true
+FEATURE_REQUEST_LOGGING=true
+FEATURE_SWAGGER=true
+
+# Admin defaults (optional - will use these values if no admin exists)
+DEFAULT_ADMIN_EMAIL=admin@myroom.com
+DEFAULT_ADMIN_PASSWORD=Admin123!
+DEFAULT_ADMIN_NAME=Super Administrator 

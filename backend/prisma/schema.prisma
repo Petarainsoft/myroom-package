@@ -1,0 +1,712 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Admin entity for system administration
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String   @map("password_hash")
+  role         AdminRole @default(ADMIN)
+  status       AdminStatus @default(ACTIVE)
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  developerActions    DeveloperAction[]
+  uploadedItems  Item[] @relation("UploadedItems")
+  uploadedAvatars Avatar[] @relation("UploadedAvatars")
+  uploadedRooms Room[] @relation("UploadedRooms")
+
+  @@map("admins")
+}
+
+// Developer entity
+model Developer {
+  id           String         @id @default(cuid())
+  email        String         @unique
+  name         String
+  passwordHash String         @map("password_hash")
+  status       DeveloperStatus @default(ACTIVE)
+  suspendedAt  DateTime?      @map("suspended_at")
+  suspendedReason String?     @map("suspended_reason")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  // Relations
+  projects     Project[]
+  resourcePermissions DeveloperResourcePermission[]
+  actions      DeveloperAction[]
+  webhooks     Webhook[]
+  manifests    Manifest[]
+  avatarUsage  AvatarUsage[]
+  avatarPermissions DeveloperAvatarPermission[]
+  roomUsage    RoomUsage[]
+  roomPermissions DeveloperRoomPermission[]
+
+  @@map("developers")
+}
+
+// Project entity
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+  developerId  String        @map("developer_id")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  developer    Developer  @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  apiKeys     ApiKey[]
+  items   Item[] @relation("ProjectItems")
+  manifests   Manifest[]
+  avatarUsage AvatarUsage[]
+  roomUsage   RoomUsage[]
+  
+  // Project permissions
+  itemPermissions   ProjectItemPermission[]
+  avatarPermissions ProjectAvatarPermission[]
+  roomPermissions   ProjectRoomPermission[]
+
+  @@map("projects")
+}
+
+// API Key entity
+model ApiKey {
+  id          String       @id @default(cuid())
+  key         String       @unique
+  name        String
+  scopes      String?      @default("")
+  status      ApiKeyStatus @default(ACTIVE)
+  lastUsedAt  DateTime?    @map("last_used_at")
+  expiresAt   DateTime?    @map("expires_at")
+  projectId   String       @map("project_id")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  usage   ApiKeyUsage[]
+
+  @@map("api_keys")
+}
+
+// Resource Category entity
+model ItemCategory {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  metadata    Json?    @default("{}")
+  parentId    String?  @map("parent_id")
+  level       Int      @default(0)
+  path        String   @unique // Stores full path like "parent1/parent2/current"
+  sortOrder   Int      @default(0) @map("sort_order")
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  parent      ItemCategory? @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    ItemCategory[] @relation("CategoryHierarchy")
+  items   Item[]
+
+  @@unique([name, parentId]) // Allow same name in different parent categories
+  @@map("item_categories")
+}
+
+// Resource entity
+model Item {
+  id           String            @id @default(cuid())
+  name         String
+  description  String?
+  s3Url        String            @map("s3_url")
+  s3Key        String            @map("s3_key")
+  fileSize     BigInt            @map("file_size")
+  fileType     String            @map("file_type")
+  accessPolicy ResourceAccessPolicy @default(DEVELOPERS_ONLY) @map("access_policy")
+  status       ResourceStatus    @default(ACTIVE)
+  version      String            @default("1.0.0")
+  
+  // Resource ownership and categorization
+  categoryId       String         @map("category_id")
+  ownerProjectId   String?        @map("owner_project_id") // Optional: if resource belongs to specific project
+  uploadedByAdminId String?       @map("uploaded_by_admin_id") // Track which admin uploaded
+  
+  // Metadata and tags
+  metadata     Json?             @default("{}")
+  tags         String?           @default("") // For easy searching and filtering
+  
+  // File information
+  mimeType     String?           @map("mime_type")
+  checksum     String?           // For file integrity verification
+  
+  // SEO and search
+  slug         String?           @unique // URL-friendly identifier
+  keywords     String?           @default("") // For search optimization
+
+  resourceId        String?  @unique @map("resource_id")
+  // Premium flag
+  isPremium    Boolean           @default(false) @map("is_premium")
+  isFree       Boolean           @default(false) @map("is_free")
+  price        Float?
+  
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+  deletedAt    DateTime?         @map("deleted_at") // Soft delete
+
+  // Relations
+  category     ItemCategory  @relation(fields: [categoryId], references: [id])
+  ownerProject Project?          @relation("ProjectItems", fields: [ownerProjectId], references: [id])
+  uploadedBy   Admin?            @relation("UploadedItems", fields: [uploadedByAdminId], references: [id])
+  usage        ResourceUsage[]
+  permissions  DeveloperResourcePermission[]
+  projectPermissions ProjectItemPermission[]
+
+  @@map("items")
+}
+
+// Manifest entity for 3D scene configurations
+model Manifest {
+  id          String      @id @default(cuid())
+  name        String
+  version     String      @default("1.0.0")
+  description String?
+  config      Json        @default("{}")
+  s3Url       String?     @map("s3_url")
+  s3Key       String?     @map("s3_key")
+  fileSize    BigInt?     @map("file_size") // Size of manifest file
+  status      ManifestStatus @default(ACTIVE)
+  
+  // Manifest ownership
+  projectId   String?     @map("project_id")
+  createdByDeveloperId String? @map("created_by_developer_id")
+  
+  // Metadata
+  metadata    Json?       @default("{}")
+  tags        String?     @default("")
+  
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  deletedAt   DateTime?   @map("deleted_at") // Soft delete
+
+  // Relations
+  project     Project?    @relation(fields: [projectId], references: [id])
+  createdBy   Developer?   @relation(fields: [createdByDeveloperId], references: [id])
+  @@map("manifests")
+}
+
+// API Key Usage tracking
+model ApiKeyUsage {
+  id         String   @id @default(cuid())
+  apiKeyId   String   @map("api_key_id")
+  endpoint   String
+  method     String
+  statusCode Int      @map("status_code")
+  responseTime Int    @map("response_time")
+  userAgent  String?  @map("user_agent")
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
+  @@map("api_key_usage")
+}
+
+// Resource Usage tracking
+model ResourceUsage {
+  id         String   @id @default(cuid())
+  resourceId String   @map("resource_id")
+  apiKeyId   String?  @map("api_key_id")
+  action     String   // "download", "view", "access"
+  userAgent  String?  @map("user_agent")
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  resource Item @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@map("resource_usage")
+}
+
+// Developer Action tracking (for admin audit)
+model DeveloperAction {
+  id         String   @id @default(cuid())
+  developerId String   @map("developer_id")
+  adminId    String?  @map("admin_id")
+  action     String   // "created", "suspended", "activated", "deleted"
+  details    Json?    @default("{}")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  developer Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  admin    Admin?    @relation(fields: [adminId], references: [id])
+
+  @@map("developer_actions")
+}
+
+// Webhook entity for notification management
+model Webhook {
+  id          String       @id @default(cuid())
+  url         String       // Webhook URL
+  secret      String?      // Optional webhook secret for verification
+  events      String?      @default("") // Events to listen for
+  isActive    Boolean      @default(true) @map("is_active")
+  developerId  String?      @map("developer_id") // Optional: webhook for specific developer
+  metadata    Json?        @default("{}")
+  lastTriggeredAt DateTime? @map("last_triggered_at")
+  failureCount    Int      @default(0) @map("failure_count")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  developer Developer? @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  deliveries WebhookDelivery[]
+
+  @@map("webhooks")
+}
+
+// Webhook Delivery tracking
+model WebhookDelivery {
+  id           String   @id @default(cuid())
+  webhookId    String   @map("webhook_id")
+  event        String   // Event that triggered the webhook
+  payload      Json     // Webhook payload
+  responseCode Int?     @map("response_code")
+  responseBody String?  @map("response_body")
+  deliveredAt  DateTime? @map("delivered_at")
+  failedAt     DateTime? @map("failed_at")
+  retryCount   Int      @default(0) @map("retry_count")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  // Relations
+  webhook Webhook @relation(fields: [webhookId], references: [id], onDelete: Cascade)
+
+  @@map("webhook_deliveries")
+}
+
+// Enums
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+  MODERATOR
+}
+
+enum AdminStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+enum DeveloperStatus {
+  ACTIVE
+  SUSPENDED
+  INACTIVE
+}
+
+enum ProjectStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum ApiKeyStatus {
+  ACTIVE
+  REVOKED
+  EXPIRED
+}
+
+enum ResourceAccessPolicy {
+  PUBLIC
+  PRIVATE
+  PROJECT_ONLY
+  DEVELOPERS_ONLY
+}
+
+enum ResourceStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum ManifestStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+// Add fields and model for resource-based permission
+model DeveloperResourcePermission {
+  id          String   @id @default(cuid())
+  developerId  String   @map("developer_id")
+  resourceId  String   @map("resource_id")
+  grantedAt   DateTime @default(now()) @map("granted_at")
+  isPaid      Boolean  @default(false) @map("is_paid")
+  paidAmount  Float?   @map("paid_amount")
+  expiredAt   DateTime? @map("expired_at")
+  grantedBy  String?  @map("granted_by")
+  reason     String?  @map("reason")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  developer Developer @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  resource Item @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@unique([developerId, resourceId])
+  @@map("developer_resource_permissions")
+}
+
+// Avatar Management Models
+
+// Avatar Categories (Gender and Part Types)
+model AvatarCategory {
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  categoryType String   @map("category_type") // 'gender' or 'part_type'
+  parentId     String?  @map("parent_id")
+  level        Int      @default(0)
+  path         String   @unique // Full path like 'male/hair' or 'female/accessories'
+  sortOrder    Int      @default(0) @map("sort_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  metadata     Json?    @default("{}")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  parent       AvatarCategory?  @relation("AvatarCategoryHierarchy", fields: [parentId], references: [id])
+  children     AvatarCategory[] @relation("AvatarCategoryHierarchy")
+  avatars Avatar[]
+
+  @@unique([name, parentId])
+  @@map("avatar_categories")
+}
+
+// Avatar Resources (GLB Files)
+model Avatar {
+  id                String   @id @default(cuid())
+  name              String
+  description       String?
+  
+  // File information
+  s3Url             String   @map("s3_url")
+  s3Key             String   @map("s3_key")
+  fileSize          BigInt   @map("file_size")
+  fileType          String   @default("model/gltf-binary") @map("file_type")
+  mimeType          String?  @default("model/gltf-binary") @map("mime_type")
+  checksum          String?
+  
+  // Avatar specific fields
+  gender            AvatarGender
+  partType          AvatarPartType @map("part_type")
+  categoryId        String   @map("category_id")
+  
+  // Versioning and identification
+  version           String   @default("1.0.0")
+  resourceId        String   @unique @map("resource_id")
+  
+  // Pricing and access
+  isPremium         Boolean  @default(false) @map("is_premium")
+  isFree            Boolean  @default(true) @map("is_free")
+  price             Float?
+  
+  // Status and metadata
+  status            AvatarResourceStatus @default(ACTIVE)
+  metadata          Json?    @default("{}")
+  tags              String?  @default("")
+  keywords          String?  @default("")
+  
+  // Audit fields
+  uploadedByAdminId String?  @map("uploaded_by_admin_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
+  
+  // Relations
+  category          AvatarCategory @relation(fields: [categoryId], references: [id])
+  uploadedBy        Admin?         @relation("UploadedAvatars", fields: [uploadedByAdminId], references: [id])
+
+  usage             AvatarUsage[]
+  permissions       DeveloperAvatarPermission[] @relation("AvatarPermissions")
+  projectPermissions ProjectAvatarPermission[]
+
+  @@map("avatars")
+}
+
+
+
+// Avatar Usage Tracking
+model AvatarUsage {
+  id               String   @id @default(cuid())
+  avatarResourceId String?  @map("avatar_resource_id")
+
+  developerId       String?  @map("developer_id")
+  projectId        String?  @map("project_id")
+  action           AvatarUsageAction
+  userAgent        String?
+  ipAddress        String?  @map("ip_address")
+  metadata         Json?    @default("{}")
+  createdAt        DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  avatar   Avatar?   @relation(fields: [avatarResourceId], references: [id], onDelete: Cascade)
+
+  developer         Developer?         @relation(fields: [developerId], references: [id])
+  project          Project?          @relation(fields: [projectId], references: [id])
+
+  @@map("avatar_usage")
+}
+
+// Developer Avatar Permissions (for premium content)
+model DeveloperAvatarPermission {
+  id               String   @id @default(cuid())
+  developerId       String   @map("developer_id")
+  avatarResourceId String?  @map("avatar_resource_id")
+
+  grantedAt        DateTime @default(now()) @map("granted_at")
+  expiresAt        DateTime? @map("expires_at")
+  isPaid           Boolean  @default(false) @map("is_paid")
+  paidAmount       Float?   @map("paid_amount")
+  grantedBy        String?  @map("granted_by")
+  reason           String?
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  developer         Developer         @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  avatar   Avatar?  @relation("AvatarPermissions", fields: [avatarResourceId], references: [id], onDelete: Cascade)
+
+
+  @@unique([developerId, avatarResourceId])
+
+  @@map("developer_avatar_permissions")
+}
+
+// Avatar Enums
+enum AvatarGender {
+  MALE
+  FEMALE
+  UNISEX
+}
+
+enum AvatarPartType {
+  BODY
+  HAIR
+  TOP
+  BOTTOM
+  SHOES
+  ACCESSORY
+  FULLSET
+}
+
+enum AvatarResourceStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+
+
+enum AvatarUsageAction {
+  LOAD
+  DOWNLOAD
+  VIEW
+  CUSTOMIZE
+  PURCHASE
+}
+
+// Room Management Models
+
+// Room Resources (GLB Files)
+model Room {
+  id                String   @id @default(cuid())
+  name              String
+  description       String?
+  
+  // File information
+  s3Url             String   @map("s3_url")
+  s3Key             String   @map("s3_key")
+  fileSize          BigInt   @map("file_size")
+  fileType          String   @default("model/gltf-binary") @map("file_type")
+  mimeType          String?  @default("model/gltf-binary") @map("mime_type")
+  checksum          String?
+  
+  // Room specific fields
+  roomTypeId        String? @map("room_type_id")
+  roomType          RoomType? @relation(fields: [roomTypeId], references: [id])
+  
+  // Versioning and identification
+  version           String   @default("1.0.0")
+  resourceId        String?  @unique @map("resource_id")
+  
+  // Pricing and access
+  isPremium         Boolean  @default(false) @map("is_premium")
+  isFree            Boolean  @default(true) @map("is_free")
+  price             Float?
+  
+  // Status and metadata
+  status            RoomResourceStatus @default(ACTIVE)
+  metadata          Json?    @default("{}")
+  tags              String?  @default("")
+  keywords          String?  @default("")
+  
+  // Audit fields
+  uploadedByAdminId String?  @map("uploaded_by_admin_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
+  
+  // Relations
+  uploadedBy        Admin?         @relation("UploadedRooms", fields: [uploadedByAdminId], references: [id])
+  usage             RoomUsage[]
+  permissions       DeveloperRoomPermission[] @relation("RoomPermissions")
+  projectPermissions ProjectRoomPermission[]
+
+  @@map("rooms")
+}
+
+// Room Usage Tracking
+model RoomUsage {
+  id               String   @id @default(cuid())
+  roomResourceId   String?  @map("room_resource_id")
+
+  developerId       String?  @map("developer_id")
+  projectId        String?  @map("project_id")
+  action           RoomUsageAction
+  userAgent        String?
+  ipAddress        String?  @map("ip_address")
+  metadata         Json?    @default("{}")
+  createdAt        DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  room             Room?    @relation(fields: [roomResourceId], references: [id], onDelete: Cascade)
+  developer         Developer?         @relation(fields: [developerId], references: [id])
+  project          Project?          @relation(fields: [projectId], references: [id])
+
+  @@map("room_usage")
+}
+
+// Developer Room Permissions (for premium content)
+model DeveloperRoomPermission {
+  id               String   @id @default(cuid())
+  developerId       String   @map("developer_id")
+  roomResourceId   String?  @map("room_resource_id")
+
+  grantedAt        DateTime @default(now()) @map("granted_at")
+  expiresAt        DateTime? @map("expires_at")
+  isPaid           Boolean  @default(false) @map("is_paid")
+  paidAmount       Float?   @map("paid_amount")
+  grantedBy        String?  @map("granted_by")
+  reason           String?
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  developer         Developer         @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  room             Room?            @relation("RoomPermissions", fields: [roomResourceId], references: [id], onDelete: Cascade)
+
+  @@unique([developerId, roomResourceId])
+
+  @@map("developer_room_permissions")
+}
+
+// Project Permission Models
+
+// Project Item Permissions
+model ProjectItemPermission {
+  id        String   @id @default(cuid())
+  projectId String   @map("project_id")
+  itemId    String   @map("item_id")
+  canAccess Boolean  @default(true) @map("can_access")
+  canDownload Boolean @default(true) @map("can_download")
+  grantedAt DateTime @default(now()) @map("granted_at")
+  expiresAt DateTime? @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  item      Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, itemId])
+  @@map("project_item_permissions")
+}
+
+// Project Avatar Permissions
+model ProjectAvatarPermission {
+  id        String   @id @default(cuid())
+  projectId String   @map("project_id")
+  avatarId  String   @map("avatar_id")
+  canAccess Boolean  @default(true) @map("can_access")
+  canDownload Boolean @default(true) @map("can_download")
+  grantedAt DateTime @default(now()) @map("granted_at")
+  expiresAt DateTime? @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  avatar    Avatar   @relation(fields: [avatarId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, avatarId])
+  @@map("project_avatar_permissions")
+}
+
+// Project Room Permissions
+model ProjectRoomPermission {
+  id        String   @id @default(cuid())
+  projectId String   @map("project_id")
+  roomId    String   @map("room_id")
+  canAccess Boolean  @default(true) @map("can_access")
+  canDownload Boolean @default(true) @map("can_download")
+  grantedAt DateTime @default(now()) @map("granted_at")
+  expiresAt DateTime? @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, roomId])
+  @@map("project_room_permissions")
+}
+
+// Room Enums
+model RoomType {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  label     String
+  description String?
+  resource_path String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rooms Room[]
+  
+  @@index([resource_path])
+  @@map("room_types")
+}
+
+enum RoomResourceStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum RoomUsageAction {
+  LOAD
+  DOWNLOAD
+  VIEW
+  CUSTOMIZE
+  PURCHASE
+}

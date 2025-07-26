@@ -1,0 +1,168 @@
+// Avatar Management Schema
+// This schema defines the avatar-specific models separate from the main resource system
+// To be integrated into the main schema.prisma file
+
+// Avatar Categories (Gender and Part Types)
+model AvatarCategory {
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  categoryType String   @map("category_type") // 'gender' or 'part_type'
+  parentId     String?  @map("parent_id")
+  level        Int      @default(0)
+  path         String?  // Full path like 'male/hair' or 'female/accessories'
+  sortOrder    Int      @default(0) @map("sort_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  metadata     Json?    @default("{}")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  parent       AvatarCategory?  @relation("AvatarCategoryHierarchy", fields: [parentId], references: [id])
+  children     AvatarCategory[] @relation("AvatarCategoryHierarchy")
+  avatarResources AvatarResource[]
+
+  @@unique([name, parentId])
+  @@map("avatar_categories")
+}
+
+// Avatar Resources (GLB Files)
+model AvatarResource {
+  id                String   @id @default(cuid())
+  name              String
+  description       String?
+  
+  // File information
+  s3Url             String   @map("s3_url")
+  s3Key             String   @map("s3_key")
+  fileSize          BigInt   @map("file_size")
+  fileType          String   @default("model/gltf-binary") @map("file_type")
+  mimeType          String?  @default("model/gltf-binary") @map("mime_type")
+  checksum          String?
+  
+  // Avatar specific fields
+  gender            AvatarGender
+  partType          AvatarPartType @map("part_type")
+  categoryId        String   @map("category_id")
+  
+  // Versioning and identification
+  version           String   @default("1.0.0")
+  uniquePath        String?  @unique @map("unique_path") // e.g., 'male/hair/male_hair_001'
+  resourceId        String?  @map("resource_id") // Legacy compatibility with frontend
+  
+  // Pricing and access
+  isPremium         Boolean  @default(false) @map("is_premium")
+  isFree            Boolean  @default(true) @map("is_free")
+  price             Float?
+  
+  // Status and metadata
+  status            AvatarResourceStatus @default(ACTIVE)
+  metadata          Json?    @default("{}")
+  tags              String? @default("")
+  keywords          String? @default("")
+  
+  // Audit fields
+  uploadedByAdminId String?  @map("uploaded_by_admin_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
+  
+  // Relations
+  category          AvatarCategory @relation(fields: [categoryId], references: [id])
+  uploadedBy        Admin?         @relation("UploadedAvatarResources", fields: [uploadedByAdminId], references: [id])
+  usage             AvatarUsage[]
+  permissions       DeveloperAvatarPermission[] @relation("AvatarResourcePermissions")
+
+  @@map("avatar_resources")
+}
+
+
+
+
+
+// Avatar Usage Tracking
+model AvatarUsage {
+  id               String   @id @default(cuid())
+  avatarResourceId String?  @map("avatar_resource_id")
+  developerId      String?  @map("developer_id")
+  projectId        String?  @map("project_id")
+  action           AvatarUsageAction
+  userAgent        String?
+  ipAddress        String?  @map("ip_address")
+  metadata         Json?    @default("{}")
+  createdAt        DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  avatarResource   AvatarResource?   @relation(fields: [avatarResourceId], references: [id], onDelete: Cascade)
+  developer        Developer?        @relation(fields: [developerId], references: [id])
+  project          Project?          @relation(fields: [projectId], references: [id])
+
+  @@map("avatar_usage")
+}
+
+// Developer Avatar Permissions (for premium content)
+model DeveloperAvatarPermission {
+  id               String   @id @default(cuid())
+  developerId      String   @map("developer_id")
+  avatarResourceId String?  @map("avatar_resource_id")
+  grantedAt        DateTime @default(now()) @map("granted_at")
+  expiresAt        DateTime? @map("expires_at")
+  isPaid           Boolean  @default(false) @map("is_paid")
+  paidAmount       Float? @map("paid_amount")
+  grantedBy        String?  @map("granted_by")
+  reason           String?
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  developer        Developer        @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  avatarResource   AvatarResource?  @relation("AvatarResourcePermissions", fields: [avatarResourceId], references: [id], onDelete: Cascade)
+
+  @@unique([developerId, avatarResourceId])
+  @@map("developer_avatar_permissions")
+}
+
+// Enums for Avatar System
+enum AvatarGender {
+  MALE
+  FEMALE
+  UNISEX
+}
+
+enum AvatarPartType {
+  BODY
+  HAIR
+  TOP
+  BOTTOM
+  SHOES
+  ACCESSORY
+  FULLSET
+}
+
+enum AvatarResourceStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+
+
+enum AvatarUsageAction {
+  LOAD
+  CUSTOMIZE
+  SAVE
+  EXPORT
+}
+
+// Additional relations to existing models
+// These should be added to the existing models in the main schema:
+
+// Add to Admin model:
+// uploadedAvatarResources AvatarResource[] @relation("UploadedAvatarResources")
+
+// Add to Developer model:
+// avatarUsage AvatarUsage[]
+// avatarPermissions DeveloperAvatarPermission[]
+
+// Add to Project model:
+// avatarUsage AvatarUsage[]
