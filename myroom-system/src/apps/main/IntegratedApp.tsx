@@ -167,7 +167,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       try {
         const roomsData = await manifestService.loadRoomsManifest();
         setAvailableRooms(roomsData.rooms || []);
-        
+
         // Set default selected room if available
         if (roomsData.rooms && roomsData.rooms.length > 0) {
           setSelectedRoom(roomsData.rooms[0]);
@@ -176,7 +176,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         console.error('Error loading rooms:', error);
       }
     };
-    
+
     loadRooms();
   }, []);
 
@@ -184,27 +184,27 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   useEffect(() => {
     const loadDefaultScene = async () => {
       try {
-        
+
         // Load default preset from ManifestService
         const defaultPresetResponse = await fetch('/preset/default-preset.json');
         const defaultPreset = await defaultPresetResponse.json();
-        
+
         // Load room from default preset
         if (defaultPreset.room && availableRooms.length > 0) {
           // Prioritize resourceId over path for room loading
-          const roomToLoad = defaultPreset.room.resourceId 
+          const roomToLoad = defaultPreset.room.resourceId
             ? availableRooms.find(room => room.resourceId === defaultPreset.room.resourceId)
             : availableRooms.find(room => room.path === defaultPreset.room.path);
           if (roomToLoad) {
             setSelectedRoom(roomToLoad);
           }
         }
-        
+
         // Load avatar from default preset
         if (defaultPreset.avatar) {
           // Handle different avatar formats
           let avatarConfig = defaultPreset.avatar;
-          
+
           // If avatar parts have resourceId/path structure, prioritize resourceId over path
           if (avatarConfig.parts && typeof avatarConfig.parts.body === 'object') {
             console.log('🔍 [IntegratedApp] Processing avatar parts from default-preset.json:', avatarConfig.parts);
@@ -232,16 +232,16 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             };
             console.log('🔍 [IntegratedApp] Final converted avatar parts:', convertedParts);
           }
-          
+
           console.log('🔍 [IntegratedApp] Setting avatarConfig:', avatarConfig);
           setAvatarConfig(avatarConfig);
         }
-        
+
         // Load items from default preset
         if (defaultPreset.items) {
           setLoadedItems(defaultPreset.items);
         }
-        
+
         console.log('Default scene loaded successfully from ManifestService:', defaultPreset);
       } catch (error) {
         console.error('Error loading default scene:', error);
@@ -249,7 +249,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         setAvatarConfig(getDefaultConfigForGender('male'));
       }
     };
-    
+
     loadDefaultScene();
   }, [availableRooms]);
 
@@ -277,7 +277,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           .catch(err => console.error('Fallback item loading also failed:', err));
       }
     };
-    
+
     loadItems();
   }, []);
 
@@ -512,8 +512,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           // Check if it's the new format with room, avatar, and items
           if (data.version && data.room && data.avatar && data.items) {
             // Load room
-            const roomToLoad = availableRooms.find(room => 
-              room.resourceId === data.room.resourceId || 
+            const roomToLoad = availableRooms.find(room =>
+              room.resourceId === data.room.resourceId ||
               room.path === data.room.path
             );
             if (roomToLoad) {
@@ -564,7 +564,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     const selectedItemToAdd = selectedItemPerCategory[selectedCategory];
     if (!selectedItemToAdd) return;
     const newItem: LoadedItem = {
-      id: `item_${Date.now()}` ,
+      id: `item_${Date.now()}`,
       name: selectedItemToAdd.name,
       path: selectedItemToAdd.path,
       resourceId: selectedItemToAdd.resourceId,
@@ -650,7 +650,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
               src="/icon/petarainlogo.png"
               alt="Petarainsoft - MyRoom Service"
               style={{ height: '40px', verticalAlign: 'middle', cursor: 'pointer' }}
-              onClick={() => window.location.reload()} // Refresh the page when clicking the logo
+              onClick={() => window.location.reload()}
             />
           </h1>
           <nav className="main-nav">
@@ -658,17 +658,29 @@ const InteractiveRoomWithAvatar: React.FC = () => {
               href="#"
               onClick={(e) => {
                 e.preventDefault();
-                window.location.reload(); // Refresh the page when clicking Home
+                window.location.reload();
               }}
-            >Home</a>
-            <a href="#" onClick={(e) => {
-              e.preventDefault();
-              document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' });
-            }}>Services</a>
-            <a href="#" onClick={(e) => {
-              e.preventDefault();
-              document.getElementById('footer-section')?.scrollIntoView({ behavior: 'smooth' });
-            }}>About</a>
+            >
+              Home
+            </a>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('features-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              Services
+            </a>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('footer-section')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              About
+            </a>
           </nav>
         </div>
       </header>
@@ -681,12 +693,16 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             <h2>Welcome to MyRoom Service</h2>
             <p>Explore our 3D room and avatar system embedded seamlessly into any website</p>
           </div>
-          <div><br></br></div>
-          <div><br></br></div>
+          <div>
+            <br />
+          </div>
+          <div>
+            <br />
+          </div>
           <div className="container">
-            {/* <h3>Ready to Get Started?</h3> */}
-            {/* <p>It only takes a couple of minutes to integrate our 3D room and avatar into your website.</p> */}
-            <button className="cta-button" onClick={() => setShowIntegrationGuide(true)}>Get Started Now</button>
+            <button className="cta-button" onClick={() => setShowIntegrationGuide(true)}>
+              Get Started Now
+            </button>
           </div>
         </section>
 
@@ -716,36 +732,39 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     onToggleRoomPanel={handleToggleRoomOverlay}
                     onToggleFullscreen={handleToggleFullscreen}
                   />
-
-
-
                 </div>
 
                 {/* Movement Instructions */}
-                <div className="movement-instructions" style={{
-                  position: 'absolute',
-                  bottom: '20px',
-                  left: '20px',
-                  fontSize: '0.9em',
-                  textAlign: 'left',
-                  padding: '10px',
-                  background: 'rgba(249, 249, 249, 0.8)',
-                  borderRadius: '4px',
-                  zIndex: 1000,
-                  boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-                  backdropFilter: 'blur(5px)'
-                }}>
-                  <strong>Control instructions:</strong><br />
+                <div
+                  className="movement-instructions"
+                  style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    left: '20px',
+                    fontSize: '0.9em',
+                    textAlign: 'left',
+                    padding: '10px',
+                    background: 'rgba(249, 249, 249, 0.8)',
+                    borderRadius: '4px',
+                    zIndex: 1000,
+                    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(5px)',
+                  }}
+                >
+                  <strong>Control instructions:</strong>
+                  <br />
                   <span>
                     Click and hold the left mouse button to orbit the camera <br />
-                    Double-click to move your character  <br />
-                    {/* Mouse right Click hold / 2 fingers to pan camera */}
+                    Double-click to move your character
                   </span>
                 </div>
 
                 {/* Integrated UI Controls Overlay - Docked to Right */}
                 {showAvatarOverlay && (
-                  <div className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''}`}>
+                  <div
+                    className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
+                      }`}
+                  >
                     {/* Avatar Controls */}
                     {availablePartsData[avatarConfig.gender] ? (
                       <div className="control-section">
@@ -753,7 +772,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                           <h3>👥 Avatar</h3>
                         </div>
                         <div className="parts-grid">
-                          {/* Gender Control as first item */}
+                          {/* Gender Control */}
                           <div className="control-group compact-control">
                             <div className="control-row">
                               <label htmlFor="gender-select">Gender:</label>
@@ -767,10 +786,16 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                               </select>
                             </div>
                           </div>
+
                           {/* Render selectable parts */}
-                          {Object.entries(availablePartsData[avatarConfig.gender].selectableParts).map(([partType, items]: [string, any[]]) => {
-                            const currentSelection = avatarConfig.parts[partType] || null;
-                            const currentColor = avatarConfig.colors[partType] || availablePartsData[avatarConfig.gender].defaultColors[partType] || "#ffffff";
+                          {Object.entries(
+                            availablePartsData[avatarConfig.gender].selectableParts
+                          ).map(([partType, items]: [string, any[]]) => {
+                            const currentSelection = avatarConfig.parts[partType] || '';
+                            const currentColor =
+                              avatarConfig.colors[partType] ||
+                              availablePartsData[avatarConfig.gender].defaultColors[partType] ||
+                              '#ffffff';
                             return (
                               <div key={partType} className="control-group">
                                 <div className="control-row">
@@ -779,20 +804,20 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                                   </label>
                                   <select
                                     id={`${partType}-select`}
-                                    value={currentSelection || ""}
+                                    value={currentSelection}
                                     onChange={(e) => {
                                       const value = e.target.value;
-                                      handlePartChange(partType, value === "" ? null : value);
+                                      handlePartChange(partType, value === '' ? null : value);
                                     }}
                                   >
                                     {items.map((item: any, index: number) => (
-                                      <option key={index} value={item.fileName || ""}>
+                                      <option key={index} value={item.fileName || ''}>
                                         {item.name}
                                       </option>
                                     ))}
                                   </select>
                                 </div>
-                                {/* Uncomment for color picker
+                                {/* Color picker (optional)
                               <div className="control-row">
                                 <label htmlFor={`${partType}-color`}>Color:</label>
                                 <input
@@ -801,11 +826,13 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                                   value={currentColor}
                                   onChange={(e) => handleColorChange(partType, e.target.value)}
                                 />
-                              </div> */}
+                              </div>
+                              */}
                               </div>
                             );
                           })}
                         </div>
+
                         {/* Save/Load Controls */}
                         <div className="control-group">
                           <button onClick={handleSaveAvatar} className="save-button">
@@ -832,18 +859,20 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 )}
 
                 {showRoomOverlay && (
-                  <div className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''}`}>
+                  <div
+                    className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
+                      }`}
+                  >
                     {/* Room Controls */}
                     <div className="control-section">
                       <div className="section-header">
                         <h3>🏠 Room</h3>
                       </div>
                       <div className="room-selector">
-                        {/* <label>Select Room:</label> */}
                         <select
                           value={selectedRoom.resourceId}
                           onChange={(e) => {
-                            const room = availableRooms.find(r => r.resourceId === e.target.value);
+                            const room = availableRooms.find((r) => r.resourceId === e.target.value);
                             if (room) setSelectedRoom(room);
                           }}
                           className="room-select"
@@ -855,11 +884,6 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                           ))}
                         </select>
                       </div>
-                      {/* <div className="camera-controls">
-                          <button onClick={() => integratedSceneRef.current?.resetCamera()} className="reset-camera-btn">
-                            📷 Reset Camera View
-                          </button>
-                        </div> */}
                     </div>
 
                     {/* Items Controls */}
@@ -867,190 +891,156 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       <div className="section-header">
                         <h3>🪑 Categories</h3>
                       </div>
-                  {/* Single-panel toggle: show either category or items panel */}
-                  <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-                    {/* Show Category Panel if no category is selected */}
-                    {!selectedCategory && (
-                      <div style={{ minWidth: 140, flex: '0 0 220px' }}>
-                        <div className="item-categories" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
-                          {categories.map(category => (
-                            <button
-                              key={category}
-                              className={`item-category-btn`}
-                              style={{
-                                padding: '8px 14px',
-                                borderRadius: 6,
-                                border: '1px solid #d9d9d9',
-                                background: '#fff',
-                                color: '#333',
-                                cursor: 'pointer',
-                                fontWeight: 500,
-                                fontSize: 13,
-                                transition: 'all 0.2s',
-                                outline: 'none',
-                                width: 105,
-                                maxWidth: 110,
-                                boxSizing: 'border-box',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                whiteSpace: 'nowrap',
-                              }}
-                              onClick={() => setSelectedCategory(category)}
-                            >
-                              {category}
-                            </button>
-                          ))}
-                      {/* Category List */}
-                      <div className="item-categories" style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                        {categories.map(category => (
-                          <button
-                            key={category}
-                            className={`item-category-btn${selectedCategory === category ? ' selected' : ''}`}
-                            style={{
-                              padding: '5px 14px 8px',
-                              borderRadius: 12,
-                              border: '1px solid #d9d9d9',
-                              background: selectedCategory === category ? '#1890ff' : '#fff',
-                              color: selectedCategory === category ? '#fff' : '#333',
-                              cursor: 'pointer',
-                              fontWeight: 500,
-                              fontSize: 14,
-                              transition: 'all 0.2s',
-                              marginBottom: 2
-                            }}
-                            onClick={() => setSelectedCategory(category)}
-                          >
-                            {category}
-                          </button>
-                        ))}
-                      </div>
-                      {/* Item List for selected category */}
-                      {selectedCategory && (
-                        <div className="item-selector" style={{ marginBottom: 12 }}>
-                          <div className="item-list-buttons" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                            {filteredItems.map((item) => (
-                              <button
-                                key={item.resourceId || item.path}
-                                type="button"
-                                className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId ? ' selected' : ''}`}
-                                style={{
-                                  padding: '8px 12px',
-                                  borderRadius: 6,
-                                  border: selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId ? '2px solid #1890ff' : '1px solid #d9d9d9',
-                                  background: selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId ? '#e6f7ff' : '#fff',
-                                  color: '#333',
-                                  textAlign: 'left',
-                                  fontWeight: 400,
-                                  fontSize: 14,
-                                  cursor: 'pointer',
-                                  outline: 'none',
-                                  transition: 'all 0.2s',
-                                  marginBottom: 2
-                                }}
-                                onClick={() => {
-                                  setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: item }));
-                                }}
-                              >
-                                {item.name}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
 
-                    {/* Show Items Panel if a category is selected */}
-                    {selectedCategory && (
-                      <div
-                        style={{
-                          minWidth: 220,
-                          flex: '0 0 220px',
-                          background: '#fafbfc',
-                          padding: 12,
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: 10,
-                        }}
-                      >
-                        {/* Back button */}
-                        <button
-                          onClick={() => setSelectedCategory(null)}
-                          style={{
-                            alignSelf: 'flex-start',
-                            marginBottom: 8,
-                            background: 'none',
-                            border: 'none',
-                            color: '#1890ff',
-                            fontSize: 18,
-                            fontWeight: 500,
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 4,
-                            padding: 0,
-                          }}
-                        >
-                          <span style={{ fontSize: 20, marginRight: 4 }}>←</span> Back
-                        </button>
-                        <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 16 }}>
-                          {selectedCategory}
-                        </div>
-                        <div className="item-list-buttons" style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 }}>
-                          {filteredItems.map((item) => (
-                            <button
-                              key={item.path}
-                              type="button"
-                              className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.path === item.path ? ' selected' : ''}`}
+                      {/* Single-panel toggle: show either category list or items list */}
+                      <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                        {!selectedCategory ? (
+                          // Category panel
+                          <div style={{ minWidth: 140, flex: '0 0 220px' }}>
+                            <div
+                              className="item-categories"
                               style={{
-                                padding: '8px 12px',
-                                borderRadius: 6,
-                                border: selectedItemPerCategory[selectedCategory]?.path === item.path ? '2px solid #1890ff' : '1px solid #d9d9d9',
-                                background: selectedItemPerCategory[selectedCategory]?.path === item.path ? '#e6f7ff' : '#fff',
-                                color: '#333',
-                                textAlign: 'left',
-                                fontWeight: 400,
-                                fontSize: 14,
-                                cursor: 'pointer',
-                                outline: 'none',
-                                transition: 'all 0.2s',
-                                marginBottom: 2
-                              }}
-                              onClick={() => {
-                                setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: item }));
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                gap: 8,
+                                justifyContent: 'center',
                               }}
                             >
-                              {item.name}
+                              {categories.map((category) => (
+                                <button
+                                  key={category}
+                                  className="item-category-btn"
+                                  style={{
+                                    padding: '8px 14px',
+                                    borderRadius: 6,
+                                    border: '1px solid #d9d9d9',
+                                    background: '#fff',
+                                    color: '#333',
+                                    cursor: 'pointer',
+                                    fontWeight: 500,
+                                    fontSize: 13,
+                                    transition: 'all 0.2s',
+                                    outline: 'none',
+                                    width: 105,
+                                    maxWidth: 110,
+                                    boxSizing: 'border-box',
+                                    textOverflow: 'ellipsis',
+                                    overflow: 'hidden',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                  onClick={() => setSelectedCategory(category)}
+                                >
+                                  {category}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          // Items panel
+                          <div
+                            style={{
+                              minWidth: 220,
+                              flex: '0 0 220px',
+                              background: '#fafbfc',
+                              padding: 12,
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: 10,
+                            }}
+                          >
+                            {/* Back button */}
+                            <button
+                              onClick={() => setSelectedCategory(null)}
+                              style={{
+                                alignSelf: 'flex-start',
+                                marginBottom: 8,
+                                background: 'none',
+                                border: 'none',
+                                color: '#1890ff',
+                                fontSize: 18,
+                                fontWeight: 500,
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 4,
+                                padding: 0,
+                              }}
+                            >
+                              <span style={{ fontSize: 20, marginRight: 4 }}>←</span> Back
                             </button>
-                          ))}
-                        </div>
-                        <button
-                          onClick={handleAddItem}
-                          className="add-item-btn"
-                          disabled={!selectedCategory || !selectedItemPerCategory[selectedCategory]}
-                          style={{
-                            marginTop: 8,
-                            padding: '8px 16px',
-                            borderRadius: 6,
-                            background: '#1890ff',
-                            color: '#fff',
-                            border: 'none',
-                            fontWeight: 500,
-                            fontSize: 15,
-                            cursor: !selectedCategory || !selectedItemPerCategory[selectedCategory] ? 'not-allowed' : 'pointer',
-                            opacity: !selectedCategory || !selectedItemPerCategory[selectedCategory] ? 0.6 : 1,
-                            transition: 'all 0.2s',
-                          }}
-                        >
-                          ➕ Add Item
-                        </button>
+
+                            <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 16 }}>
+                              {selectedCategory}
+                            </div>
+
+                            <div
+                              className="item-list-buttons"
+                              style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 }}
+                            >
+                              {filteredItems.map((item) => (
+                                <button
+                                  key={item.resourceId || item.path}
+                                  type="button"
+                                  className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.path === item.path ||
+                                      selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId
+                                      ? ' selected'
+                                      : ''
+                                    }`}
+                                  style={{
+                                    padding: '8px 12px',
+                                    borderRadius: 6,
+                                    border:
+                                      selectedItemPerCategory[selectedCategory]?.path === item.path ||
+                                        selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId
+                                        ? '2px solid #1890ff'
+                                        : '1px solid #d9d9d9',
+                                    background:
+                                      selectedItemPerCategory[selectedCategory]?.path === item.path ||
+                                        selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId
+                                        ? '#e6f7ff'
+                                        : '#fff',
+                                    color: '#333',
+                                    textAlign: 'left',
+                                    fontWeight: 400,
+                                    fontSize: 14,
+                                    cursor: 'pointer',
+                                    outline: 'none',
+                                    transition: 'all 0.2s',
+                                    marginBottom: 2,
+                                  }}
+                                  onClick={() => {
+                                    setSelectedItemPerCategory((prev) => ({ ...prev, [selectedCategory]: item }));
+                                  }}
+                                >
+                                  {item.name}
+                                </button>
+                              ))}
+                            </div>
+
+                            <button
+                              onClick={handleAddItem}
+                              className="add-item-btn"
+                              disabled={!selectedItemPerCategory[selectedCategory]}
+                              style={{
+                                marginTop: 8,
+                                padding: '8px 16px',
+                                borderRadius: 6,
+                                background: '#1890ff',
+                                color: '#fff',
+                                border: 'none',
+                                fontWeight: 500,
+                                fontSize: 15,
+                                cursor: !selectedItemPerCategory[selectedCategory] ? 'not-allowed' : 'pointer',
+                                opacity: !selectedItemPerCategory[selectedCategory] ? 0.6 : 1,
+                                transition: 'all 0.2s',
+                              }}
+                            >
+                              ➕ Add Item
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                      {/* <div className="item-actions">
-                        <button onClick={handleAddItem} className="add-item-btn" disabled={!selectedCategory || !selectedItemPerCategory[selectedCategory]}>
-                          ➕ Add Item
-                        </button>
-                      </div> */}
+
                       <div className="loaded-items-list">
                         <hr />
                         <h4>Items in Room ({loadedItems.length}):</h4>
@@ -1061,10 +1051,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             {loadedItems.map((item) => (
                               <li key={item.id} className="item-entry">
                                 <span>{item.name}</span>
-                                <button
-                                  onClick={() => handleRemoveItem(item.id)}
-                                  className="remove-item-btn"
-                                >
+                                <button onClick={() => handleRemoveItem(item.id)} className="remove-item-btn">
                                   ✕
                                 </button>
                               </li>
@@ -1080,7 +1067,6 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     </div>
                   </div>
                 )}
-
               </div>
             </div>
           </div>
@@ -1088,35 +1074,32 @@ const InteractiveRoomWithAvatar: React.FC = () => {
 
         {/* Selected Item Transform Panel */}
         {selectedItem && (
-          <div className="selected-item-panel" style={{
-            position: 'fixed',
-            top: '50%',
-            right: '10px',
-            transform: 'translateY(-50%)',
-            background: 'rgba(0, 0, 0, 0.9)',
-            color: 'white',
-            padding: '15px',
-            borderRadius: '8px',
-            minWidth: '250px',
-            zIndex: 1000,
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-            display: 'none'
-          }}>
+          <div
+            className="selected-item-panel"
+            style={{
+              position: 'fixed',
+              top: '50%',
+              right: '10px',
+              transform: 'translateY(-50%)',
+              background: 'rgba(0, 0, 0, 0.9)',
+              color: 'white',
+              padding: '15px',
+              borderRadius: '8px',
+              minWidth: '250px',
+              zIndex: 1000,
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+              display: 'none',
+            }}
+          >
             <h4 style={{ margin: '0 0 15px 0', color: '#4CAF50' }}>🎯 Selected Item</h4>
             <div style={{ marginBottom: '10px', fontSize: '14px' }}>
               <strong>Name:</strong> {selectedItem.name || 'Unknown Item'}
             </div>
             <div style={{ marginBottom: '15px', fontSize: '14px' }}>
               <strong>Mode:</strong>
-              <span style={{
-                marginLeft: '8px',
-                padding: '2px 8px',
-                borderRadius: '4px',
-                // background: gizmoMode === 'position' ? '#2196F3' : gizmoMode === 'rotation' ? '#FF9800' : '#9C27B0',
-                fontSize: '12px'
-              }}>
+              <span style={{ marginLeft: '8px', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' }}>
                 {gizmoMode === 'position' && 'Move'}
                 {gizmoMode === 'rotation' && 'Rotate'}
                 {gizmoMode === 'scale' && 'Scale'}
@@ -1126,24 +1109,30 @@ const InteractiveRoomWithAvatar: React.FC = () => {
               <div style={{ marginBottom: '5px' }}>
                 <strong>Position:</strong>
                 <div style={{ marginLeft: '10px' }}>
-                  X: {selectedItem.position?.x?.toFixed(2) || '0.00'}<br />
-                  Y: {selectedItem.position?.y?.toFixed(2) || '0.00'}<br />
+                  X: {selectedItem.position?.x?.toFixed(2) || '0.00'}
+                  <br />
+                  Y: {selectedItem.position?.y?.toFixed(2) || '0.00'}
+                  <br />
                   Z: {selectedItem.position?.z?.toFixed(2) || '0.00'}
                 </div>
               </div>
               <div style={{ marginBottom: '5px' }}>
                 <strong>Rotation:</strong>
                 <div style={{ marginLeft: '10px' }}>
-                  X: {selectedItem.rotation?.x?.toFixed(2) || '0.00'}<br />
-                  Y: {selectedItem.rotation?.y?.toFixed(2) || '0.00'}<br />
+                  X: {selectedItem.rotation?.x?.toFixed(2) || '0.00'}
+                  <br />
+                  Y: {selectedItem.rotation?.y?.toFixed(2) || '0.00'}
+                  <br />
                   Z: {selectedItem.rotation?.z?.toFixed(2) || '0.00'}
                 </div>
               </div>
               <div style={{ marginBottom: '15px' }}>
                 <strong>Scale:</strong>
                 <div style={{ marginLeft: '10px' }}>
-                  X: {selectedItem.scaling?.x?.toFixed(2) || '1.00'}<br />
-                  Y: {selectedItem.scaling?.y?.toFixed(2) || '1.00'}<br />
+                  X: {selectedItem.scaling?.x?.toFixed(2) || '1.00'}
+                  <br />
+                  Y: {selectedItem.scaling?.y?.toFixed(2) || '1.00'}
+                  <br />
                   Z: {selectedItem.scaling?.z?.toFixed(2) || '1.00'}
                 </div>
               </div>
@@ -1159,7 +1148,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 borderRadius: '4px',
                 cursor: 'pointer',
                 fontSize: '12px',
-                transition: 'background-color 0.2s'
+                transition: 'background-color 0.2s',
               }}
               onMouseOver={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = '#d32f2f')}
               onMouseOut={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = '#f44336')}
@@ -1190,36 +1179,24 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           </div>
         </section>
 
-        {/* Simple Info Section */}
-        {/* <section className="info-section">
-          <div className="container">
-            <h3>🚀 Built with Modern Technology</h3>
-            <p>This 3D experience is powered by Babylon.js and React, providing smooth 60fps performance across all modern browsers. Perfect for embedding interactive 3D content into any website.</p>
-          </div>
-        </section> */}
-
-        {/* <section className="cta-section">
-          <div className="container">
-            <h3>Ready to Get Started?</h3>
-            <p>It only takes a couple of minutes to integrate our 3D room and avatar into your website.</p>
-            <button className="cta-button" onClick={() => setShowIntegrationGuide(true)}>Get Started Now</button>
-          </div>
-        </section> */}
-
         {/* Integration Guide Modal */}
         {showIntegrationGuide && (
-          <div className={`integration-guide-modal ${isClosing ? 'fade-out' : ''}`}
+          <div
+            className={`integration-guide-modal ${isClosing ? 'fade-out' : ''}`}
             onClick={(e) => {
-              // Close modal if the click is outside the modal content
               if (e.target === e.currentTarget) {
                 closeIntegrationGuide();
               }
-            }}>
+            }}
+          >
             <div className="modal-content">
               <div className="modal-header">
                 <h2>Integration Guide</h2>
-                <button className="close-button" onClick={() => closeIntegrationGuide()}>×</button>
+                <button className="close-button" onClick={closeIntegrationGuide}>
+                  ×
+                </button>
               </div>
+
               <div className="modal-body">
                 <div className="integration-tabs">
                   <div className="tab-headers">
@@ -1238,31 +1215,36 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                   </div>
 
                   <div className="tab-content">
+                    {/* Iframe tab */}
                     <div className={`tab-pane ${activeTab === 'iframe' ? 'active' : ''}`}>
                       <h4>Demo Page</h4>
-                      <p><a href="https://myroom.petarainsoft.com/iframe-demo.html">Iframe integration demo</a></p>
+                      <p>
+                        <a href="https://myroom.petarainsoft.com/iframe-demo.html">Iframe integration demo</a>
+                      </p>
                       <h4>Instruction</h4>
                       <p>The simplest way to embed MyRoom into the website is using an iframe.</p>
 
                       <div className="code-block">
-                        <pre><code>
-                          {`<iframe 
+                        <pre>
+                          <code>{`<iframe 
   src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female" 
   width="800" 
   height="600" 
   style="border: none; border-radius: 8px;" 
   allow="fullscreen">
-</iframe>`}
-                        </code></pre>
+</iframe>`}</code>
+                        </pre>
                         <button
                           className="copy-button"
-                          onClick={() => handleCopyCode(`<iframe 
+                          onClick={() =>
+                            handleCopyCode(`<iframe 
   src="${domainConfig.baseDomain}/embed.html?room=/models/rooms/cate001/MR_KHROOM_0001.glb&gender=female" 
   width="800" 
   height="600" 
   style="border: none; border-radius: 8px;" 
   allow="fullscreen">
-</iframe>`)}
+</iframe>`)
+                          }
                         >
                           Copy Code
                         </button>
@@ -1283,9 +1265,12 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                           <tr>
                             <td>room</td>
                             <td>Path to the room model</td>
-                            <td>/models/rooms/cate001/MR_KHROOM_0001.glb
-                              <br />/models/rooms/cate001/MR_KHROOM_0002.glb
-                              <br />/models/rooms/cate002/MR_KHROOM_0003glb
+                            <td>
+                              /models/rooms/cate001/MR_KHROOM_0001.glb
+                              <br />
+                              /models/rooms/cate001/MR_KHROOM_0002.glb
+                              <br />
+                              /models/rooms/cate002/MR_KHROOM_0003glb
                             </td>
                           </tr>
                           <tr>
@@ -1293,69 +1278,26 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             <td>Avatar gender (male/female)</td>
                             <td>female</td>
                           </tr>
-                          {/* <tr>
-                            <td>autoplay</td>
-                            <td>Auto-start the scene (true/false)</td>
-                            <td>true</td>
-                          </tr> */}
                         </tbody>
                       </table>
-
-                      {/* <h4>Communication with Parent Window</h4>
-                      <p>The iframe can communicate with your parent window using postMessage:</p>
-                      
-                      <div className="code-block">
-                        <pre><code>
-{`// Listen for messages from the embedded MyRoom
-window.addEventListener('message', (event) => {
-  if (event.data.type === 'MYROOM_READY') {
-    console.log('MyRoom is ready!');
-  }
-  if (event.data.type === 'AVATAR_CHANGED') {
-    console.log('Avatar changed:', event.data.avatar);
-  }
-});
-
-// Send commands to MyRoom
-document.getElementById('myRoomIframe').contentWindow.postMessage({
-  type: 'CHANGE_ROOM',
-  roomPath: '/models/rooms/cate001/MR_KHROOM_0002.glb'
-}, '*');`}
-                        </code></pre>
-                        <button 
-                           className="copy-button"
-                           onClick={() => handleCopyCode(`// Listen for messages from the embedded MyRoom
-window.addEventListener('message', (event) => {
-  if (event.data.type === 'MYROOM_READY') {
-    console.log('MyRoom is ready!');
-  }
-  if (event.data.type === 'AVATAR_CHANGED') {
-    console.log('Avatar changed:', event.data.avatar);
-  }
-});
-
-// Send commands to MyRoom
-document.getElementById('myRoomIframe').contentWindow.postMessage({
-  type: 'CHANGE_ROOM',
-  roomPath: '/models/rooms/cate001/MR_KHROOM_0002.glb'
-}, '*');`)}
-                         >
-                           Copy Code
-                         </button>
-                      </div> */}
                     </div>
 
+                    {/* Web component tab */}
                     <div className={`tab-pane ${activeTab === 'webcomponent' ? 'active' : ''}`}>
                       <h4>Demo Page</h4>
-                      <p><a href="https://myroom.petarainsoft.com/webcomponent-simple-demo.html">Web Component integration demo</a> </p>
+                      <p>
+                        <a href="https://myroom.petarainsoft.com/webcomponent-simple-demo.html">
+                          Web Component integration demo
+                        </a>
+                      </p>
                       <h4>Instruction</h4>
-                      <p>You can use Web Componen for coming advanced features and deeper integration.</p>
+                      <p>You can use Web Component for advanced features and deeper integration.</p>
 
                       <p>Step 1: Include the Script.</p>
                       <div className="code-block">
-                        <pre><code>
-                          {`<script src="${getWebComponentUrl()}"></script>`}
-                        </code></pre>
+                        <pre>
+                          <code>{`<script src="${getWebComponentUrl()}"></script>`}</code>
+                        </pre>
                         <button
                           className="copy-button"
                           onClick={() => handleCopyCode(`<script src="${getWebComponentUrl()}"></script>`)}
@@ -1364,26 +1306,28 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                         </button>
                       </div>
 
-                      <p>Step 2:  Use the Component.</p>
+                      <p>Step 2: Use the Component.</p>
                       <div className="code-block">
-                        <pre><code>
-                          {`<my-room-scene> 
+                        <pre>
+                          <code>{`<my-room-scene 
   id="mainScene"
   room="/models/rooms/cate001/MR_KHROOM_0001.glb"
   gender="female"
   width="100%"
   height="600px">
-</my-room-scene>`}
-                        </code></pre>
+</my-room-scene>`}</code>
+                        </pre>
                         <button
                           className="copy-button"
-                          onClick={() => handleCopyCode(`<my-room-scene> 
+                          onClick={() =>
+                            handleCopyCode(`<my-room-scene 
   id="mainScene"
   room="/models/rooms/cate001/MR_KHROOM_0001.glb"
   gender="female"
   width="100%"
   height="600px">
-</my-room-scene>`)}
+</my-room-scene>`)
+                          }
                         >
                           Copy Code
                         </button>
@@ -1408,9 +1352,12 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                           <tr>
                             <td>room</td>
                             <td>Path to the room model</td>
-                            <td>/models/rooms/cate001/MR_KHROOM_0001.glb
-                              <br />/models/rooms/cate001/MR_KHROOM_0002.glb
-                              <br />/models/rooms/cate002/MR_KHROOM_0003.glb
+                            <td>
+                              /models/rooms/cate001/MR_KHROOM_0001.glb
+                              <br />
+                              /models/rooms/cate001/MR_KHROOM_0002.glb
+                              <br />
+                              /models/rooms/cate002/MR_KHROOM_0003.glb
                             </td>
                           </tr>
                           <tr>
@@ -1435,8 +1382,8 @@ document.getElementById('myRoomIframe').contentWindow.postMessage({
                       <p>Interact with the component using JavaScript:</p>
 
                       <div className="code-block">
-                        <pre><code>
-                          {`// Get reference to the component
+                        <pre>
+                          <code>{`// Get reference to the component
 const mainScene = document.getElementById('mainScene');
 
 // Change avatar gender
@@ -1480,11 +1427,12 @@ mainScene.addEventListener('scene-ready', (event) => {
 
 mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
-});`}
-                        </code></pre>
+});`}</code>
+                        </pre>
                         <button
                           className="copy-button"
-                          onClick={() => handleCopyCode(`// Get reference to the component
+                          onClick={() =>
+                            handleCopyCode(`// Get reference to the component
 const mainScene = document.getElementById('mainScene');
 
 // Change avatar gender
@@ -1537,51 +1485,22 @@ mainScene.addEventListener('scene-ready', (event) => {
 
 mainScene.addEventListener('avatar-changed', (event) => {
   console.log('Avatar changed:', event.detail);
-});`)}
+});`)
+                          }
                         >
                           Copy Code
                         </button>
                       </div>
-
-                      {/* <h4>4. Styling</h4>
-                      <p>The component can be styled using CSS:</p>
-                      
-                      <div className="code-block">
-                        <pre><code>
-{`my-room-scene {
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-}`}
-                        </code></pre>
-                        <button 
-                           className="copy-button"
-                           onClick={() => handleCopyCode(`my-room-scene {
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-}`)}
-                         >
-                           Copy Code
-                         </button>
-                      </div> */}
                     </div>
                   </div>
                 </div>
 
-                {/* <div className="integration-notes">
-                  <h4>📝 Notes</h4>
-                  <ul>
-                    <li>Ensure your server has proper CORS headers set up if hosting on a different domain.</li>
-                    <li>The Web Component requires modern browsers that support Custom Elements v1.</li>
-                    <li>For production use, we recommend implementing user authentication for the embed.</li>
-                    <li>See our <a href="#">full documentation</a> for more advanced integration options.</li>
-                  </ul>
-                </div> */}
-              </div>
-              <div className="modal-footer">
-                <button className="primary-button" onClick={() => closeIntegrationGuide()}>Close</button>
-                {/* <a href="https://petarainsoft.com" className="secondary-button" target="_blank" rel="noopener noreferrer">Contact Support</a> */}
+                {/* Footer of modal */}
+                <div className="modal-footer">
+                  <button className="primary-button" onClick={closeIntegrationGuide}>
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1595,25 +1514,28 @@ mainScene.addEventListener('avatar-changed', (event) => {
             <div id="feature-section-id" className="footer-section">
               <h4>Company</h4>
               <ul>
-                <li><a href="https://petarainsoft.com">About Us</a></li>
-                {/* <li><a href="https://petarainsoft.com">Careers</a></li> */}
-                {/* <li><a href="#">Press</a></li> */}
+                <li>
+                  <a href="https://petarainsoft.com">About Us</a>
+                </li>
               </ul>
             </div>
             <div className="footer-section">
               <h4>Products</h4>
               <ul>
-                <li><a href="https://petarainsoft.com">3D Graphics Services</a></li>
-                <li><a href="https://petarainsoft.com">Web Services</a></li>
-                {/* <li><a href="#">API</a></li> */}
+                <li>
+                  <a href="https://petarainsoft.com">3D Graphics Services</a>
+                </li>
+                <li>
+                  <a href="https://petarainsoft.com">Web Services</a>
+                </li>
               </ul>
             </div>
             <div className="footer-section">
               <h4>Support</h4>
               <ul>
-                {/* <li><a href="#">Documentation</a></li> */}
-                {/* <li><a href="#">Help Center</a></li> */}
-                <li><a href="https://petarainsoft.com">Contact</a></li>
+                <li>
+                  <a href="https://petarainsoft.com">Contact</a>
+                </li>
               </ul>
             </div>
           </div>
@@ -1624,6 +1546,7 @@ mainScene.addEventListener('avatar-changed', (event) => {
       </footer>
     </div>
   );
+
 };
 
 // CSS for Integration Guide Modal
