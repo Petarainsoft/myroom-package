@@ -1,1 +1,0 @@
-export { default as TempAvatarPreset } from './testAvatarPreset.json';

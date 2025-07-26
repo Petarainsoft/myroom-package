@@ -1,9 +1,0 @@
-{
-    "format":3.0,
-    "main":{
-        "type":"Particle",
-
-        "systems":[
-        ]
-    }
-}
