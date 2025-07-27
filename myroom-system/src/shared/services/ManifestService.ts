@@ -1,4 +1,5 @@
 // ManifestService - Service for loading manifest data
+import { domainConfig } from '../config/appConfig';
 
 interface Room {
   id?: string;
@@ -37,8 +38,8 @@ class ManifestService {
   private constructor() {
     // Configuration for API access
     // These can be set via window.MYROOM_CONFIG or environment variables
-    this.apiBaseUrl = this.getConfigValue('apiBaseUrl', 'http://localhost:3001');
-    this.apiKey = this.getConfigValue('apiKey', '');
+    this.apiBaseUrl = this.getConfigValue('apiBaseUrl', domainConfig.backendDomain);
+    this.apiKey = this.getConfigValue('apiKey', domainConfig.apiKey);
     this.projectId = this.getConfigValue('projectId', '');
   }
 

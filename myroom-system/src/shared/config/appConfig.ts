@@ -30,13 +30,24 @@ const getConfiguredApiKey = () => {
   if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.apiKey) {
     return window.MYROOM_CONFIG.apiKey;
   }
-  return ''; // Default empty, should be set securely
+  // Default API key for development
+  return 'pk_9dd7a67c7c6d69c7f5ae603bd78656944d61667257ce60c59a676d35ccb6a16f';
 };
 const getConfiguredUseResourceId = () => {
   if (typeof window !== 'undefined' && window.MYROOM_CONFIG && typeof window.MYROOM_CONFIG.useResourceId === 'boolean') {
     return window.MYROOM_CONFIG.useResourceId;
   }
   return false; // Default to false for backward compatibility
+};
+const getConfiguredProjectId = () => {
+  if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.projectId) {
+    return window.MYROOM_CONFIG.projectId;
+  }
+  // Check environment variable safely
+  if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_PROJECT_ID) {
+    return process.env.REACT_APP_PROJECT_ID;
+  }
+  return 'default-project'; // Default project ID
 };
 
 // Static boolean to temporarily disable local GLB resource loading
@@ -51,6 +62,7 @@ export const domainConfig = {
   backendDomain: getConfiguredBackendDomain(),
   apiKey: getConfiguredApiKey(),
   useResourceId: getConfiguredUseResourceId(),
+  projectId: getConfiguredProjectId(),
   paths: {
     webComponent: '/dist/myroom-webcomponent.umd.js',
     embedHtml: '/embed.html',

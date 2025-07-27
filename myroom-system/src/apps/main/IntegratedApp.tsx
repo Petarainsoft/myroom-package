@@ -6,6 +6,7 @@ import { AvatarConfig, AvailableParts, Gender } from '../../shared/types/AvatarT
 import { ActiveMovement, TouchMovement } from '../../shared/types/AvatarTypes';
 import { domainConfig, getEmbedUrl, getWebComponentUrl } from '../../shared/config/appConfig';
 import { manifestService } from '../../shared/services/ManifestService';
+import ApiService from '../../shared/services/ApiService';
 import './App.css';
 
 type AppMode = 'room' | 'avatar' | 'integrated';
@@ -161,47 +162,94 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     }
   }, [loadedItems, selectedItem]);
 
-  // Load available rooms from manifest
+  // Load available rooms from API backend
   useEffect(() => {
     const loadRooms = async () => {
       try {
-        const roomsData = await manifestService.loadRoomsManifest();
-        setAvailableRooms(roomsData.rooms || []);
+        console.log('🏠 [IntegratedApp] Loading rooms from API backend...');
+        const apiService = ApiService.getInstance();
+        const roomsResponse = await apiService.getRooms();
+        
+        // Handle different response formats from backend
+        let roomsData = [];
+        if (Array.isArray(roomsResponse)) {
+          roomsData = roomsResponse;
+        } else if (roomsResponse && roomsResponse.data && Array.isArray(roomsResponse.data)) {
+          roomsData = roomsResponse.data;
+        } else if (roomsResponse && roomsResponse.rooms && Array.isArray(roomsResponse.rooms)) {
+          roomsData = roomsResponse.rooms;
+        } else {
+          console.warn('⚠️ [IntegratedApp] Unexpected rooms response format:', roomsResponse);
+          roomsData = [];
+        }
+        
+        // Transform API room data to match expected format
+        const transformedRooms = roomsData.map((room: any) => ({
+          name: room.name || room.title || `Room ${room.id}`,
+          resourceId: room.resourceId || room.id,
+          path: room.path || room.s3Url // Keep path for backward compatibility
+        }));
+        
+        console.log('🏠 [IntegratedApp] Loaded rooms from API:', transformedRooms);
+        setAvailableRooms(transformedRooms);
 
         // Set default selected room if available
-        if (roomsData.rooms && roomsData.rooms.length > 0) {
-          setSelectedRoom(roomsData.rooms[0]);
+        if (transformedRooms.length > 0) {
+          setSelectedRoom(transformedRooms[0]);
         }
       } catch (error) {
-        console.error('Error loading rooms:', error);
+        console.error('❌ [IntegratedApp] Error loading rooms from API:', error);
+        // Fallback to manifest service if API fails
+        try {
+          console.log('🔄 [IntegratedApp] Falling back to manifest service for rooms...');
+          const roomsData = await manifestService.loadRoomsManifest();
+          setAvailableRooms(roomsData.rooms || []);
+          if (roomsData.rooms && roomsData.rooms.length > 0) {
+            setSelectedRoom(roomsData.rooms[0]);
+          }
+        } catch (manifestError) {
+          console.error('❌ [IntegratedApp] Manifest fallback also failed:', manifestError);
+        }
       }
     };
 
     loadRooms();
   }, []);
 
-  // Load default scene from ManifestService on startup
+  // Load default scene (full 3D scene data) from manifest service on startup
   useEffect(() => {
     const loadDefaultScene = async () => {
       try {
-
-        // Load default preset from ManifestService
+        console.log('🎬 [IntegratedApp] Loading default scene from manifest service...');
+        
+        // Load default preset (full 3D scene data) from manifest service
+        // This contains complete scene information including room, avatar, and items
         const defaultPresetResponse = await fetch('/preset/default-preset.json');
         const defaultPreset = await defaultPresetResponse.json();
+        
+        console.log('🎬 [IntegratedApp] Default preset loaded:', defaultPreset);
 
-        // Load room from default preset
+        // Load room configuration from default preset
+        // This sets which room should be selected in the room selector
+        // The actual room data comes from API backend via availableRooms
         if (defaultPreset.room && availableRooms.length > 0) {
+          console.log('🏠 [IntegratedApp] Setting room from default preset:', defaultPreset.room);
           // Prioritize resourceId over path for room loading
           const roomToLoad = defaultPreset.room.resourceId
             ? availableRooms.find(room => room.resourceId === defaultPreset.room.resourceId)
             : availableRooms.find(room => room.path === defaultPreset.room.path);
           if (roomToLoad) {
+            console.log('🏠 [IntegratedApp] Found matching room in API data:', roomToLoad);
             setSelectedRoom(roomToLoad);
+          } else {
+            console.warn('⚠️ [IntegratedApp] Room from preset not found in API data, using first available room');
           }
         }
 
-        // Load avatar from default preset
+        // Load avatar configuration from default preset (scene data)
+        // This contains the complete avatar setup for the scene
         if (defaultPreset.avatar) {
+          console.log('👤 [IntegratedApp] Loading avatar from scene data:', defaultPreset.avatar);
           // Handle different avatar formats
           let avatarConfig = defaultPreset.avatar;
 
@@ -233,19 +281,22 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             console.log('🔍 [IntegratedApp] Final converted avatar parts:', convertedParts);
           }
 
-          console.log('🔍 [IntegratedApp] Setting avatarConfig:', avatarConfig);
+          console.log('👤 [IntegratedApp] Setting avatarConfig from scene data:', avatarConfig);
           setAvatarConfig(avatarConfig);
         }
 
-        // Load items from default preset
+        // Load items from default preset (scene data)
+        // This contains the items that should be placed in the scene
         if (defaultPreset.items) {
+          console.log('📦 [IntegratedApp] Loading items from scene data:', defaultPreset.items);
           setLoadedItems(defaultPreset.items);
         }
 
-        console.log('Default scene loaded successfully from ManifestService:', defaultPreset);
+        console.log('✅ [IntegratedApp] Default scene loaded successfully from manifest service:', defaultPreset);
       } catch (error) {
-        console.error('Error loading default scene:', error);
+        console.error('❌ [IntegratedApp] Error loading default scene from manifest service:', error);
         // Fallback to default configuration if preset fails
+        console.log('🔄 [IntegratedApp] Using fallback avatar configuration');
         setAvatarConfig(getDefaultConfigForGender('male'));
       }
     };
@@ -253,28 +304,34 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     loadDefaultScene();
   }, [availableRooms]);
 
-  // Load available items from ManifestService
+  // Load available items catalog from manifest service
+  // This loads the catalog of items that can be added to the scene
+  // Different from loadedItems which are items already placed in the scene
   useEffect(() => {
     const loadItems = async () => {
       try {
+        console.log('📦 [IntegratedApp] Loading available items catalog from manifest service...');
         const itemsData = await manifestService.loadItemsManifest();
         setAvailableItems(itemsData.items || []);
+        console.log('📦 [IntegratedApp] Available items catalog loaded:', itemsData.items?.length || 0, 'items');
         // Set default selected item if not already set
         if (!selectedItemToAdd && itemsData.items && itemsData.items.length > 0) {
           setSelectedItemToAdd(itemsData.items[0]);
         }
       } catch (error) {
-        console.error('Error loading items from ManifestService:', error);
+        console.error('❌ [IntegratedApp] Error loading items catalog from manifest service:', error);
         // Fallback to direct fetch if ManifestService fails
+        console.log('🔄 [IntegratedApp] Falling back to direct fetch for items catalog...');
         fetch('/manifest/item/items-manifest.json')
           .then((res) => res.json())
           .then((data) => {
             setAvailableItems(data.items || []);
+            console.log('📦 [IntegratedApp] Items catalog loaded via fallback:', data.items?.length || 0, 'items');
             if (!selectedItemToAdd && data.items && data.items.length > 0) {
               setSelectedItemToAdd(data.items[0]);
             }
           })
-          .catch(err => console.error('Fallback item loading also failed:', err));
+          .catch(err => console.error('❌ [IntegratedApp] Fallback item loading also failed:', err));
       }
     };
 
