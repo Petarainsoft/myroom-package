@@ -8,6 +8,8 @@ import { domainConfig, getEmbedUrl, getWebComponentUrl } from '../../shared/conf
 import { manifestService } from '../../shared/services/ManifestService';
 import ApiService from '../../shared/services/ApiService';
 import CacheDebugPanel from '../../shared/components/debug/CacheDebugPanel';
+import { ManifestDropdown } from '../../shared/components/ManifestDropdown';
+import { toast } from 'sonner';
 import './App.css';
 
 type AppMode = 'room' | 'avatar' | 'integrated';
@@ -760,6 +762,73 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     }
   };
 
+  // Manifest handlers
+  const handleManifestSelect = async (presetId: string) => {
+    try {
+      console.log('📋 [IntegratedApp] Loading manifest:', presetId);
+      const preset = await manifestService.getPreset(presetId);
+      
+      if (preset) {
+        // Apply room configuration
+        if (preset.roomConfig && preset.roomConfig.selectedRoom) {
+          const room = availableRooms.find(r => r.resourceId === preset.roomConfig.selectedRoom.resourceId);
+          if (room) {
+            setSelectedRoom(room);
+          }
+        }
+        
+        // Apply avatar configuration
+        if (preset.avatarConfig) {
+          setAvatarConfig(preset.avatarConfig);
+        }
+        
+        // Apply loaded items
+        if (preset.itemsConfig && preset.itemsConfig.loadedItems) {
+          setLoadedItems(preset.itemsConfig.loadedItems);
+        }
+        
+        toast.success(`Manifest "${preset.name}" loaded successfully!`);
+      }
+    } catch (error) {
+      console.error('❌ [IntegratedApp] Error loading manifest:', error);
+      toast.error('Failed to load manifest');
+    }
+  };
+
+  const handleManifestSave = async (manifestName: string) => {
+    try {
+      console.log('📋 [IntegratedApp] Saving manifest:', manifestName);
+      
+      const presetData = {
+        name: manifestName,
+        roomConfig: {
+          selectedRoom
+        },
+        avatarConfig,
+        itemsConfig: {
+          loadedItems
+        }
+      };
+      
+      await manifestService.createPreset(presetData);
+      toast.success(`Manifest "${manifestName}" saved successfully!`);
+    } catch (error) {
+      console.error('❌ [IntegratedApp] Error saving manifest:', error);
+      toast.error('Failed to save manifest');
+    }
+  };
+
+  const handleManifestDelete = async (presetId: string) => {
+    try {
+      console.log('📋 [IntegratedApp] Deleting manifest:', presetId);
+      await manifestService.deletePreset(presetId);
+      toast.success('Manifest deleted successfully!');
+    } catch (error) {
+      console.error('❌ [IntegratedApp] Error deleting manifest:', error);
+      toast.error('Failed to delete manifest');
+    }
+  };
+
   return (
     <div className="website-layout">
       {/* Website Header - Pure Web Content */}
@@ -885,6 +954,18 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
                       }`}
                   >
+                    {/* Manifest Controls */}
+                    <div className="control-section">
+                      <div className="section-header">
+                        <h3>📋 Manifest</h3>
+                      </div>
+                      <ManifestDropdown
+                        onManifestSelect={handleManifestSelect}
+                        onManifestSave={handleManifestSave}
+                        onManifestDelete={handleManifestDelete}
+                      />
+                    </div>
+
                     {/* Avatar Controls */}
                     {availablePartsData[avatarConfig.gender] ? (
                       <div className="control-section">
@@ -983,6 +1064,18 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     className={`integrated-ui-overlay ${ultraCompactMode ? 'ultra-compact' : compactMode ? 'compact-mode' : ''
                       }`}
                   >
+                    {/* Manifest Controls */}
+                    <div className="control-section">
+                      <div className="section-header">
+                        <h3>📋 Manifest</h3>
+                      </div>
+                      <ManifestDropdown
+                        onManifestSelect={handleManifestSelect}
+                        onManifestSave={handleManifestSave}
+                        onManifestDelete={handleManifestDelete}
+                      />
+                    </div>
+
                     {/* Room Controls */}
                     <div className="control-section">
                       <div className="section-header">

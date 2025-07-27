@@ -7,7 +7,7 @@ interface SaveManifestModalProps {
   onSave: (name: string) => Promise<void>;
 }
 
-export default function SaveManifestModal({ isOpen, onClose, onSave }: SaveManifestModalProps) {
+export function SaveManifestModal({ isOpen, onClose, onSave }: SaveManifestModalProps) {
   const [manifestName, setManifestName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');

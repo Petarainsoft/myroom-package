@@ -315,6 +315,138 @@ class ManifestService {
   }
 
   /**
+   * Update an existing preset configuration via API
+   */
+  public async updatePreset(presetId: string, name: string, config: PresetConfig, description?: string): Promise<boolean> {
+    if (!this.apiKey || !this.projectId) {
+      console.error('❌ API key and project ID are required to update presets');
+      return false;
+    }
+
+    try {
+      const response = await fetch(
+        `${this.apiBaseUrl}/api/manifest/${presetId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name,
+            description: description || `Updated preset configuration: ${name}`,
+            manifestData: config,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ Preset updated successfully:', result.data);
+        this.clearCache(); // Clear cache to force reload
+        return true;
+      } else {
+        const error = await response.json();
+        console.error('❌ Failed to update preset:', error);
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Error updating preset:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Delete a preset via API
+   */
+  public async deletePreset(presetId: string): Promise<boolean> {
+    if (!this.apiKey || !this.projectId) {
+      console.error('❌ API key and project ID are required to delete presets');
+      return false;
+    }
+
+    try {
+      const response = await fetch(
+        `${this.apiBaseUrl}/api/manifest/${presetId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log('✅ Preset deleted successfully');
+        this.clearCache(); // Clear cache to force reload
+        return true;
+      } else {
+        const error = await response.json();
+        console.error('❌ Failed to delete preset:', error);
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Error deleting preset:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Get a specific preset by ID
+   */
+  public async getPreset(presetId: string): Promise<PresetConfig | null> {
+    if (!this.apiKey || !this.projectId) {
+      console.error('❌ API key and project ID are required to get preset');
+      return null;
+    }
+
+    try {
+      const response = await fetch(
+        `${this.apiBaseUrl}/api/manifest/${presetId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        return result.data?.config || null;
+      } else {
+        console.error('❌ Failed to get preset');
+        return null;
+      }
+    } catch (error) {
+      console.error('❌ Error getting preset:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Get a specific preset by ID (alias for getPreset)
+   */
+  public async getPresetById(presetId: string): Promise<PresetConfig | null> {
+    return this.getPreset(presetId);
+  }
+
+  /**
+   * Apply a preset configuration to the scene
+   */
+  public async applyPreset(presetName: string): Promise<PresetConfig | null> {
+    try {
+      const config = await this.loadPresetConfig(presetName);
+      this.clearCache(); // Clear cache to ensure fresh data
+      return config;
+    } catch (error) {
+      console.error('❌ Error applying preset:', error);
+      return null;
+    }
+  }
+
+  /**
    * Clear all cached data
    */
   public clearCache(): void {

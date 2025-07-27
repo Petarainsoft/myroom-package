@@ -400,10 +400,7 @@ router.get(
       prisma.item.count({ where }),
     ]);
 
-    // Debug log to check if resourceId is present
-    if (resources.length > 0) {
-      console.log('DEBUG - First resource from DB:', JSON.stringify(resources[0], null, 2));
-    }
+
 
     res.json({
       success: true,

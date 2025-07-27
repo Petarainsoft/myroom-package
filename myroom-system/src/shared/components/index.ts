@@ -6,3 +6,4 @@ export * from './babylon/InteractiveRoom';
 export * from './items/ItemLoader';
 export * from './items/ItemManipulator';
 export * from './room/RoomLoader';
+export { ManifestDropdown } from './ManifestDropdown';

@@ -35,7 +35,7 @@ import SceneControlButtons from './SceneControlButtons';
 // Import the avatar loader hook
 import { useAvatarLoader } from './useAvatarLoader';
 import { PointerManager } from './PointerManager';
-import SaveManifestModal from '../SaveManifestModal';
+import { SaveManifestModal } from '../SaveManifestModal';
 import { manifestService } from '../../services/ManifestService';
 
 // Props cho component IntegratedBabylonScene

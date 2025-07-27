@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { logger } from '../utils/logger';
-import { generateApiKey } from '../utils/apiKeyGenerator';
 
 const prisma = new PrismaClient();
 
