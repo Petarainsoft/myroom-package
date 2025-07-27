@@ -42,6 +42,9 @@ export const useItemLoader = ({
           loadedItemMeshesRef.current = [];
         }
 
+        // Get current item IDs from loaded meshes
+        const currentItemIds = new Set(loadedItemMeshesRef.current.map(container => container.name));
+        
         // Find items that need to be loaded (new items only)
         const itemsToLoad = loadedItems.filter(item => !currentItemIds.has(item.id));
         
@@ -66,19 +69,20 @@ export const useItemLoader = ({
         // Load only new items
         for (const item of itemsToLoad) {
           // Validate item has required properties
-          if (!item || (!item.resourceId && !item.path)) {
-            console.warn('Skipping invalid item (missing resourceId and path):', item);
+          if (!item || (!item.resourceId && !item.id && !item.path)) {
+            console.warn('Skipping invalid item (missing resourceId/id and path):', item);
             continue;
           }
 
           let fullItemUrl: string;
           
-          // Check if useResourceId is enabled and use resourceId
-          if (domainConfig.useResourceId && item.resourceId && domainConfig.backendDomain && domainConfig.apiKey) {
+          // Check if useResourceId is enabled and use resourceId or fallback to id
+          const resourceIdToUse = item.resourceId || item.id;
+          if (domainConfig.useResourceId && resourceIdToUse && domainConfig.backendDomain && domainConfig.apiKey) {
             try {
-              // Call API to get download URL using resourceId
-              const apiUrl = `${domainConfig.backendDomain}/api/customer/items/${item.resourceId}/download`;
-              console.log('🪑 Loading item from BACKEND:', { itemName: item.name, resourceId: item.resourceId, apiUrl });
+              // Call API to get download URL using resourceId (or id as fallback)
+              const apiUrl = `${domainConfig.backendDomain}/api/developer/items/${resourceIdToUse}/download`;
+              console.log('🪑 Loading item from BACKEND:', { itemName: item.name, resourceId: resourceIdToUse, apiUrl });
               const response = await fetch(apiUrl, {
                 headers: {
                   'x-api-key': domainConfig.apiKey
@@ -108,7 +112,7 @@ export const useItemLoader = ({
             fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
             console.log('🪑 Loading item from BASE DOMAIN:', { itemName: item.name, itemPath: item.path, finalUrl: fullItemUrl });
           } else {
-            console.warn('Skipping item without resourceId or path:', item);
+            console.warn('Skipping item without resourceId/id or path:', item);
             continue;
           }
 

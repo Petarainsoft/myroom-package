@@ -3091,20 +3091,20 @@ router.get(
   validateApiKey,
   requireScope(['resource:read', 'read']),
   asyncHandler(async (req: AuthenticatedRequest, res) => {
-    const { id } = req.params;
+    const { resourceId } = req.params;
     const developerId = req.apiKey!.developerId;
 
     // Sử dụng utility function mới với resource-based permissions
-    const accessCheck = await checkResourceAccess(developerId, id as string);
+    const accessCheck = await checkResourceAccess(developerId, resourceId as string);
 
     if (!accessCheck.hasAccess) {
       throw ApiError.forbidden('Access denied to this item');
     }
 
     // Find resource in items table
-    const resource = await prisma.item.findUnique({
+    const resource = await prisma.item.findFirst({
       where: {
-        resourceId: id as string,
+        resourceId: resourceId as string,
         status: 'ACTIVE',
       },
       select: {
@@ -3129,7 +3129,7 @@ router.get(
     await prisma.resourceUsage
       .create({
         data: {
-          resourceId: id as string,
+          resourceId: resourceId as string,
           apiKeyId: req.apiKey!.id,
           action: 'download',
           userAgent: req.headers['user-agent'] || null,
@@ -3141,7 +3141,7 @@ router.get(
       });
 
     apiLogger.info('Developer requested item download', {
-      resourceId: id,
+      resourceId: resourceId,
       resourceName: resource.name,
       developerId,
       hasAccess: true,
@@ -3220,7 +3220,7 @@ router.get(
     const developerId = req.apiKey!.developerId;
 
     // Find avatar resource
-    const avatarResource = await prisma.avatar.findUnique({
+    const avatarResource = await prisma.avatar.findFirst({
       where: {
         resourceId: resourceId as string,
         deletedAt: null,

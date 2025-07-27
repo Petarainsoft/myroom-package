@@ -663,12 +663,17 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     if (!selectedCategory) return;
     const selectedItemToAdd = selectedItemPerCategory[selectedCategory];
     if (!selectedItemToAdd) return;
+    
+    // Generate random position within room bounds
+    const randomX = (Math.random() - 0.5) * 8; // Random position between -4 and 4
+    const randomZ = (Math.random() - 0.5) * 8; // Random position between -4 and 4
+    
     const newItem: LoadedItem = {
       id: `item_${Date.now()}`,
       name: selectedItemToAdd.name,
       path: selectedItemToAdd.path,
       resourceId: selectedItemToAdd.resourceId,
-      position: { x: constrainedX, y: 0, z: constrainedZ },
+      position: { x: randomX, y: 0, z: randomZ },
       rotation: { x: 0, y: 0, z: 0 },
       scale: { x: 1, y: 1, z: 1 }
     };
@@ -1147,14 +1152,48 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                           <p className="no-items">No items yet</p>
                         ) : (
                           <ul className="items-list">
-                            {loadedItems.map((item) => (
-                              <li key={item.id} className="item-entry">
-                                <span>{item.name}</span>
-                                <button onClick={() => handleRemoveItem(item.id)} className="remove-item-btn">
-                                  ✕
-                                </button>
-                              </li>
-                            ))}
+                            {loadedItems.map((item) => {
+                              const isSelected = selectedItem && (selectedItem.name === item.id || selectedItem.id === item.id);
+                              return (
+                                <li 
+                                  key={item.id} 
+                                  className="item-entry"
+                                  style={{
+                                    background: isSelected ? '#e6f7ff' : 'transparent',
+                                    border: isSelected ? '2px solid #1890ff' : '1px solid #d9d9d9',
+                                    borderRadius: '4px',
+                                    padding: '8px',
+                                    margin: '4px 0',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    transition: 'all 0.2s'
+                                  }}
+                                >
+                                  <span style={{ 
+                                    fontWeight: isSelected ? 'bold' : 'normal',
+                                    color: isSelected ? '#1890ff' : '#333'
+                                  }}>
+                                    {isSelected ? '🎯 ' : ''}{item.name}
+                                  </span>
+                                  <button 
+                                    onClick={() => handleRemoveItem(item.id)} 
+                                    className="remove-item-btn"
+                                    style={{
+                                      background: '#ff4d4f',
+                                      color: 'white',
+                                      border: 'none',
+                                      borderRadius: '3px',
+                                      padding: '4px 8px',
+                                      cursor: 'pointer',
+                                      fontSize: '12px'
+                                    }}
+                                  >
+                                    ✕
+                                  </button>
+                                </li>
+                              );
+                            })}
                           </ul>
                         )}
                         <div className="item-actions">
@@ -1189,7 +1228,6 @@ const InteractiveRoomWithAvatar: React.FC = () => {
               backdropFilter: 'blur(10px)',
               border: '1px solid rgba(255, 255, 255, 0.1)',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-              display: 'none',
             }}
           >
             <h4 style={{ margin: '0 0 15px 0', color: '#4CAF50' }}>🎯 Selected Item</h4>

@@ -38,9 +38,11 @@ export async function checkResourceAccess(
   resourceId: string
 ): Promise<ResourceAccessCheck> {
   try {
+    console.log(`[DEBUG] Checking access for developerId: ${developerId}, resourceId: ${resourceId}`);
+    
     // First try to find resource in items table
-    let resource = await prisma.item.findUnique({
-      where: { id: resourceId },
+    let resource = await prisma.item.findFirst({
+      where: { resourceId: resourceId },
       select: {
         id: true,
         isPremium: true,
@@ -49,13 +51,17 @@ export async function checkResourceAccess(
         resourceId: true,
       },
     });
+    
+    console.log(`[DEBUG] Found resource in items table:`, resource);
+
+
 
     let resourceType = 'item';
     let permissionTable = 'developerResourcePermission';
 
     // If not found in items, try avatars table
     if (!resource) {
-      const avatarResource = await prisma.avatar.findUnique({
+      const avatarResource = await prisma.avatar.findFirst({
         where: {
           resourceId: resourceId,
           deletedAt: null,
@@ -67,6 +73,8 @@ export async function checkResourceAccess(
           resourceId: true,
         },
       });
+
+
 
       if (avatarResource) {
         resource = {
@@ -82,22 +90,27 @@ export async function checkResourceAccess(
     }
 
     if (!resource) {
+      console.log(`[DEBUG] Resource not found in both items and avatars tables`);
       return { hasAccess: false, reason: 'denied' };
     }
 
+    console.log(`[DEBUG] Resource found - Type: ${resourceType}, Status: ${resource.status}, isPremium: ${resource.isPremium}`);
+
     // Check if resource is active (only for items)
     if (resourceType === 'item' && resource.status !== 'ACTIVE') {
+      console.log(`[DEBUG] Resource is not ACTIVE, status: ${resource.status}`);
       return { hasAccess: false, reason: 'denied' };
     }
 
     // If resource is not premium (free), all developers have access
     if (!resource.isPremium) {
+      console.log(`[DEBUG] Resource is free, granting access`);
       return { hasAccess: true, reason: 'free', resource };
     }
 
     // For avatars, also check is_free field
     if (resourceType === 'avatar') {
-      const avatarRecord = await prisma.avatar.findUnique({
+      const avatarRecord = await prisma.avatar.findFirst({
         where: { resourceId: resourceId },
         select: { isFree: true },
       });
@@ -117,9 +130,10 @@ export async function checkResourceAccess(
           OR: [{ expiredAt: null }, { expiredAt: { gt: new Date() } }],
         },
       });
+
     } else {
       // For avatars, check avatar permissions
-      const avatarRecord = await prisma.avatar.findUnique({
+      const avatarRecord = await prisma.avatar.findFirst({
         where: { resourceId: resourceId },
         select: { id: true },
       });

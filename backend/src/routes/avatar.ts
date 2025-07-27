@@ -203,7 +203,7 @@ router.get('/resources/:resourceId/presigned',
         message: 'Finding avatar resource',
         resourceId: resourceId
       });
-      const resource = await prisma.avatar.findUnique({ where: { resourceId: resourceId, deletedAt: null } });
+      const resource = await prisma.avatar.findFirst({ where: { resourceId: resourceId, deletedAt: null } });
       
       if (!resource) {
         avatarLogger.warn({
