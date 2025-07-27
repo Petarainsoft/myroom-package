@@ -5,6 +5,7 @@ interface SceneControlButtonsProps {
   onToggleFullscreen: () => void;
   onToggleAvatarOverlay: () => void;
   onToggleRoomOverlay: () => void;
+  onSaveManifest: () => void;
   isFullscreen: boolean;
 }
 
@@ -13,6 +14,7 @@ const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
   onToggleFullscreen: onToggleFullscreen,
   onToggleAvatarOverlay: onToggleAvatarOverlay,
   onToggleRoomOverlay: onToggleRoomOverlay,
+  onSaveManifest,
   isFullscreen,
 }) => {
   return (
@@ -121,8 +123,31 @@ const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
       >
         🏠
       </button>
+      <button
+        onClick={onSaveManifest}
+        style={{
+          backgroundColor: 'rgba(34, 197, 94, 0.9)',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          padding: '8px',
+          cursor: 'pointer',
+          fontSize: '16px',
+          width: '32px',
+          height: '32px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backdropFilter: 'blur(2px)',
+          transition: 'background-color 0.2s ease',
+          outline: 'none',
+        }}
+        title="Save Manifest"
+      >
+        💾
+      </button>
     </div>
   );
 };
 
-export default SceneControlButtons; 
+export default SceneControlButtons;

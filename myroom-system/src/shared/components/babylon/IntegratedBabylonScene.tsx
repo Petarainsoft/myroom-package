@@ -20,6 +20,7 @@ import '@babylonjs/loaders/glTF';
 
 import { ActiveMovement, TouchMovement } from '../../types/AvatarTypes';
 import { AvatarConfig } from '../../types/AvatarTypes';
+import { PresetConfig } from '../../types/PresetConfig';
 
 import { useRoomLoader } from '../room/RoomLoader';
 import { useItemLoader } from '../items/ItemLoader';
@@ -34,6 +35,8 @@ import SceneControlButtons from './SceneControlButtons';
 // Import the avatar loader hook
 import { useAvatarLoader } from './useAvatarLoader';
 import { PointerManager } from './PointerManager';
+import SaveManifestModal from '../SaveManifestModal';
+import { manifestService } from '../../services/ManifestService';
 
 // Props cho component IntegratedBabylonScene
 interface IntegratedSceneProps {
@@ -583,6 +586,45 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   });
 
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Function to collect current scene configuration
+  const getCurrentSceneConfig = (): PresetConfig => {
+    const config: PresetConfig = {
+      version: '1.0',
+      timestamp: new Date().toISOString(),
+      room: {
+        name: 'Current Room',
+        path: props.roomPath || '',
+        resourceId: props.roomResourceId || ''
+      },
+      avatar: props.avatarConfig || { gender: 'male' },
+      items: props.loadedItems || [],
+      usage: {
+        description: 'Scene configuration saved from MyRoom system',
+        when_using_backend: 'ResourceIds are automatically used by loaders when backend is configured',
+        when_using_local: 'Path properties are used as fallback for local asset loading'
+      }
+    };
+    return config;
+  };
+
+  // Function to handle save manifest
+  const handleSaveManifest = async (name: string) => {
+    try {
+      const config = getCurrentSceneConfig();
+      const success = await manifestService.createPreset(name, config, `Scene configuration: ${name}`);
+      
+      if (!success) {
+        throw new Error('Failed to save manifest to backend');
+      }
+      
+      console.log('✅ Manifest saved successfully:', name);
+    } catch (error) {
+      console.error('❌ Failed to save manifest:', error);
+      throw error;
+    }
+  };
 
   
 
@@ -711,7 +753,13 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         onToggleFullscreen={props.onToggleFullscreen || (() => { })}
         onToggleAvatarOverlay={handleToggleAvatarOverlay}
         onToggleRoomOverlay={handleToggleRoomOverlay}
+        onSaveManifest={() => setIsModalOpen(true)}
         isFullscreen={isFullscreen}
+      />
+      <SaveManifestModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveManifest}
       />
     </div>
   );

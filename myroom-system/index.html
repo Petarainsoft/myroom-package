@@ -7,6 +7,52 @@
     <title>MyRoom System (Demo)</title>
     <!-- Domain Configuration Script - Edit this file to change domain after deployment -->
     <script src="/config-domain.js"></script>
+    
+    <!-- Service Worker Registration for GLB Caching -->
+    <script>
+      // Register Service Worker for GLB file caching
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('✅ Service Worker registered successfully:', registration.scope);
+              
+              // Add cache management functions to window object
+              window.glbCache = {
+                clear: () => {
+                  return new Promise((resolve) => {
+                    const messageChannel = new MessageChannel();
+                    messageChannel.port1.onmessage = (event) => {
+                      resolve(event.data.success);
+                    };
+                    registration.active?.postMessage(
+                      { type: 'CLEAR_GLB_CACHE' },
+                      [messageChannel.port2]
+                    );
+                  });
+                },
+                info: () => {
+                  return new Promise((resolve) => {
+                    const messageChannel = new MessageChannel();
+                    messageChannel.port1.onmessage = (event) => {
+                      resolve(event.data.cacheInfo);
+                    };
+                    registration.active?.postMessage(
+                      { type: 'GET_CACHE_INFO' },
+                      [messageChannel.port2]
+                    );
+                  });
+                }
+              };
+            })
+            .catch((error) => {
+              console.error('❌ Service Worker registration failed:', error);
+            });
+        });
+      } else {
+        console.warn('⚠️ Service Worker not supported in this browser');
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

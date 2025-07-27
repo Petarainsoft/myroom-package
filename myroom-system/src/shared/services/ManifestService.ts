@@ -1,5 +1,6 @@
 // ManifestService - Service for loading manifest data
 import { domainConfig } from '../config/appConfig';
+import { PresetConfig } from '../types/PresetConfig';
 
 interface Room {
   id?: string;
@@ -326,4 +327,4 @@ class ManifestService {
 // Export singleton instance
 export const manifestService = ManifestService.getInstance();
 export default manifestService;
-export type { Room, Item, RoomsManifest, ItemsManifest, PresetConfig };
+export type { Room, Item, RoomsManifest, ItemsManifest };

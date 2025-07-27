@@ -7,6 +7,7 @@ import { ActiveMovement, TouchMovement } from '../../shared/types/AvatarTypes';
 import { domainConfig, getEmbedUrl, getWebComponentUrl } from '../../shared/config/appConfig';
 import { manifestService } from '../../shared/services/ManifestService';
 import ApiService from '../../shared/services/ApiService';
+import CacheDebugPanel from '../../shared/components/debug/CacheDebugPanel';
 import './App.css';
 
 type AppMode = 'room' | 'avatar' | 'integrated';
@@ -1696,6 +1697,9 @@ mainScene.addEventListener('avatar-changed', (event) => {
           </div>
         </div>
       </footer>
+      
+      {/* GLB Cache Debug Panel */}
+      <CacheDebugPanel />
     </div>
   );
 
