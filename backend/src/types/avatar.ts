@@ -76,7 +76,7 @@ export interface Avatar {
 
   // Versioning and identification
   version: string;
-  uniquePath?: string;
+  // uniquePath removed as it's no longer in schema
   resourceId?: string; // Legacy compatibility
 
   // Pricing and access
@@ -180,7 +180,7 @@ export interface CreateAvatarRequest {
   categoryId: string;
   file: File | Buffer;
   version?: string;
-  uniquePath?: string;
+  // uniquePath removed as it's no longer in schema
   resourceId?: string;
   isPremium?: boolean;
   isFree?: boolean;
@@ -231,7 +231,7 @@ export interface AvatarResponse {
   gender: AvatarGender;
   partType: AvatarPartType;
   version: string;
-  uniquePath?: string;
+  // uniquePath removed as it's no longer in schema
   resourceId?: string;
   isPremium: boolean;
   isFree: boolean;

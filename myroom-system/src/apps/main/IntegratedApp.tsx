@@ -331,7 +331,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 ...item,
                 category: category.name,
                 categoryId: category.id,
-                resourceId: item.id,
+                resourceId: item.resourceId,
                 // Map backend fields to frontend expected format
                 name: item.name,
                 path: item.s3Url || item.path, // Use s3Url if available, fallback to path
@@ -345,6 +345,21 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         
         setAvailableItems(allItems);
         console.log('📦 [IntegratedApp] Available items catalog loaded from API:', allItems.length, 'items');
+        
+        // 🔍 TRACE: Log first 10 items to check data structure
+        console.log('🔍 [TRACE] First 10 items data structure:', allItems.slice(0, 10).map((item, index) => ({
+          index,
+          id: item.id,
+          resourceId: item.resourceId,
+          name: item.name,
+          category: item.category,
+          categoryId: item.categoryId,
+          path: item.path,
+          s3Url: item.s3Url,
+          fileType: item.fileType,
+          description: item.description,
+          allKeys: Object.keys(item)
+        })));
         
         // Set default selected item if not already set
         if (!selectedItemToAdd && allItems.length > 0) {

@@ -13,7 +13,7 @@ export interface AccessibleResourcesOptions {
   categoryId?: string;
   search?: string;
   fileType?: string;
-  uniquePath?: string;
+  resourceId?: string;
   tags?: string[];
   page?: number;
   limit?: number;
@@ -185,7 +185,7 @@ export async function getAccessibleResources(
     categoryId,
     search,
     fileType,
-    uniquePath,
+    resourceId,
     tags,
     page = 1,
     limit = 20,
@@ -233,8 +233,8 @@ export async function getAccessibleResources(
     where.fileType = fileType;
   }
 
-  if (uniquePath) {
-    where.uniquePath = uniquePath;
+  if (resourceId) {
+    where.resourceId = resourceId;
   }
 
   if (tags && tags.length > 0) {
@@ -256,6 +256,7 @@ export async function getAccessibleResources(
         fileType: true,
         fileSize: true,
         isPremium: true,
+        resourceId: true,
         createdAt: true,
         updatedAt: true,
         category: {

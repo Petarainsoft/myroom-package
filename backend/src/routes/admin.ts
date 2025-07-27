@@ -1561,7 +1561,7 @@ router.post(
 
     try {
       // Upload to S3
-      const uniquePath = `${categoryId}-${file.originalname}`;
+      // uniquePath removed as it's no longer in schema
       // get category by categoryId
       // 'path' is a text field from the resource_categories table used to construct the resource URL.
       const cate = await prisma.itemCategory.findUnique({
@@ -4112,7 +4112,7 @@ router.post(
         categoryId: req.body.categoryId,
         file: req.file.buffer,
         version: req.body.version || '1.0.0',
-        uniquePath: req.body.uniquePath,
+        // uniquePath removed as it's no longer in schema
         resourceId: req.body.resourceId,
         isPremium: req.body.isPremium === 'true',
         isFree: req.body.isFree === 'true',
@@ -4153,7 +4153,7 @@ router.put(
         // gender and partType are not updatable in UpdateAvatarResourceRequest
         categoryId: req.body.categoryId,
         version: req.body.version,
-        // uniquePath and resourceId are not updatable in UpdateAvatarResourceRequest
+        // resourceId is not updatable in UpdateAvatarResourceRequest
         isPremium: req.body.isPremium,
         isFree: req.body.isFree,
         price: req.body.price ? parseFloat(req.body.price) : undefined,

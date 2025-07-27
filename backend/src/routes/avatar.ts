@@ -303,7 +303,7 @@ router.post(
         categoryId: req.body.categoryId,
         file: req.file.buffer,
         version: req.body.version,
-        uniquePath: req.body.uniquePath,
+        // uniquePath removed as it's no longer in schema
         resourceId: req.body.resourceId,
         isPremium: req.body.isPremium === 'true',
         isFree: req.body.isFree !== 'false',

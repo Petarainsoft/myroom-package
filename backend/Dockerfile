@@ -86,7 +86,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:3000/health || exit 1
 
 ENTRYPOINT ["dumb-init", "--", "/app/scripts/docker-entrypoint.sh"]
-CMD ["node", "-r", "module-alias/register", "dist/index.js"]
+CMD ["npm", "start"]
 
 # Labels for metadata
 LABEL maintainer="MyRoom Team" \

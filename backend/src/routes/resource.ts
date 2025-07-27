@@ -388,6 +388,7 @@ router.get(
         orderBy: { [sortBy as string]: sortOrder },
         select: {
           id: true,
+          resourceId: true,
           name: true,
           description: true,
           fileType: true,
@@ -398,6 +399,11 @@ router.get(
       }),
       prisma.item.count({ where }),
     ]);
+
+    // Debug log to check if resourceId is present
+    if (resources.length > 0) {
+      console.log('DEBUG - First resource from DB:', JSON.stringify(resources[0], null, 2));
+    }
 
     res.json({
       success: true,
@@ -628,6 +634,7 @@ router.get(
         orderBy,
         select: {
           id: true,
+          resourceId: true,
           name: true,
           description: true,
           fileType: true,
@@ -724,6 +731,7 @@ router.get(
       where: { id },
       select: {
         id: true,
+        resourceId: true,
         name: true,
         description: true,
         fileType: true,
@@ -768,6 +776,7 @@ router.get(
       where: { id },
       select: {
         id: true,
+        resourceId: true,
         name: true,
         description: true,
         fileType: true,
@@ -865,6 +874,7 @@ router.get(
       where: { id },
       select: {
         id: true,
+        resourceId: true,
         name: true,
         s3Key: true,
         fileSize: true,
@@ -916,6 +926,7 @@ router.get(
       res.json({
         success: true,
         data: {
+          resourceId: resource.resourceId,
           downloadUrl,
           filename: resource.name,
           fileSize: resource.fileSize,
@@ -1006,6 +1017,7 @@ router.get(
       where: { id },
       select: {
         id: true,
+        resourceId: true,
         name: true,
         categoryId: true,
         accessPolicy: true,
@@ -1068,6 +1080,7 @@ router.get(
         reason,
         resource: {
           id: resource.id,
+          resourceId: resource.resourceId,
           name: resource.name,
           categoryId: resource.categoryId,
           accessPolicy: resource.accessPolicy,
@@ -1110,6 +1123,7 @@ router.get(
       where: { id },
       select: {
         id: true,
+        resourceId: true,
         s3Key: true,
         fileSize: true,
         fileType: true,
@@ -1126,6 +1140,7 @@ router.get(
     res.json({
       success: true,
       data: {
+        resourceId: resource.resourceId,
         downloadUrl,
         fileSize: resource.fileSize,
         fileType: resource.fileType,

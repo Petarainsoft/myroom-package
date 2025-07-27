@@ -68,12 +68,12 @@ export class ItemManagementService {
   }
 
   /**
-   * Compute uniquePath from a relative file path.
+   * Compute resource path from a relative file path.
    * Rule: remove leading slashes, remove extension, drop the first two segments,
    * then join remaining parts with '/'.
    * Example: a/b/c/d/e/filename.glb  ->  c/d/e/filename
    */
-  private computeUniquePath(relativePath: string): string {
+  private computeResourcePath(relativePath: string): string {
     const cleaned = relativePath.replace(/^\/+/, '');
     const withoutExt = cleaned.replace(/\.[^/.]+$/, '');
     const segments = withoutExt.split('/');
@@ -128,15 +128,15 @@ export class ItemManagementService {
    */
   async createResource(input: CreateItemInput & { relativePath?: string }): Promise<Item> {
     try {
-      // If relativePath is provided, compute uniquePath and category hierarchy automatically
+      // If relativePath is provided, compute resource path and category hierarchy automatically
       let categoryId = input.categoryId;
-      let uniquePath: string | undefined = undefined;
+      let resourcePath: string | undefined = undefined;
 
       if (input.relativePath) {
-        uniquePath = this.computeUniquePath(input.relativePath);
+        resourcePath = this.computeResourcePath(input.relativePath);
 
         // Derive category path segments (excluding filename)
-        const segments = uniquePath.split('/');
+        const segments = resourcePath.split('/');
         const dirSegments = segments.slice(0, -1); // remove filename part
 
         if (dirSegments.length === 0) {
@@ -168,7 +168,7 @@ export class ItemManagementService {
       // Calculate file checksum
       const checksum = crypto.createHash('md5').update(input.fileBuffer).digest('hex');
 
-      // Generate uniquePath from category path
+      // Generate resourceId from category path
       const categoryForUnique = await this.prisma.itemCategory.findUnique({
         where: { id: categoryId },
       });
@@ -451,7 +451,22 @@ export class ItemManagementService {
       const [resources, total] = await Promise.all([
         this.prisma.item.findMany({
           where: whereClause,
-          include: {
+          select: {
+            id: true,
+            resourceId: true,
+            name: true,
+            description: true,
+            fileType: true,
+            fileSize: true,
+            isPremium: true,
+            price: true,
+            status: true,
+            accessPolicy: true,
+            tags: true,
+            keywords: true,
+            metadata: true,
+            createdAt: true,
+            updatedAt: true,
             category: true,
             uploadedBy: {
               select: { id: true, name: true, email: true },
@@ -527,6 +542,9 @@ export class ItemManagementService {
           where: whereClause,
           include: {
             category: true,
+            uploadedBy: {
+              select: { id: true, name: true, email: true },
+            },
           },
           orderBy: { createdAt: 'desc' },
           skip,

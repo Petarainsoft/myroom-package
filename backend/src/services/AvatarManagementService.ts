@@ -377,7 +377,7 @@ export class AvatarManagementService {
       gender: resource.gender,
       partType: resource.partType,
       version: resource.version,
-      uniquePath: resource.uniquePath,
+      // uniquePath removed as it's no longer in schema
       resourceId: resource.resourceId,
       isPremium: resource.isPremium,
       isFree: resource.isFree,

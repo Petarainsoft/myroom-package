@@ -52,7 +52,7 @@ export class RoomManagementService {
             fileType: data.file.mimetype,
             roomTypeId: data.roomTypeId,
             version: data.version,
-            uniquePath: data.uniquePath?.toLowerCase().replace(/\s+/g, '_'),
+            // uniquePath removed as it's no longer in schema
           },
           null,
           2
@@ -128,7 +128,7 @@ export class RoomManagementService {
         checksum,
         roomTypeId: data.roomTypeId,
         version: data.version || '1.0.0',
-        uniquePath: data.uniquePath,
+        // uniquePath removed as it's no longer in schema
         resourceId: resourceId, // Use the generated resourceId
         isPremium: data.isPremium || false,
         isFree: data.isFree !== undefined ? data.isFree : true,
@@ -685,7 +685,7 @@ export class RoomManagementService {
       s3Key: roomResource.s3Key,
       roomTypeId: roomResource.roomTypeId,
       version: roomResource.version,
-      uniquePath: roomResource.uniquePath,
+      // uniquePath removed as it's no longer in schema
       resourceId: roomResource.resourceId,
       isPremium: roomResource.isPremium,
       isFree: roomResource.isFree,

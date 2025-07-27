@@ -2883,7 +2883,7 @@ router.get(
       tags,
       search,
       fileType,
-      uniquePath,
+      resourceId,
       sortBy = 'name',
       sortOrder = 'asc',
     } = req.query;
@@ -2898,7 +2898,7 @@ router.get(
       categoryId: categoryId as string | undefined,
       search: search as string | undefined,
       fileType: fileType as string | undefined,
-      uniquePath: uniquePath as string | undefined,
+      resourceId: resourceId as string | undefined,
       tags: parsedTags,
       page: Number(page),
       limit: Number(limit),

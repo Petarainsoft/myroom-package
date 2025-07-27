@@ -22,7 +22,7 @@ export interface RoomResource {
 
   // Versioning and identification
   version: string;
-  uniquePath?: string;
+  // uniquePath removed as it's no longer in schema
   resourceId?: string;
 
   // Pricing and access
@@ -93,7 +93,7 @@ export interface CreateRoomRequest {
   description?: string;
   roomTypeId: string;
   version?: string;
-  uniquePath?: string;
+  // uniquePath removed as it's no longer in schema
   resourceId?: string;
   isPremium?: boolean;
   isFree?: boolean;
@@ -114,7 +114,7 @@ export interface UpdateRoomRequest {
   description?: string;
   roomTypeId?: string;
   version?: string;
-  uniquePath?: string;
+  // uniquePath removed as it's no longer in schema
   resourceId?: string;
   isPremium?: boolean;
   isFree?: boolean;
@@ -146,7 +146,7 @@ export interface RoomResponse {
   s3Key: string;
   roomTypeId: string;
   version: string;
-  uniquePath?: string;
+  // uniquePath removed as it's no longer in schema
   resourceId?: string;
   isPremium: boolean;
   isFree: boolean;

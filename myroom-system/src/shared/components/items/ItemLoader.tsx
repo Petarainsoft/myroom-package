@@ -90,7 +90,7 @@ export const useItemLoader = ({
               });
               if (response.ok) {
                 const data = await response.json();
-                fullItemUrl = data.presignedUrl; // Use presignedUrl from API response
+                fullItemUrl = data.data.downloadUrl; // Use downloadUrl from API response
                 console.log('🪑 Backend item URL obtained:', { itemName: item.name, url: fullItemUrl });
               } else {
                 throw new Error(`API call failed: ${response.status}`);

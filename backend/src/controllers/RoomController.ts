@@ -23,7 +23,7 @@ const createRoomResourceSchema = z.object({
   description: z.string().optional(),
   roomTypeId: z.string(),
   version: z.string().optional(),
-  uniquePath: z.string().optional(),
+  // uniquePath removed as it's no longer in schema
   resourceId: z.string().optional(),
   isPremium: z.coerce.boolean().optional(),
   isFree: z.coerce.boolean().optional(),
@@ -38,7 +38,7 @@ const updateRoomResourceSchema = z.object({
   description: z.string().optional(),
   roomTypeId: z.string().optional(),
   version: z.string().optional(),
-  uniquePath: z.string().optional(),
+  // uniquePath removed as it's no longer in schema
   resourceId: z.string().optional(),
   isPremium: z.coerce.boolean().optional(),
   isFree: z.coerce.boolean().optional(),
