@@ -33,7 +33,7 @@ class ApiService {
     const url = `${this.baseUrl}${endpoint}`;
     const headers = {
       'Content-Type': 'application/json',
-      ...(this.apiKey && { 'Authorization': `Bearer ${this.apiKey}` }),
+      ...(this.apiKey && { 'X-API-Key': this.apiKey }),
       ...options.headers,
     };
 

@@ -304,34 +304,77 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     loadDefaultScene();
   }, [availableRooms]);
 
-  // Load available items catalog from manifest service
+  // Load available items catalog from backend API
   // This loads the catalog of items that can be added to the scene
   // Different from loadedItems which are items already placed in the scene
   useEffect(() => {
     const loadItems = async () => {
       try {
-        console.log('📦 [IntegratedApp] Loading available items catalog from manifest service...');
-        const itemsData = await manifestService.loadItemsManifest();
-        setAvailableItems(itemsData.items || []);
-        console.log('📦 [IntegratedApp] Available items catalog loaded:', itemsData.items?.length || 0, 'items');
+        console.log('📦 [IntegratedApp] Loading available items catalog from backend API...');
+        const apiService = ApiService.getInstance();
+        
+        // First, get all categories
+        const categoriesResponse = await apiService.getItemCategories(1, 100);
+        let categoriesData = [];
+        if (categoriesResponse && categoriesResponse.data && categoriesResponse.data.categories) {
+          categoriesData = categoriesResponse.data.categories;
+        }
+        console.log('📦 [IntegratedApp] Categories loaded from API:', categoriesData.length, 'categories');
+        
+        // Then, load items for each category
+        const allItems = [];
+        for (const category of categoriesData) {
+          try {
+            const itemsResponse = await apiService.getItemsByCategory(category.id, 1, 100);
+            if (itemsResponse && itemsResponse.data && itemsResponse.data.resources) {
+              const categoryItems = itemsResponse.data.resources.map((item: any) => ({
+                ...item,
+                category: category.name,
+                categoryId: category.id,
+                resourceId: item.id,
+                // Map backend fields to frontend expected format
+                name: item.name,
+                path: item.s3Url || item.path, // Use s3Url if available, fallback to path
+              }));
+              allItems.push(...categoryItems);
+            }
+          } catch (categoryError) {
+            console.warn(`⚠️ [IntegratedApp] Failed to load items for category ${category.name}:`, categoryError);
+          }
+        }
+        
+        setAvailableItems(allItems);
+        console.log('📦 [IntegratedApp] Available items catalog loaded from API:', allItems.length, 'items');
+        
         // Set default selected item if not already set
-        if (!selectedItemToAdd && itemsData.items && itemsData.items.length > 0) {
-          setSelectedItemToAdd(itemsData.items[0]);
+        if (!selectedItemToAdd && allItems.length > 0) {
+          setSelectedItemToAdd(allItems[0]);
         }
       } catch (error) {
-        console.error('❌ [IntegratedApp] Error loading items catalog from manifest service:', error);
-        // Fallback to direct fetch if ManifestService fails
-        console.log('🔄 [IntegratedApp] Falling back to direct fetch for items catalog...');
-        fetch('/manifest/item/items-manifest.json')
-          .then((res) => res.json())
-          .then((data) => {
-            setAvailableItems(data.items || []);
-            console.log('📦 [IntegratedApp] Items catalog loaded via fallback:', data.items?.length || 0, 'items');
-            if (!selectedItemToAdd && data.items && data.items.length > 0) {
-              setSelectedItemToAdd(data.items[0]);
-            }
-          })
-          .catch(err => console.error('❌ [IntegratedApp] Fallback item loading also failed:', err));
+        console.error('❌ [IntegratedApp] Error loading items catalog from backend API:', error);
+        // Fallback to manifest service if API fails
+        console.log('🔄 [IntegratedApp] Falling back to manifest service for items catalog...');
+        try {
+          const itemsData = await manifestService.loadItemsManifest();
+          setAvailableItems(itemsData.items || []);
+          console.log('📦 [IntegratedApp] Items catalog loaded via manifest fallback:', itemsData.items?.length || 0, 'items');
+          if (!selectedItemToAdd && itemsData.items && itemsData.items.length > 0) {
+            setSelectedItemToAdd(itemsData.items[0]);
+          }
+        } catch (manifestError) {
+          console.error('❌ [IntegratedApp] Manifest fallback also failed:', manifestError);
+          // Final fallback to direct fetch
+          fetch('/manifest/item/items-manifest.json')
+            .then((res) => res.json())
+            .then((data) => {
+              setAvailableItems(data.items || []);
+              console.log('📦 [IntegratedApp] Items catalog loaded via direct fetch fallback:', data.items?.length || 0, 'items');
+              if (!selectedItemToAdd && data.items && data.items.length > 0) {
+                setSelectedItemToAdd(data.items[0]);
+              }
+            })
+            .catch(err => console.error('❌ [IntegratedApp] All fallbacks failed:', err));
+        }
       }
     };
 
