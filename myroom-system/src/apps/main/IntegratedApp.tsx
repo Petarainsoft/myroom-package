@@ -428,6 +428,14 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   const [ultraCompactMode, setUltraCompactMode] = useState(true);
   const [babylonScene, setBabylonScene] = useState<any>(null);
   const integratedSceneRef = useRef<any>(null);
+
+  // Function to get current scene configuration
+  const getCurrentConfig = () => {
+    if (integratedSceneRef.current && integratedSceneRef.current.getCurrentSceneConfig) {
+      return integratedSceneRef.current.getCurrentSceneConfig();
+    }
+    return null;
+  };
   const [showIntegrationGuide, setShowIntegrationGuide] = useState(false);
   const [isClosing, setIsClosing] = useState(false); // New state for fade-out effect
   const [activeTab, setActiveTab] = useState('iframe');
@@ -960,6 +968,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                         <h3>📋 Manifest</h3>
                       </div>
                       <ManifestDropdown
+                        currentConfig={getCurrentConfig()}
                         onManifestSelect={handleManifestSelect}
                         onManifestSave={handleManifestSave}
                         onManifestDelete={handleManifestDelete}
@@ -1070,6 +1079,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                         <h3>📋 Manifest</h3>
                       </div>
                       <ManifestDropdown
+                        currentConfig={getCurrentConfig()}
                         onManifestSelect={handleManifestSelect}
                         onManifestSave={handleManifestSave}
                         onManifestDelete={handleManifestDelete}
