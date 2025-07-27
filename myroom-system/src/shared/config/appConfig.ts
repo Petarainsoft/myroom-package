@@ -31,7 +31,7 @@ const getConfiguredApiKey = () => {
     return window.MYROOM_CONFIG.apiKey;
   }
   // Default API key for development
-  return 'pk_9dd7a67c7c6d69c7f5ae603bd78656944d61667257ce60c59a676d35ccb6a16f';
+  return 'pk_test_1234567890abcdef1234567890abcdef';
 };
 const getConfiguredUseResourceId = () => {
   if (typeof window !== 'undefined' && window.MYROOM_CONFIG && typeof window.MYROOM_CONFIG.useResourceId === 'boolean') {

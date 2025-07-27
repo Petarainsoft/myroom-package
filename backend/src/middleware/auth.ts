@@ -40,7 +40,20 @@ export const validateApiKey = async (
     if (isPublicRoute(req)) {
       return next();
     }
-    const apiKey = req.headers['x-api-key'] as string;
+    // Support both x-api-key header and Authorization Bearer token
+    let apiKey = req.headers['x-api-key'] as string;
+    
+    // If no x-api-key header, try Authorization Bearer
+    if (!apiKey) {
+      const authHeader = req.headers.authorization;
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+        // Check if it's an API key format (starts with pk_)
+        if (token.startsWith('pk_')) {
+          apiKey = token;
+        }
+      }
+    }
     
     if (!apiKey) {
       logSecurityEvent('missing_api_key', 'medium', {
