@@ -371,14 +371,18 @@ export class S3Service {
         metadata: response.Metadata,
       };
     } catch (error) {
+      // Only log as error if it's not a NotFound error (which is expected when checking file existence)
+      if ((error as any).name === 'NotFound') {
+        s3Logger.debug('File not found (expected when checking existence)', {
+          key,
+        });
+        throw ApiError.notFound('File not found');
+      }
+
       s3Logger.error('Get file info failed', {
         key,
         error: error instanceof Error ? { message: error.message, stack: error.stack, name: error.name } : error,
       });
-
-      if ((error as any).name === 'NotFound') {
-        throw ApiError.notFound('File not found');
-      }
 
       throw ApiError.s3Error('Failed to get file info');
     }

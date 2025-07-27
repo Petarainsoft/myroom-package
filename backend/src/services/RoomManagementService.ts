@@ -93,9 +93,28 @@ export class RoomManagementService {
         .toLowerCase()
         .replace(/[^a-z0-9\s-_]/g, '')
         .replace(/\s+/g, '-');
-      const resourceId = `${roomType.resource_path}-${sanitizedName.toLocaleLowerCase()}`.replace(/\/+/g, '-');
+      let resourceId = `${roomType.resource_path}-${sanitizedName.toLocaleLowerCase()}`.replace(/\/+/g, '-');
 
-      process.stdout.write(`[createRoomResource] Generated resourceId: ${resourceId}\n`);
+      // Check if resourceId already exists and generate unique one if needed
+      let counter = 1;
+      let originalResourceId = resourceId;
+      while (true) {
+        const existingResource = await this.prisma.room.findUnique({
+          where: { resourceId }
+        });
+        
+        if (!existingResource) {
+          break; // resourceId is unique, we can use it
+        }
+        
+        // If exists, append counter to make it unique
+        resourceId = `${originalResourceId}-${counter}`;
+        counter++;
+        
+        process.stdout.write(`[createRoomResource] ResourceId ${originalResourceId} already exists, trying ${resourceId}\n`);
+      }
+
+      process.stdout.write(`[createRoomResource] Generated unique resourceId: ${resourceId}\n`);
 
       // Prepare room resource data
       const roomResourceData = {

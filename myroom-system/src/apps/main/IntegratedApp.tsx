@@ -627,8 +627,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       resourceId: selectedItemToAdd.resourceId,
       position: { x: constrainedX, y: 0, z: constrainedZ },
       rotation: { x: 0, y: 0, z: 0 },
-      scale: { x: 1, y: 1, z: 1 },
-      path: selectedItemToAdd.path
+      scale: { x: 1, y: 1, z: 1 }
     };
     setLoadedItems(prev => [...prev, newItem]);
   };

@@ -209,12 +209,18 @@ export class ItemManagementService {
         logger.info('Upload skipped because file already exists', { specificS3Url });
       }
 
-      // Check if resourceId already exists
-      const existingUnique = await this.prisma.item.findUnique({
-        where: { resourceId: resourceIdGenerated },
-      });
-      if (existingUnique) {
-        throw ApiError.badRequest('resourceId must be unique');
+      // Ensure resourceId is unique by adding suffix if needed
+      let finalResourceId = resourceIdGenerated;
+      let counter = 1;
+      while (true) {
+        const existingUnique = await this.prisma.item.findUnique({
+          where: { resourceId: finalResourceId },
+        });
+        if (!existingUnique) {
+          break;
+        }
+        finalResourceId = `${resourceIdGenerated}_${counter}`;
+        counter++;
       }
 
       // Compute and log fileType
@@ -224,7 +230,7 @@ export class ItemManagementService {
       // Create resource record
       const resource = await this.prisma.item.create({
         data: {
-          resourceId: resourceIdGenerated,
+          resourceId: finalResourceId,
           name: input.name,
           description: input.description,
           s3Url: uploadResult.url,
