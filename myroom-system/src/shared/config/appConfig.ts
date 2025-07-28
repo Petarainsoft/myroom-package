@@ -47,7 +47,8 @@ const getConfiguredProjectId = () => {
   if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_PROJECT_ID) {
     return process.env.REACT_APP_PROJECT_ID;
   }
-  return 'default-project'; // Default project ID
+  // Project will be determined from apiKey by backend, no need for default
+  return null;
 };
 
 // Static boolean to temporarily disable local GLB resource loading

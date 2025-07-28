@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, RefreshCw, Save, Trash2, Edit, Plus, FilePlus } from 'lucide-react';
 import { manifestService } from '../services/ManifestService';
 import { PresetConfig } from '../types/PresetConfig';
@@ -68,7 +69,37 @@ export function ManifestDropdown({
     onManifestSelect(manifest.id);
   };
 
-  // Handle save manifest
+  // Handle save button click - check if we have a selected manifest
+  const handleSaveButtonClick = () => {
+    if (selectedManifest) {
+      // If we have a selected manifest, save directly to it
+      handleSaveToExistingManifest();
+    } else {
+      // If no manifest selected, show save as new modal
+      setShowSaveModal(true);
+    }
+  };
+
+  // Handle saving to existing manifest
+  const handleSaveToExistingManifest = async () => {
+    if (!selectedManifest || !currentConfig) return;
+    
+    setIsSaving(true);
+    setError('');
+    
+    try {
+      // Use updatePreset instead of createPreset for existing manifests
+      await manifestService.updatePreset(selectedManifest.id, selectedManifest.name, currentConfig);
+      // Reload manifests to show the updated one
+      await loadManifests();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update manifest');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Handle save manifest (for save as new)
   const handleSaveManifest = async () => {
     if (!saveManifestName.trim() || !currentConfig) {
       setError('Please enter a manifest name');
@@ -127,19 +158,19 @@ export function ManifestDropdown({
         <div className="dropdown-actions">
           <button
             onClick={() => setShowSaveModal(true)}
-            className="action-btn save-btn"
-            title="Save Current Scene"
-            disabled={!currentConfig}
-          >
-            <Save size={16} />
-          </button>
-          <button
-            onClick={() => setShowSaveModal(true)}
             className="action-btn save-as-new-btn"
             title="Save as New Manifest"
             disabled={!currentConfig}
           >
             <FilePlus size={16} />
+          </button>
+          <button
+            onClick={handleSaveButtonClick}
+            className="action-btn save-btn"
+            title={selectedManifest ? `Update "${selectedManifest.name}"` : "Save as New"}
+            disabled={!currentConfig}
+          >
+            <Save size={15} />
           </button>
           <button
             onClick={loadManifests}
@@ -196,6 +227,7 @@ export function ManifestDropdown({
                     </div>
                   </div>
                   <button
+                    key={`delete-${manifest.id}`}
                     onClick={(e) => handleDeleteManifest(manifest.id, e)}
                     className="delete-btn"
                     title="Delete Manifest"
@@ -217,7 +249,7 @@ export function ManifestDropdown({
       )}
 
       {/* Save Manifest Modal */}
-      {showSaveModal && (
+      {showSaveModal && createPortal(
         <div className="modal-overlay" onClick={() => setShowSaveModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>Save Scene Manifest</h3>
@@ -242,11 +274,13 @@ export function ManifestDropdown({
                 className="save-btn"
                 disabled={isSaving || !saveManifestName.trim()}
               >
+                <Save size={16} />
                 {isSaving ? 'Saving...' : 'Save'}
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <style>{`
@@ -286,6 +320,17 @@ export function ManifestDropdown({
           display: flex;
           align-items: center;
           justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .save-btn {
+          background: #22c55e !important;
+          color: white !important;
+        }
+
+        .save-btn:hover:not(:disabled) {
+          background: #16a34a !important;
+          color: white !important;
         }
 
         .action-btn:hover:not(:disabled) {
@@ -448,7 +493,7 @@ export function ManifestDropdown({
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 2000;
+          z-index: 9999;
         }
 
         .modal-content {
@@ -457,6 +502,9 @@ export function ManifestDropdown({
           padding: 24px;
           min-width: 400px;
           max-width: 500px;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          position: relative;
+          z-index: 10000;
         }
 
         .modal-content h3 {
@@ -488,7 +536,7 @@ export function ManifestDropdown({
         }
 
         .cancel-btn {
-          padding: 10px 20px;
+          padding: 8px 16px;
           border: 1px solid #d1d5db;
           border-radius: 6px;
           background: white;
@@ -503,7 +551,7 @@ export function ManifestDropdown({
         }
 
         .save-btn {
-          padding: 10px 20px;
+          padding: 8px 16px;
           border: none;
           border-radius: 6px;
           background: #22c55e;
@@ -511,6 +559,9 @@ export function ManifestDropdown({
           cursor: pointer;
           font-size: 14px;
           font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 6px;
         }
 
         .save-btn:hover:not(:disabled) {

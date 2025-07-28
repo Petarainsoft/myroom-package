@@ -9,6 +9,7 @@ import { manifestService } from '../../shared/services/ManifestService';
 import ApiService from '../../shared/services/ApiService';
 import CacheDebugPanel from '../../shared/components/debug/CacheDebugPanel';
 import { ManifestDropdown } from '../../shared/components/ManifestDropdown';
+import { PresetConfig } from '../../shared/types/PresetConfig';
 import { toast } from 'sonner';
 import './App.css';
 
@@ -878,22 +879,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     }
   };
 
-  const handleManifestSave = async (manifestName: string) => {
+  const handleManifestSave = async (manifestName: string, config: PresetConfig) => {
     try {
       console.log('📋 [IntegratedApp] Saving manifest:', manifestName);
       
-      const presetData = {
-        name: manifestName,
-        roomConfig: {
-          selectedRoom
-        },
-        avatarConfig,
-        itemsConfig: {
-          loadedItems
-        }
-      };
-      
-      await manifestService.createPreset(presetData);
+      await manifestService.createPreset(manifestName, config, `Scene configuration: ${manifestName}`);
       toast.success(`Manifest "${manifestName}" saved successfully!`);
     } catch (error) {
       console.error('❌ [IntegratedApp] Error saving manifest:', error);

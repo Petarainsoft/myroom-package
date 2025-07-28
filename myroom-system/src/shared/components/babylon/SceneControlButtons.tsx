@@ -30,6 +30,7 @@ const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
       }}
     >
       <button
+        key="reset"
         onClick={onReset}
         style={{
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -53,6 +54,7 @@ const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
         🔄
       </button>
       <button
+        key="fullscreen"
         onClick={onToggleFullscreen}
         style={{
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -76,6 +78,7 @@ const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
         {isFullscreen ? '⤓' : '⤢'}
       </button>
       <button
+        key="avatar"
         onClick={onToggleAvatarOverlay}
         style={{
           backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -99,6 +102,7 @@ const SceneControlButtons: React.FC<SceneControlButtonsProps> = ({
         👥
       </button>
       <button
+        key="room"
         onClick={onToggleRoomOverlay}
         style={{
           backgroundColor: 'rgba(0, 0, 0, 0.3)',

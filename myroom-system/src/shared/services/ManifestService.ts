@@ -41,7 +41,8 @@ class ManifestService {
     // These can be set via window.MYROOM_CONFIG or environment variables
     this.apiBaseUrl = this.getConfigValue('apiBaseUrl', domainConfig.backendDomain);
     this.apiKey = this.getConfigValue('apiKey', domainConfig.apiKey);
-    this.projectId = this.getConfigValue('projectId', '');
+    // Project ID will be determined from apiKey by backend, no need to store it
+    this.projectId = '';
   }
 
   private getConfigValue(key: string, defaultValue: string): string {
@@ -72,10 +73,10 @@ class ManifestService {
   /**
    * Configure API settings for backend communication
    */
-  public configure(apiBaseUrl: string, apiKey: string, projectId: string): void {
+  public configure(apiBaseUrl: string, apiKey: string): void {
     this.apiBaseUrl = apiBaseUrl;
     this.apiKey = apiKey;
-    this.projectId = projectId;
+    // Project ID will be determined from apiKey by backend
     this.clearCache(); // Clear cache when configuration changes
   }
 
@@ -92,12 +93,12 @@ class ManifestService {
       const { domainConfig } = await import('../config/appConfig');
       
       // Only try to load from backend API if useResourceId is enabled
-      if (domainConfig.useResourceId && this.apiKey && this.projectId) {
+      if (domainConfig.useResourceId && this.apiKey) {
         const response = await fetch(
-          `${this.apiBaseUrl}/api/manifest/projects/${this.projectId}/presets/${presetName}`,
+          `${this.apiBaseUrl}/api/manifest/presets/${presetName}`,
           {
             headers: {
-              'Authorization': `Bearer ${this.apiKey}`,
+              'x-api-key': this.apiKey,
               'Content-Type': 'application/json',
             },
           }
@@ -298,18 +299,18 @@ class ManifestService {
    * Create a new preset configuration via API
    */
   public async createPreset(name: string, config: PresetConfig, description?: string): Promise<boolean> {
-    if (!this.apiKey || !this.projectId) {
-      console.error('❌ API key and project ID are required to create presets');
+    if (!this.apiKey) {
+      console.error('❌ API key is required to create presets');
       return false;
     }
 
     try {
       const response = await fetch(
-        `${this.apiBaseUrl}/api/manifest/projects/${this.projectId}/presets`,
+        `${this.apiBaseUrl}/api/manifest/presets`,
         {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
+            'x-api-key': this.apiKey,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -340,17 +341,17 @@ class ManifestService {
    * List all presets for the current project
    */
   public async listPresets(): Promise<any[]> {
-    if (!this.apiKey || !this.projectId) {
-      console.error('❌ API key and project ID are required to list presets');
+    if (!this.apiKey) {
+      console.error('❌ API key is required to list presets');
       return [];
     }
 
     try {
       const response = await fetch(
-        `${this.apiBaseUrl}/api/manifest/projects/${this.projectId}/presets?limit=100`,
+        `${this.apiBaseUrl}/api/manifest/presets?limit=100`,
         {
           headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
+            'x-api-key': this.apiKey,
             'Content-Type': 'application/json',
           },
         }
@@ -373,8 +374,8 @@ class ManifestService {
    * Update an existing preset configuration via API
    */
   public async updatePreset(presetId: string, name: string, config: PresetConfig, description?: string): Promise<boolean> {
-    if (!this.apiKey || !this.projectId) {
-      console.error('❌ API key and project ID are required to update presets');
+    if (!this.apiKey) {
+      console.error('❌ API key is required to update presets');
       return false;
     }
 
@@ -384,13 +385,13 @@ class ManifestService {
         {
           method: 'PUT',
           headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
+            'x-api-key': this.apiKey,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             name,
             description: description || `Updated preset configuration: ${name}`,
-            manifestData: config,
+            config,
           }),
         }
       );
@@ -415,8 +416,8 @@ class ManifestService {
    * Delete a preset via API
    */
   public async deletePreset(presetId: string): Promise<boolean> {
-    if (!this.apiKey || !this.projectId) {
-      console.error('❌ API key and project ID are required to delete presets');
+    if (!this.apiKey) {
+      console.error('❌ API key is required to delete presets');
       return false;
     }
 
@@ -426,7 +427,7 @@ class ManifestService {
         {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
+            'x-api-key': this.apiKey,
             'Content-Type': 'application/json',
           },
         }
@@ -451,8 +452,8 @@ class ManifestService {
    * Get a specific preset by ID
    */
   public async getPreset(presetId: string): Promise<PresetConfig | null> {
-    if (!this.apiKey || !this.projectId) {
-      console.error('❌ API key and project ID are required to get preset');
+    if (!this.apiKey) {
+      console.error('❌ API key is required to get preset');
       return null;
     }
 
@@ -461,7 +462,7 @@ class ManifestService {
         `${this.apiBaseUrl}/api/manifest/${presetId}`,
         {
           headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
+            'x-api-key': this.apiKey,
             'Content-Type': 'application/json',
           },
         }

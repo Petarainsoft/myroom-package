@@ -60,6 +60,7 @@ interface IntegratedSceneProps {
 // Define externally exposed ref interface for the component
 interface IntegratedSceneRef {
   resetCamera: () => void; // Function to reset camera to default position
+  getCurrentSceneConfig: () => PresetConfig; // Function to get current scene configuration
 }
 
 // Main component managing Babylon.js scene integration with React
@@ -263,7 +264,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   };
 
   useImperativeHandle(ref, () => ({
-    resetCamera
+    resetCamera,
+    getCurrentSceneConfig
   }), []);
 
   // Initialize Babylon scene

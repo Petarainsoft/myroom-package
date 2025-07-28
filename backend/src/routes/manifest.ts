@@ -166,16 +166,335 @@ router.get('/projects/:projectId/manifests',
   })
 );
 
+
+
+/**
+ * @route GET /api/manifest/presets
+ * @desc List all presets for the authenticated project
+ * @access Private (API Key)
+ * @swagger
+ * /api/manifest/presets:
+ *   get:
+ *     tags: [Manifest]
+ *     summary: List all presets for the authenticated project
+ *     description: Retrieves all preset configurations for the project determined from API key
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [ACTIVE, INACTIVE]
+ *         description: Filter by status
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *           default: createdAt
+ *         description: Field to sort by
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *         description: Sort order
+ *     security:
+ *       - apiKey: []
+ *     responses:
+ *       200:
+ *         description: List of presets for the project
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     presets:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           name:
+ *                             type: string
+ *                           description:
+ *                             type: string
+ *                           status:
+ *                             type: string
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           updatedAt:
+ *                             type: string
+ *                             format: date-time
+ *                     pagination:
+ *                       type: object
+ *                       properties:
+ *                         page:
+ *                           type: integer
+ *                         limit:
+ *                           type: integer
+ *                         total:
+ *                           type: integer
+ *                         pages:
+ *                           type: integer
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
+router.get('/presets',
+  validateApiKey,
+  requireScope(['manifest:read']),
+  validationErrorHandler(schemas.pagination, 'query'),
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const projectId = req.apiKey!.projectId; // Get projectId from validated API key
+    const developerId = req.apiKey!.developerId;
+    const { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc', status } = req.query;
+    const skip = (Number(page) - 1) * Number(limit);
+
+    // Verify project exists and belongs to developer
+    const project = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        developerId,
+      },
+    });
+
+    if (!project) {
+      throw ApiError.notFound('Project not found');
+    }
+
+    const where: any = { projectId };
+    if (status) {
+      where.status = status;
+    }
+
+    const [presets, total] = await Promise.all([
+      prisma.manifest.findMany({
+        where,
+        skip,
+        take: Number(limit),
+        orderBy: { [sortBy as string]: sortOrder },
+        select: {
+          id: true,
+          name: true,
+          version: true,
+          description: true,
+          status: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      }),
+      prisma.manifest.count({ where }),
+    ]);
+
+    apiLogger.info('Presets listed via API key', {
+      projectId,
+      developerId,
+      presetsCount: presets.length,
+      total,
+    });
+
+    res.json({
+      success: true,
+      data: {
+        presets,
+        pagination: {
+          page: Number(page),
+          limit: Number(limit),
+          total,
+          pages: Math.ceil(total / Number(limit)),
+        },
+        project: {
+          id: project.id,
+          name: project.name,
+        },
+      },
+    });
+  })
+);
+
+
+/**
+ * @route POST /api/manifest/presets
+ * @desc Create a new preset for the authenticated project
+ * @access Private (API Key)
+ * @swagger
+ * /api/manifest/presets:
+ *   post:
+ *     tags: [Manifest]
+ *     summary: Create a new preset for the authenticated project
+ *     description: Creates a new preset configuration for the project determined from API key
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - config
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "default-preset"
+ *                 description: Unique name for the preset
+ *               description:
+ *                 type: string
+ *                 example: "Default room configuration"
+ *                 description: Optional description
+ *               config:
+ *                 type: object
+ *                 description: Preset JSON configuration
+ *                 example:
+ *                   version: "1.0"
+ *                   room:
+ *                     name: "Living Room"
+ *                     resourceId: "relax-mr_khroom_0001"
+ *                   avatar:
+ *                     gender: "male"
+ *                     parts: {}
+ *                   items: []
+ *     security:
+ *       - apiKey: []
+ *     responses:
+ *       201:
+ *         description: Preset created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "preset-123"
+ *                     name:
+ *                       type: string
+ *                       example: "default-preset"
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       401:
+ *         $ref: '#/components/responses/Unauthorized'
+ *       403:
+ *         $ref: '#/components/responses/Forbidden'
+ *       409:
+ *         description: Preset name already exists
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
+router.post('/presets',
+  validateApiKey,
+  requireScope(['manifest:write']),
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const projectId = req.apiKey!.projectId; // Get projectId from validated API key
+    const { name, description, config } = req.body;
+    const developerId = req.apiKey!.developerId;
+
+    // Validate required fields
+    if (!name || !config) {
+      throw ApiError.badRequest('Name and config are required');
+    }
+
+    // Verify project exists and belongs to developer
+    const project = await prisma.project.findFirst({
+      where: {
+        id: projectId,
+        developerId,
+      },
+    });
+
+    if (!project) {
+      throw ApiError.notFound('Project not found');
+    }
+
+    // Check if preset name already exists in this project
+    const existingPreset = await prisma.manifest.findFirst({
+      where: {
+        projectId,
+        name,
+      },
+    });
+
+    if (existingPreset) {
+      throw ApiError.conflict(`Preset with name '${name}' already exists`);
+    }
+
+    // Create preset in manifest table
+    const preset = await prisma.manifest.create({
+      data: {
+        name,
+        description: description || `Preset configuration: ${name}`,
+        version: '1.0.0',
+        projectId,
+        status: 'ACTIVE',
+        config: config, // Store JSON config directly
+        // No S3 storage for presets, just config column
+      },
+      select: {
+        id: true,
+        name: true,
+        version: true,
+        description: true,
+        status: true,
+        config: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    apiLogger.info('Preset created via API key', {
+      presetId: preset.id,
+      presetName: name,
+      projectId,
+      developerId,
+    });
+
+    res.status(201).json({
+      success: true,
+      data: preset,
+    });
+  })
+);
+
 /**
  * @route GET /api/manifest/:id
- * @desc Get manifest details
+ * @desc Get manifest by ID
  * @access Private (API Key)
  * @swagger
  * /api/manifest/{id}:
  *   get:
  *     tags: [Manifest]
- *     summary: Get manifest details
- *     description: Retrieves detailed information about a specific manifest
+ *     summary: Get manifest by ID
+ *     description: Retrieves a specific manifest by its ID
  *     parameters:
  *       - in: path
  *         name: id
@@ -2019,5 +2338,7 @@ router.get('/projects/:projectId/presets',
     });
   })
 );
+
+
 
 export default router;

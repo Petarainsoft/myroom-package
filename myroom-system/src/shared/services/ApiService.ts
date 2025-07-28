@@ -107,12 +107,12 @@ class ApiService {
 
   /**
    * Fetch default preset from backend
+   * Project is automatically determined from apiKey by backend middleware
    */
-  public async getDefaultPreset(projectId?: string): Promise<any> {
+  public async getDefaultPreset(): Promise<any> {
     try {
-      const id = projectId || domainConfig.projectId;
-      
-      const response = await this.get(`/api/manifest/projects/${id}/presets/default-preset`);
+      // Backend determines project from apiKey automatically
+      const response = await this.get('/api/manifest/presets/default-preset');
       return response;
     } catch (error) {
       console.error('Failed to fetch default preset from backend:', error);
