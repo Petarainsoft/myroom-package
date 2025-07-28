@@ -159,6 +159,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     }
   }, [selectedItem]);
 
+  // Debug: Log selectedRoom changes
+  useEffect(() => {
+    console.log('🔍 [IntegratedApp] selectedRoom changed:', selectedRoom);
+  }, [selectedRoom]);
+
   // Check if selected item still exists in loaded items
   useEffect(() => {
     if (selectedItem) {
@@ -418,7 +423,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                 resourceId: item.resourceId,
                 // Map backend fields to frontend expected format
                 name: item.name,
-                path: item.s3Url || item.path, // Use s3Url if available, fallback to path
+                path: item.s3Url || item.path || item.resourceId, // Use s3Url if available, fallback to path, then resourceId
               }));
               allItems.push(...categoryItems);
             }
@@ -579,6 +584,18 @@ const InteractiveRoomWithAvatar: React.FC = () => {
 
   const handlePartChange = (partType: string, fileName: string | null) => {
     console.log(` handlePartChange IN INTEGRATED APP TSX: partType=${partType}, fileName=${fileName}`);
+    
+    // Find the resourceId for the selected part
+    let resourceId: string | null = null;
+    if (fileName && avatarConfig.gender) {
+      const genderData = availablePartsData[avatarConfig.gender];
+      if (genderData && genderData.selectableParts[partType as keyof typeof genderData.selectableParts]) {
+        const partOptions = genderData.selectableParts[partType as keyof typeof genderData.selectableParts];
+        const selectedPart = partOptions.find(part => part.fileName === fileName);
+        resourceId = selectedPart?.resourceId || null;
+      }
+    }
+    
     setAvatarConfig((prev: AvatarConfig) => {
       const newConfig = { ...prev };
 
@@ -593,10 +610,22 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             bottom: null,
             shoes: null
           };
+          // Store resourceId in a separate object for tracking
+          newConfig.resourceIds = {
+            ...newConfig.resourceIds,
+            fullset: resourceId,
+            top: null,
+            bottom: null,
+            shoes: null
+          };
         } else {
           // When removing fullset, just clear it
           newConfig.parts = {
             ...newConfig.parts,
+            fullset: null
+          };
+          newConfig.resourceIds = {
+            ...newConfig.resourceIds,
             fullset: null
           };
         }
@@ -608,10 +637,19 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             fullset: null,
             [partType]: fileName
           };
+          newConfig.resourceIds = {
+            ...newConfig.resourceIds,
+            fullset: null,
+            [partType]: resourceId
+          };
         } else {
           newConfig.parts = {
             ...newConfig.parts,
             [partType]: fileName
+          };
+          newConfig.resourceIds = {
+            ...newConfig.resourceIds,
+            [partType]: resourceId
           };
         }
       } else {
@@ -619,6 +657,10 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         newConfig.parts = {
           ...newConfig.parts,
           [partType]: fileName
+        };
+        newConfig.resourceIds = {
+          ...newConfig.resourceIds,
+          [partType]: resourceId
         };
       }
 
@@ -638,6 +680,20 @@ const InteractiveRoomWithAvatar: React.FC = () => {
 
   const handleSaveAvatar = () => {
     // Create comprehensive save data including room, avatar, and items
+    // Enhanced avatar data with both path and resourceId for each part
+    const enhancedAvatar = {
+      ...avatarConfig,
+      parts: Object.keys(avatarConfig.parts).reduce((acc, partType) => {
+        const path = avatarConfig.parts[partType];
+        const resourceId = avatarConfig.resourceIds?.[partType] || null;
+        acc[partType] = {
+          path: path,
+          resourceId: resourceId
+        };
+        return acc;
+      }, {} as any)
+    };
+
     const saveData = {
       version: '1.0',
       timestamp: new Date().toISOString(),
@@ -646,7 +702,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         path: selectedRoom.path,
         resourceId: selectedRoom.resourceId
       },
-      avatar: avatarConfig,
+      avatar: enhancedAvatar,
       items: loadedItems.map(item => ({
         id: item.id,
         name: item.name,
@@ -726,8 +782,39 @@ const InteractiveRoomWithAvatar: React.FC = () => {
               setSelectedRoom(roomToLoad);
             }
 
-            // Load avatar
-            setAvatarConfig(data.avatar);
+            // Load avatar - handle both old and new format
+            let avatarToLoad = data.avatar;
+            
+            // Check if avatar parts have the new format with path and resourceId objects
+            if (data.avatar.parts && typeof data.avatar.parts === 'object') {
+              const firstPartKey = Object.keys(data.avatar.parts)[0];
+              const firstPart = data.avatar.parts[firstPartKey];
+              
+              // If parts contain objects with path and resourceId, convert to old format
+              if (firstPart && typeof firstPart === 'object' && 'path' in firstPart) {
+                const convertedParts: any = {};
+                const convertedResourceIds: any = {};
+                
+                Object.keys(data.avatar.parts).forEach(partType => {
+                  const part = data.avatar.parts[partType];
+                  if (part && typeof part === 'object') {
+                    convertedParts[partType] = part.path;
+                    convertedResourceIds[partType] = part.resourceId;
+                  } else {
+                    convertedParts[partType] = part;
+                    convertedResourceIds[partType] = null;
+                  }
+                });
+                
+                avatarToLoad = {
+                  ...data.avatar,
+                  parts: convertedParts,
+                  resourceIds: convertedResourceIds
+                };
+              }
+            }
+            
+            setAvatarConfig(avatarToLoad);
 
             // Load items
             setLoadedItems(data.items);
@@ -853,25 +940,56 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       const preset = await manifestService.getPreset(presetId);
       
       if (preset) {
-        // Apply room configuration
-        if (preset.roomConfig && preset.roomConfig.selectedRoom) {
-          const room = availableRooms.find(r => r.resourceId === preset.roomConfig.selectedRoom.resourceId);
+        // Apply room configuration following default-preset.json structure
+        if (preset.room) {
+          const room = availableRooms.find(r => 
+            r.resourceId === preset.room.resourceId || 
+            r.path === preset.room.path
+          );
           if (room) {
             setSelectedRoom(room);
+          } else {
+            // Create room object from preset if not found in available rooms
+            setSelectedRoom({
+              name: preset.room.name,
+              resourceId: preset.room.resourceId,
+              path: preset.room.path
+            });
           }
         }
         
-        // Apply avatar configuration
-        if (preset.avatarConfig) {
-          setAvatarConfig(preset.avatarConfig);
+        // Apply avatar configuration following default-preset.json structure
+        if (preset.avatar) {
+          // Convert preset avatar format to internal AvatarConfig format
+          const convertedAvatarConfig: AvatarConfig = {
+            gender: preset.avatar.gender || 'male',
+            parts: {},
+            colors: preset.avatar.colors || {},
+            resourceIds: {}
+          };
+          
+          // Convert parts from preset format to internal format
+          if (preset.avatar.parts) {
+            Object.keys(preset.avatar.parts).forEach(partKey => {
+              const part = preset.avatar.parts![partKey];
+              if (part && typeof part === 'object' && part.path) {
+                convertedAvatarConfig.parts[partKey] = part.path;
+                if (part.resourceId) {
+                  convertedAvatarConfig.resourceIds![partKey] = part.resourceId;
+                }
+              }
+            });
+          }
+          
+          setAvatarConfig(convertedAvatarConfig);
         }
         
-        // Apply loaded items
-        if (preset.itemsConfig && preset.itemsConfig.loadedItems) {
-          setLoadedItems(preset.itemsConfig.loadedItems);
+        // Apply loaded items following default-preset.json structure
+        if (preset.items && Array.isArray(preset.items)) {
+          setLoadedItems(preset.items);
         }
         
-        toast.success(`Manifest "${preset.name}" loaded successfully!`);
+        toast.success(`Manifest loaded successfully!`);
       }
     } catch (error) {
       console.error('❌ [IntegratedApp] Error loading manifest:', error);
@@ -882,6 +1000,9 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   const handleManifestSave = async (manifestName: string, config: PresetConfig) => {
     try {
       console.log('📋 [IntegratedApp] Saving manifest:', manifestName);
+      console.log('📋 [IntegratedApp] Current loadedItems state:', loadedItems);
+      console.log('📋 [IntegratedApp] LoadedItems count:', loadedItems.length);
+      console.log('📋 [IntegratedApp] Config to save:', config);
       
       await manifestService.createPreset(manifestName, config, `Scene configuration: ${manifestName}`);
       toast.success(`Manifest "${manifestName}" saved successfully!`);
@@ -976,24 +1097,31 @@ const InteractiveRoomWithAvatar: React.FC = () => {
               {/* This is the embedded MyRoom & Avatar application */}
               <div className="interactive-room-container">
                 <div className="babylon-scene-container">
-                  <IntegratedBabylonScene
-                    ref={integratedSceneRef}
-                    roomPath={selectedRoom.path}
-                    roomResourceId={selectedRoom.resourceId}
-                    avatarConfig={avatarConfig}
-                    activeMovement={activeMovement}
-                    touchMovement={touchMovement}
-                    loadedItems={loadedItems}
-                    onSceneReady={setBabylonScene}
-                    gizmoMode={gizmoMode}
-                    onGizmoModeChange={setGizmoMode}
-                    selectedItem={selectedItem}
-                    onSelectItem={setSelectedItem}
-                    onItemTransformChange={handleItemTransformChange}
-                    onToggleUIOverlay={handleToggleAvatarOverlay}
-                    onToggleRoomPanel={handleToggleRoomOverlay}
-                    onToggleFullscreen={handleToggleFullscreen}
-                  />
+                  {/* Only render IntegratedBabylonScene when selectedRoom has valid data */}
+                  {selectedRoom.resourceId && selectedRoom.path ? (
+                    <IntegratedBabylonScene
+                      ref={integratedSceneRef}
+                      roomPath={selectedRoom.path}
+                      roomResourceId={selectedRoom.resourceId}
+                      avatarConfig={avatarConfig}
+                      activeMovement={activeMovement}
+                      touchMovement={touchMovement}
+                      loadedItems={loadedItems}
+                      onSceneReady={setBabylonScene}
+                      gizmoMode={gizmoMode}
+                      onGizmoModeChange={setGizmoMode}
+                      selectedItem={selectedItem}
+                      onSelectItem={setSelectedItem}
+                      onItemTransformChange={handleItemTransformChange}
+                      onToggleUIOverlay={handleToggleAvatarOverlay}
+                      onToggleRoomPanel={handleToggleRoomOverlay}
+                      onToggleFullscreen={handleToggleFullscreen}
+                    />
+                  ) : (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: '#666' }}>
+                      Loading room data...
+                    </div>
+                  )}
                 </div>
 
                 {/* Movement Instructions */}

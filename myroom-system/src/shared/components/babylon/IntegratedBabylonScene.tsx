@@ -592,22 +592,93 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
 
   // Function to collect current scene configuration
   const getCurrentSceneConfig = (): PresetConfig => {
+    console.log('🔍 [getCurrentSceneConfig] Debug - Input props:');
+    console.log('  - roomPath:', props.roomPath);
+    console.log('  - roomResourceId:', props.roomResourceId);
+    console.log('  - avatarConfig:', props.avatarConfig);
+    console.log('  - loadedItems:', props.loadedItems);
+    console.log('🎬 [IntegratedBabylonScene] Getting current scene configuration...');
+    console.log('📦 [IntegratedBabylonScene] Raw loadedItems received:', props.loadedItems);
+    console.log('📦 [IntegratedBabylonScene] Number of loadedItems:', props.loadedItems?.length || 0);
+    
+    // Debug: Check if room props are empty
+    if (!props.roomPath && !props.roomResourceId) {
+      console.warn('⚠️ [getCurrentSceneConfig] Both roomPath and roomResourceId are empty!');
+    }
+
+    // Build avatar config following default-preset.json format
+    const avatarConfig = props.avatarConfig || { gender: 'male' };
+    
+    // Build parts object with path and resourceId for each part
+    const avatarParts: any = {};
+    if (avatarConfig.parts) {
+      // Process each avatar part to match default-preset.json format
+      ['body', 'hair', 'top', 'bottom', 'shoes', 'fullset', 'accessory'].forEach(partKey => {
+        const part = avatarConfig.parts[partKey];
+        if (part && part !== null) {
+          if (typeof part === 'string') {
+            // If part is a string (path or resourceId), create object with both
+            avatarParts[partKey] = {
+              path: part.startsWith('/models/') ? part : '',
+              resourceId: !part.startsWith('/models/') ? part : ''
+            };
+          } else if (typeof part === 'object') {
+            // If part is already an object, ensure it has both path and resourceId
+            avatarParts[partKey] = {
+              path: part.path || '',
+              resourceId: part.resourceId || part.path || ''
+            };
+          }
+        } else {
+          // Set null for empty parts (fullset, accessory)
+          avatarParts[partKey] = null;
+        }
+      });
+    }
+
+    // Build enhanced avatar config following default-preset.json structure
+    const enhancedAvatarConfig = {
+      gender: avatarConfig.gender || 'male',
+      parts: avatarParts,
+      colors: avatarConfig.colors || {
+        hair: '#4A301B',
+        top: '#1E90FF'
+      }
+    };
+
+    // Process items to ensure they have all required fields
+    const enhancedItems = (props.loadedItems || []).map(item => ({
+      id: item.id,
+      name: item.name,
+      path: item.path,
+      resourceId: item.resourceId || item.path || '',
+      position: item.position,
+      rotation: item.rotation,
+      scale: item.scale
+    }));
+    
+    console.log('📦 [IntegratedBabylonScene] Enhanced items for config:', enhancedItems);
+    console.log('📦 [IntegratedBabylonScene] Enhanced items count:', enhancedItems.length);
+
+    // Build final config following default-preset.json structure exactly
     const config: PresetConfig = {
       version: '1.0',
-      timestamp: new Date().toISOString(),
+      timestamp: Date.now(),
       room: {
-        name: 'Current Room',
-        path: props.roomPath || '',
-        resourceId: props.roomResourceId || ''
+        name: props.roomPath ? 'Current Room' : 'Living Room',
+        path: props.roomPath || '/models/rooms/cate001/MR_KHROOM_0001.glb',
+        resourceId: props.roomResourceId || props.roomPath || 'relax-mr_khroom_0001'
       },
-      avatar: props.avatarConfig || { gender: 'male' },
-      items: props.loadedItems || [],
+      avatar: enhancedAvatarConfig,
+      items: enhancedItems,
       usage: {
-        description: 'Scene configuration saved from MyRoom system',
+        description: 'This manifest provides GLB paths and resourceIds for flexible asset loading',
         when_using_backend: 'ResourceIds are automatically used by loaders when backend is configured',
         when_using_local: 'Path properties are used as fallback for local asset loading'
       }
     };
+
+    console.log('✅ [getCurrentSceneConfig] Final config (matching default-preset.json format):', config);
     return config;
   };
 

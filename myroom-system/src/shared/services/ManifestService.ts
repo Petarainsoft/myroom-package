@@ -131,7 +131,7 @@ class ManifestService {
     } catch (error) {
       console.error('❌ Failed to load preset configuration:', error);
       
-      // Return a minimal default configuration
+      // Return a minimal default configuration following default-preset.json structure
       const fallbackConfig: PresetConfig = {
         version: '1.0',
         timestamp: Date.now(),
@@ -141,9 +141,18 @@ class ManifestService {
           resourceId: ''
         },
         avatar: {
-          gender: 'male'
+          gender: 'male',
+          parts: {},
+          colors: {}
         },
-        items: []
+        items: [],
+        usage: {
+          description: 'Fallback configuration when preset loading fails',
+          instructions: [
+            'This is a minimal fallback configuration',
+            'Please load a proper preset or configure manually'
+          ]
+        }
       };
       
       return fallbackConfig;

@@ -90,4 +90,5 @@ export interface AvatarConfig {
     gender: Gender;
     parts: AvatarPartPaths;
     colors: AvatarColors;
+    resourceIds?: AvatarPartPaths; // Optional resourceIds for backend API integration
 }

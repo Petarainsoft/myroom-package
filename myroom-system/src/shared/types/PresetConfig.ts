@@ -2,7 +2,7 @@
 
 export interface PresetConfig {
   version: string;
-  timestamp: string;
+  timestamp: number;
   room: {
     name: string;
     path: string;
@@ -56,10 +56,11 @@ export interface PresetConfig {
     rotation?: { x: number; y: number; z: number };
     scale?: { x: number; y: number; z: number };
   }>;
-  usage: {
+  usage?: {
     description: string;
-    when_using_backend: string;
-    when_using_local: string;
+    instructions?: string[];
+    when_using_backend?: string;
+    when_using_local?: string;
   };
 }
 

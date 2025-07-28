@@ -116,6 +116,15 @@ export const getDefaultConfigForGender = (gender: Gender): AvatarConfig => {
     fullset: null,
     accessory: null,
   };
+  const initialResourceIds: AvatarPartPaths = {
+    body: null, // Fixed parts don't have resourceId in current structure
+    hair: null,
+    top: null,
+    bottom: null,
+    shoes: null,
+    fullset: null,
+    accessory: null,
+  };
   const initialColors: AvatarColors = { ...genderData.defaultColors };
 
   for (const partType in genderData.selectableParts) {
@@ -124,8 +133,10 @@ export const getDefaultConfigForGender = (gender: Gender): AvatarConfig => {
       if (items && items.length > 0) {
         const firstActualItem = items.find((item) => item.fileName !== null);
         initialParts[partType] = firstActualItem ? firstActualItem.fileName : null;
+        initialResourceIds[partType] = firstActualItem ? firstActualItem.resourceId || null : null;
       } else {
         initialParts[partType] = null;
+        initialResourceIds[partType] = null;
       }
     }
   }
@@ -134,6 +145,7 @@ export const getDefaultConfigForGender = (gender: Gender): AvatarConfig => {
     gender: gender,
     parts: initialParts,
     colors: initialColors,
+    resourceIds: initialResourceIds,
   };
 };
 
