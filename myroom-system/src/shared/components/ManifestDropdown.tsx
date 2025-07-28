@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Download, Save, Trash2, Edit, Plus } from 'lucide-react';
+import { ChevronDown, RefreshCw, Save, Trash2, Edit, Plus, FilePlus } from 'lucide-react';
 import { manifestService } from '../services/ManifestService';
 import { PresetConfig } from '../types/PresetConfig';
 
@@ -134,12 +134,20 @@ export function ManifestDropdown({
             <Save size={16} />
           </button>
           <button
+            onClick={() => setShowSaveModal(true)}
+            className="action-btn save-as-new-btn"
+            title="Save as New Manifest"
+            disabled={!currentConfig}
+          >
+            <FilePlus size={16} />
+          </button>
+          <button
             onClick={loadManifests}
             className="action-btn refresh-btn"
             title="Refresh Manifests"
             disabled={isLoading}
           >
-            <Download size={16} />
+            <RefreshCw size={16} />
           </button>
         </div>
       </div>
@@ -266,13 +274,18 @@ export function ManifestDropdown({
         }
 
         .action-btn {
-          padding: 4px;
+          width: 28px;
+          height: 28px;
+          padding: 0;
           border: none;
           border-radius: 4px;
           background: #f3f4f6;
           color: #6b7280;
           cursor: pointer;
           transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .action-btn:hover:not(:disabled) {
@@ -283,6 +296,16 @@ export function ManifestDropdown({
         .action-btn:disabled {
           opacity: 0.5;
           cursor: not-allowed;
+        }
+
+        .save-as-new-btn {
+          background: #10b981 !important;
+          color: white !important;
+        }
+
+        .save-as-new-btn:hover:not(:disabled) {
+          background: #059669 !important;
+          color: white !important;
         }
 
         .dropdown-container {

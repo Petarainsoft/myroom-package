@@ -753,7 +753,6 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         onToggleFullscreen={props.onToggleFullscreen || (() => { })}
         onToggleAvatarOverlay={handleToggleAvatarOverlay}
         onToggleRoomOverlay={handleToggleRoomOverlay}
-        onSaveManifest={() => setIsModalOpen(true)}
         isFullscreen={isFullscreen}
       />
       <SaveManifestModal

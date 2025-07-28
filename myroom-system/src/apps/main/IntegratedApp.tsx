@@ -1096,7 +1096,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                                     }}
                                   >
                                     {items.map((item: any, index: number) => (
-                                      <option key={index} value={item.fileName || ''}>
+                                      <option key={item.fileName || item.name || index} value={item.fileName || ''}>
                                         {item.name}
                                       </option>
                                     ))}

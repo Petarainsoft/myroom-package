@@ -72,8 +72,10 @@ export const useItemLoader = ({
           const resourceIdToUse = item.resourceId || item.id;
           if (domainConfig.useResourceId && resourceIdToUse && domainConfig.backendDomain && domainConfig.apiKey) {
             try {
-              // Try to get presigned URL from backend
-              const response = await fetch(`${domainConfig.backendDomain}/api/customer/items/${resourceIdToUse}/download`, {
+              // Call API to get download URL using resourceId (or id as fallback)
+              const apiUrl = `${domainConfig.backendDomain}/api/developer/items/${resourceIdToUse}/download`;
+              console.log('🪑 Loading item from BACKEND:', { itemName: item.name, resourceId: resourceIdToUse, apiUrl });
+              const response = await fetch(apiUrl, {
                 headers: {
                   'x-api-key': domainConfig.apiKey
                 }
