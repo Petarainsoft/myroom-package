@@ -31,23 +31,15 @@ export const useItemLoader = ({
           console.warn('⚠️ [ItemLoader] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
           // throw new Error('Local GLB item loading is temporarily disabled');
         }
-        
-        // Clear existing items properly
-        if (loadedItemMeshesRef.current.length > 0) {
-          loadedItemMeshesRef.current.forEach(container => {
-            if (container && container.dispose) {
-              container.dispose();
-            }
-          });
-          loadedItemMeshesRef.current = [];
-        }
 
-        // Get current item IDs from loaded meshes
-        const currentItemIds = new Set(loadedItemMeshesRef.current.map(container => container.name));
-        
+        // Get currently loaded item IDs
+        const currentItemIds = new Set(
+          loadedItemMeshesRef.current.map(container => container.name)
+        );
+
         // Find items that need to be loaded (new items only)
         const itemsToLoad = loadedItems.filter(item => !currentItemIds.has(item.id));
-        
+
         // Find items that need to be removed (no longer in loadedItems)
         const newItemIds = new Set(loadedItems.map(item => item.id));
         const containersToRemove = loadedItemMeshesRef.current.filter(
@@ -75,7 +67,7 @@ export const useItemLoader = ({
           }
 
           let fullItemUrl: string;
-          
+
           // Check if useResourceId is enabled and use resourceId or fallback to id
           const resourceIdToUse = item.resourceId || item.id;
           if (domainConfig.useResourceId && resourceIdToUse && domainConfig.backendDomain && domainConfig.apiKey) {
@@ -86,7 +78,7 @@ export const useItemLoader = ({
                   'x-api-key': domainConfig.apiKey
                 }
               });
-              
+
               if (response.ok) {
                 const data = await response.json();
                 const presignedUrl = data.data.downloadUrl;
@@ -110,7 +102,7 @@ export const useItemLoader = ({
           const lastSlashIndex = fullItemUrl.lastIndexOf('/');
           const rootUrl = fullItemUrl.substring(0, lastSlashIndex + 1);
           const filename = fullItemUrl.substring(lastSlashIndex + 1);
-          
+
           const result = await SceneLoader.ImportMeshAsync(
             '',
             rootUrl,
