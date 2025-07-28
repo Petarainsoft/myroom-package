@@ -52,17 +52,23 @@ export const useRoomLoader = ({ scene, roomPath, roomResourceId, isSceneReady, r
           }
         } else {
           if (!DISABLE_LOCAL_GLB_LOADING) {
-          // Use old method (local path)
+          // Use direct path when useResourceId is disabled or no backend config
+          // This matches the behavior of myroom-systemc
           fullRoomUrl = roomPath!.startsWith('http') ? roomPath! : `${domainConfig.baseDomain}${roomPath!}`;
           console.log('🏠 Loading room from BASE DOMAIN:', { roomPath, finalUrl: fullRoomUrl });
           }
         }
 
         // Load new room
+        // Split URL into root and filename for proper SceneLoader usage
+        const lastSlashIndex = fullRoomUrl.lastIndexOf('/');
+        const rootUrl = fullRoomUrl.substring(0, lastSlashIndex + 1);
+        const filename = fullRoomUrl.substring(lastSlashIndex + 1);
+        
         const result = await SceneLoader.ImportMeshAsync(
           '',
-          fullRoomUrl,
-          '',
+          rootUrl,
+          filename,
           scene
         );
 

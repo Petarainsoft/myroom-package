@@ -88,8 +88,11 @@ class ManifestService {
     }
 
     try {
-      // Try to load from backend API first
-      if (this.apiKey && this.projectId) {
+      // Import domain config to check useResourceId setting
+      const { domainConfig } = await import('../config/appConfig');
+      
+      // Only try to load from backend API if useResourceId is enabled
+      if (domainConfig.useResourceId && this.apiKey && this.projectId) {
         const response = await fetch(
           `${this.apiBaseUrl}/api/manifest/projects/${this.projectId}/presets/${presetName}`,
           {
@@ -114,7 +117,7 @@ class ManifestService {
         }
       }
 
-      // Fallback to local file for backward compatibility
+      // Load from local file (when useResourceId is false or as fallback)
       console.log('📁 Loading preset from local file...');
       const response = await fetch('/preset/default-preset.json');
       if (!response.ok) {
@@ -155,6 +158,32 @@ class ManifestService {
     }
 
     try {
+      // Import domain config to check useResourceId setting
+      const { domainConfig } = await import('../config/appConfig');
+      
+      // If useResourceId is false, load directly from room-manifest.json like myroom-systemc
+      if (!domainConfig.useResourceId) {
+        console.log('📁 Loading rooms from local manifest file...');
+        const response = await fetch('/manifest/room/room-manifest.json');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        // Transform the data to match expected format
+        const rooms: Room[] = data.rooms.map((room: any) => ({
+          id: room.id,
+          name: room.name,
+          resourceId: room.id, // Use id as resourceId for backward compatibility
+          path: room.modelPath
+        }));
+        
+        const roomsManifest: RoomsManifest = { rooms };
+        this.roomsCache = roomsManifest;
+        return roomsManifest;
+      }
+      
+      // Otherwise, load from preset (for useResourceId = true)
       const presetConfig = await this.loadPresetConfig(presetName);
       
       // Extract room data from the preset
@@ -189,6 +218,32 @@ class ManifestService {
     }
 
     try {
+      // Import domain config to check useResourceId setting
+      const { domainConfig } = await import('../config/appConfig');
+      
+      // If useResourceId is false, load directly from items-manifest.json like myroom-systemc
+      if (!domainConfig.useResourceId) {
+        console.log('📁 Loading items from local manifest file...');
+        const response = await fetch('/manifest/item/items-manifest.json');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        // Transform the data to match expected format
+        const items: Item[] = data.items.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          resourceId: item.id, // Use id as resourceId for backward compatibility
+          path: item.modelPath
+        }));
+        
+        const itemsManifest: ItemsManifest = { items };
+        this.itemsCache = itemsManifest;
+        return itemsManifest;
+      }
+      
+      // Otherwise, load from preset (for useResourceId = true)
       const presetConfig = await this.loadPresetConfig(presetName);
       
       // Extract items data from the preset

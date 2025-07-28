@@ -370,28 +370,18 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         }
       } catch (error) {
         console.error('❌ [IntegratedApp] Error loading items catalog from backend API:', error);
-        // Fallback to manifest service if API fails
-        console.log('🔄 [IntegratedApp] Falling back to manifest service for items catalog...');
+        // Fallback to local manifest if API fails
+        console.log('🔄 [IntegratedApp] Falling back to local manifest for items catalog...');
         try {
-          const itemsData = await manifestService.loadItemsManifest();
-          setAvailableItems(itemsData.items || []);
-          console.log('📦 [IntegratedApp] Items catalog loaded via manifest fallback:', itemsData.items?.length || 0, 'items');
-          if (!selectedItemToAdd && itemsData.items && itemsData.items.length > 0) {
-            setSelectedItemToAdd(itemsData.items[0]);
+          const response = await fetch('/manifest/item/items-manifest.json');
+          const data = await response.json();
+          setAvailableItems(data.items || []);
+          console.log('📦 [IntegratedApp] Items catalog loaded via local manifest fallback:', data.items?.length || 0, 'items');
+          if (!selectedItemToAdd && data.items && data.items.length > 0) {
+            setSelectedItemToAdd(data.items[0]);
           }
         } catch (manifestError) {
-          console.error('❌ [IntegratedApp] Manifest fallback also failed:', manifestError);
-          // Final fallback to direct fetch
-          fetch('/manifest/item/items-manifest.json')
-            .then((res) => res.json())
-            .then((data) => {
-              setAvailableItems(data.items || []);
-              console.log('📦 [IntegratedApp] Items catalog loaded via direct fetch fallback:', data.items?.length || 0, 'items');
-              if (!selectedItemToAdd && data.items && data.items.length > 0) {
-                setSelectedItemToAdd(data.items[0]);
-              }
-            })
-            .catch(err => console.error('❌ [IntegratedApp] All fallbacks failed:', err));
+          console.error('❌ [IntegratedApp] Local manifest fallback failed:', manifestError);
         }
       }
     };
@@ -690,9 +680,9 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     const selectedItemToAdd = selectedItemPerCategory[selectedCategory];
     if (!selectedItemToAdd) return;
     
-    // Generate random position within room bounds
-    const randomX = (Math.random() - 0.5) * 8; // Random position between -4 and 4
-    const randomZ = (Math.random() - 0.5) * 8; // Random position between -4 and 4
+    // Generate random position within safe room bounds (GROUND_SIZE = 6, so safe area is -2.5 to 2.5)
+    const randomX = (Math.random() - 0.5) * 5; // Random position between -2.5 and 2.5
+    const randomZ = (Math.random() - 0.5) * 5; // Random position between -2.5 and 2.5
     
     const newItem: LoadedItem = {
       id: `item_${Date.now()}`,

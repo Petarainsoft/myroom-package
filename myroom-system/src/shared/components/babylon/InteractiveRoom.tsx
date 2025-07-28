@@ -17,6 +17,17 @@ import {
 import '@babylonjs/loaders'
 import { domainConfig, DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig'
 
+// LoadedItem interface
+interface LoadedItem {
+  id: string;
+  name: string;
+  path: string;
+  position: { x: number; y: number; z: number };
+  rotation?: { x: number; y: number; z: number };
+  scale?: { x: number; y: number; z: number };
+  resourcePath?: string | null;
+}
+
 export default function InteractiveRoom() {
   const canvasRef = useRef(null)
   const sceneRef = useRef(null)
@@ -47,24 +58,47 @@ export default function InteractiveRoom() {
   // const [floorColor, setFloorColor] = useState('#808080')
   // const [wallColor, setWallColor] = useState('#ffffff')
 
+  // New state for integrated UI overlay
+  const [showRoomOverlay, setShowRoomOverlay] = useState(false)
+  const [loadedItems, setLoadedItems] = useState<LoadedItem[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedItemPerCategory, setSelectedItemPerCategory] = useState<{ [category: string]: any | null }>({})
+  
+  // Compute categories from items
+  const categories = Array.from(new Set(items.map(item => item.category).filter(Boolean)))
+  
+  // Filter items by selected category
+  const filteredItems = selectedCategory
+    ? items.filter(item => item.category === selectedCategory)
+    : []
+
   useEffect(() => {
     const loadManifests = async () => {
       try {
-        const { manifestService } = await import('../../services/ManifestService');
+        // Load rooms from local manifest
+        const roomsResponse = await fetch('/manifest/room/room-manifest.json');
+        if (roomsResponse.ok) {
+          const roomsData = await roomsResponse.json();
+          setRooms(roomsData.rooms || []);
+          console.log('Loaded rooms from local manifest:', roomsData.rooms?.length || 0);
+        }
         
-        // Load rooms
-        const roomsData = await manifestService.loadRoomsManifest();
-        setRooms(roomsData.rooms || []);
-        
-        // Load items
-        const itemsData = await manifestService.loadItemsManifest();
-        setItems(itemsData.items || []);
+        // Load items from local manifest
+        const itemsResponse = await fetch('/manifest/item/items-manifest.json');
+        if (itemsResponse.ok) {
+          const itemsData = await itemsResponse.json();
+          setItems(itemsData.items || []);
+          console.log('Loaded items from local manifest:', itemsData.items?.length || 0);
+        }
         
         // Temporarily disabled avatar feature
-        // const avatarsData = await manifestService.loadAvatarsManifest();
-        // setAvatars(avatarsData.avatars || []);
+        // const avatarsResponse = await fetch('/manifest/avatar/avatars-manifest.json');
+        // if (avatarsResponse.ok) {
+        //   const avatarsData = await avatarsResponse.json();
+        //   setAvatars(avatarsData.avatars || []);
+        // }
       } catch (error) {
-        console.error('Failed to load manifests:', error);
+        console.error('Failed to load local manifests:', error);
       }
     };
     loadManifests();
@@ -76,6 +110,30 @@ export default function InteractiveRoom() {
       updateGizmo(selectedItemRef.current)
     }
   }, [gizmoMode])
+
+  // When category changes, set default selected item for that category if not already set
+  useEffect(() => {
+    if (selectedCategory && filteredItems.length > 0 && !selectedItemPerCategory[selectedCategory]) {
+      setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: filteredItems[0] }));
+    }
+  }, [selectedCategory, filteredItems]);
+
+  // Auto-reset gizmo mode to position when item is selected
+  useEffect(() => {
+    if (selectedItem) {
+      setGizmoMode('position');
+    }
+  }, [selectedItem]);
+
+  // Check if selected item still exists in loaded items
+  useEffect(() => {
+    if (selectedItem) {
+      const itemExists = loadedItems.some(item => item.id === selectedItem.name);
+      if (!itemExists) {
+        setSelectedItem(null);
+      }
+    }
+  }, [loadedItems, selectedItem]);
 
   const splitPath = (p) => {
     const i = p.lastIndexOf('/')
@@ -172,8 +230,9 @@ export default function InteractiveRoom() {
           // throw new Error('Local GLB room loading is temporarily disabled');
         }
         
-        // Try to get presigned URL from backend if available
-        if (domainConfig.backendDomain && domainConfig.apiKey) {
+        // Check if useResourceId is enabled
+        if (domainConfig.useResourceId && domainConfig.backendDomain && domainConfig.apiKey) {
+          // Try to get presigned URL from backend
           const response = await fetch(`${domainConfig.backendDomain}/api/rooms/resource/${roomResourceId}/presigned-download`, {
             headers: {
               'x-api-key': domainConfig.apiKey
@@ -193,7 +252,7 @@ export default function InteractiveRoom() {
           }
         }
         if (DISABLE_LOCAL_GLB_LOADING) { return;}
-        // Fallback: find room by resourceId in manifest and use local path
+        // Use direct path when useResourceId is disabled - matches myroom-systemc behavior
         const room = rooms.find(r => r.resourceId === roomResourceId);
         if (room && room.path) {
           const fullRoomUrl = room.path.startsWith('http') ? room.path : `${domainConfig.baseDomain}${room.path}`;
@@ -260,13 +319,30 @@ export default function InteractiveRoom() {
         return
     }
     
-    // Attach gizmo to mesh
+    // Attach gizmo to mesh with proper synchronization
     gizmoManagerRef.current.attachedMesh = mesh
     gizmoManagerRef.current.updateGizmoRotationToMatchAttachedMesh = true
     gizmoManagerRef.current.updateGizmoPositionToMatchAttachedMesh = true
   }
 
   const handleAddItem = async () => {
+    if (!selectedCategory) return;
+    const selectedItemToAdd = selectedItemPerCategory[selectedCategory];
+    if (!selectedItemToAdd) return;
+    
+    const newItem: LoadedItem = {
+      id: `item_${Date.now()}`,
+      name: selectedItemToAdd.name,
+      path: selectedItemToAdd.path,
+      position: { x: 0, y: 0, z: 0 },
+      rotation: { x: 0, y: 0, z: 0 },
+      scale: { x: 1, y: 1, z: 1 },
+      resourcePath: selectedItemToAdd.resourcePath
+    };
+    setLoadedItems(prev => [...prev, newItem]);
+  };
+
+  const handleAddItemOld = async () => {
     if (!sceneRef.current || !itemResourceId) return
     
     try {
@@ -278,8 +354,9 @@ export default function InteractiveRoom() {
       
       let itemUrl = null;
       
-      // Try to get presigned URL from backend if available
-      if (domainConfig.backendDomain && domainConfig.apiKey) {
+      // Check if useResourceId is enabled
+      if (domainConfig.useResourceId && domainConfig.backendDomain && domainConfig.apiKey) {
+        // Try to get presigned URL from backend
         const response = await fetch(`${domainConfig.backendDomain}/api/customer/items/${itemResourceId}/download`, {
           headers: {
             'x-api-key': domainConfig.apiKey
@@ -292,7 +369,7 @@ export default function InteractiveRoom() {
         }
       }
       
-      // Fallback: find item by resourceId in manifest and use local path
+      // Use direct path when useResourceId is disabled - matches myroom-systemc behavior
       if (!itemUrl) {
         const item = items.find(i => i.resourceId === itemResourceId);
         if (item && item.path) {
@@ -323,6 +400,25 @@ export default function InteractiveRoom() {
       console.error('Failed to load item:', error);
     }
   }
+
+  const handleRemoveItem = (itemId: string) => {
+    setLoadedItems(prev => prev.filter(item => item.id !== itemId));
+    // Reset selected item if it's the one being removed
+    if (selectedItem && selectedItem.name === itemId) {
+      setSelectedItem(null);
+    }
+  };
+
+  const handleClearAllItems = () => {
+    setLoadedItems([]);
+    // Reset selected item when clearing all items
+    setSelectedItem(null);
+  };
+
+  // Handler to toggle Room overlay
+  const handleToggleRoomOverlay = () => {
+    setShowRoomOverlay(prev => !prev);
+  };
 
   // Temporarily disabled avatar feature
   // useEffect(() => {
@@ -364,10 +460,277 @@ export default function InteractiveRoom() {
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />
-      <div className="overlay">
-        <label>
+      
+      {/* Toggle button for room overlay */}
+      <button 
+        onClick={handleToggleRoomOverlay}
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+          background: '#1890ff',
+          color: 'white',
+          border: 'none',
+          padding: '10px 15px',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          zIndex: 1001
+        }}
+      >
+        🏠 Room Controls
+      </button>
+
+      {/* Integrated UI Overlay - similar to myroom-systemc */}
+      {showRoomOverlay && (
+        <div className="integrated-ui-overlay" style={{
+          position: 'absolute',
+          top: '70px',
+          right: '20px',
+          background: 'rgba(255, 255, 255, 0.95)',
+          border: '1px solid #d9d9d9',
+          borderRadius: '8px',
+          padding: '20px',
+          minWidth: '300px',
+          maxWidth: '400px',
+          maxHeight: '80vh',
+          overflowY: 'auto',
+          zIndex: 1000,
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          backdropFilter: 'blur(10px)'
+        }}>
+          {/* Room Controls */}
+          <div className="control-section" style={{ marginBottom: '20px' }}>
+            <div className="section-header" style={{ marginBottom: '15px' }}>
+              <h3 style={{ margin: 0, color: '#333', fontSize: '18px' }}>🏠 Room</h3>
+            </div>
+            <div className="room-selector">
+              <select
+                value={roomResourceId}
+                onChange={(e) => setRoomResourceId(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '8px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid #d9d9d9',
+                  fontSize: '14px'
+                }}
+              >
+                <option value="">Select Room...</option>
+                {rooms.map((room) => (
+                  <option key={room.id} value={room.resourceId || room.id}>
+                    {room.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Items Controls */}
+          <div className="control-section">
+            <div className="section-header" style={{ marginBottom: '15px' }}>
+              <h3 style={{ margin: 0, color: '#333', fontSize: '18px' }}>🪑 Categories</h3>
+            </div>
+            
+            {/* Single-panel toggle: show either category or items panel */}
+            <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+              {/* Show Category Panel if no category is selected */}
+              {!selectedCategory && (
+                <div style={{ minWidth: 140, flex: '0 0 220px' }}>
+                  <div className="item-categories" style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
+                    {categories.map(category => (
+                      <button
+                        key={category}
+                        className="item-category-btn"
+                        style={{
+                          padding: '8px 14px',
+                          borderRadius: 6,
+                          border: '1px solid #d9d9d9',
+                          background: '#fff',
+                          color: '#333',
+                          cursor: 'pointer',
+                          fontWeight: 500,
+                          fontSize: 13,
+                          transition: 'all 0.2s',
+                          outline: 'none',
+                          width: 105,
+                          maxWidth: 110,
+                          boxSizing: 'border-box',
+                          textOverflow: 'ellipsis',
+                          overflow: 'hidden',
+                          whiteSpace: 'nowrap',
+                        }}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Show Items Panel if a category is selected */}
+              {selectedCategory && (
+                <div
+                  style={{
+                    minWidth: 220,
+                    flex: '0 0 220px',
+                    background: '#fafbfc',
+                    padding: 12,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 10,
+                    borderRadius: '6px'
+                  }}
+                >
+                  {/* Back button */}
+                  <button
+                    onClick={() => setSelectedCategory(null)}
+                    style={{
+                      alignSelf: 'flex-start',
+                      marginBottom: 8,
+                      background: 'none',
+                      border: 'none',
+                      color: '#1890ff',
+                      fontSize: 18,
+                      fontWeight: 500,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      padding: 0,
+                    }}
+                  >
+                    <span style={{ fontSize: 20, marginRight: 4 }}>←</span> Back
+                  </button>
+                  <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 16 }}>
+                    {selectedCategory}
+                  </div>
+                  <div className="item-list-buttons" style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 }}>
+                    {filteredItems.map((item) => (
+                      <button
+                        key={item.path}
+                        type="button"
+                        className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.path === item.path ? ' selected' : ''}`}
+                        style={{
+                          padding: '8px 12px',
+                          borderRadius: 6,
+                          border: selectedItemPerCategory[selectedCategory]?.path === item.path ? '2px solid #1890ff' : '1px solid #d9d9d9',
+                          background: selectedItemPerCategory[selectedCategory]?.path === item.path ? '#e6f7ff' : '#fff',
+                          color: '#333',
+                          textAlign: 'left',
+                          fontWeight: 400,
+                          fontSize: 14,
+                          cursor: 'pointer',
+                          outline: 'none',
+                          transition: 'all 0.2s',
+                          marginBottom: 2
+                        }}
+                        onClick={() => {
+                          setSelectedItemPerCategory(prev => ({ ...prev, [selectedCategory]: item }));
+                        }}
+                      >
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={handleAddItem}
+                    className="add-item-btn"
+                    disabled={!selectedCategory || !selectedItemPerCategory[selectedCategory]}
+                    style={{
+                      marginTop: 8,
+                      padding: '8px 16px',
+                      borderRadius: 6,
+                      background: '#1890ff',
+                      color: '#fff',
+                      border: 'none',
+                      fontWeight: 500,
+                      fontSize: 15,
+                      cursor: !selectedCategory || !selectedItemPerCategory[selectedCategory] ? 'not-allowed' : 'pointer',
+                      opacity: !selectedCategory || !selectedItemPerCategory[selectedCategory] ? 0.6 : 1,
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    ➕ Add Item
+                  </button>
+                </div>
+              )}
+            </div>
+            
+            {/* Loaded Items List */}
+            <div className="loaded-items-list" style={{ marginTop: '20px' }}>
+              <hr style={{ margin: '15px 0', border: 'none', borderTop: '1px solid #e8e8e8' }} />
+              <h4 style={{ margin: '0 0 10px 0', fontSize: '16px', color: '#333' }}>Items in Room ({loadedItems.length}):</h4>
+              {loadedItems.length === 0 ? (
+                <p className="no-items" style={{ color: '#999', fontStyle: 'italic', margin: '10px 0' }}>No items yet</p>
+              ) : (
+                <ul className="items-list" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {loadedItems.map((item) => (
+                    <li key={item.id} className="item-entry" style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '8px 12px',
+                      margin: '4px 0',
+                      background: '#f5f5f5',
+                      borderRadius: '4px',
+                      fontSize: '14px'
+                    }}>
+                      <span>{item.name}</span>
+                      <button
+                        onClick={() => handleRemoveItem(item.id)}
+                        className="remove-item-btn"
+                        style={{
+                          background: '#ff4d4f',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '3px',
+                          padding: '4px 8px',
+                          cursor: 'pointer',
+                          fontSize: '12px'
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="item-actions" style={{ marginTop: '10px' }}>
+                <button 
+                  onClick={handleClearAllItems} 
+                  className="clear-items-btn"
+                  style={{
+                    background: '#ff7875',
+                    color: 'white',
+                    border: 'none',
+                    padding: '6px 12px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '13px'
+                  }}
+                >
+                  🗑️ Clear All
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Legacy overlay for old controls */}
+      <div className="overlay" style={{
+        position: 'absolute',
+        top: '20px',
+        left: '20px',
+        background: 'rgba(255, 255, 255, 0.9)',
+        padding: '15px',
+        borderRadius: '8px',
+        display: showRoomOverlay ? 'none' : 'block'
+      }}>
+        <label style={{ display: 'block', marginBottom: '10px' }}>
           Room
-          <select value={roomResourceId} onChange={(e) => setRoomResourceId(e.target.value)}>
+          <select value={roomResourceId} onChange={(e) => setRoomResourceId(e.target.value)} style={{ marginLeft: '10px', padding: '5px' }}>
             <option value="">Select...</option>
             {rooms.map((r) => (
               <option key={r.id} value={r.resourceId || r.id}>
@@ -376,18 +739,9 @@ export default function InteractiveRoom() {
             ))}
           </select>
         </label>
-        {/* Temporarily disabled floor and wall color controls */}
-        {/* <label>
-          Floor
-          <input type="color" value={floorColor} onChange={(e) => setFloorColor(e.target.value)} />
-        </label>
-        <label>
-          Wall
-          <input type="color" value={wallColor} onChange={(e) => setWallColor(e.target.value)} />
-        </label> */}
-        <label>
+        <label style={{ display: 'block', marginBottom: '10px' }}>
           Item
-          <select value={itemResourceId} onChange={(e) => setItemResourceId(e.target.value)}>
+          <select value={itemResourceId} onChange={(e) => setItemResourceId(e.target.value)} style={{ marginLeft: '10px', padding: '5px' }}>
             <option value="">Item...</option>
             {items.map((i) => (
               <option key={i.id} value={i.resourceId || i.id}>
@@ -395,68 +749,57 @@ export default function InteractiveRoom() {
               </option>
             ))}
           </select>
-          <button onClick={handleAddItem}>Add</button>
+          <button onClick={handleAddItemOld} style={{ marginLeft: '10px', padding: '5px 10px' }}>Add</button>
         </label>
-        {/* Temporarily disabled avatar feature */}
-        {/* <label>
-          Avatar
-          <select value={avatarResourceId} onChange={(e) => setAvatarResourceId(e.target.value)}>
-            <option value="">Avatar...</option>
-            {avatars.map((a) => (
-              <option key={a.id} value={a.resourceId || a.id}>
-                {a.name}
-              </option>
-            ))}
-          </select>
-        </label> */}
-        
-        {/* Transform Controls */}
-        {selectedItem && (
-          <div style={{ 
-            position: 'absolute', 
-            top: '10px', 
-            right: '10px', 
-            background: 'rgba(0,0,0,0.8)', 
-            color: 'white', 
-            padding: '10px', 
-            borderRadius: '5px',
-            minWidth: '200px'
-          }}>
-            <h4 style={{ margin: '0 0 10px 0' }}>Transform Controls</h4>
-            <div style={{ marginBottom: '10px' }}>
-              <label>Mode: </label>
-              <select 
-                value={gizmoMode} 
-                onChange={(e) => setGizmoMode(e.target.value)}
-                style={{ marginLeft: '5px' }}
-              >
-                <option value="position">Position</option>
-                <option value="rotation">Rotation</option>
-                <option value="scale">Scale</option>
-              </select>
-            </div>
-            <div style={{ fontSize: '12px', color: '#ccc' }}>
-              <div>Position: {selectedItem.position.x.toFixed(2)}, {selectedItem.position.y.toFixed(2)}, {selectedItem.position.z.toFixed(2)}</div>
-              <div>Rotation: {selectedItem.rotation.x.toFixed(2)}, {selectedItem.rotation.y.toFixed(2)}, {selectedItem.rotation.z.toFixed(2)}</div>
-              <div>Scale: {selectedItem.scaling.x.toFixed(2)}, {selectedItem.scaling.y.toFixed(2)}, {selectedItem.scaling.z.toFixed(2)}</div>
-            </div>
-            <button 
-              onClick={deselectItem}
-              style={{ 
-                marginTop: '10px', 
-                background: '#ff4444', 
-                color: 'white', 
-                border: 'none', 
-                padding: '5px 10px', 
-                borderRadius: '3px',
-                cursor: 'pointer'
-              }}
-            >
-              Deselect
-            </button>
-          </div>
-        )}
       </div>
+        
+      {/* Transform Controls */}
+      {selectedItem && (
+        <div style={{ 
+          position: 'absolute', 
+          top: '10px', 
+          right: showRoomOverlay ? '450px' : '10px', 
+          background: 'rgba(0,0,0,0.8)', 
+          color: 'white', 
+          padding: '10px', 
+          borderRadius: '5px',
+          minWidth: '200px',
+          zIndex: 999
+        }}>
+          <h4 style={{ margin: '0 0 10px 0' }}>Transform Controls</h4>
+          <div style={{ marginBottom: '10px' }}>
+            <label>Mode: </label>
+            <select 
+              value={gizmoMode} 
+              onChange={(e) => setGizmoMode(e.target.value)}
+              style={{ marginLeft: '5px' }}
+            >
+              <option value="position">Position</option>
+              <option value="rotation">Rotation</option>
+              <option value="scale">Scale</option>
+            </select>
+          </div>
+          <div style={{ fontSize: '12px', color: '#ccc' }}>
+            <div>Position: {selectedItem.position.x.toFixed(2)}, {selectedItem.position.y.toFixed(2)}, {selectedItem.position.z.toFixed(2)}</div>
+            <div>Rotation: {selectedItem.rotation.x.toFixed(2)}, {selectedItem.rotation.y.toFixed(2)}, {selectedItem.rotation.z.toFixed(2)}</div>
+            <div>Scale: {selectedItem.scaling.x.toFixed(2)}, {selectedItem.scaling.y.toFixed(2)}, {selectedItem.scaling.z.toFixed(2)}</div>
+          </div>
+          <button 
+            onClick={deselectItem}
+            style={{ 
+              marginTop: '10px', 
+              background: '#ff4444', 
+              color: 'white', 
+              border: 'none', 
+              padding: '5px 10px', 
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+          >
+            Deselect
+          </button>
+        </div>
+      )}
     </div>
   )
 }
