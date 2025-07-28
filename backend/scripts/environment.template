@@ -39,6 +39,6 @@ FEATURE_REQUEST_LOGGING=true
 FEATURE_SWAGGER=true
 
 # Admin defaults (optional - will use these values if no admin exists)
-DEFAULT_ADMIN_EMAIL=admin@myroom.com
+DEFAULT_ADMIN_EMAIL=admin@petarainsoft.com
 DEFAULT_ADMIN_PASSWORD=Admin123!
 DEFAULT_ADMIN_NAME=Super Administrator 

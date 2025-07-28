@@ -20,6 +20,9 @@
     "db:deploy": "prisma migrate deploy",
     "db:studio": "prisma studio",
     "db:seed": "tsx src/scripts/seed.ts",
+    "db:init-items": "tsx scripts/import-items.ts --dir ../resources/items",
+    "db:init-avatars": "tsx scripts/import-avatars.ts --dir ../resources/avatars",
+    "db:init-rooms": "tsx scripts/import-rooms.ts --dir ../resources/rooms",
     "admin:create": "tsx src/scripts/create-admin.js",
     "deploy:setup": "npm run db:generate && npm run db:deploy && npm run db:seed",
     "clean": "rimraf dist",
@@ -39,6 +42,7 @@
   "author": "MyRoom Team",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-cloudfront": "^3.850.0",
     "@aws-sdk/client-s3": "^3.490.0",
     "@aws-sdk/lib-storage": "^3.842.0",
     "@aws-sdk/s3-request-presigner": "^3.490.0",

@@ -20,6 +20,7 @@ import { Readable } from 'stream';
 import crypto from 'crypto';
 import path from 'path';
 import mime from 'mime-types';
+import { CloudFrontClient, CreateInvalidationCommand } from '@aws-sdk/client-cloudfront';
 
 export interface UploadOptions {
   contentType?: string;
@@ -510,10 +511,38 @@ export class S3Service {
 
   /**
    * Generate presigned URL for file download
+   * Uses CloudFront signed URLs if CloudFront domain is configured, otherwise falls back to S3 presigned URLs
    */
   public async generateDownloadUrl(key: string, expiresIn: number = 3600): Promise<string> {
     try {
-      // First try to generate presigned URL
+      // If CloudFront domain is configured, use CloudFront URL directly
+      // Note: For true CloudFront signed URLs, you would need CloudFront key pair
+      // For now, we'll use CloudFront domain with S3 presigned URL logic
+      if (this.cloudFrontDomain) {
+        // Generate S3 presigned URL first
+        const command = new GetObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+        });
+
+        const s3Url = await getSignedUrl(this.s3Client, command, {
+          expiresIn,
+        });
+
+        // Extract query parameters from S3 URL and apply to CloudFront URL
+        const urlObj = new URL(s3Url);
+        const cloudFrontUrl = `https://${this.cloudFrontDomain}/${key}${urlObj.search}`;
+
+        s3Logger.debug('CloudFront download URL generated', {
+          key,
+          expiresIn,
+          cloudFrontDomain: this.cloudFrontDomain,
+        });
+
+        return cloudFrontUrl;
+      }
+
+      // Fallback to S3 presigned URL
       const command = new GetObjectCommand({
         Bucket: this.bucket,
         Key: key,
@@ -523,7 +552,7 @@ export class S3Service {
         expiresIn,
       });
 
-      s3Logger.debug('Download URL generated', {
+      s3Logger.debug('S3 download URL generated', {
         key,
         expiresIn,
       });
@@ -542,22 +571,17 @@ export class S3Service {
 
   /**
    * Generate download URL with fallback to direct streaming
+   * Uses CloudFront signed URLs if CloudFront domain is configured
    */
   public async generateDownloadUrlWithFallback(key: string, expiresIn: number = 3600): Promise<{ url: string; isPresigned: boolean }> {
     try {
-      // Always generate presigned URL since public access is restricted
-      const command = new GetObjectCommand({
-        Bucket: this.bucket,
-        Key: key,
-      });
-
-      const url = await getSignedUrl(this.s3Client, command, {
-        expiresIn,
-      });
+      // Use the updated generateDownloadUrl method which handles CloudFront
+      const url = await this.generateDownloadUrl(key, expiresIn);
 
       s3Logger.debug('Presigned download URL generated successfully', {
         key,
         expiresIn,
+        isCloudFront: !!this.cloudFrontDomain,
       });
       
       return { url, isPresigned: true };

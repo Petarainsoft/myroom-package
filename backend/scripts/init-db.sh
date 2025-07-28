@@ -29,8 +29,8 @@ echo "🧹 Cleaning existing avatar_categories table..."
 PGPASSWORD=db123456 psql -h postgres -U anh -d myroom_db -c 'DELETE FROM "avatar_categories";' || true
 npx prisma db push --accept-data-loss
 
-# Run complete database initialization script
-echo "🌱 Initializing complete database with sample data..."
-PGPASSWORD=db123456 psql -h postgres -U anh -d myroom_db -f /app/scripts/init-complete-db.sql
+# Run minimal database initialization script
+echo "🌱 Initializing minimal database with essential data..."
+PGPASSWORD=db123456 psql -h postgres -U anh -d myroom_db -f /app/scripts/init-minimal-db.sql
 
 echo "🎉 Database initialization completed successfully!"

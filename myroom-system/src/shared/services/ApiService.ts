@@ -27,7 +27,7 @@ class ApiService {
   }
 
   /**
-   * Make authenticated API request
+   * Make authenticated API vrequest
    */
   private async makeRequest(endpoint: string, options: RequestInit = {}): Promise<Response> {
     const url = `${this.baseUrl}${endpoint}`;

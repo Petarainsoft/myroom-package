@@ -83,7 +83,7 @@ npm run db:seed
 
 ## 📋 Default Super Admin Credentials
 
-- **Email:** `admin@myroom.com`
+- **Email:** `admin@petarainsoft.com`
 - **Password:** `Admin123!`
 - **Role:** `SUPER_ADMIN`
 - **Status:** `ACTIVE`
@@ -123,7 +123,7 @@ PORT="3000"
 CORS_ORIGIN="http://localhost:3000"
 
 # Admin defaults (optional)
-DEFAULT_ADMIN_EMAIL="admin@myroom.com"
+DEFAULT_ADMIN_EMAIL="admin@petarainsoft.com"
 DEFAULT_ADMIN_PASSWORD="Admin123!"
 DEFAULT_ADMIN_NAME="Super Administrator"
 ```
@@ -187,7 +187,7 @@ Open `http://your-domain:3000/docs` in your browser
 
 3. **Admin Login:**
 - URL: Admin app URL
-- Email: `admin@myroom.com`
+- Email: `admin@petarainsoft.com`
 - Password: `Admin123!`
 
 ## 🛠️ Troubleshooting
@@ -226,7 +226,7 @@ INSERT INTO "admins" (
   updated_at
 ) VALUES (
   'admin_super_' || lower(replace(cast(gen_random_uuid() as text), '-', '')),
-  'admin@myroom.com',
+  'admin@petarainsoft.com',
   'Super Administrator',
   '$2a$12$NhZmqzbL6mt8fqY0phFr9eQ1ymUaixRCuom7K1zUpthIMk6W2rgCK',
   'SUPER_ADMIN',

@@ -44,7 +44,7 @@ async function processRooms(dir: string, adminId: string) {
     let roomType = await prisma.roomType.upsert({
       where: { name: normalizedType },
       update: {},
-      create: { name: normalizedType, label: type, resource_path: normalizedType },
+      create: { name: normalizedType, label: type, resource_path: normalizedType, description: `${type} Room` },
     });
     console.log(`[import-rooms] RoomType upserted: ID=${roomType.id}, Name=${roomType.name}, ResourcePath=${roomType.resource_path}`);
     const files = await fs.readdir(typePath);
@@ -55,6 +55,7 @@ async function processRooms(dir: string, adminId: string) {
       await rms.createRoomResource({
         name: path.parse(file).name,
         roomTypeId: roomType.id,
+        description: `${type} Room - ${path.parse(file).name}`,
         file: { buffer: fileBuffer, originalname: file, mimetype: 'model/gltf-binary', size: fileBuffer.length }
       }, adminId);
     }

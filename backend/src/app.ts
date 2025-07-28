@@ -21,7 +21,7 @@ import adminRoutes from '@/routes/admin';
 import developerRoutes from '@/routes/developer';
 import resourceRoutes from '@/routes/resource';
 import manifestRoutes from '@/routes/manifest';
-import apikeyRoutes from '@/routes/apikey';
+// import apikeyRoutes from '@/routes/apikey'; // File not found, commented out
 import healthRoutes from '@/routes/health';
 import docsRoutes from '@/routes/docs';
 import roomRoutes from '@/routes/roomRoutes';
@@ -107,7 +107,10 @@ class App {
           return req.path.startsWith('/api/health') ||
                  req.path.startsWith('/api/admin')  ||
                  req.path.startsWith('/api/developer/resources') ||
-                 req.path.startsWith('/api/developer/avatars');
+                 req.path.startsWith('/api/developer/avatars') ||
+                 req.path.startsWith('/api/resource/categories') ||
+                 req.path.startsWith('/api/rooms') ||
+                 req.path.startsWith('/api/avatar/resources');
         },
         keyGenerator: (req) => {
           // Use API key if available, otherwise use IP
@@ -172,7 +175,7 @@ class App {
     this.app.use('/api/developer', developerRoutes);
     this.app.use('/api/resource', resourceRoutes);
     this.app.use('/api/manifest', manifestRoutes);
-    this.app.use('/api/apikey', apikeyRoutes);
+    // this.app.use('/api/apikey', apikeyRoutes); // File not found, commented out
     this.app.use('/api/rooms', roomRoutes);
     this.app.use('/api/avatar', avatarRoutes);
     this.app.use('/api/health', healthRoutes);

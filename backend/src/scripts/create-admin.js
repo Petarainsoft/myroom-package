@@ -16,7 +16,7 @@ async function createDefaultAdmin() {
     }
 
     // Create default super admin
-    const defaultAdminEmail = process.env.DEFAULT_ADMIN_EMAIL || 'admin@myroom.com';
+    const defaultAdminEmail = process.env.DEFAULT_ADMIN_EMAIL || 'admin@petarainsoft.com';
     const defaultAdminPassword = process.env.DEFAULT_ADMIN_PASSWORD || 'Admin123!';
     const defaultAdminName = process.env.DEFAULT_ADMIN_NAME || 'Super Administrator';
     

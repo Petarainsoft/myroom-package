@@ -18,6 +18,9 @@ const IntegratedApp: React.FC = () => {
   const [currentMode, setCurrentMode] = useState<AppMode>('integrated');
   const [showModeSelector, setShowModeSelector] = useState(true);
 
+  // Note: React StrictMode in development causes components to mount twice,
+  // which can lead to duplicate API calls. We use caching states to prevent this.
+
   const renderModeSelector = () => (
     <div className="mode-selector">
       <h2>Select Application Mode</h2>
@@ -165,9 +168,43 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     }
   }, [loadedItems, selectedItem]);
 
-  // Load available rooms from API backend
+  // Add state for rooms caching to prevent duplicate API calls
+  const [roomsLoaded, setRoomsLoaded] = useState(false);
+  const [isLoadingRooms, setIsLoadingRooms] = useState(false);
+
+  // Load available rooms from API backend with caching
   useEffect(() => {
+    // Prevent duplicate API calls during React StrictMode double rendering
+    if (roomsLoaded || isLoadingRooms) {
+      console.log('🏠 [IntegratedApp] Rooms already loaded or loading, skipping...');
+      return;
+    }
+
+    // Check if data is already cached in sessionStorage
+    const cachedRooms = sessionStorage.getItem('myroom_rooms_cache');
+    const cacheTimestamp = sessionStorage.getItem('myroom_rooms_cache_timestamp');
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+    
+    if (cachedRooms && cacheTimestamp) {
+      const isExpired = Date.now() - parseInt(cacheTimestamp) > CACHE_DURATION;
+      if (!isExpired) {
+        try {
+          const parsedRooms = JSON.parse(cachedRooms);
+          setAvailableRooms(parsedRooms);
+          console.log('🏠 [IntegratedApp] Rooms loaded from cache:', parsedRooms.length, 'rooms');
+          if (parsedRooms.length > 0) {
+            setSelectedRoom(parsedRooms[0]);
+          }
+          setRoomsLoaded(true);
+          return;
+        } catch (parseError) {
+          console.warn('⚠️ [IntegratedApp] Failed to parse cached rooms, loading from API');
+        }
+      }
+    }
+
     const loadRooms = async () => {
+      setIsLoadingRooms(true);
       try {
         console.log('🏠 [IntegratedApp] Loading rooms from API backend...');
         const apiService = ApiService.getInstance();
@@ -193,6 +230,10 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           path: room.path || room.s3Url // Keep path for backward compatibility
         }));
         
+        // Cache the loaded rooms
+        sessionStorage.setItem('myroom_rooms_cache', JSON.stringify(transformedRooms));
+        sessionStorage.setItem('myroom_rooms_cache_timestamp', Date.now().toString());
+        
         console.log('🏠 [IntegratedApp] Loaded rooms from API:', transformedRooms);
         setAvailableRooms(transformedRooms);
 
@@ -200,19 +241,24 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         if (transformedRooms.length > 0) {
           setSelectedRoom(transformedRooms[0]);
         }
+        setRoomsLoaded(true);
       } catch (error) {
         console.error('❌ [IntegratedApp] Error loading rooms from API:', error);
+        
         // Fallback to manifest service if API fails
+        console.log('🔄 [IntegratedApp] Falling back to manifest service for rooms...');
         try {
-          console.log('🔄 [IntegratedApp] Falling back to manifest service for rooms...');
-          const roomsData = await manifestService.loadRoomsManifest();
-          setAvailableRooms(roomsData.rooms || []);
-          if (roomsData.rooms && roomsData.rooms.length > 0) {
-            setSelectedRoom(roomsData.rooms[0]);
+          const manifestRooms = await manifestService.getRooms();
+          setAvailableRooms(manifestRooms);
+          if (manifestRooms.length > 0) {
+            setSelectedRoom(manifestRooms[0]);
           }
+          setRoomsLoaded(true);
         } catch (manifestError) {
           console.error('❌ [IntegratedApp] Manifest fallback also failed:', manifestError);
         }
+      } finally {
+        setIsLoadingRooms(false);
       }
     };
 
@@ -307,11 +353,45 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     loadDefaultScene();
   }, [availableRooms]);
 
-  // Load available items catalog from backend API
+  // Add state for caching to prevent duplicate API calls
+  const [itemsLoaded, setItemsLoaded] = useState(false);
+  const [isLoadingItems, setIsLoadingItems] = useState(false);
+
+  // Load available items catalog from backend API with caching
   // This loads the catalog of items that can be added to the scene
   // Different from loadedItems which are items already placed in the scene
   useEffect(() => {
+    // Prevent duplicate API calls during React StrictMode double rendering
+    if (itemsLoaded || isLoadingItems) {
+      console.log('📦 [IntegratedApp] Items already loaded or loading, skipping...');
+      return;
+    }
+
+    // Check if data is already cached in sessionStorage
+    const cachedItems = sessionStorage.getItem('myroom_items_cache');
+    const cacheTimestamp = sessionStorage.getItem('myroom_items_cache_timestamp');
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+    
+    if (cachedItems && cacheTimestamp) {
+      const isExpired = Date.now() - parseInt(cacheTimestamp) > CACHE_DURATION;
+      if (!isExpired) {
+        try {
+          const parsedItems = JSON.parse(cachedItems);
+          setAvailableItems(parsedItems);
+          console.log('📦 [IntegratedApp] Items loaded from cache:', parsedItems.length, 'items');
+          if (!selectedItemToAdd && parsedItems.length > 0) {
+            setSelectedItemToAdd(parsedItems[0]);
+          }
+          setItemsLoaded(true);
+          return;
+        } catch (parseError) {
+          console.warn('⚠️ [IntegratedApp] Failed to parse cached items, loading from API');
+        }
+      }
+    }
+
     const loadItems = async () => {
+      setIsLoadingItems(true);
       try {
         console.log('📦 [IntegratedApp] Loading available items catalog from backend API...');
         const apiService = ApiService.getInstance();
@@ -346,6 +426,10 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           }
         }
         
+        // Cache the loaded items
+        sessionStorage.setItem('myroom_items_cache', JSON.stringify(allItems));
+        sessionStorage.setItem('myroom_items_cache_timestamp', Date.now().toString());
+        
         setAvailableItems(allItems);
         console.log('📦 [IntegratedApp] Available items catalog loaded from API:', allItems.length, 'items');
         
@@ -368,6 +452,8 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         if (!selectedItemToAdd && allItems.length > 0) {
           setSelectedItemToAdd(allItems[0]);
         }
+        
+        setItemsLoaded(true);
       } catch (error) {
         console.error('❌ [IntegratedApp] Error loading items catalog from backend API:', error);
         // Fallback to local manifest if API fails
@@ -380,9 +466,12 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           if (!selectedItemToAdd && data.items && data.items.length > 0) {
             setSelectedItemToAdd(data.items[0]);
           }
+          setItemsLoaded(true);
         } catch (manifestError) {
           console.error('❌ [IntegratedApp] Local manifest fallback failed:', manifestError);
         }
+      } finally {
+        setIsLoadingItems(false);
       }
     };
 

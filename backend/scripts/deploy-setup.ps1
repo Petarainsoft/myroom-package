@@ -78,7 +78,7 @@ Write-Host ""
 Write-Host "🎉 Deployment setup completed successfully!" -ForegroundColor Green
 Write-Host ""
 Write-Host "📋 Default Super Admin Credentials:" -ForegroundColor Cyan
-Write-Host "   Email: admin@myroom.com" -ForegroundColor White
+Write-Host "   Email: admin@petarainsoft.com" -ForegroundColor White
 Write-Host "   Password: Admin123!" -ForegroundColor White
 Write-Host ""
 Write-Host "⚠️  IMPORTANT: Please change the default password after first login!" -ForegroundColor Yellow
