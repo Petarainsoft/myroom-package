@@ -310,7 +310,7 @@ class ManifestService {
   public async createPreset(name: string, config: PresetConfig, description?: string): Promise<boolean> {
     if (!this.apiKey) {
       console.error('❌ API key is required to create presets');
-      return false;
+      throw new Error('API key is required to create presets');
     }
 
     try {
@@ -336,13 +336,13 @@ class ManifestService {
         this.clearCache(); // Clear cache to force reload
         return true;
       } else {
-        const error = await response.json();
-        console.error('❌ Failed to create preset:', error);
-        return false;
+        const errorData = await response.json().catch(() => ({}));
+        console.error('❌ Failed to create preset:', errorData);
+        throw new Error(errorData.message || 'Failed to create preset');
       }
     } catch (error) {
       console.error('❌ Error creating preset:', error);
-      return false;
+      throw error;
     }
   }
 
@@ -357,7 +357,7 @@ class ManifestService {
 
     try {
       const response = await fetch(
-        `${this.apiBaseUrl}/api/manifest/presets?limit=100`,
+        `${this.apiBaseUrl}/api/manifest/presets?limit=100&sortBy=updatedAt&sortOrder=desc`,
         {
           headers: {
             'x-api-key': this.apiKey,
@@ -370,12 +370,13 @@ class ManifestService {
         const result = await response.json();
         return result.data?.presets || [];
       } else {
-        console.error('❌ Failed to list presets');
-        return [];
+        const errorData = await response.json().catch(() => ({}));
+        console.error('❌ Failed to list presets:', errorData.message || response.statusText);
+        throw new Error(errorData.message || 'Failed to load manifests');
       }
     } catch (error) {
       console.error('❌ Error listing presets:', error);
-      return [];
+      throw error;
     }
   }
 
@@ -385,12 +386,12 @@ class ManifestService {
   public async updatePreset(presetId: string, name: string, config: PresetConfig, description?: string): Promise<boolean> {
     if (!this.apiKey) {
       console.error('❌ API key is required to update presets');
-      return false;
+      throw new Error('API key is required to update presets');
     }
 
     try {
       const response = await fetch(
-        `${this.apiBaseUrl}/api/manifest/${presetId}`,
+        `${this.apiBaseUrl}/api/manifest/presets/${presetId}`,
         {
           method: 'PUT',
           headers: {
@@ -411,13 +412,13 @@ class ManifestService {
         this.clearCache(); // Clear cache to force reload
         return true;
       } else {
-        const error = await response.json();
-        console.error('❌ Failed to update preset:', error);
-        return false;
+        const errorData = await response.json().catch(() => ({}));
+        console.error('❌ Failed to update preset:', errorData);
+        throw new Error(errorData.message || 'Failed to update preset');
       }
     } catch (error) {
       console.error('❌ Error updating preset:', error);
-      return false;
+      throw error;
     }
   }
 
@@ -427,7 +428,7 @@ class ManifestService {
   public async deletePreset(presetId: string): Promise<boolean> {
     if (!this.apiKey) {
       console.error('❌ API key is required to delete presets');
-      return false;
+      throw new Error('API key is required to delete presets');
     }
 
     try {
@@ -447,13 +448,13 @@ class ManifestService {
         this.clearCache(); // Clear cache to force reload
         return true;
       } else {
-        const error = await response.json();
-        console.error('❌ Failed to delete preset:', error);
-        return false;
+        const errorData = await response.json().catch(() => ({}));
+        console.error('❌ Failed to delete preset:', errorData);
+        throw new Error(errorData.message || 'Failed to delete preset');
       }
     } catch (error) {
       console.error('❌ Error deleting preset:', error);
-      return false;
+      throw error;
     }
   }
 
@@ -463,7 +464,7 @@ class ManifestService {
   public async getPreset(presetId: string): Promise<PresetConfig | null> {
     if (!this.apiKey) {
       console.error('❌ API key is required to get preset');
-      return null;
+      throw new Error('API key is required to get preset');
     }
 
     try {
@@ -481,12 +482,13 @@ class ManifestService {
         const result = await response.json();
         return result.data?.config || null;
       } else {
-        console.error('❌ Failed to get preset');
-        return null;
+        const errorData = await response.json().catch(() => ({}));
+        console.error('❌ Failed to get preset:', errorData);
+        throw new Error(errorData.message || 'Failed to get preset');
       }
     } catch (error) {
       console.error('❌ Error getting preset:', error);
-      return null;
+      throw error;
     }
   }
 
@@ -495,6 +497,24 @@ class ManifestService {
    */
   public async getPresetById(presetId: string): Promise<PresetConfig | null> {
     return this.getPreset(presetId);
+  }
+
+  /**
+   * Get the latest preset (most recently updated)
+   */
+  public async getLatestPreset(): Promise<any | null> {
+    try {
+      const presets = await this.listPresets();
+      if (presets.length === 0) {
+        return null;
+      }
+      
+      // Presets are already sorted by updatedAt desc from listPresets
+      return presets[0];
+    } catch (error) {
+      console.error('❌ Error getting latest preset:', error);
+      return null;
+    }
   }
 
   /**

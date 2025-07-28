@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { ChevronDown, RefreshCw, Save, Trash2, Edit, Plus, FilePlus } from 'lucide-react';
+import { ChevronDown, RefreshCw, Save, Trash2, Edit, Plus, FilePlus, Loader2 } from 'lucide-react';
 import { manifestService } from '../services/ManifestService';
 import { PresetConfig } from '../types/PresetConfig';
+import { toast } from 'sonner';
 
 interface ManifestItem {
   id: string;
@@ -18,6 +19,7 @@ interface ManifestDropdownProps {
   onManifestSave: (name: string, config: PresetConfig) => Promise<void>;
   onManifestDelete?: (manifestId: string) => Promise<void>;
   currentConfig?: PresetConfig;
+  onGetCurrentConfig?: () => PresetConfig | null;
   className?: string;
 }
 
@@ -26,6 +28,7 @@ export function ManifestDropdown({
   onManifestSave, 
   onManifestDelete,
   currentConfig,
+  onGetCurrentConfig,
   className = '' 
 }: ManifestDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +39,8 @@ export function ManifestDropdown({
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveManifestName, setSaveManifestName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deletingManifestId, setDeletingManifestId] = useState<string | null>(null);
 
   // Load manifests from backend
   const loadManifests = async () => {
@@ -46,12 +51,22 @@ export function ManifestDropdown({
       setManifests(manifestList);
       
       // Set default selected manifest if none selected
+      // Prioritize the latest manifest (first in the sorted list)
       if (!selectedManifest && manifestList.length > 0) {
-        setSelectedManifest(manifestList[0]);
+        // Find the most recently updated manifest
+        const latestManifest = manifestList.reduce((latest, current) => {
+          const latestDate = new Date(latest.updatedAt || latest.createdAt || 0);
+          const currentDate = new Date(current.updatedAt || current.createdAt || 0);
+          return currentDate > latestDate ? current : latest;
+        }, manifestList[0]);
+        
+        setSelectedManifest(latestManifest);
+        console.log('📋 [ManifestDropdown] Auto-selected latest manifest:', latestManifest.name);
       }
     } catch (err) {
       setError('Failed to load manifests');
       console.error('Error loading manifests:', err);
+      toast.error('Failed to load manifests');
     } finally {
       setIsLoading(false);
     }
@@ -82,14 +97,27 @@ export function ManifestDropdown({
 
   // Handle saving to existing manifest
   const handleSaveToExistingManifest = async () => {
-    if (!selectedManifest || !currentConfig) return;
+    if (!selectedManifest) return;
     
     setIsSaving(true);
     setError('');
     
     try {
+      // Get fresh config instead of using potentially stale currentConfig
+      const freshConfig = onGetCurrentConfig ? onGetCurrentConfig() : currentConfig;
+      
+      console.log('🔍 [ManifestDropdown.handleSaveToExistingManifest] Fresh config:', freshConfig);
+      console.log('🔍 [ManifestDropdown.handleSaveToExistingManifest] Fresh config room:', freshConfig?.room);
+      console.log('🔍 [ManifestDropdown.handleSaveToExistingManifest] Fresh config avatar:', freshConfig?.avatar);
+      console.log('🔍 [ManifestDropdown.handleSaveToExistingManifest] Fresh config items count:', freshConfig?.items?.length || 0);
+      
+      if (!freshConfig) {
+        setError('No configuration available to save');
+        return;
+      }
+      
       // Use updatePreset instead of createPreset for existing manifests
-      await manifestService.updatePreset(selectedManifest.id, selectedManifest.name, currentConfig);
+      await manifestService.updatePreset(selectedManifest.id, selectedManifest.name, freshConfig);
       // Reload manifests to show the updated one
       await loadManifests();
     } catch (err) {
@@ -101,7 +129,7 @@ export function ManifestDropdown({
 
   // Handle save manifest (for save as new)
   const handleSaveManifest = async () => {
-    if (!saveManifestName.trim() || !currentConfig) {
+    if (!saveManifestName.trim()) {
       setError('Please enter a manifest name');
       return;
     }
@@ -110,7 +138,17 @@ export function ManifestDropdown({
     setError('');
     
     try {
-      await onManifestSave(saveManifestName.trim(), currentConfig);
+      // Get fresh config instead of using potentially stale currentConfig
+      const freshConfig = onGetCurrentConfig ? onGetCurrentConfig() : currentConfig;
+      
+      console.log('🔍 [ManifestDropdown.handleSaveManifest] Fresh config for new manifest:', freshConfig);
+      
+      if (!freshConfig) {
+        setError('No configuration available to save');
+        return;
+      }
+      
+      await onManifestSave(saveManifestName.trim(), freshConfig);
       setSaveManifestName('');
       setShowSaveModal(false);
       // Reload manifests to show the new one
@@ -126,9 +164,14 @@ export function ManifestDropdown({
   const handleDeleteManifest = async (manifestId: string, event: React.MouseEvent) => {
     event.stopPropagation();
     
-    if (!confirm('Are you sure you want to delete this manifest?')) {
+    const manifest = manifests.find(m => m.id === manifestId);
+    if (!confirm(`Are you sure you want to delete "${manifest?.name}"?`)) {
       return;
     }
+
+    setIsDeleting(true);
+    setDeletingManifestId(manifestId);
+    setError('');
 
     try {
       if (onManifestDelete) {
@@ -145,6 +188,9 @@ export function ManifestDropdown({
     } catch (err) {
       setError('Failed to delete manifest');
       console.error('Error deleting manifest:', err);
+    } finally {
+      setIsDeleting(false);
+      setDeletingManifestId(null);
     }
   };
 
@@ -160,7 +206,7 @@ export function ManifestDropdown({
             onClick={() => setShowSaveModal(true)}
             className="action-btn save-as-new-btn"
             title="Save as New Manifest"
-            disabled={!currentConfig}
+            disabled={!currentConfig && !onGetCurrentConfig}
           >
             <FilePlus size={16} />
           </button>
@@ -168,17 +214,17 @@ export function ManifestDropdown({
             onClick={handleSaveButtonClick}
             className="action-btn save-btn"
             title={selectedManifest ? `Update "${selectedManifest.name}"` : "Save as New"}
-            disabled={!currentConfig}
+            disabled={!currentConfig && !onGetCurrentConfig}
           >
             <Save size={15} />
           </button>
           <button
-            onClick={loadManifests}
+            onClick={() => loadManifests()}
             className="action-btn refresh-btn"
             title="Refresh Manifests"
             disabled={isLoading}
           >
-            <RefreshCw size={16} />
+            {isLoading ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
           </button>
         </div>
       </div>
@@ -231,8 +277,12 @@ export function ManifestDropdown({
                     onClick={(e) => handleDeleteManifest(manifest.id, e)}
                     className="delete-btn"
                     title="Delete Manifest"
+                    disabled={isDeleting && deletingManifestId === manifest.id}
                   >
-                    <Trash2 size={14} />
+                    {isDeleting && deletingManifestId === manifest.id ? 
+                      <Loader2 size={14} className="animate-spin" /> : 
+                      <Trash2 size={14} />
+                    }
                   </button>
                 </div>
               ))
@@ -274,7 +324,7 @@ export function ManifestDropdown({
                 className="save-btn"
                 disabled={isSaving || !saveManifestName.trim()}
               >
-                <Save size={16} />
+                {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                 {isSaving ? 'Saving...' : 'Save'}
               </button>
             </div>
@@ -338,9 +388,22 @@ export function ManifestDropdown({
           color: #374151;
         }
 
-        .action-btn:disabled {
+        .delete-btn:disabled {
           opacity: 0.5;
           cursor: not-allowed;
+        }
+
+        .animate-spin {
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
         }
 
         .save-as-new-btn {

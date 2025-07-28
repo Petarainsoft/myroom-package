@@ -10,6 +10,7 @@ import ApiService from '../../shared/services/ApiService';
 import CacheDebugPanel from '../../shared/components/debug/CacheDebugPanel';
 import { ManifestDropdown } from '../../shared/components/ManifestDropdown';
 import { PresetConfig } from '../../shared/types/PresetConfig';
+import { sceneConfigLogger } from '../../shared/services/SceneConfigLogger';
 import { toast } from 'sonner';
 import './App.css';
 
@@ -152,6 +153,36 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   const [loadedItems, setLoadedItems] = useState<LoadedItem[]>([]);
   const [gizmoMode, setGizmoMode] = useState<'position' | 'rotation' | 'scale'>('position');
 
+  // Avatar state management - moved up to avoid initialization order issues
+  const [avatarConfig, setAvatarConfig] = useState<AvatarConfig>(
+    getDefaultConfigForGender('male')
+  );
+  const [activeMovement, setActiveMovement] = useState<ActiveMovement>({
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+    turnLeft: false,
+    turnRight: false,
+    jump: false,
+    run: false,
+    wave: false,
+    dance: false
+  });
+  const [touchMovement, setTouchMovement] = useState<TouchMovement>({
+    x: 0,
+    y: 0,
+    isMoving: false
+  });
+  // Set default: only Avatar overlay is visible
+  const [showAvatarOverlay, setShowAvatarOverlay] = useState(false);
+  const [showRoomOverlay, setShowRoomOverlay] = useState(false);
+  const [debugInfo, setDebugInfo] = useState('');
+  const [compactMode, setCompactMode] = useState(false);
+  const [ultraCompactMode, setUltraCompactMode] = useState(true);
+  const [babylonScene, setBabylonScene] = useState<any>(null);
+  const integratedSceneRef = useRef<any>(null);
+
   // Auto-reset gizmo mode to position when item is selected
   useEffect(() => {
     if (selectedItem) {
@@ -163,6 +194,88 @@ const InteractiveRoomWithAvatar: React.FC = () => {
   useEffect(() => {
     console.log('🔍 [IntegratedApp] selectedRoom changed:', selectedRoom);
   }, [selectedRoom]);
+
+  // Log scene config when room changes
+  const previousRoomRef = useRef(selectedRoom);
+  useEffect(() => {
+    // Skip logging on initial load when room is empty
+    if (!selectedRoom.resourceId && !selectedRoom.path) {
+      return;
+    }
+    
+    // Skip if this is the first meaningful room load
+    if (!previousRoomRef.current.resourceId && !previousRoomRef.current.path) {
+      previousRoomRef.current = selectedRoom;
+      return;
+    }
+    
+    // Log room change if room actually changed
+    if (previousRoomRef.current.resourceId !== selectedRoom.resourceId || 
+        previousRoomRef.current.path !== selectedRoom.path) {
+      sceneConfigLogger.logRoomChange(
+        previousRoomRef.current,
+        selectedRoom,
+        avatarConfig,
+        loadedItems
+      );
+      previousRoomRef.current = selectedRoom;
+    }
+  }, [selectedRoom, avatarConfig, loadedItems]);
+
+  // Log scene config when avatar changes
+  const previousAvatarRef = useRef(avatarConfig);
+  useEffect(() => {
+    // Skip logging on initial load
+    if (!previousAvatarRef.current) {
+      previousAvatarRef.current = avatarConfig;
+      return;
+    }
+    
+    // Check if avatar actually changed
+    const avatarChanged = JSON.stringify(previousAvatarRef.current) !== JSON.stringify(avatarConfig);
+    if (avatarChanged && selectedRoom.resourceId) {
+      sceneConfigLogger.logAvatarChange(
+        previousAvatarRef.current,
+        avatarConfig,
+        selectedRoom,
+        loadedItems
+      );
+      previousAvatarRef.current = avatarConfig;
+    }
+  }, [avatarConfig, selectedRoom, loadedItems]);
+
+  // Log scene config when items change
+  const previousItemsRef = useRef(loadedItems);
+  useEffect(() => {
+    // Skip logging on initial load
+    if (previousItemsRef.current.length === 0 && loadedItems.length === 0) {
+      return;
+    }
+    
+    // Check if items actually changed
+    const itemsChanged = JSON.stringify(previousItemsRef.current) !== JSON.stringify(loadedItems);
+    if (itemsChanged && selectedRoom.resourceId) {
+      let action = 'items_changed';
+      
+      // Determine specific action
+      if (previousItemsRef.current.length < loadedItems.length) {
+        action = 'item_added';
+      } else if (previousItemsRef.current.length > loadedItems.length) {
+        action = 'item_removed';
+      } else if (loadedItems.length === 0) {
+        action = 'all_items_cleared';
+      }
+      
+      sceneConfigLogger.logItemsChange(
+        previousItemsRef.current,
+        loadedItems,
+        selectedRoom,
+        avatarConfig,
+        action
+      );
+      previousItemsRef.current = [...loadedItems];
+    }
+  }, [loadedItems, selectedRoom, avatarConfig]);
 
   // Check if selected item still exists in loaded items
   useEffect(() => {
@@ -277,12 +390,28 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       try {
         console.log('🎬 [IntegratedApp] Loading default scene from manifest service...');
         
-        // Load default preset (full 3D scene data) from manifest service
-        // This contains complete scene information including room, avatar, and items
-        const defaultPresetResponse = await fetch('/preset/default-preset.json');
-        const defaultPreset = await defaultPresetResponse.json();
+        let defaultPreset = null;
         
-        console.log('🎬 [IntegratedApp] Default preset loaded:', defaultPreset);
+        // Try to load the latest preset from backend first
+        try {
+          console.log('🎬 [IntegratedApp] Attempting to load latest preset from backend...');
+          const latestPreset = await manifestService.getLatestPreset();
+          if (latestPreset && latestPreset.config) {
+            defaultPreset = latestPreset.config;
+            console.log('🎬 [IntegratedApp] Latest preset loaded from backend:', defaultPreset);
+            toast.success(`Loaded latest manifest: ${latestPreset.name}`);
+          }
+        } catch (error) {
+          console.warn('⚠️ [IntegratedApp] Failed to load latest preset from backend:', error);
+        }
+        
+        // Fallback to local default preset if no backend preset available
+        if (!defaultPreset) {
+          console.log('🎬 [IntegratedApp] Falling back to local default preset...');
+          const defaultPresetResponse = await fetch('/preset/default-preset.json');
+          defaultPreset = await defaultPresetResponse.json();
+          console.log('🎬 [IntegratedApp] Local default preset loaded:', defaultPreset);
+        }
 
         // Load room configuration from default preset
         // This sets which room should be selected in the room selector
@@ -348,6 +477,18 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         }
 
         console.log('✅ [IntegratedApp] Default scene loaded successfully from manifest service:', defaultPreset);
+        
+        // Log full scene config after loading default scene
+        setTimeout(() => {
+          if (selectedRoom.resourceId && avatarConfig) {
+            sceneConfigLogger.logFullSceneConfig(
+              selectedRoom,
+              avatarConfig,
+              defaultPreset.items || [],
+              'default_scene_loaded'
+            );
+          }
+        }, 1000); // Delay to ensure all state updates are complete
       } catch (error) {
         console.error('❌ [IntegratedApp] Error loading default scene from manifest service:', error);
         // Fallback to default configuration if preset fails
@@ -484,46 +625,38 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     loadItems();
   }, []);
 
-  // Avatar state management
-  const [avatarConfig, setAvatarConfig] = useState<AvatarConfig>(
-    getDefaultConfigForGender('male')
-  );
-  const [activeMovement, setActiveMovement] = useState<ActiveMovement>({
-    forward: false,
-    backward: false,
-    left: false,
-    right: false,
-    turnLeft: false,
-    turnRight: false,
-    jump: false,
-    run: false,
-    wave: false,
-    dance: false
-  });
-  const [touchMovement, setTouchMovement] = useState<TouchMovement>({
-    x: 0,
-    y: 0,
-    isMoving: false
-  });
-  // Set default: only Avatar overlay is visible
-  const [showAvatarOverlay, setShowAvatarOverlay] = useState(false);
-  const [showRoomOverlay, setShowRoomOverlay] = useState(false);
-  const [debugInfo, setDebugInfo] = useState('');
-  const [compactMode, setCompactMode] = useState(false);
-  const [ultraCompactMode, setUltraCompactMode] = useState(true);
-  const [babylonScene, setBabylonScene] = useState<any>(null);
-  const integratedSceneRef = useRef<any>(null);
-
-  // Function to get current scene configuration
-  const getCurrentConfig = () => {
-    if (integratedSceneRef.current && integratedSceneRef.current.getCurrentSceneConfig) {
-      return integratedSceneRef.current.getCurrentSceneConfig();
-    }
-    return null;
-  };
+  // Avatar state management has been moved up to avoid initialization order issues
+  
+  // Additional UI state management
   const [showIntegrationGuide, setShowIntegrationGuide] = useState(false);
   const [isClosing, setIsClosing] = useState(false); // New state for fade-out effect
   const [activeTab, setActiveTab] = useState('iframe');
+
+  // Function to get current scene configuration
+  const getCurrentConfig = useCallback(() => {
+    console.log('🔍 [IntegratedApp.getCurrentConfig] Starting to get current config...');
+    console.log('🔍 [IntegratedApp.getCurrentConfig] Current selectedRoom:', selectedRoom);
+    console.log('🔍 [IntegratedApp.getCurrentConfig] Current avatarConfig:', avatarConfig);
+    console.log('🔍 [IntegratedApp.getCurrentConfig] Current loadedItems:', loadedItems);
+    
+    // Use SceneConfigLogger to get the most up-to-date configuration
+    const config = sceneConfigLogger.getCurrentConfig(
+      {
+        name: selectedRoom.name,
+        resourceId: selectedRoom.resourceId,
+        path: selectedRoom.path
+      },
+      avatarConfig,
+      loadedItems
+    );
+    
+    console.log('🔍 [IntegratedApp.getCurrentConfig] Generated config:', config);
+    console.log('🔍 [IntegratedApp.getCurrentConfig] Config room:', config?.room);
+    console.log('🔍 [IntegratedApp.getCurrentConfig] Config avatar:', config?.avatar);
+    console.log('🔍 [IntegratedApp.getCurrentConfig] Config items count:', config?.items?.length || 0);
+    
+    return config;
+  }, [selectedRoom, avatarConfig, loadedItems]);
 
   const closeIntegrationGuide = () => {
     setIsClosing(true); // Start fade-out animation
@@ -990,6 +1123,47 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         }
         
         toast.success(`Manifest loaded successfully!`);
+        
+        // Log full scene config after loading manifest
+        setTimeout(() => {
+          const currentRoom = preset.room ? (
+            availableRooms.find(r => 
+              r.resourceId === preset.room.resourceId || 
+              r.path === preset.room.path
+            ) || {
+              name: preset.room.name,
+              resourceId: preset.room.resourceId,
+              path: preset.room.path
+            }
+          ) : selectedRoom;
+          
+          const currentAvatar = preset.avatar ? {
+            gender: preset.avatar.gender || 'male',
+            parts: {},
+            colors: preset.avatar.colors || {},
+            resourceIds: {}
+          } : avatarConfig;
+          
+          // Convert parts from preset format to internal format for logging
+          if (preset.avatar && preset.avatar.parts) {
+            Object.keys(preset.avatar.parts).forEach(partKey => {
+              const part = preset.avatar.parts![partKey];
+              if (part && typeof part === 'object' && part.path) {
+                currentAvatar.parts[partKey] = part.path;
+                if (part.resourceId) {
+                  currentAvatar.resourceIds![partKey] = part.resourceId;
+                }
+              }
+            });
+          }
+          
+          sceneConfigLogger.logFullSceneConfig(
+            currentRoom,
+            currentAvatar,
+            preset.items || [],
+            `manifest_loaded_${presetId}`
+          );
+        }, 500); // Delay to ensure all state updates are complete
       }
     } catch (error) {
       console.error('❌ [IntegratedApp] Error loading manifest:', error);
@@ -1098,30 +1272,30 @@ const InteractiveRoomWithAvatar: React.FC = () => {
               <div className="interactive-room-container">
                 <div className="babylon-scene-container">
                   {/* Only render IntegratedBabylonScene when selectedRoom has valid data */}
-                  {selectedRoom.resourceId && selectedRoom.path ? (
-                    <IntegratedBabylonScene
-                      ref={integratedSceneRef}
-                      roomPath={selectedRoom.path}
-                      roomResourceId={selectedRoom.resourceId}
-                      avatarConfig={avatarConfig}
-                      activeMovement={activeMovement}
-                      touchMovement={touchMovement}
-                      loadedItems={loadedItems}
-                      onSceneReady={setBabylonScene}
-                      gizmoMode={gizmoMode}
-                      onGizmoModeChange={setGizmoMode}
-                      selectedItem={selectedItem}
-                      onSelectItem={setSelectedItem}
-                      onItemTransformChange={handleItemTransformChange}
-                      onToggleUIOverlay={handleToggleAvatarOverlay}
-                      onToggleRoomPanel={handleToggleRoomOverlay}
-                      onToggleFullscreen={handleToggleFullscreen}
-                    />
-                  ) : (
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: '#666' }}>
-                      Loading room data...
-                    </div>
-                  )}
+                  {selectedRoom.resourceId || selectedRoom.path ? (
+    <IntegratedBabylonScene
+      ref={integratedSceneRef}
+      roomPath={selectedRoom.path}
+      roomResourceId={selectedRoom.resourceId}
+      avatarConfig={avatarConfig}
+      activeMovement={activeMovement}
+      touchMovement={touchMovement}
+      loadedItems={loadedItems}
+      onSceneReady={setBabylonScene}
+      gizmoMode={gizmoMode}
+      onGizmoModeChange={setGizmoMode}
+      selectedItem={selectedItem}
+      onSelectItem={setSelectedItem}
+      onItemTransformChange={handleItemTransformChange}
+      onToggleUIOverlay={handleToggleAvatarOverlay}
+      onToggleRoomPanel={handleToggleRoomOverlay}
+      onToggleFullscreen={handleToggleFullscreen}
+    />
+  ) : (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: '#666' }}>
+      Loading room data...
+    </div>
+  )}
                 </div>
 
                 {/* Movement Instructions */}
@@ -1162,6 +1336,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       </div>
                       <ManifestDropdown
                         currentConfig={getCurrentConfig()}
+                        onGetCurrentConfig={getCurrentConfig}
                         onManifestSelect={handleManifestSelect}
                         onManifestSave={handleManifestSave}
                         onManifestDelete={handleManifestDelete}
@@ -1273,6 +1448,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       </div>
                       <ManifestDropdown
                         currentConfig={getCurrentConfig()}
+                        onGetCurrentConfig={getCurrentConfig}
                         onManifestSelect={handleManifestSelect}
                         onManifestSave={handleManifestSave}
                         onManifestDelete={handleManifestDelete}
