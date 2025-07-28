@@ -32,6 +32,186 @@ const prisma = new PrismaClient();
 // Initialize Resource Management Service
 const resourceManagementService = new ItemManagementService(prisma);
 
+/**
+ * @swagger
+ * /api/developer/apikey/project:
+ *   get:
+ *     summary: Get project information for current API key
+ *     tags: [API Key]
+ *     security:
+ *       - apiKey: []
+ *     responses:
+ *       200:
+ *         description: Project information retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     projectId:
+ *                       type: string
+ *                     projectName:
+ *                       type: string
+ *                     projectDescription:
+ *                       type: string
+ *                     projectStatus:
+ *                       type: string
+ *       401:
+ *         description: Unauthorized - Invalid API key
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Project not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ * @route GET /api/developer/apikey/project
+ * @desc Get project information for current API key
+ * @access Private (API Key)
+ */
+router.get(
+  '/apikey/project',
+  validateApiKey,
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const apiKeyData = req.apiKey!;
+    
+    // Get project details
+    const project = await prisma.project.findUnique({
+      where: { id: apiKeyData.projectId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        status: true,
+      },
+    });
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        error: 'Project not found',
+        code: 'PROJECT_NOT_FOUND',
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    apiLogger.info('Project info retrieved via API key', {
+      apiKeyId: apiKeyData.id,
+      projectId: apiKeyData.projectId,
+      developerId: apiKeyData.developerId,
+    });
+
+    res.json({
+      success: true,
+      data: {
+        projectId: project.id,
+        projectName: project.name,
+        projectDescription: project.description,
+        projectStatus: project.status,
+      },
+    });
+  })
+);
+
+/**
+ * @swagger
+ * /api/developer/apikey/info:
+ *   get:
+ *     summary: Get API key information including project details
+ *     tags: [API Key]
+ *     security:
+ *       - apiKey: []
+ *     responses:
+ *       200:
+ *         description: API key information retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     apiKeyId:
+ *                       type: string
+ *                     projectId:
+ *                       type: string
+ *                     projectName:
+ *                       type: string
+ *                     developerId:
+ *                       type: string
+ *                     scopes:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *       401:
+ *         description: Unauthorized - Invalid API key
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ * @route GET /api/developer/apikey/info
+ * @desc Get API key information including project details
+ * @access Private (API Key)
+ */
+router.get(
+  '/apikey/info',
+  validateApiKey,
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    const apiKeyData = req.apiKey!;
+    
+    // Get project details
+    const project = await prisma.project.findUnique({
+      where: { id: apiKeyData.projectId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        status: true,
+        developerId: true,
+      },
+    });
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        error: 'Project not found',
+        code: 'PROJECT_NOT_FOUND',
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    apiLogger.info('API key info retrieved', {
+      apiKeyId: apiKeyData.id,
+      projectId: apiKeyData.projectId,
+      developerId: apiKeyData.developerId,
+    });
+
+    res.json({
+      success: true,
+      data: {
+        apiKeyId: apiKeyData.id,
+        projectId: apiKeyData.projectId,
+        projectName: project.name,
+        projectDescription: project.description,
+        projectStatus: project.status,
+        developerId: apiKeyData.developerId,
+        scopes: apiKeyData.scopes,
+      },
+    });
+  })
+);
+
 // Note: Developer registration is now handled by /api/auth/register endpoint
 // This duplicate endpoint has been removed to avoid confusion
 
@@ -1069,7 +1249,7 @@ router.delete(
  *                 type: array
  *                 items:
  *                   type: string
- *                   enum: [developer:read, developer:write, project:read, project:write, apikey:read, resource:read, manifest:read]
+ *                   enum: [developer:read, developer:write, project:read, project:write, apikey:read, resource:read, manifest:read, manifest:write]
  *                 minItems: 1
  *                 description: API key scopes/permissions
  *               expiresAt:

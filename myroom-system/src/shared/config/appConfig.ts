@@ -52,7 +52,7 @@ const getConfiguredProjectId = () => {
 
 // Static boolean to temporarily disable local GLB resource loading
 // Set to true to disable local server GLB loading (for testing/debugging)
-export const DISABLE_LOCAL_GLB_LOADING = false;
+export const DISABLE_LOCAL_GLB_LOADING = true;
 
 // Base domain configuration
 // This will be used for all URLs in the application

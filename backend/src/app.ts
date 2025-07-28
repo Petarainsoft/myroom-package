@@ -21,6 +21,7 @@ import adminRoutes from '@/routes/admin';
 import developerRoutes from '@/routes/developer';
 import resourceRoutes from '@/routes/resource';
 import manifestRoutes from '@/routes/manifest';
+import apikeyRoutes from '@/routes/apikey';
 import healthRoutes from '@/routes/health';
 import docsRoutes from '@/routes/docs';
 import roomRoutes from '@/routes/roomRoutes';
@@ -171,6 +172,7 @@ class App {
     this.app.use('/api/developer', developerRoutes);
     this.app.use('/api/resource', resourceRoutes);
     this.app.use('/api/manifest', manifestRoutes);
+    this.app.use('/api/apikey', apikeyRoutes);
     this.app.use('/api/rooms', roomRoutes);
     this.app.use('/api/avatar', avatarRoutes);
     this.app.use('/api/health', healthRoutes);

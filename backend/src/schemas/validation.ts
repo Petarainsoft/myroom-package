@@ -125,7 +125,7 @@ export const apiKeyCreateSchema = z.object({
 
 export const apiKeyUpdateSchema = z.object({
   name: z.string().min(2, 'API key name must be at least 2 characters').max(100, 'API key name cannot exceed 100 characters').optional(),
-  scopes: z.array(z.enum(['developer:read', 'developer:write', 'project:read', 'project:write', 'apikey:read', 'resource:read', 'manifest:read', 'resources:read', 'avatar:read', 'manifests:read'])).min(1, 'At least one scope is required').optional(),
+  scopes: z.array(z.enum(['developer:read', 'developer:write', 'project:read', 'project:write', 'apikey:read', 'resource:read', 'manifest:read', 'manifest:write', 'resources:read', 'avatar:read', 'manifests:read'])).min(1, 'At least one scope is required').optional(),
   status: z.enum(['ACTIVE', 'INACTIVE', 'REVOKED']).optional(),
   expiresAt: z.string().datetime().optional(),
 });
