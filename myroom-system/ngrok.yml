@@ -4,7 +4,7 @@ tunnels:
   myroom-dev:
     proto: http
     addr: 5173
-    host_header: "localhost:5175"
+    host_header: "localhost:5173"
     headers:
       add:
         - "Access-Control-Allow-Origin: *"

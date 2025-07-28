@@ -8,11 +8,11 @@
   // Set this to your actual domain after deployment
   window.MYROOM_CONFIG = {
     // baseDomain: 'http://192.168.1.5:5173' // LAN test (mobile device access)
-    baseDomain: 'http://localhost:5175', // assets server (frontend)
+    baseDomain: 'http://localhost:5173', // assets server (frontend)
     backendDomain: 'http://localhost:3000', // backend API server
     apiKey: 'pk_test_1234567890abcdef1234567890abcdef', // API key for backend authentication
     projectId: 'default-project', // Project ID for backend API
-    useResourceId: true // Switch between old path-based loading (false) and new resourceId-based loading (true)
+    useResourceId: false // Switch between old path-based loading (false) and new resourceId-based loading (true)
     // baseDomain: 'https://myroom.petarainsoft.com'
   };
   
