@@ -175,9 +175,15 @@ export class PointerManager {
               this.camera.detachControl();
               return;
             }
+
+            // Check if it's the highlight disc itself
+            if (this.highlightDiscRef.current && pickedMesh === this.highlightDiscRef.current) {
+              // Don't deselect when clicking on the highlight disc
+              return;
+            }
           }
 
-          // If no furniture was clicked, deselect
+          // If no furniture and no highlightDisc or its child circles was clicked, deselect
           this.deselectItem();
           
           // Camera follow/cursor state
@@ -354,6 +360,7 @@ export class PointerManager {
         mesh.isVisible = isVisible;
       });
     }
+    this.isAvatarVisible = isVisible;
   }
 
   private scaleHighlightDisc(selectedMesh: AbstractMesh) {
@@ -472,10 +479,6 @@ export class PointerManager {
   public dispose() {
     // Clean up pointer observable if needed
     // The scene will handle disposal of observables when it's disposed
-  }
-
-  public updateAvatarVisibility(isVisible: boolean) {
-    this.isAvatarVisible = isVisible;
   }
 
   public handleDeselectItem() {

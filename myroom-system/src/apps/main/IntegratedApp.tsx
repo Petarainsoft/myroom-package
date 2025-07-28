@@ -769,16 +769,12 @@ const InteractiveRoomWithAvatar: React.FC = () => {
     const selectedItemToAdd = selectedItemPerCategory[selectedCategory];
     if (!selectedItemToAdd) return;
     
-    // Generate random position within safe room bounds (GROUND_SIZE = 6, so safe area is -2.5 to 2.5)
-    const randomX = (Math.random() - 0.5) * 5; // Random position between -2.5 and 2.5
-    const randomZ = (Math.random() - 0.5) * 5; // Random position between -2.5 and 2.5
-    
     const newItem: LoadedItem = {
       id: `item_${Date.now()}`,
       name: selectedItemToAdd.name,
       path: selectedItemToAdd.path,
       resourceId: selectedItemToAdd.resourceId,
-      position: { x: randomX, y: 0, z: randomZ },
+      position: { x: 0, y: 0, z: 0 },
       rotation: { x: 0, y: 0, z: 0 },
       scale: { x: 1, y: 1, z: 1 }
     };
@@ -1281,24 +1277,18 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             >
                               {filteredItems.map((item) => (
                                 <button
-                                  key={item.resourceId || item.path}
+                                  key={item.path}
                                   type="button"
-                                  className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.path === item.path ||
-                                      selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId
-                                      ? ' selected'
-                                      : ''
-                                    }`}
+                                  className={`item-list-btn${selectedItemPerCategory[selectedCategory]?.path === item.path ? ' selected' : '' }`}
                                   style={{
                                     padding: '8px 12px',
                                     borderRadius: 6,
                                     border:
-                                      selectedItemPerCategory[selectedCategory]?.path === item.path ||
-                                        selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId
+                                      selectedItemPerCategory[selectedCategory]?.path === item.path
                                         ? '2px solid #1890ff'
                                         : '1px solid #d9d9d9',
                                     background:
-                                      selectedItemPerCategory[selectedCategory]?.path === item.path ||
-                                        selectedItemPerCategory[selectedCategory]?.resourceId === item.resourceId
+                                      selectedItemPerCategory[selectedCategory]?.path === item.path
                                         ? '#e6f7ff'
                                         : '#fff',
                                     color: '#333',
@@ -1407,91 +1397,6 @@ const InteractiveRoomWithAvatar: React.FC = () => {
             </div>
           </div>
         </section>
-
-        {/* Selected Item Transform Panel */}
-        {selectedItem && (
-          <div
-            className="selected-item-panel"
-            style={{
-              position: 'fixed',
-              top: '50%',
-              right: '10px',
-              transform: 'translateY(-50%)',
-              background: 'rgba(0, 0, 0, 0.9)',
-              color: 'white',
-              padding: '15px',
-              borderRadius: '8px',
-              minWidth: '250px',
-              zIndex: 1000,
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-            }}
-          >
-            <h4 style={{ margin: '0 0 15px 0', color: '#4CAF50' }}>🎯 Selected Item</h4>
-            <div style={{ marginBottom: '10px', fontSize: '14px' }}>
-              <strong>Name:</strong> {selectedItem.name || 'Unknown Item'}
-            </div>
-            <div style={{ marginBottom: '15px', fontSize: '14px' }}>
-              <strong>Mode:</strong>
-              <span style={{ marginLeft: '8px', padding: '2px 8px', borderRadius: '4px', fontSize: '12px' }}>
-                {gizmoMode === 'position' && 'Move'}
-                {gizmoMode === 'rotation' && 'Rotate'}
-                {gizmoMode === 'scale' && 'Scale'}
-              </span>
-            </div>
-            <div style={{ fontSize: '12px', color: '#ccc', lineHeight: '1.4' }}>
-              <div style={{ marginBottom: '5px' }}>
-                <strong>Position:</strong>
-                <div style={{ marginLeft: '10px' }}>
-                  X: {selectedItem.position?.x?.toFixed(2) || '0.00'}
-                  <br />
-                  Y: {selectedItem.position?.y?.toFixed(2) || '0.00'}
-                  <br />
-                  Z: {selectedItem.position?.z?.toFixed(2) || '0.00'}
-                </div>
-              </div>
-              <div style={{ marginBottom: '5px' }}>
-                <strong>Rotation:</strong>
-                <div style={{ marginLeft: '10px' }}>
-                  X: {selectedItem.rotation?.x?.toFixed(2) || '0.00'}
-                  <br />
-                  Y: {selectedItem.rotation?.y?.toFixed(2) || '0.00'}
-                  <br />
-                  Z: {selectedItem.rotation?.z?.toFixed(2) || '0.00'}
-                </div>
-              </div>
-              <div style={{ marginBottom: '15px' }}>
-                <strong>Scale:</strong>
-                <div style={{ marginLeft: '10px' }}>
-                  X: {selectedItem.scaling?.x?.toFixed(2) || '1.00'}
-                  <br />
-                  Y: {selectedItem.scaling?.y?.toFixed(2) || '1.00'}
-                  <br />
-                  Z: {selectedItem.scaling?.z?.toFixed(2) || '1.00'}
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={() => setSelectedItem(null)}
-              style={{
-                width: '100%',
-                background: '#f44336',
-                color: 'white',
-                border: 'none',
-                padding: '8px 12px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '12px',
-                transition: 'background-color 0.2s',
-              }}
-              onMouseOver={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = '#d32f2f')}
-              onMouseOut={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = '#f44336')}
-            >
-              ❌ Deselect Item
-            </button>
-          </div>
-        )}
 
         {/* Features Section */}
         <section id="features-section" className="features-section">

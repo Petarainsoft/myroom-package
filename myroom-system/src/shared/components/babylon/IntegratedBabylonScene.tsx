@@ -449,7 +449,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       utilityLayerRef.current = utilityLayer;
 
       // --- Boundary Constraints ---
-      const GROUND_SIZE = 6; // Ground is 20x20 to match actual floor size
+      const GROUND_SIZE = 4.85;
       
       // --- Initialize Pointer Manager ---
       pointerManagerRef.current = new PointerManager({
