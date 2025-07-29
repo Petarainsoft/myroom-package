@@ -648,15 +648,62 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     };
 
     // Process items to ensure they have all required fields
-    const enhancedItems = (props.loadedItems || []).map(item => ({
-      id: item.id,
-      name: item.name,
-      path: item.path,
-      resourceId: item.resourceId || item.path || '',
-      position: item.position,
-      rotation: item.rotation,
-      scale: item.scale
-    }));
+    const enhancedItems = (props.loadedItems || []).map(item => {
+      // Find the mesh in scene to get actual transform
+      const itemMesh = loadedItemMeshesRef.current.find(mesh => 
+        mesh.metadata && (mesh.metadata.itemId === item.id || mesh.metadata.id === item.id)
+      );
+
+      // Find topmost parent mesh to get accurate transform
+      let topMost = itemMesh;
+      while (topMost?.parent && topMost.parent instanceof AbstractMesh) {
+        topMost = topMost.parent;
+      }
+
+      // Get actual transform from mesh if found, otherwise use item's stored values
+      let position = item.position;
+      let rotation = item.rotation;
+      let scale = item.scale;
+
+      if (topMost) {
+        position = {
+          x: topMost.position.x,
+          y: topMost.position.y,
+          z: topMost.position.z
+        };
+
+        if (topMost.rotationQuaternion) {
+          const euler = topMost.rotationQuaternion.toEulerAngles();
+          rotation = {
+            x: euler.x,
+            y: euler.y,
+            z: euler.z
+          };
+        } else {
+          rotation = {
+            x: topMost.rotation.x,
+            y: topMost.rotation.y,
+            z: topMost.rotation.z
+          };
+        }
+
+        scale = {
+          x: topMost.scaling.x,
+          y: topMost.scaling.y,
+          z: topMost.scaling.z
+        };
+      }
+
+      return {
+        id: item.id,
+        name: item.name,
+        path: item.path,
+        resourceId: item.resourceId || item.path || '',
+        position,
+        rotation,
+        scale
+      };
+    });
     
     console.log('📦 [IntegratedBabylonScene] Enhanced items for config:', enhancedItems);
     console.log('📦 [IntegratedBabylonScene] Enhanced items count:', enhancedItems.length);

@@ -533,6 +533,12 @@ export class PointerManager {
       z: topMost.scaling.z
     };
 
+    // Log current position and rotation
+    console.log(`Item ${itemId} transformed:`, {
+      position: `x: ${position.x.toFixed(2)}, y: ${position.y.toFixed(2)}, z: ${position.z.toFixed(2)}`,
+      rotation: `x: ${(rotation.x * 180 / Math.PI).toFixed(2)}°, y: ${(rotation.y * 180 / Math.PI).toFixed(2)}°, z: ${(rotation.z * 180 / Math.PI).toFixed(2)}°`
+    });
+
     // Call the callback
     this.onItemTransformChange(itemId, { position, rotation, scale });
   }

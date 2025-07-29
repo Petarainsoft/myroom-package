@@ -34,7 +34,9 @@ export const useItemLoader = ({
 
         // Get currently loaded item IDs
         const currentItemIds = new Set(
-          loadedItemMeshesRef.current.map(container => container.name)
+          loadedItemMeshesRef.current
+            .filter(mesh => mesh.metadata && (mesh.metadata.itemId || mesh.metadata.id))
+            .map(mesh => mesh.metadata.itemId || mesh.metadata.id)
         );
 
         // Find items that need to be loaded (new items only)
@@ -42,20 +44,22 @@ export const useItemLoader = ({
 
         // Find items that need to be removed (no longer in loadedItems)
         const newItemIds = new Set(loadedItems.map(item => item.id));
-        const containersToRemove = loadedItemMeshesRef.current.filter(
-          container => !newItemIds.has(container.name)
+        const meshesToRemove = loadedItemMeshesRef.current.filter(
+          mesh => mesh.metadata && 
+                 (mesh.metadata.itemId || mesh.metadata.id) && 
+                 !newItemIds.has(mesh.metadata.itemId || mesh.metadata.id)
         );
 
         // Remove items that are no longer needed
-        containersToRemove.forEach(container => {
-          if (container && container.dispose) {
-            container.dispose();
+        meshesToRemove.forEach(mesh => {
+          if (mesh && mesh.dispose) {
+            mesh.dispose();
           }
         });
         
-        // Update the tracking array to remove disposed containers
+        // Update the tracking array to remove disposed meshes
         loadedItemMeshesRef.current = loadedItemMeshesRef.current.filter(
-          container => newItemIds.has(container.name)
+          mesh => !meshesToRemove.includes(mesh)
         );
 
         // Load only new items
@@ -135,14 +139,18 @@ export const useItemLoader = ({
             }
             // Make mesh pickable
             mesh.isPickable = true;
-            // Add metadata to identify furniture
-            mesh.metadata = { isFurniture: true };
+            // Add metadata to identify furniture and item id
+            mesh.metadata = { 
+              isFurniture: true,
+              itemId: item.id,
+              id: item.id
+            };
             if (shadowGeneratorRef.current)
               shadowGeneratorRef.current.addShadowCaster(mesh);
           });
 
-          // Add container to tracking array
-          loadedItemMeshesRef.current.push(itemContainer);
+          // Add meshes to tracking array instead of container
+          loadedItemMeshesRef.current.push(...result.meshes);
         }
 
         console.log(`Loaded ${itemsToLoad.length} new items (${loadedItemMeshesRef.current.length} total items)`);
