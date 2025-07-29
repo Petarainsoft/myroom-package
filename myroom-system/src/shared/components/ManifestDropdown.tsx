@@ -49,29 +49,43 @@ export function ManifestDropdown({
       setIsLoading(true);
       setError('');
       try {
-        const manifestList = await manifestService.listPresets();
+      const manifestList = await manifestService.listPresets();
+      if (manifestList.length === 0) {
+        console.log('No manifests found, creating default from local preset');
+        const defaultConfig = await manifestService.loadLocalPreset('default-preset.json');
+        await onManifestSave('Default', defaultConfig);
+        const newList = await manifestService.listPresets();
+        setManifests(newList);
+        if (newList.length > 0) {
+          const latestManifest = newList.reduce((latest, current) => {
+            const latestDate = new Date(latest.updatedAt || latest.createdAt || 0);
+            const currentDate = new Date(current.updatedAt || current.createdAt || 0);
+            return currentDate > latestDate ? current : latest;
+          }, newList[0]);
+          setSelectedManifest(latestManifest);
+          console.log('📋 [ManifestDropdown] Created and auto-selected default manifest:', latestManifest.name);
+          onManifestSelect(latestManifest.id);
+        }
+      } else {
         setManifests(manifestList);
-        
-        // Set default selected manifest if none selected
-        // Prioritize the latest manifest (first in the sorted list)
         if (!selectedManifest && manifestList.length > 0) {
-          // Find the most recently updated manifest
           const latestManifest = manifestList.reduce((latest, current) => {
             const latestDate = new Date(latest.updatedAt || latest.createdAt || 0);
             const currentDate = new Date(current.updatedAt || current.createdAt || 0);
             return currentDate > latestDate ? current : latest;
           }, manifestList[0]);
-          
           setSelectedManifest(latestManifest);
           console.log('📋 [ManifestDropdown] Auto-selected latest manifest:', latestManifest.name);
+          onManifestSelect(latestManifest.id);
         }
-      } catch (err) {
-        setError('Failed to load manifests');
-        console.error('Error loading manifests:', err);
-        toast.error('Failed to load manifests');
-      } finally {
-        setIsLoading(false);
       }
+    } catch (err) {
+      setError('Failed to load manifests');
+      console.error('Error loading manifests:', err);
+      toast.error('Failed to load manifests');
+    } finally {
+      setIsLoading(false);
+    }
     }, 1000),
     [selectedManifest]
   );
@@ -221,8 +235,8 @@ export function ManifestDropdown({
           <button
             onClick={handleSaveButtonClick}
             className="action-btn save-btn"
-            title={selectedManifest ? `Update "${selectedManifest.name}"` : "Save as New"}
-            disabled={!currentConfig && !onGetCurrentConfig}
+            title={selectedManifest ? (selectedManifest.name === 'Default' ? 'Cannot update default manifest' : `Update "${selectedManifest.name}"`) : "Save as New"}
+            disabled={!currentConfig && !onGetCurrentConfig || selectedManifest?.name === 'Default'}
           >
             <Save size={15} />
           </button>

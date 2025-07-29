@@ -499,6 +499,19 @@ class ManifestService {
     return this.getPreset(presetId);
   }
 
+  public async loadLocalPreset(filename: string): Promise<PresetConfig> {
+    try {
+      const response = await fetch(`/preset/${filename}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to load local preset:', error);
+      throw error;
+    }
+  }
+
   /**
    * Get the latest preset (most recently updated)
    */
