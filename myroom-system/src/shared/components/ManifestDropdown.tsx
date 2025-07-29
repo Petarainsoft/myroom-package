@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, RefreshCw, Save, Trash2, Edit, Plus, FilePlus, Loader2 } from 'lucide-react';
 import { manifestService } from '../services/ManifestService';
 import { PresetConfig } from '../types/PresetConfig';
 import { toast } from 'sonner';
+import { debounce } from 'lodash';
 
 interface ManifestItem {
   id: string;
@@ -42,40 +43,47 @@ export function ManifestDropdown({
   const [isDeleting, setIsDeleting] = useState(false);
   const [deletingManifestId, setDeletingManifestId] = useState<string | null>(null);
 
-  // Load manifests from backend
-  const loadManifests = async () => {
-    setIsLoading(true);
-    setError('');
-    try {
-      const manifestList = await manifestService.listPresets();
-      setManifests(manifestList);
-      
-      // Set default selected manifest if none selected
-      // Prioritize the latest manifest (first in the sorted list)
-      if (!selectedManifest && manifestList.length > 0) {
-        // Find the most recently updated manifest
-        const latestManifest = manifestList.reduce((latest, current) => {
-          const latestDate = new Date(latest.updatedAt || latest.createdAt || 0);
-          const currentDate = new Date(current.updatedAt || current.createdAt || 0);
-          return currentDate > latestDate ? current : latest;
-        }, manifestList[0]);
+  // Load manifests from backend with debounce and useCallback
+  const loadManifests = useCallback(
+    debounce(async () => {
+      setIsLoading(true);
+      setError('');
+      try {
+        const manifestList = await manifestService.listPresets();
+        setManifests(manifestList);
         
-        setSelectedManifest(latestManifest);
-        console.log('📋 [ManifestDropdown] Auto-selected latest manifest:', latestManifest.name);
+        // Set default selected manifest if none selected
+        // Prioritize the latest manifest (first in the sorted list)
+        if (!selectedManifest && manifestList.length > 0) {
+          // Find the most recently updated manifest
+          const latestManifest = manifestList.reduce((latest, current) => {
+            const latestDate = new Date(latest.updatedAt || latest.createdAt || 0);
+            const currentDate = new Date(current.updatedAt || current.createdAt || 0);
+            return currentDate > latestDate ? current : latest;
+          }, manifestList[0]);
+          
+          setSelectedManifest(latestManifest);
+          console.log('📋 [ManifestDropdown] Auto-selected latest manifest:', latestManifest.name);
+        }
+      } catch (err) {
+        setError('Failed to load manifests');
+        console.error('Error loading manifests:', err);
+        toast.error('Failed to load manifests');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (err) {
-      setError('Failed to load manifests');
-      console.error('Error loading manifests:', err);
-      toast.error('Failed to load manifests');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    }, 1000),
+    [selectedManifest]
+  );
 
   // Load manifests on component mount
   useEffect(() => {
     loadManifests();
-  }, []);
+    // Cleanup function
+    return () => {
+      loadManifests.cancel();
+    };
+  }, [loadManifests]);
 
   // Handle manifest selection
   const handleManifestSelect = (manifest: ManifestItem) => {
