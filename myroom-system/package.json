@@ -1,13 +1,31 @@
 {
-  "name": "myroom-3d",
-  "private": true,
-  "version": "0.0.0",
+  "name": "myroom-system",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
+  "main": "./dist/myroom-system.umd.js",
+  "module": "./dist/myroom-system.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/myroom-system.es.js",
+      "require": "./dist/myroom-system.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "prepare-items-manifest": "node ./scripts/update-items-manifest.cjs",
     "dev": "npm run prepare-items-manifest && vite --config configs/vite.config.js",
     "build": "vite build --config configs/vite.config.js",
+    "build:lib": "npm run clean && vite build --config configs/vite.lib.config.js",
+    "build:types": "tsc --project configs/tsconfig.lib.json --skipLibCheck --noEmitOnError false",
+    "build:lib-only": "npm run clean && vite build --config configs/vite.lib.config.js",
     "build:webcomponent": "vite build --config configs/vite.webcomponent.config.js",
+    "build:all": "npm run build:lib && npm run build && npm run build:webcomponent",
     "preview": "vite preview --config configs/vite.config.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --config configs/eslint.config.js",
     "type-check": "tsc --noEmit --project configs/tsconfig.json",
@@ -26,12 +44,13 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.526.0",
     "postcss": "^8.5.6",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "sonner": "^2.0.6",
     "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
+    "@types/node": "^24.1.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.15.0",
@@ -42,5 +61,23 @@
     "eslint-plugin-react-refresh": "^0.4.14",
     "typescript": "~5.6.2",
     "vite": "^6.0.1"
-  }
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "keywords": [
+    "react",
+    "3d",
+    "babylon",
+    "room",
+    "avatar",
+    "component",
+    "library"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/myroom-system.git"
+  },
+  "license": "MIT"
 }

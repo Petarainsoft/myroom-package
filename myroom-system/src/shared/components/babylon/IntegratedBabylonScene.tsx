@@ -612,7 +612,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     
     // Build parts object with path and resourceId for each part
     const avatarParts: any = {};
-    if (avatarConfig.parts) {
+    if ('parts' in avatarConfig && avatarConfig.parts) {
       // Process each avatar part to match default-preset.json format
       ['body', 'hair', 'top', 'bottom', 'shoes', 'fullset', 'accessory'].forEach(partKey => {
         const part = avatarConfig.parts[partKey];
@@ -623,11 +623,11 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
               path: part.startsWith('/models/') ? part : '',
               resourceId: !part.startsWith('/models/') ? part : ''
             };
-          } else if (typeof part === 'object') {
+          } else if (typeof part === 'object' && part !== null) {
             // If part is already an object, ensure it has both path and resourceId
             avatarParts[partKey] = {
-              path: part.path || '',
-              resourceId: part.resourceId || part.path || ''
+              path: (part as any).path || '',
+              resourceId: (part as any).resourceId || (part as any).path || ''
             };
           }
         } else {
@@ -641,7 +641,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
     const enhancedAvatarConfig = {
       gender: avatarConfig.gender || 'male',
       parts: avatarParts,
-      colors: avatarConfig.colors || {
+      colors: ('colors' in avatarConfig ? avatarConfig.colors : undefined) || {
         hair: '#4A301B',
         top: '#1E90FF'
       }

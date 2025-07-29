@@ -12,7 +12,8 @@ import {
   RotationGizmo,
   ScaleGizmo,
   TransformNode,
-  PointerEventTypes
+  PointerEventTypes,
+  AbstractMesh
 } from '@babylonjs/core'
 import '@babylonjs/loaders'
 import { domainConfig, DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig'
@@ -390,7 +391,7 @@ export default function InteractiveRoom() {
         m.isPickable = true;
         if (m.getChildren) {
           m.getChildren().forEach(child => {
-            if (child.isPickable !== undefined) {
+            if (child instanceof AbstractMesh && 'isPickable' in child) {
               child.isPickable = true;
             }
           });

@@ -51,16 +51,16 @@ class SceneConfigLogger {
     if (avatarConfig.parts) {
       ['body', 'hair', 'top', 'bottom', 'shoes', 'fullset', 'accessory'].forEach(partKey => {
         const part = avatarConfig.parts[partKey];
-        if (part && part !== null) {
+        if (part !== null && part !== undefined) {
           if (typeof part === 'string') {
             avatarParts[partKey] = {
               path: part.startsWith('/models/') ? part : '',
               resourceId: !part.startsWith('/models/') ? part : ''
             };
-          } else if (typeof part === 'object') {
+          } else if (typeof part === 'object' && part !== null) {
             avatarParts[partKey] = {
-              path: part.path || '',
-              resourceId: part.resourceId || part.path || ''
+              path: (part as any).path || '',
+              resourceId: (part as any).resourceId || (part as any).path || ''
             };
           }
         } else {
@@ -277,5 +277,6 @@ class SceneConfigLogger {
   }
 }
 
+export { SceneConfigLogger };
 export const sceneConfigLogger = SceneConfigLogger.getInstance();
 export type { SceneChangeEvent, Room };

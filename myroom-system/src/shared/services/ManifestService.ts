@@ -554,7 +554,8 @@ class ManifestService {
   }
 }
 
-// Export singleton instance
+// Export class and singleton instance
+export { ManifestService };
 export const manifestService = ManifestService.getInstance();
 export default manifestService;
 export type { Room, Item, RoomsManifest, ItemsManifest };

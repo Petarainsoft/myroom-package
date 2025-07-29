@@ -359,7 +359,7 @@ const createPanel = (adt, hierarchicalData) => {
         categoryBtn.fontWeight = '500'
         categoryBtn.fontFamily = 'Segoe UI, system-ui, sans-serif'
         categoryBtn.paddingLeftInPixels = 16
-        categoryBtn.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT
+        categoryBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT
         categoryCard.addControl(categoryBtn)
         
         // Add hover and click effects

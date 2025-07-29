@@ -26,7 +26,7 @@ export const useItemManipulator = ({
 }: ItemManipulatorProps) => {
   const gizmoRef = useRef<PositionGizmo | RotationGizmo | ScaleGizmo | null>(null);
   const selectedItemRef = useRef<any>(null);
-  const transformTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const transformTimeoutRef = useRef<number | null>(null);
   const isDraggingRef = useRef<boolean>(false);
 
   // Update selected item ref when selectedItem changes
@@ -83,9 +83,7 @@ export const useItemManipulator = ({
     if (gizmoRef.current) {
       try {
         // First hide the gizmo immediately
-        if (gizmoRef.current.setEnabled) {
-          gizmoRef.current.setEnabled(false);
-        }
+        gizmoRef.current.attachedMesh = null;
         // Then dispose it
         gizmoRef.current.dispose();
         gizmoRef.current = null;
@@ -133,13 +131,13 @@ export const useItemManipulator = ({
       if (transformTimeoutRef.current) {
         clearTimeout(transformTimeoutRef.current);
       }
-      transformTimeoutRef.current = setTimeout(doUpdate, 150); // Increased debounce time during drag
+      transformTimeoutRef.current = window.setTimeout(doUpdate, 150); // Increased debounce time during drag
     } else {
       // Not dragging, update normally but still debounced
       if (transformTimeoutRef.current) {
         clearTimeout(transformTimeoutRef.current);
       }
-      transformTimeoutRef.current = setTimeout(doUpdate, 50); // Slightly increased for stability
+      transformTimeoutRef.current = window.setTimeout(doUpdate, 50); // Slightly increased for stability
     }
   },
     [onItemTransformChange, highlightDiscRef]
@@ -267,16 +265,12 @@ export const useItemManipulator = ({
     if (!selectedItem && gizmoRef.current) {
       console.log('Attempting to hide and dispose gizmo', {
         gizmoExists: !!gizmoRef.current,
-        gizmoType: gizmoRef.current?.constructor.name,
-        hasSetEnabled: 'setEnabled' in gizmoRef.current
+        gizmoType: gizmoRef.current?.constructor.name
       });
 
       try {
         // First hide the gizmo immediately
-        if (gizmoRef.current && 'setEnabled' in gizmoRef.current) {
-          gizmoRef.current.setEnabled(false);
-          console.log('Gizmo disabled successfully');
-        }
+        gizmoRef.current.attachedMesh = null;
         // Then dispose it
         gizmoRef.current.dispose();
         gizmoRef.current = null;

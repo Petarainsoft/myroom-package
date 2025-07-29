@@ -316,8 +316,12 @@ export function useAvatarMovement({
           const toWeight = blendState.blendProgress;
           
           blendState.fromAnimations.forEach((anim) => {
-            if (anim && !anim.isDisposed) {
-              anim.setWeightForAllAnimatables(fromWeight);
+            if (anim) {
+              try {
+                anim.setWeightForAllAnimatables(fromWeight);
+              } catch (e) {
+                // Animation might be disposed
+              }
             }
           });
           
@@ -332,15 +336,23 @@ export function useAvatarMovement({
         if (blendState.blendProgress >= 1.0) {
           // Blend complete
           blendState.fromAnimations.forEach(anim => {
-            if (anim && !anim.isDisposed) {
-              anim.stop();
-              anim.setWeightForAllAnimatables(0);
+            if (anim) {
+              try {
+                anim.stop();
+                anim.setWeightForAllAnimatables(0);
+              } catch (e) {
+                // Animation might be disposed
+              }
             }
           });
           
           blendState.toAnimations.forEach(anim => {
-            if (anim && !anim.isDisposed) {
-              anim.setWeightForAllAnimatables(1.0);
+            if (anim) {
+              try {
+                anim.setWeightForAllAnimatables(1.0);
+              } catch (e) {
+                // Animation might be disposed
+              }
             }
           });
           
@@ -376,16 +388,24 @@ export function useAvatarMovement({
         
         // Start all target animations with zero weight
         blendState.toAnimations.forEach(anim => {
-          if (anim && !anim.isDisposed) {
-            anim.setWeightForAllAnimatables(0);
-            anim.play(true);
+          if (anim) {
+            try {
+              anim.setWeightForAllAnimatables(0);
+              anim.play(true);
+            } catch (e) {
+              // Animation might be disposed
+            }
           }
         });
         
         // Set all current animations weight to 1.0
         blendState.fromAnimations.forEach(anim => {
-          if (anim && !anim.isDisposed) {
-            anim.setWeightForAllAnimatables(1.0);
+          if (anim) {
+            try {
+              anim.setWeightForAllAnimatables(1.0);
+            } catch (e) {
+              // Animation might be disposed
+            }
           }
         });
         

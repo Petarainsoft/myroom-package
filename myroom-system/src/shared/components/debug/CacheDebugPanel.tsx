@@ -67,7 +67,7 @@ const CacheDebugPanel: React.FC = () => {
   }, [isVisible]);
 
   // Only show in development or when explicitly enabled
-  const shouldShow = process.env.NODE_ENV === 'development' || 
+  const shouldShow = (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') || 
                     localStorage.getItem('show-cache-debug') === 'true';
 
   if (!shouldShow) {

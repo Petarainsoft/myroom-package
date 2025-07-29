@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { Scene, TransformNode, SceneLoader, Vector3, ShadowGenerator } from '@babylonjs/core';
-import { availablePartsData, AvatarConfig } from '../../data/avatarPartsData';
+import { availablePartsData } from '../../data/avatarPartsData';
+import { AvatarConfig } from '../../types/AvatarTypes';
 import { findMappedBone } from '../../data/skeletonMapping';
 import { DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig';
 
@@ -224,10 +225,14 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
             const originalPause = mainAnim.pause.bind(mainAnim);
             mainAnim.play = (loop) => {
               const result = originalPlay(loop);
-              setTimeout(() => {
+              window.setTimeout(() => {
                 for (let i = 1; i < allAnimations.length; i++) {
-                  if (allAnimations[i] && mainAnim.isPlaying && !allAnimations[i].isDisposed) {
-                    allAnimations[i].play(loop);
+                  if (allAnimations[i] && mainAnim.isPlaying && allAnimations[i]) {
+                    try {
+                      allAnimations[i].play(loop);
+                    } catch (e) {
+                      // Animation might be disposed
+                    }
                   }
                 }
               }, 50);
@@ -236,8 +241,12 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
             mainAnim.stop = () => {
               const result = originalStop();
               for (let i = 1; i < allAnimations.length; i++) {
-                if (allAnimations[i] && !allAnimations[i].isDisposed) {
-                  allAnimations[i].stop();
+                if (allAnimations[i]) {
+                  try {
+                    allAnimations[i].stop();
+                  } catch (e) {
+                    // Animation might be disposed
+                  }
                 }
               }
               return result;
@@ -245,8 +254,12 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
             mainAnim.pause = () => {
               const result = originalPause();
               for (let i = 1; i < allAnimations.length; i++) {
-                if (allAnimations[i] && !allAnimations[i].isDisposed) {
-                  allAnimations[i].pause();
+                if (allAnimations[i]) {
+                  try {
+                    allAnimations[i].pause();
+                  } catch (e) {
+                    // Animation might be disposed
+                  }
                 }
               }
               return result;
