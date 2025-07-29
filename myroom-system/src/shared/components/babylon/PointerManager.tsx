@@ -24,6 +24,7 @@ interface PointerManagerProps {
   targetDisc: Mesh;
   moveAvatarToPosition: (targetPosition: Vector3, targetDisc: Mesh | null) => void;
   onSelectItem?: (item: any) => void;
+  onItemTransformChange?: (itemId: string, transform: { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }) => void;
   cameraFollowStateRef: React.MutableRefObject<any>;
   isRightMouseDownRef: React.MutableRefObject<boolean>;
   // Ground boundary constants
@@ -44,6 +45,7 @@ export class PointerManager {
   private targetDisc: Mesh;
   private moveAvatarToPosition: (targetPosition: Vector3, targetDisc: Mesh | null) => void;
   private onSelectItem?: (item: any) => void;
+  private onItemTransformChange?: (itemId: string, transform: { position: { x: number; y: number; z: number }; rotation: { x: number; y: number; z: number }; scale: { x: number; y: number; z: number } }) => void;
   private cameraFollowStateRef: React.MutableRefObject<any>;
   private isRightMouseDownRef: React.MutableRefObject<boolean>;
   private groundHalfSize: number;
@@ -74,6 +76,7 @@ export class PointerManager {
     this.targetDisc = props.targetDisc;
     this.moveAvatarToPosition = props.moveAvatarToPosition;
     this.onSelectItem = props.onSelectItem;
+    this.onItemTransformChange = props.onItemTransformChange;
     this.cameraFollowStateRef = props.cameraFollowStateRef;
     this.isRightMouseDownRef = props.isRightMouseDownRef;
     this.groundHalfSize = props.groundSize / 2;
@@ -220,6 +223,9 @@ export class PointerManager {
               }
               topMost.rotationQuaternion = Quaternion.FromEulerAngles(0, snappedRotation, 0);
               this.setHighlightDiscRotation(this.selectedMeshRef.current);
+              
+              // Notify parent about transform change
+              this.notifyTransformChange(this.selectedMeshRef.current);
             } else if (this.dragStartPoint && this.initialMeshPosition) {
               // Drag item
               this.isDraggingRef = true;
@@ -256,6 +262,9 @@ export class PointerManager {
                 const clampedPosition = this.clampPositionToGround(this.selectedMeshRef.current, newPosition);
                 this.selectedMeshRef.current.position.copyFrom(clampedPosition);
                 this.setHighlightDiscPosition(this.selectedMeshRef.current);
+                
+                // Notify parent about transform change
+                this.notifyTransformChange(this.selectedMeshRef.current);
               }
             }
           }
@@ -474,6 +483,58 @@ export class PointerManager {
       this.setAvatarVisibility(true);
       this.toggleHighlightDisc(false);
     }
+  }
+
+  private notifyTransformChange(mesh: AbstractMesh) {
+    if (!this.onItemTransformChange || !mesh || !mesh.metadata) {
+      return;
+    }
+
+    // Get the item ID from metadata
+    const itemId = mesh.metadata.itemId || mesh.metadata.id || mesh.name;
+    if (!itemId) {
+      return;
+    }
+
+    // Find the topmost parent mesh to get accurate transform
+    let topMost = mesh;
+    while (topMost.parent && topMost.parent instanceof AbstractMesh) {
+      topMost = topMost.parent;
+    }
+
+    // Get position
+    const position = {
+      x: topMost.position.x,
+      y: topMost.position.y,
+      z: topMost.position.z
+    };
+
+    // Get rotation
+    let rotation;
+    if (topMost.rotationQuaternion) {
+      const euler = topMost.rotationQuaternion.toEulerAngles();
+      rotation = {
+        x: euler.x,
+        y: euler.y,
+        z: euler.z
+      };
+    } else {
+      rotation = {
+        x: topMost.rotation.x,
+        y: topMost.rotation.y,
+        z: topMost.rotation.z
+      };
+    }
+
+    // Get scale
+    const scale = {
+      x: topMost.scaling.x,
+      y: topMost.scaling.y,
+      z: topMost.scaling.z
+    };
+
+    // Call the callback
+    this.onItemTransformChange(itemId, { position, rotation, scale });
   }
 
   public dispose() {

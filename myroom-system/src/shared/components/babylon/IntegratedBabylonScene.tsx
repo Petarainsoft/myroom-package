@@ -466,6 +466,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
         targetDisc,
         moveAvatarToPosition,
         onSelectItem: props.onSelectItem,
+        onItemTransformChange: props.onItemTransformChange,
         cameraFollowStateRef,
         isRightMouseDownRef,
         groundSize: GROUND_SIZE
