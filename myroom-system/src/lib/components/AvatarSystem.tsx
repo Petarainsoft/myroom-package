@@ -64,7 +64,7 @@ export interface AvatarSystemRef {
   getAvailableAnimations: () => string[];
   
   /** Get current animation */
-  getCurrentAnimation: () => string;
+  getCurrentAnimation: () => string | null;
   
   /** Check if avatar is loading */
   isLoading: () => boolean;

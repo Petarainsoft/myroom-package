@@ -8,7 +8,7 @@
 
 // Main component
 export { MyRoom } from './MyRoom';
-export type { MyRoomProps, MyRoomRef } from './MyRoom';
+export type { MyRoomProps, MyRoomRef } from '../types';
 
 // System components
 export { AvatarSystem } from './AvatarSystem';

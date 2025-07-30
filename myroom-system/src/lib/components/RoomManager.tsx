@@ -129,7 +129,7 @@ export const RoomManager = forwardRef<RoomManagerRef, RoomManagerProps>((
   useEffect(() => {
     if (autoLoad && roomId) {
       debugLog('Auto-loading room', { roomId, config });
-      room.loadRoom(roomId, config).catch(error => {
+      room.loadRoom(roomId).catch(error => {
         debugLog('Auto-load failed', { error });
         onError?.(error);
       });

@@ -1,4 +1,5 @@
 import { RoomConfig, AvatarConfigProps, SceneConfig } from '../types';
+import { AvatarConfig } from '../../shared/types/AvatarTypes';
 
 // Default room configuration
 export const DEFAULT_ROOM_CONFIG: RoomConfig = {
@@ -14,7 +15,27 @@ export const DEFAULT_ROOM_CONFIG: RoomConfig = {
 };
 
 // Default avatar configuration
-export const DEFAULT_AVATAR_CONFIG: AvatarConfigProps = {
+export const DEFAULT_AVATAR_CONFIG: AvatarConfig = {
+  gender: 'male',
+  parts: {
+    body: null,
+    hair: null,
+    top: null,
+    bottom: null,
+    shoes: null,
+    accessory: null
+  },
+  colors: {
+    hair: '#000000',
+    top: '#ffffff',
+    bottom: '#000000',
+    shoes: '#000000',
+    accessory: '#ffffff'
+  }
+};
+
+// Default avatar props configuration
+export const DEFAULT_AVATAR_PROPS_CONFIG: AvatarConfigProps = {
   defaultGender: 'male',
   enableCustomization: true,
   enableMovement: true,
@@ -81,17 +102,10 @@ export const ITEM_CATEGORIES = {
 };
 
 // Room categories
-export const ROOM_CATEGORIES = {
-  exercise: 'Exercise',
-  living: 'Living',
-  relax: 'Relax'
-};
+export const ROOM_CATEGORIES = ['Exercise', 'Living', 'Relax'];
 
 // Gender options
-export const GENDER_OPTIONS = {
-  male: 'male',
-  female: 'female'
-} as const;
+export const GENDER_OPTIONS = ['male', 'female'] as const;
 
 // Gizmo modes
 export const GIZMO_MODES = {
@@ -111,14 +125,36 @@ export const EVENT_TYPES = {
   ERROR: 'error'
 } as const;
 
-// Error codes
+// Error codes for the library
 export const ERROR_CODES = {
-  SCENE_INIT_FAILED: 'SCENE_INIT_FAILED',
+  // General errors
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR',
+  INITIALIZATION_FAILED: 'INITIALIZATION_FAILED',
+  INVALID_CONFIGURATION: 'INVALID_CONFIGURATION',
+  
+  // Room errors
   ROOM_LOAD_FAILED: 'ROOM_LOAD_FAILED',
+  ROOM_UPDATE_FAILED: 'ROOM_UPDATE_FAILED',
+  ROOM_NOT_FOUND: 'ROOM_NOT_FOUND',
+  
+  // Avatar errors
   AVATAR_LOAD_FAILED: 'AVATAR_LOAD_FAILED',
+  AVATAR_UPDATE_FAILED: 'AVATAR_UPDATE_FAILED',
+  ANIMATION_FAILED: 'ANIMATION_FAILED',
+  
+  // Item errors
   ITEM_LOAD_FAILED: 'ITEM_LOAD_FAILED',
-  INVALID_CONFIG: 'INVALID_CONFIG',
-  NETWORK_ERROR: 'NETWORK_ERROR'
+  ITEM_UPDATE_FAILED: 'ITEM_UPDATE_FAILED',
+  ITEM_NOT_FOUND: 'ITEM_NOT_FOUND',
+  
+  // Scene errors
+  SCENE_INIT_FAILED: 'SCENE_INIT_FAILED',
+  SCENE_UPDATE_FAILED: 'SCENE_UPDATE_FAILED',
+  RENDER_FAILED: 'RENDER_FAILED',
+  
+  // Camera errors
+  CAMERA_UPDATE_FAILED: 'CAMERA_UPDATE_FAILED',
+  CAMERA_INIT_FAILED: 'CAMERA_INIT_FAILED'
 } as const;
 
 // Default dimensions
@@ -141,6 +177,30 @@ export const PERFORMANCE_SETTINGS = {
   maxAnimations: 20,
   renderTargetSize: 1024,
   shadowMapSize: 1024
+};
+
+// Default camera configuration
+export const DEFAULT_CAMERA_CONFIG = {
+  type: 'arcRotate' as const,
+  position: { x: 0, y: 5, z: -10 },
+  target: { x: 0, y: 0, z: 0 },
+  fov: 0.8,
+  minZ: 0.1,
+  maxZ: 1000,
+  wheelPrecision: 50,
+  pinchPrecision: 200,
+  panningSensibility: 1000,
+  angularSensibilityX: 1000,
+  angularSensibilityY: 1000,
+  radius: 10,
+  alpha: 0,
+  beta: Math.PI / 3,
+  lowerRadiusLimit: 2,
+  upperRadiusLimit: 50,
+  lowerAlphaLimit: null,
+  upperAlphaLimit: null,
+  lowerBetaLimit: 0.1,
+  upperBetaLimit: Math.PI / 2
 };
 
 // Library metadata

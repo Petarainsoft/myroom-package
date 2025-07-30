@@ -193,12 +193,14 @@ export const ItemController = forwardRef<ItemControllerRef, ItemControllerProps>
           <div>Available Items: {items.availableItems.length}</div>
           <div>Items by Category:</div>
           {items.items.reduce((acc, item) => {
-            acc[item.category] = (acc[item.category] || 0) + 1;
+            const category = item.category || 'uncategorized';
+            acc[category] = (acc[category] || 0) + 1;
             return acc;
           }, {} as Record<string, number>) && 
             Object.entries(
               items.items.reduce((acc, item) => {
-                acc[item.category] = (acc[item.category] || 0) + 1;
+                const category = item.category || 'uncategorized';
+                acc[category] = (acc[category] || 0) + 1;
                 return acc;
               }, {} as Record<string, number>)
             ).map(([category, count]) => (

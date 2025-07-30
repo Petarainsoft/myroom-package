@@ -299,11 +299,13 @@ export function useItems(): UseItemsReturn {
       // Here you would implement the actual available items fetching logic
       // This might involve API calls or reading from a manifest
       
+      const categoryKeys = Object.keys(ITEM_CATEGORIES);
+      
       const availableItemsData: ItemConfig[] = [
         {
           id: 'chair-1',
           name: 'Modern Chair',
-          category: ITEM_CATEGORIES[0], // furniture
+          category: categoryKeys[0] || 'furniture',
           url: '/assets/models/chair.glb',
           format: 'glb',
           position: { x: 0, y: 0, z: 0 },
@@ -313,7 +315,7 @@ export function useItems(): UseItemsReturn {
         {
           id: 'table-1',
           name: 'Coffee Table',
-          category: ITEM_CATEGORIES[0], // furniture
+          category: categoryKeys[0] || 'furniture',
           url: '/assets/models/table.glb',
           format: 'glb',
           position: { x: 0, y: 0, z: 0 },
@@ -323,7 +325,7 @@ export function useItems(): UseItemsReturn {
         {
           id: 'lamp-1',
           name: 'Floor Lamp',
-          category: ITEM_CATEGORIES[1], // lighting
+          category: categoryKeys[1] || 'lighting',
           url: '/assets/models/lamp.glb',
           format: 'glb',
           position: { x: 0, y: 0, z: 0 },

@@ -37,16 +37,31 @@ export interface MyRoomProps {
 
 // Room configuration
 export interface RoomConfig {
+  id?: string;
   defaultRoom?: string;
   availableRooms?: string[];
   autoLoad?: boolean;
   enableRoomSwitching?: boolean;
   roomAssetPath?: string;
+  category?: string;
+  url?: string;
+  background?: string;
+  lighting?: {
+    intensity?: number;
+    color?: string;
+    shadows?: boolean;
+  };
+  materials?: {
+    floor?: string;
+    walls?: string;
+    ceiling?: string;
+  };
 }
 
 // Avatar configuration for props
 export interface AvatarConfigProps {
   defaultGender?: 'male' | 'female';
+  gender?: 'male' | 'female';
   enableCustomization?: boolean;
   enableMovement?: boolean;
   enableAnimations?: boolean;
@@ -59,6 +74,12 @@ export interface SceneConfig {
   enableSkybox?: boolean;
   enableShadows?: boolean;
   enableLighting?: boolean;
+  background?: string;
+  physics?: {
+    enabled?: boolean;
+    gravity?: number;
+  };
+  shadows?: boolean;
   cameraSettings?: CameraConfig;
   renderSettings?: RenderConfig;
 }
@@ -102,7 +123,7 @@ export interface MyRoomRef {
   
   // Room methods
   changeRoom: (roomId: string) => void;
-  getCurrentRoom: () => string;
+  getCurrentRoom: () => string | undefined;
   
   // Avatar methods
   updateAvatar: (config: Partial<AvatarConfig>) => void;
@@ -121,7 +142,7 @@ export interface MyRoomRef {
 
 // Export configuration
 export interface MyRoomExportConfig {
-  room: string;
+  room: string | undefined;
   avatar: AvatarConfig;
   items: ItemConfig[];
   metadata?: Record<string, any>;
@@ -140,19 +161,19 @@ export interface UseMyRoomReturn {
 
 export interface UseAvatarReturn {
   // State
-  config: AvatarConfigProps;
+  config: AvatarConfig;
   isLoading: boolean;
   error: Error | null;
   currentAnimation: string | null;
   availableAnimations: string[];
   
   // Methods
-  loadAvatar: (avatarId: string) => Promise<void>;
-  updateConfig: (config: Partial<AvatarConfigProps>) => Promise<void>;
-  playAnimation: (animationName: string) => void;
+  loadAvatar: (config: Partial<AvatarConfig>) => Promise<void>;
+  updateConfig: (config: Partial<AvatarConfig>) => Promise<void>;
+  playAnimation: (animationName: string, loop?: boolean) => Promise<void>;
   stopAnimation: () => void;
-  changeGender: (gender: 'male' | 'female') => void;
-  changeOutfit: (outfitId: string) => void;
+  changeGender: (gender: 'male' | 'female') => Promise<void>;
+  changeOutfit: (outfitId: string) => Promise<void>;
   setPosition: (x: number, y: number, z: number) => void;
   setRotation: (x: number, y: number, z: number) => void;
   setCallbacks: (callbacks: {

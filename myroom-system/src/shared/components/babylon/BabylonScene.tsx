@@ -467,17 +467,20 @@ const createPanel = (adt, hierarchicalData) => {
 
       const adt = AdvancedDynamicTexture.CreateFullscreenUI('ui', true, scene)
 
-      fetch('/manifest/item/items-manifest.json')
-        .then((res) => res.json())
+      // Load items from ManifestService (backend API) instead of public folder
+      import('../../services/ManifestService').then(({ manifestService }) => {
+        return manifestService.loadItemsManifest();
+      })
         .then((data) => {
-          console.log('Loaded data:', data)
+          console.log('✅ Loaded data from ManifestService:', data)
           
           // Build hierarchical structure
           const hierarchicalData = {
             categories: {}
           }
           
-          data.items.forEach((item) => {
+          const items = data.items || [];
+          items.forEach((item) => {
             const lv1 = item.categoryLv1
             const lv2 = item.categoryLv2
             const lv3 = item.categoryLv3
@@ -514,7 +517,7 @@ const createPanel = (adt, hierarchicalData) => {
           createPanel(adt, hierarchicalData)
         })
         .catch((error) => {
-          console.error('Error loading items manifest:', error)
+          console.error('❌ Error loading items manifest from backend API:', error)
         })
 
       engine.runRenderLoop(() => {

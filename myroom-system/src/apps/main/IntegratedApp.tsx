@@ -405,12 +405,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
           console.warn('⚠️ [IntegratedApp] Failed to load latest preset from backend:', error);
         }
         
-        // Fallback to local default preset if no backend preset available
+        // Use hardcoded default preset if no backend preset available
         if (!defaultPreset) {
-          console.log('🎬 [IntegratedApp] Falling back to local default preset...');
-          const defaultPresetResponse = await fetch('/preset/default-preset.json');
-          defaultPreset = await defaultPresetResponse.json();
-          console.log('🎬 [IntegratedApp] Local default preset loaded:', defaultPreset);
+          console.log('🎬 [IntegratedApp] No backend preset available, using hardcoded default from ManifestService...');
+          defaultPreset = await manifestService.loadPreset('default-preset');
+          console.log('🎬 [IntegratedApp] Hardcoded default preset loaded:', defaultPreset);
         }
 
         // Load room configuration from default preset
@@ -603,20 +602,10 @@ const InteractiveRoomWithAvatar: React.FC = () => {
         setItemsLoaded(true);
       } catch (error) {
         console.error('❌ [IntegratedApp] Error loading items catalog from backend API:', error);
-        // Fallback to local manifest if API fails
-        console.log('🔄 [IntegratedApp] Falling back to local manifest for items catalog...');
-        try {
-          const response = await fetch('/manifest/item/items-manifest.json');
-          const data = await response.json();
-          setAvailableItems(data.items || []);
-          console.log('📦 [IntegratedApp] Items catalog loaded via local manifest fallback:', data.items?.length || 0, 'items');
-          if (!selectedItemToAdd && data.items && data.items.length > 0) {
-            setSelectedItemToAdd(data.items[0]);
-          }
-          setItemsLoaded(true);
-        } catch (manifestError) {
-          console.error('❌ [IntegratedApp] Local manifest fallback failed:', manifestError);
-        }
+        // No local manifest fallback - backend API is required
+        console.log('❌ [IntegratedApp] Backend API failed and no local fallback available');
+        setAvailableItems([]);
+        setItemsLoaded(true);
       } finally {
         setIsLoadingItems(false);
       }
@@ -1203,12 +1192,20 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       <header className="website-header">
         <div className="container">
           <h1>
-            <img
-              src="/icon/petarainlogo.png"
-              alt="Petarainsoft - MyRoom Service"
-              style={{ height: '40px', verticalAlign: 'middle', cursor: 'pointer' }}
+            <span
+              style={{ 
+                height: '40px', 
+                lineHeight: '40px',
+                fontSize: '24px',
+                fontWeight: 'bold',
+                color: '#4338ca',
+                cursor: 'pointer',
+                verticalAlign: 'middle'
+              }}
               onClick={() => window.location.reload()}
-            />
+            >
+              🏠 MyRoom Service
+            </span>
           </h1>
           <nav className="main-nav">
             <a

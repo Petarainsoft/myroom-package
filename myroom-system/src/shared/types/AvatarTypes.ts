@@ -91,4 +91,6 @@ export interface AvatarConfig {
     parts: AvatarPartPaths;
     colors: AvatarColors;
     resourceIds?: AvatarPartPaths; // Optional resourceIds for backend API integration
+    url?: string;
+    outfitId?: string;
 }

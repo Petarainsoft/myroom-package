@@ -81,54 +81,65 @@ class ManifestService {
   }
 
   /**
-   * Load preset configuration from hardcoded local file
+   * Load preset configuration from hardcoded data
    */
   private async loadPresetConfig(presetName: string = 'default-preset'): Promise<PresetConfig> {
     if (this.presetCache) {
       return this.presetCache;
     }
 
-    try {
-      // Always load from hardcoded local default-preset.json file
-      console.log('📁 Loading preset from hardcoded local file: /preset/default-preset.json');
-      const response = await fetch('/preset/default-preset.json');
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      this.presetCache = data;
-      console.log('✅ Loaded preset from local file:', data);
-      return data;
-      
-    } catch (error) {
-      console.error('❌ Failed to load preset configuration:', error);
-      
-      // Return a minimal default configuration following default-preset.json structure
-      const fallbackConfig: PresetConfig = {
-        version: '1.0',
-        timestamp: Date.now(),
-        room: {
-          name: 'Default Room',
-          path: '',
-          resourceId: ''
+    // Hardcoded default preset configuration - uses resourceId for backend API calls
+    console.log('📁 Loading preset from hardcoded configuration...');
+    const hardcodedConfig: PresetConfig = {
+      version: '1.0',
+      timestamp: new Date('2025-07-21T16:30:24.571Z').getTime(),
+      room: {
+        name: 'Living Room',
+        path: '/models/rooms/cate001/MR_KHROOM_0001.glb',
+        resourceId: 'relax-mr_khroom_0001'
+      },
+      avatar: {
+        gender: 'male',
+        parts: {
+          body: {
+            path: '/models/male/male_body/male_body.glb',
+            resourceId: 'male-male_body-male_body'
+          },
+          hair: {
+            path: '/models/male/male_hair/male_hair_001.glb',
+            resourceId: 'male-male_hair-male_hair_001'
+          },
+          top: {
+            path: '/models/male/male_top/male_top_001.glb',
+            resourceId: 'male-male_top-male_top_001'
+          },
+          bottom: {
+            path: '/models/male/male_bottom/male_bottom_001.glb',
+            resourceId: 'male-male_bottom-male_bottom_001'
+          },
+          shoes: {
+            path: '/models/male/male_shoes/male_shoes_001.glb',
+            resourceId: 'male-male_shoes-male_shoes_001'
+          },
+          fullset: null,
+          accessory: null
         },
-        avatar: {
-          gender: 'male',
-          parts: {},
-          colors: {}
-        },
-        items: [],
-        usage: {
-          description: 'Fallback configuration when preset loading fails',
-          instructions: [
-            'This is a minimal fallback configuration',
-            'Please load a proper preset or configure manually'
-          ]
+        colors: {
+          hair: '#4A301B',
+          top: '#1E90FF'
         }
-      };
-      
-      return fallbackConfig;
-    }
+      },
+      items: [],
+      usage: {
+        description: 'This manifest provides GLB paths and resourceIds for flexible asset loading',
+        when_using_backend: 'ResourceIds are automatically used by loaders when backend is configured',
+        when_using_local: 'Path properties are used as fallback for local asset loading'
+      }
+    };
+    
+    this.presetCache = hardcodedConfig;
+    console.log('✅ Loaded hardcoded preset configuration:', hardcodedConfig);
+    return hardcodedConfig;
   }
 
   /**
@@ -423,18 +434,7 @@ class ManifestService {
     return this.getPreset(presetId);
   }
 
-  public async loadLocalPreset(filename: string): Promise<PresetConfig> {
-    try {
-      const response = await fetch(`/preset/${filename}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    } catch (error) {
-      console.error('Failed to load local preset:', error);
-      throw error;
-    }
-  }
+  // Removed loadLocalPreset method - all presets now use backend API or hardcoded configuration
 
   /**
    * Get the latest preset (most recently updated)

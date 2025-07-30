@@ -17,6 +17,7 @@ import {
 } from '@babylonjs/core'
 import '@babylonjs/loaders'
 import { domainConfig, DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig'
+import { manifestService } from '../../services/ManifestService'
 
 // LoadedItem interface
 interface LoadedItem {
@@ -76,30 +77,21 @@ export default function InteractiveRoom() {
   useEffect(() => {
     const loadManifests = async () => {
       try {
-        // Load rooms from local manifest
-        const roomsResponse = await fetch('/manifest/room/room-manifest.json');
-        if (roomsResponse.ok) {
-          const roomsData = await roomsResponse.json();
-          setRooms(roomsData.rooms || []);
-          console.log('Loaded rooms from local manifest:', roomsData.rooms?.length || 0);
-        }
+        // Load rooms and items from ManifestService (backend API)
+        console.log('📁 Loading manifests from backend API via ManifestService...');
         
-        // Load items from local manifest
-        const itemsResponse = await fetch('/manifest/item/items-manifest.json');
-        if (itemsResponse.ok) {
-          const itemsData = await itemsResponse.json();
-          setItems(itemsData.items || []);
-          console.log('Loaded items from local manifest:', itemsData.items?.length || 0);
-        }
+        // Load rooms from ManifestService
+        const roomsManifest = await manifestService.loadRoomsManifest();
+        setRooms(roomsManifest.rooms || []);
+        console.log('✅ Loaded rooms from ManifestService:', roomsManifest.rooms?.length || 0);
         
-        // Temporarily disabled avatar feature
-        // const avatarsResponse = await fetch('/manifest/avatar/avatars-manifest.json');
-        // if (avatarsResponse.ok) {
-        //   const avatarsData = await avatarsResponse.json();
-        //   setAvatars(avatarsData.avatars || []);
-        // }
+        // Load items from ManifestService
+        const itemsManifest = await manifestService.loadItemsManifest();
+        setItems(itemsManifest.items || []);
+        console.log('✅ Loaded items from ManifestService:', itemsManifest.items?.length || 0);
+        
       } catch (error) {
-        console.error('Failed to load local manifests:', error);
+        console.error('❌ Failed to load manifests from backend API:', error);
       }
     };
     loadManifests();

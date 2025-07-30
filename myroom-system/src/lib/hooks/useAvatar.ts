@@ -16,7 +16,7 @@ export function useAvatar(initialConfig?: Partial<AvatarConfig>): UseAvatarRetur
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [currentAnimation, setCurrentAnimation] = useState<string>('');
+  const [currentAnimation, setCurrentAnimation] = useState<string | null>(null);
   const [availableAnimations, setAvailableAnimations] = useState<string[]>([]);
   
   // Refs for stable references
@@ -100,7 +100,7 @@ export function useAvatar(initialConfig?: Partial<AvatarConfig>): UseAvatarRetur
   }, [config]);
   
   // Play animation
-  const playAnimation = useCallback(async (animationName: string, loop: boolean = true) => {
+  const playAnimation = useCallback(async (animationName: string, loop: boolean = true): Promise<void> => {
     try {
       setError(null);
       
@@ -132,7 +132,7 @@ export function useAvatar(initialConfig?: Partial<AvatarConfig>): UseAvatarRetur
       
       // Here you would implement the actual animation stopping logic
       
-      setCurrentAnimation('');
+      setCurrentAnimation(null);
       
       debugLog('Animation stopped successfully');
     } catch (err) {
@@ -144,7 +144,7 @@ export function useAvatar(initialConfig?: Partial<AvatarConfig>): UseAvatarRetur
   }, [currentAnimation]);
   
   // Change avatar gender
-  const changeGender = useCallback(async (gender: 'male' | 'female') => {
+  const changeGender = useCallback(async (gender: 'male' | 'female'): Promise<void> => {
     try {
       setIsLoading(true);
       setError(null);
@@ -170,7 +170,7 @@ export function useAvatar(initialConfig?: Partial<AvatarConfig>): UseAvatarRetur
   }, [config]);
   
   // Change avatar outfit
-  const changeOutfit = useCallback(async (outfitId: string) => {
+  const changeOutfit = useCallback(async (outfitId: string): Promise<void> => {
     try {
       setIsLoading(true);
       setError(null);

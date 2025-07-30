@@ -8,6 +8,9 @@ export { RoomManager } from './components/RoomManager';
 export { ItemController } from './components/ItemController';
 export { ConfigurationPanel } from './components/ConfigurationPanel';
 
+// Advanced UI Components
+export { default as InteractiveRoom } from '../shared/components/babylon/InteractiveRoom';
+
 // Hooks
 export { useMyRoom } from './hooks/useMyRoom';
 export { useAvatar } from './hooks/useAvatar';

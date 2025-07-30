@@ -52,7 +52,9 @@ export const MyRoom = forwardRef<MyRoomRef, MyRoomProps>((
   const [isReady, setIsReady] = useState(false);
   const [currentRoom, setCurrentRoom] = useState(roomConfig.defaultRoom);
   const [currentAvatar, setCurrentAvatar] = useState<AvatarConfig>(
-    getDefaultConfigForGender(avatarConfig.defaultGender || 'male')
+    getDefaultConfigForGender(
+      ('defaultGender' in avatarConfig ? avatarConfig.defaultGender : avatarConfig.gender) || 'male'
+    )
   );
   const [loadedItems, setLoadedItems] = useState<any[]>([]);
   const [babylonScene, setBabylonScene] = useState<any>(null);
@@ -62,7 +64,9 @@ export const MyRoom = forwardRef<MyRoomRef, MyRoomProps>((
   
   // Merge configurations
   const finalRoomConfig = mergeConfigs(DEFAULT_ROOM_CONFIG, roomConfig);
-  const finalAvatarConfig = mergeConfigs(DEFAULT_AVATAR_CONFIG, avatarConfig);
+  const finalAvatarConfig = 'defaultGender' in avatarConfig 
+    ? mergeConfigs(DEFAULT_AVATAR_CONFIG, getDefaultConfigForGender(avatarConfig.defaultGender || 'male'))
+    : mergeConfigs(DEFAULT_AVATAR_CONFIG, avatarConfig as Partial<AvatarConfig>);
   
   // Expose methods through ref
   useImperativeHandle(ref, () => ({
@@ -147,33 +151,10 @@ export const MyRoom = forwardRef<MyRoomRef, MyRoomProps>((
     >
       <IntegratedBabylonScene
         ref={sceneRef}
-        roomConfig={finalRoomConfig}
+        roomPath={finalRoomConfig.defaultRoom}
         avatarConfig={finalAvatarConfig}
-        sceneConfig={sceneConfig}
-        showControls={showControls}
-        compactMode={compactMode}
-        ultraCompactMode={ultraCompactMode}
-        enableDebug={enableDebug}
-        customDomain={customDomain}
-        apiEndpoint={apiEndpoint}
+        loadedItems={loadedItems}
         onSceneReady={handleSceneReady}
-        onError={handleError}
-        onAvatarChange={(config) => {
-          setCurrentAvatar(config);
-          onAvatarChange?.(config);
-        }}
-        onRoomChange={(roomId) => {
-          setCurrentRoom(roomId);
-          onRoomChange?.(roomId);
-        }}
-        onItemAdd={(item) => {
-          setLoadedItems(prev => [...prev, item]);
-          onItemAdd?.(item);
-        }}
-        onItemRemove={(itemId) => {
-          setLoadedItems(prev => prev.filter(item => item.id !== itemId));
-          onItemRemove?.(itemId);
-        }}
       />
       
       {/* Toast notifications */}
