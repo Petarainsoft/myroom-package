@@ -677,9 +677,9 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
       
       // Add timeout to prevent infinite loop
       let waitCount = 0;
-      const maxWaitCount = 20; // 20 seconds max
+      const maxWaitCount = 50; // 5 seconds max
       while (!allPartsLoaded() && waitCount < maxWaitCount) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 100));
         waitCount++;
       }
       
