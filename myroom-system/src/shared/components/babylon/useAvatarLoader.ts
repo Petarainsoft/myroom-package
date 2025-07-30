@@ -3,7 +3,6 @@ import { Scene, TransformNode, SceneLoader, Vector3, ShadowGenerator } from '@ba
 import { availablePartsData } from '../../data/avatarPartsData';
 import { AvatarConfig } from '../../types/AvatarTypes';
 import { findMappedBone } from '../../data/skeletonMapping';
-import { DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig';
 
 interface UseAvatarLoaderParams {
   sceneRef: React.MutableRefObject<Scene | null>;
@@ -19,61 +18,48 @@ interface UseAvatarLoaderParams {
   shadowGeneratorRef?: React.MutableRefObject<ShadowGenerator | null>;
 }
 
-// Helper function to get avatar part URL
+// Helper function to get avatar part URL - exclusively uses backend API
 const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<string> => {
-  console.log('🔍 [getAvatarPartUrl] Starting load for part:', partData);
-  console.log('🔍 [getAvatarPartUrl] domainConfig:', domainConfig);
-  console.log('🔍 [getAvatarPartUrl] domainConfig.useResourceId:', domainConfig.useResourceId);
-  console.log('🔍 [getAvatarPartUrl] partData.resourceId:', partData.resourceId);
-  console.log('🔍 [getAvatarPartUrl] domainConfig.backendDomain:', domainConfig.backendDomain);
-  console.log('🔍 [getAvatarPartUrl] domainConfig.apiKey:', domainConfig.apiKey);
+  console.log('🔍 [getAvatarPartUrl] Loading avatar part via backend API');
+  console.log('🔍 [getAvatarPartUrl] partData:', { name: partData.name, resourceId: partData.resourceId });
   
-  // Check if local GLB loading is disabled
-  if (DISABLE_LOCAL_GLB_LOADING) {
-    console.warn('⚠️ [getAvatarPartUrl] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
-    // throw new Error('Local GLB resource loading is temporarily disabled');
+  if (!partData.resourceId) {
+    throw new Error(`Avatar part resourceId is required for part: ${partData.name || 'Unknown'}`);
   }
   
-  if (domainConfig.useResourceId && partData.resourceId && domainConfig.backendDomain && domainConfig.apiKey) {
-    console.log('🔍 [getAvatarPartUrl] Attempting backend load with resourceId:', partData.resourceId);
-    try {
-      console.log('🔍 [getAvatarPartUrl] Fetching from:', `${domainConfig.backendDomain}/api/avatar/resources/${partData.resourceId}/presigned`);
-      const response = await fetch(`${domainConfig.backendDomain}/api/avatar/resources/${partData.resourceId}/presigned`, {
-        headers: {
-           'x-api-key': domainConfig.apiKey
-        }
-      });
-      console.log('🔍 [getAvatarPartUrl] Fetch response status:', response.status);
-      if (response.ok) {
-        const data = await response.json();
-        console.log('🔍 [getAvatarPartUrl] Backend response data:', data);
-        if (data && data.data && data.data.url) {
-          console.log(`🔗 [Avatar Loader] Loading GLB from BACKEND: ${partData.resourceId} -> ${data.data.url}`);
-          return data.data.url;
-        } else {
-          console.warn('⚠️ [getAvatarPartUrl] Backend returned invalid URL, falling back to local');
-        }
-      }
-        console.warn('🔍 [getAvatarPartUrl] Backend fetch not OK, status:', response.status);
-      } catch (error) {
-        console.error('🔍 [getAvatarPartUrl] Backend fetch error:', error);
-      }
-      console.log('🔍 [getAvatarPartUrl] Falling back to local path');
-    }
-    // Fallback to local path (old method)
-    const partFileName = partData.fileName as string;
+  if (!domainConfig.backendDomain || !domainConfig.apiKey) {
+    throw new Error('Backend domain and API key are required for avatar loading');
+  }
+  
+  try {
+    const apiUrl = `${domainConfig.backendDomain}/api/avatar/resources/${partData.resourceId}/presigned`;
+    console.log('🔍 [getAvatarPartUrl] Fetching from:', apiUrl);
     
-    // Check if partFileName is null or undefined
-    if (!partFileName) {
-      console.error('🔍 [getAvatarPartUrl] partFileName is null or undefined:', partData);
-      throw new Error(`Avatar part fileName is null or undefined for part: ${partData.name || 'Unknown'}`);
-    }
-    if (DISABLE_LOCAL_GLB_LOADING) { return '';}
+    const response = await fetch(apiUrl, {
+      headers: {
+        'x-api-key': domainConfig.apiKey
+      }
+    });
     
-    const finalUrl = partFileName.startsWith('http') ? partFileName : `${domainConfig.baseDomain}${partFileName}`;
-    console.log(`🔗 [Avatar Loader] Loading GLB from BASE DOMAIN: ${partData.name || 'Unknown'} -> ${finalUrl}`);
-    return finalUrl;
-  };
+    if (response.ok) {
+      const data = await response.json();
+      
+      if (data && data.data && data.data.url) {
+        console.log('🔍 [getAvatarPartUrl] ✅ Got presigned URL from backend');
+        console.log(`🔗 [Avatar Loader] Loading GLB: ${partData.resourceId} -> ${data.data.url}`);
+        return data.data.url;
+      } else {
+        throw new Error('Backend returned invalid response structure');
+      }
+    } else {
+      const errorText = await response.text();
+      throw new Error(`Backend fetch failed with status ${response.status}: ${errorText}`);
+    }
+  } catch (error) {
+    console.error('🔍 [getAvatarPartUrl] Backend fetch error:', error);
+    throw error;
+  }
+};
 
   /**
    * Custom hook to manage avatar part loading, gender switching, and animation management.
@@ -395,7 +381,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
             console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
             const partData = partsList?.find((item: any) => item.resourceId === partKey) || partsList?.find((item: any) => item.fileName === partKey);
             console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
-            if (partData && partData.fileName) {
+            if (partData && partData.resourceId) {
               const loadPartPromise = (async () => {
                 try {
                   const fullPartUrl = await getAvatarPartUrl(partData, domainConfig);
@@ -411,7 +397,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
                     }
                     mesh.setEnabled(false);
                     mesh.isVisible = false;
-                    mesh.metadata = { fileName: partData.fileName };
+                    mesh.metadata = { resourceId: partData.resourceId };
                   });
                   loadingGenderPartsRef.current.parts[partType] = partResult.meshes;
                 } catch (error) {}
@@ -481,10 +467,10 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
             console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
             const partData = partsList?.find((item: any) => item.resourceId === partKey) || partsList?.find((item: any) => item.fileName === partKey);
             console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
-            if (partData && partData.fileName) {
+            if (partData && partData.resourceId) {
               const currentPart = loadedAvatarPartsRef.current[partType];
               const isCurrentPartSame = currentPart && currentPart.some(mesh =>
-                mesh.metadata?.fileName === partData.fileName
+                mesh.metadata?.resourceId === partData.resourceId
               );
               if (!isCurrentPartSame) {
                 let oldPartToDispose = null;
@@ -512,7 +498,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
                   }
                   mesh.setEnabled(false);
                   mesh.isVisible = false;
-                  mesh.metadata = { fileName: partData.fileName };
+                  mesh.metadata = { resourceId: partData.resourceId };
                 });
                 loadedAvatarPartsRef.current[partType] = partResult.meshes;
                 wasPartSwapped = true;
@@ -584,6 +570,14 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
     useEffect(() => {
       loadAvatar();
     }, [sceneRef.current, avatarConfig]);
+
+    // Effect to load avatar parts immediately on component mount
+    useEffect(() => {
+      if (sceneRef.current && avatarConfig && avatarRef.current) {
+        console.log('🔍 [useAvatarLoader] Component mounted, loading avatar parts immediately');
+        loadAvatar();
+      }
+    }, [sceneRef.current, avatarRef.current]); // Only depend on scene and avatar ref being ready
   
     // Cleanup function when component unmounts
     useEffect(() => {

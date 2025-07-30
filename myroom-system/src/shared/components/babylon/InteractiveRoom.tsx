@@ -16,7 +16,7 @@ import {
   AbstractMesh
 } from '@babylonjs/core'
 import '@babylonjs/loaders'
-import { domainConfig, DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig'
+import { domainConfig } from '../../../config/appConfig';
 import { manifestService } from '../../services/ManifestService'
 
 // LoadedItem interface
@@ -217,15 +217,8 @@ export default function InteractiveRoom() {
     
     const loadRoom = async () => {
       try {
-        // Check if local GLB loading is disabled
-        if (DISABLE_LOCAL_GLB_LOADING) {
-          console.warn('⚠️ [InteractiveRoom] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
-          // throw new Error('Local GLB room loading is temporarily disabled');
-        }
-        
-        // Check if useResourceId is enabled
-        if (domainConfig.useResourceId && domainConfig.backendDomain && domainConfig.apiKey) {
-          // Try to get presigned URL from backend
+        // Load room using backend API
+        if (domainConfig.backendDomain && domainConfig.apiKey) {
           const response = await fetch(`${domainConfig.backendDomain}/api/rooms/resource/${roomResourceId}/presigned-download`, {
             headers: {
               'x-api-key': domainConfig.apiKey
@@ -242,19 +235,23 @@ export default function InteractiveRoom() {
             }
             roomRef.current = res.meshes[0];
             return;
+          } else {
+            throw new Error(`Failed to load room from backend: ${response.status}`);
           }
-        }
-        if (DISABLE_LOCAL_GLB_LOADING) { return;}
-        // Use direct path when useResourceId is disabled - matches myroom-systemc behavior
-        const room = rooms.find(r => r.resourceId === roomResourceId);
-        if (room && room.path) {
-          const fullRoomUrl = room.path.startsWith('http') ? room.path : `${domainConfig.baseDomain}${room.path}`;
-          const { root, file } = splitPath(fullRoomUrl);
-          const res = await SceneLoader.ImportMeshAsync('', root, file, sceneRef.current);
-          if (roomRef.current) {
-            roomRef.current.dispose();
+        } else {
+          // Fallback to direct path loading
+          const room = rooms.find(r => r.resourceId === roomResourceId);
+          if (room && room.path) {
+            const fullRoomUrl = room.path.startsWith('http') ? room.path : room.path;
+            const { root, file } = splitPath(fullRoomUrl);
+            const res = await SceneLoader.ImportMeshAsync('', root, file, sceneRef.current);
+            if (roomRef.current) {
+              roomRef.current.dispose();
+            }
+            roomRef.current = res.meshes[0];
+          } else {
+            throw new Error('Backend domain and API key are required for room loading');
           }
-          roomRef.current = res.meshes[0];
         }
       } catch (error) {
         console.error('Failed to load room:', error);
@@ -339,17 +336,10 @@ export default function InteractiveRoom() {
     if (!sceneRef.current || !itemResourceId) return
     
     try {
-      // Check if local GLB loading is disabled
-      if (DISABLE_LOCAL_GLB_LOADING) {
-        console.warn('⚠️ [InteractiveRoom.handleAddItem] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
-        throw new Error('Local GLB item loading is temporarily disabled');
-      }
-      
       let itemUrl = null;
       
-      // Check if useResourceId is enabled
-      if (domainConfig.useResourceId && domainConfig.backendDomain && domainConfig.apiKey) {
-        // Try to get presigned URL from backend
+      // Load item using backend API
+      if (domainConfig.backendDomain && domainConfig.apiKey) {
         const response = await fetch(`${domainConfig.backendDomain}/api/customer/items/${itemResourceId}/download`, {
           headers: {
             'x-api-key': domainConfig.apiKey
@@ -359,14 +349,16 @@ export default function InteractiveRoom() {
         if (response.ok) {
           const data = await response.json();
           itemUrl = data.data.downloadUrl;
+        } else {
+          throw new Error(`Failed to load item from backend: ${response.status}`);
         }
-      }
-      
-      // Use direct path when useResourceId is disabled - matches myroom-systemc behavior
-      if (!itemUrl) {
+      } else {
+        // Fallback to direct path loading
         const item = items.find(i => i.resourceId === itemResourceId);
         if (item && item.path) {
-          itemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+          itemUrl = item.path.startsWith('http') ? item.path : item.path;
+        } else {
+          throw new Error('Backend domain and API key are required for item loading');
         }
       }
       

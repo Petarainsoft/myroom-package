@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { SceneLoader, TransformNode, Scene, Vector3, ShadowGenerator } from '@babylonjs/core';
 import { LoadedItem } from '../../types/LoadedItem';
-import { domainConfig, DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig';
+import { domainConfig } from '../../config/appConfig';
 
 interface ItemLoaderProps {
   scene: Scene | null;
@@ -26,12 +26,6 @@ export const useItemLoader = ({
 
     const loadItems = async () => {
       try {
-        // Check if local GLB loading is disabled
-        if (DISABLE_LOCAL_GLB_LOADING) {
-          console.warn('⚠️ [ItemLoader] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
-          // throw new Error('Local GLB item loading is temporarily disabled');
-        }
-
         // Get currently loaded item IDs
         const currentItemIds = new Set(
           loadedItemMeshesRef.current
@@ -65,20 +59,23 @@ export const useItemLoader = ({
         // Load only new items
         for (const item of itemsToLoad) {
           // Validate item has required properties
-          if (!item || (!item.resourceId && !item.id && !item.path)) {
-            console.warn('Skipping invalid item (missing resourceId/id and path):', item);
+          if (!item || (!item.resourceId && !item.path)) {
+            console.warn('Skipping invalid item (missing resourceId and path):', item);
             continue;
           }
 
           let fullItemUrl: string;
 
-          // Check if useResourceId is enabled and use resourceId or fallback to id
-          const resourceIdToUse = item.resourceId || item.id;
-          if (domainConfig.useResourceId && resourceIdToUse && domainConfig.backendDomain && domainConfig.apiKey) {
+          // Prioritize resourceId for backend API loading
+          if (item.resourceId) {
+            if (!domainConfig.backendDomain || !domainConfig.apiKey) {
+              throw new Error('Backend domain and API key are required for item loading');
+            }
+
             try {
-              // Call API to get download URL using resourceId (or id as fallback)
-              const apiUrl = `${domainConfig.backendDomain}/api/developer/items/${resourceIdToUse}/download`;
-              console.log('🪑 Loading item from BACKEND:', { itemName: item.name, resourceId: resourceIdToUse, apiUrl });
+              const apiUrl = `${domainConfig.backendDomain}/api/developer/items/${item.resourceId}/download`;
+              console.log('🪑 Loading item from backend:', { itemName: item.name, resourceId: item.resourceId, apiUrl });
+              
               const response = await fetch(apiUrl, {
                 headers: {
                   'x-api-key': domainConfig.apiKey
@@ -87,21 +84,22 @@ export const useItemLoader = ({
 
               if (response.ok) {
                 const data = await response.json();
-                const presignedUrl = data.data.downloadUrl;
-                console.log(`✅ [ItemLoader] Got presigned URL for item ${resourceIdToUse}:`, presignedUrl);
-                fullItemUrl = presignedUrl;
+                fullItemUrl = data.data.downloadUrl;
+                console.log(`✅ [ItemLoader] Got presigned URL for item ${item.resourceId}:`, fullItemUrl);
               } else {
-                console.warn(`⚠️ [ItemLoader] Failed to get presigned URL for item ${resourceIdToUse}, falling back to direct path`);
-                fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+                const errorText = await response.text();
+                throw new Error(`Backend fetch failed with status ${response.status}: ${errorText}`);
               }
             } catch (error) {
-              console.warn(`⚠️ [ItemLoader] Error getting presigned URL for item ${resourceIdToUse}:`, error);
-              fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+              console.error(`❌ [ItemLoader] Error getting presigned URL for item ${item.resourceId}:`, error);
+              throw error;
             }
+          } else if (item.path) {
+            // Fallback to direct path loading
+            fullItemUrl = item.path.startsWith('http') ? item.path : item.path;
+            console.log('🪑 Loading item from direct path:', fullItemUrl);
           } else {
-            // Use direct path when useResourceId is disabled or no backend config
-            // This matches the behavior of myroom-systemc
-            fullItemUrl = item.path.startsWith('http') ? item.path : `${domainConfig.baseDomain}${item.path}`;
+            throw new Error('Either resourceId or path is required for item loading');
           }
 
           // Split URL into root and filename for proper SceneLoader usage

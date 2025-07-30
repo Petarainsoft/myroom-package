@@ -1,7 +1,6 @@
-// import { useEffect, useRef } from 'react';
 import React, { useEffect } from 'react';
 import { SceneLoader, TransformNode, Scene } from '@babylonjs/core';
-import { domainConfig, DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig';
+import { domainConfig } from '../../config/appConfig';
 
 interface RoomLoaderProps {
   scene: Scene | null;
@@ -12,57 +11,50 @@ interface RoomLoaderProps {
 }
 
 export const useRoomLoader = ({ scene, roomPath, roomResourceId, isSceneReady, roomRef }: RoomLoaderProps) => {
-  // Load room when roomPath changes
+  // Load room when roomPath or roomResourceId changes
   useEffect(() => {
-    if (!isSceneReady || !scene || !roomPath || !roomRef.current) return;
+    if (!isSceneReady || !scene || !roomRef.current) return;
+    if (!roomResourceId && !roomPath) return;
 
     const loadRoom = async () => {
       try {
-        // Check if local GLB loading is disabled
-        if (DISABLE_LOCAL_GLB_LOADING) {
-          console.warn('⚠️ [RoomLoader] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
-          // throw new Error('Local GLB resource loading is temporarily disabled');
-        }
-        
         // Clear existing room
         roomRef.current!.getChildMeshes().forEach(mesh => mesh.dispose());
 
-        // Initialize fullRoomUrl with default value
-        let fullRoomUrl: string = roomPath!.startsWith('http') ? roomPath! : `${domainConfig.baseDomain}${roomPath!}`;
-        
-        if (domainConfig.useResourceId && roomResourceId && domainConfig.backendDomain && domainConfig.apiKey) {
-          try {
-            // Call API to get S3 presigned download URL using resourceId
-            const apiUrl = `${domainConfig.backendDomain}/api/rooms/resource/${roomResourceId}/presigned-download`;
-            console.log('🏠 Loading room from BACKEND:', { resourceId: roomResourceId, apiUrl });
-            const response = await fetch(apiUrl, {
-              headers: {
-                'x-api-key': domainConfig.apiKey
-              }
-            });
-            if (response.ok) {
-              const data = await response.json();
-              fullRoomUrl = data.data.downloadUrl; // API returns { success: true, data: { downloadUrl: 'presigned-s3-url' } }
-              console.log('🏠 Backend room URL obtained:', fullRoomUrl);
-            } else {
-              throw new Error(`API call failed: ${response.status}`);
+        let fullRoomUrl: string;
+
+        // Prioritize resourceId for backend API loading
+        if (roomResourceId) {
+          if (!domainConfig.backendDomain || !domainConfig.apiKey) {
+            throw new Error('Backend domain and API key are required for room loading');
+          }
+
+          const apiUrl = `${domainConfig.backendDomain}/api/rooms/resource/${roomResourceId}/presigned-download`;
+          console.log('🏠 Loading room from backend:', { resourceId: roomResourceId, apiUrl });
+          
+          const response = await fetch(apiUrl, {
+            headers: {
+              'x-api-key': domainConfig.apiKey
             }
-          } catch (error) {
-            console.warn('Failed to fetch room from backend, falling back to local path:', error);
-            fullRoomUrl = roomPath!.startsWith('http') ? roomPath! : `${domainConfig.baseDomain}${roomPath!}`;
-            console.log('🏠 Fallback to BASE DOMAIN:', fullRoomUrl);
+          });
+          
+          if (response.ok) {
+            const data = await response.json();
+            fullRoomUrl = data.data.downloadUrl;
+            console.log('🏠 Backend room URL obtained:', fullRoomUrl);
+          } else {
+            const errorText = await response.text();
+            throw new Error(`Backend fetch failed with status ${response.status}: ${errorText}`);
           }
+        } else if (roomPath) {
+          // Fallback to direct path loading
+          fullRoomUrl = roomPath.startsWith('http') ? roomPath : roomPath;
+          console.log('🏠 Loading room from direct path:', fullRoomUrl);
         } else {
-          if (!DISABLE_LOCAL_GLB_LOADING) {
-          // Use direct path when useResourceId is disabled or no backend config
-          // This matches the behavior of myroom-systemc
-          fullRoomUrl = roomPath!.startsWith('http') ? roomPath! : `${domainConfig.baseDomain}${roomPath!}`;
-          console.log('🏠 Loading room from BASE DOMAIN:', { roomPath, finalUrl: fullRoomUrl });
-          }
+          throw new Error('Either roomResourceId or roomPath is required');
         }
 
         // Load new room
-        // Split URL into root and filename for proper SceneLoader usage
         const lastSlashIndex = fullRoomUrl.lastIndexOf('/');
         const rootUrl = fullRoomUrl.substring(0, lastSlashIndex + 1);
         const filename = fullRoomUrl.substring(lastSlashIndex + 1);
@@ -82,7 +74,7 @@ export const useRoomLoader = ({ scene, roomPath, roomResourceId, isSceneReady, r
           mesh.receiveShadows = true;
         });
 
-        console.log('Room loaded:', fullRoomUrl);
+        console.log('Room loaded successfully:', fullRoomUrl);
       } catch (error) {
         console.error('Error loading room:', error);
       }

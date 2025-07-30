@@ -2,24 +2,8 @@
  * Application Configuration
  * 
  * This file contains global configuration settings for the MyRoom application.
- * It can be easily modified after build to update domain and other settings.
- * 
- * For production deployment:
- * 1. Edit the config-domain.js file in your web server root
- * 2. Set the baseDomain value to your actual domain
+ * Simplified to use backend API only for all asset loading.
  */
-
-// Check if domain is configured via external script
-const getConfiguredBaseDomain = () => {
-  if (typeof window !== 'undefined' && (window as any).MYROOM_CONFIG && (window as any).MYROOM_CONFIG.baseDomain) {
-    return (window as any).MYROOM_CONFIG.baseDomain;
-  }
-  
-  // Default domain (used during development or if not configured)
-  return 'http://localhost:5173'; // assets server, should change port accordingly
-  //return 'http://192.168.1.x:5173'; change to deployed url to LAN test, for example: mobile device access. Change Port accordingly
-  // return 'https://myroom.petarainsoft.com';
-};
 const getConfiguredBackendDomain = () => {
   // Hardcoded to work exclusively with the backend
   return 'http://localhost:3000';
@@ -31,10 +15,7 @@ const getConfiguredApiKey = () => {
   // Default API key for development
   return 'pk_test_1234567890abcdef1234567890abcdef';
 };
-const getConfiguredUseResourceId = () => {
-  // Hardcoded to true to always use backend API
-  return true;
-};
+
 const getConfiguredProjectId = () => {
   if (typeof window !== 'undefined' && (window as any).MYROOM_CONFIG && (window as any).MYROOM_CONFIG.projectId) {
     return (window as any).MYROOM_CONFIG.projectId;
@@ -47,56 +28,31 @@ const getConfiguredProjectId = () => {
   return null;
 };
 
-// Static boolean to temporarily disable local GLB resource loading
-// Set to true to disable local server GLB loading (for testing/debugging)
-export const DISABLE_LOCAL_GLB_LOADING = true;
 
-// Base domain configuration
-// This will be used for all URLs in the application
-// Can be overridden after build by updating config-domain.js
+
+// Simplified domain configuration - backend API only
 export const domainConfig = {
-  baseDomain: getConfiguredBaseDomain(),
   backendDomain: getConfiguredBackendDomain(),
   apiKey: getConfiguredApiKey(),
-  useResourceId: getConfiguredUseResourceId(),
-  projectId: getConfiguredProjectId(),
-  paths: {
-    webComponent: '/dist/myroom-webcomponent.umd.js',
-    embedHtml: '/embed.html',
-    models: {
-      rooms: 'api/rooms',
-      items: 'api/items',
-      avatars: 'api/avatars'
+  projectId: getConfiguredProjectId()
+};
+
+// Helper function to generate embed URLs
+export const getEmbedUrl = (params: any = {}) => {
+  const baseUrl = `${domainConfig.backendDomain}/embed`;
+  const searchParams = new URLSearchParams();
+  
+  Object.keys(params).forEach(key => {
+    if (params[key] !== undefined && params[key] !== null) {
+      searchParams.append(key, params[key].toString());
     }
-  }
-};
-
-// Helper functions to generate URLs
-export const getFullUrl = (path: string): string => {
-  return `${domainConfig.baseDomain}${path}`;
-};
-
-export const getWebComponentUrl = (): string => {
-  return getFullUrl(domainConfig.paths.webComponent);
-};
-
-export const getEmbedUrl = (params?: Record<string, string>): string => {
-  const baseUrl = getFullUrl(domainConfig.paths.embedHtml);
-  
-  if (!params) return baseUrl;
-  
-  const urlParams = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    urlParams.append(key, value);
   });
   
-  return `${baseUrl}?${urlParams.toString()}`;
+  return searchParams.toString() ? `${baseUrl}?${searchParams.toString()}` : baseUrl;
 };
 
 // Default export for easier importing
 export default {
   domainConfig,
-  getFullUrl,
-  getWebComponentUrl,
   getEmbedUrl
 };

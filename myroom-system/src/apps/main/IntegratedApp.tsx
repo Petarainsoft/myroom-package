@@ -4,7 +4,7 @@ import { IntegratedBabylonScene } from '../../shared/components/babylon/Integrat
 import { getDefaultConfigForGender, availablePartsData } from '../../shared/data/avatarPartsData';
 import { AvatarConfig, AvailableParts, Gender } from '../../shared/types/AvatarTypes';
 import { ActiveMovement, TouchMovement } from '../../shared/types/AvatarTypes';
-import { domainConfig, getEmbedUrl, getWebComponentUrl } from '../../shared/config/appConfig';
+import { domainConfig, getEmbedUrl } from '../../shared/config/appConfig';
 import { manifestService } from '../../shared/services/ManifestService';
 import ApiService from '../../shared/services/ApiService';
 import CacheDebugPanel from '../../shared/components/debug/CacheDebugPanel';
@@ -1827,11 +1827,11 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                       <p>Step 1: Include the Script.</p>
                       <div className="code-block">
                         <pre>
-                          <code>{`<script src="${getWebComponentUrl()}"></script>`}</code>
+                          <code>{`<script src="${domainConfig.backendDomain}/web-component.js"></script>`}</code>
                         </pre>
                         <button
                           className="copy-button"
-                          onClick={() => handleCopyCode(`<script src="${getWebComponentUrl()}"></script>`)}
+                          onClick={() => handleCopyCode(`<script src="${domainConfig.backendDomain}/web-component.js"></script>`)}
                         >
                           Copy Code
                         </button>
