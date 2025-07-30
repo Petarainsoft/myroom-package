@@ -10,13 +10,14 @@ export const metadata: Metadata = {
 };
 
 // This is a server component that demonstrates SSR compatibility
-export default function SSRDemo({
+export default async function SSRDemo({
   searchParams
 }: {
-  searchParams: { apiBaseUrl?: string; apiKey?: string }
+  searchParams: Promise<{ apiBaseUrl?: string; apiKey?: string }>
 }) {
-  const apiBaseUrl = searchParams.apiBaseUrl || 'http://localhost:3001/api';
-  const apiKey = searchParams.apiKey || 'your-api-key-here';
+  const params = await searchParams;
+  const apiBaseUrl = params.apiBaseUrl || 'http://localhost:3001/api';
+  const apiKey = params.apiKey || 'your-api-key-here';
 
   return (
     <div className="min-h-screen bg-gray-50">

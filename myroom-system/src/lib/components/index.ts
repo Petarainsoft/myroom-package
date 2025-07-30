@@ -23,6 +23,9 @@ export type { ItemControllerProps, ItemControllerRef } from './ItemController';
 export { ConfigurationPanel } from './ConfigurationPanel';
 export type { ConfigurationPanelProps } from './ConfigurationPanel';
 
+export { OverlayUI } from './OverlayUI';
+export type { OverlayUIProps } from './OverlayUI';
+
 /**
  * Component Usage Examples:
  * 

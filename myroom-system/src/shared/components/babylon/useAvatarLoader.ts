@@ -621,19 +621,20 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
                   });
                   loadedAvatarPartsRef.current[partType] = partResult.meshes;
                   console.log(`🔍 [useAvatarLoader] ✅ ${partType} meshes processed successfully`);
+                  
+                  // Add animation targets if animations are ready
+                  if (idleAnimRef.current && walkAnimRef.current) {
+                    addAnimationTargets(partResult.meshes);
+                    if (currentAnimRef.current) {
+                      currentAnimRef.current.stop();
+                      currentAnimRef.current.play(true);
+                    }
+                  }
                 } catch (partError) {
                   console.error(`🔍 [useAvatarLoader] Error loading/processing ${partType}:`, partError);
                   throw partError;
                 }
                 wasPartSwapped = true;
-  
-                if (idleAnimRef.current && walkAnimRef.current) {
-                  addAnimationTargets(partResult.meshes);
-                  if (currentAnimRef.current) {
-                    currentAnimRef.current.stop();
-                    currentAnimRef.current.play(true);
-                  }
-                }
               }
             }
           } else {

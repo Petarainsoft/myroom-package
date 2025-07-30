@@ -11,6 +11,7 @@ export { AvatarSystem } from './components/AvatarSystem';
 export { RoomManager } from './components/RoomManager';
 export { ItemController } from './components/ItemController';
 export { ConfigurationPanel } from './components/ConfigurationPanel';
+export { OverlayUI } from './components/OverlayUI';
 
 // Advanced UI Components
 export { default as InteractiveRoom } from '../shared/components/babylon/InteractiveRoom';
@@ -31,6 +32,7 @@ export type {
   SceneConfig,
   MyRoomRef
 } from './types';
+export type { OverlayUIProps } from './components/OverlayUI';
 
 // Utilities
 export {

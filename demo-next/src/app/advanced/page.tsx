@@ -39,6 +39,29 @@ function AdvancedDemoContent() {
     cameraPosition: { x: 0, y: 5, z: 10 }
   });
 
+  // Default room and avatar configurations
+  const roomConfig = {
+    name: 'Living Room',
+    path: '/models/rooms/living-room.glb',
+    resourceId: config.roomId
+  };
+
+  const avatarConfig = {
+    gender: config.avatarGender,
+    parts: {
+      hair: { resourceId: 'hair_01' },
+      shirt: { resourceId: 'shirt_01' },
+      pants: { resourceId: 'pants_01' },
+      shoes: { resourceId: 'shoes_01' }
+    },
+    colors: {
+      hair: '#8B4513',
+      shirt: '#4169E1',
+      pants: '#2F4F4F',
+      shoes: '#000000'
+    }
+  };
+
   const addLog = (message: string) => {
     setLogs(prev => [...prev.slice(-9), `${new Date().toLocaleTimeString()}: ${message}`]);
   };
@@ -204,38 +227,9 @@ function AdvancedDemoContent() {
               <div className="w-full h-96 border border-gray-200 rounded-lg overflow-hidden">
                 <MyRoom
                   ref={myRoomRef}
-                  apiBaseUrl={apiBaseUrl}
-                  apiKey={apiKey}
-                  roomConfig={{
-                    roomId: config.roomId,
-                    enablePhysics: config.enablePhysics
-                  }}
-                  avatarConfig={{
-                    avatarId: 'advanced-avatar',
-                    gender: config.avatarGender,
-                    enableAnimations: true
-                  }}
-                  sceneConfig={{
-                    enableShadows: config.enableShadows,
-                    enablePostProcessing: config.enablePostProcessing,
-                    camera: {
-                      position: config.cameraPosition,
-                      target: { x: 0, y: 0, z: 0 }
-                    },
-                    render: {
-                      antialias: true,
-                      adaptToDeviceRatio: true
-                    }
-                  }}
-                  showControls={config.showControls}
-                  compactMode={config.compactMode}
-                  ultraCompactMode={config.ultraCompactMode}
-                  enableDebug={config.enableDebug}
+                  roomConfig={roomConfig}
+                  avatarConfig={avatarConfig}
                   onSceneReady={handleSceneReady}
-                  onAvatarChange={handleAvatarChange}
-                  onRoomChange={handleRoomChange}
-                  onItemAdd={handleItemAdd}
-                  onItemRemove={handleItemRemove}
                   onError={handleError}
                   style={{ width: '100%', height: '100%' }}
                 />

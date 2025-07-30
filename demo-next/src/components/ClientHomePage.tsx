@@ -1,6 +1,18 @@
+'use client';
+
 import { useState, useRef, useEffect } from 'react';
 import { Toaster, toast } from 'sonner';
-import { MyRoom } from 'myroom-system';
+import dynamic from 'next/dynamic';
+
+// Dynamic import MyRoom to avoid SSR issues
+const MyRoom = dynamic(() => import('myroom-system').then(mod => ({ default: mod.MyRoom })), {
+  ssr: false,
+  loading: () => (
+    <div className="h-96 bg-gray-100 rounded-lg flex items-center justify-center">
+      <p className="text-gray-500">Loading MyRoom...</p>
+    </div>
+  )
+});
 
 // Configuration
 const API_BASE_URL = 'http://localhost:3000/api';
@@ -88,9 +100,7 @@ class ApiService {
   }
 }
 
-// Real MyRoom component is now imported from myroom-system
-
-function App() {
+export default function ClientHomePage() {
   const myRoomRef = useRef(null);
   const [apiService] = useState(() => new ApiService(API_BASE_URL, API_KEY));
   
@@ -209,7 +219,7 @@ function App() {
   // Method demonstrations
   const demoGetScene = () => {
     if (myRoomRef.current) {
-      const scene = myRoomRef.current.getScene();
+      const scene = (myRoomRef.current as any).getScene();
       addLog(`getScene() called - Returns: ${scene ? 'Scene object' : 'null'}`);
       console.log('Scene object:', scene);
     }
@@ -217,16 +227,24 @@ function App() {
 
   const demoIsSceneReady = () => {
     if (myRoomRef.current) {
-      const isReady = myRoomRef.current.isSceneReady();
+      const isReady = (myRoomRef.current as any).isSceneReady();
       addLog(`isSceneReady() called - Returns: ${isReady}`);
       console.log('Scene ready status:', isReady);
+    }
+  };
+
+  const demoTakeScreenshot = () => {
+    if (myRoomRef.current) {
+      const screenshot = (myRoomRef.current as any).takeScreenshot();
+      addLog(`takeScreenshot() called - Returns: ${screenshot ? 'Screenshot data' : 'null'}`);
+      console.log('Screenshot result:', screenshot);
     }
   };
 
   const demoChangeRoom = () => {
     if (myRoomRef.current && newRoomId) {
       try {
-        myRoomRef.current.changeRoom(newRoomId);
+        (myRoomRef.current as any).changeRoom(newRoomId);
         addLog(`changeRoom("${newRoomId}") called - Room change initiated`);
       } catch (error) {
         addLog(`changeRoom error: ${error}`);
@@ -238,7 +256,7 @@ function App() {
 
   const demoGetCurrentRoom = () => {
     if (myRoomRef.current) {
-      const currentRoom = myRoomRef.current.getCurrentRoom();
+      const currentRoom = (myRoomRef.current as any).getCurrentRoom();
       addLog(`getCurrentRoom() called - Returns: ${JSON.stringify(currentRoom)}`);
       console.log('Current room:', currentRoom);
     }
@@ -248,7 +266,7 @@ function App() {
     if (myRoomRef.current && avatarUpdateData) {
       try {
         const avatarData = JSON.parse(avatarUpdateData);
-        myRoomRef.current.updateAvatar(avatarData);
+        (myRoomRef.current as any).updateAvatar(avatarData);
         addLog(`updateAvatar() called with data: ${avatarUpdateData}`);
       } catch (error) {
         addLog(`updateAvatar error: ${error}`);
@@ -260,7 +278,7 @@ function App() {
 
   const demoGetCurrentAvatar = () => {
     if (myRoomRef.current) {
-      const currentAvatar = myRoomRef.current.getCurrentAvatar();
+      const currentAvatar = (myRoomRef.current as any).getCurrentAvatar();
       addLog(`getCurrentAvatar() called - Returns: ${JSON.stringify(currentAvatar)}`);
       console.log('Current avatar:', currentAvatar);
     }
@@ -270,7 +288,7 @@ function App() {
     if (myRoomRef.current && itemToAdd) {
       try {
         const itemData = JSON.parse(itemToAdd);
-        myRoomRef.current.addItem(itemData);
+        (myRoomRef.current as any).addItem(itemData);
         addLog(`addItem() called with: ${itemToAdd}`);
       } catch (error) {
         addLog(`addItem error: ${error}`);
@@ -282,7 +300,7 @@ function App() {
 
   const demoRemoveItem = () => {
     if (myRoomRef.current && itemToRemove) {
-      myRoomRef.current.removeItem(itemToRemove);
+      (myRoomRef.current as any).removeItem(itemToRemove);
       addLog(`removeItem("${itemToRemove}") called`);
     } else {
       addLog('removeItem() - Please enter an item ID');
@@ -291,7 +309,7 @@ function App() {
 
   const demoGetItems = () => {
     if (myRoomRef.current) {
-      const items = myRoomRef.current.getItems();
+      const items = (myRoomRef.current as any).getItems();
       addLog(`getItems() called - Returns: ${JSON.stringify(items)}`);
       console.log('Current items:', items);
     }
@@ -299,7 +317,7 @@ function App() {
 
   const demoExportConfig = () => {
     if (myRoomRef.current) {
-      const config = myRoomRef.current.exportConfig();
+      const config = (myRoomRef.current as any).exportConfig();
       addLog(`exportConfig() called - Config exported`);
       console.log('Exported config:', config);
       setConfigToImport(JSON.stringify(config, null, 2));
@@ -310,7 +328,7 @@ function App() {
     if (myRoomRef.current && configToImport) {
       try {
         const config = JSON.parse(configToImport);
-        myRoomRef.current.importConfig(config);
+        (myRoomRef.current as any).importConfig(config);
         addLog(`importConfig() called with config data`);
       } catch (error) {
         addLog(`importConfig error: ${error}`);
@@ -320,28 +338,20 @@ function App() {
     }
   };
 
-  const demoTakeScreenshot = () => {
-    if (myRoomRef.current) {
-      const screenshot = myRoomRef.current.takeScreenshot();
-      addLog(`takeScreenshot() called - Returns: ${screenshot ? 'Screenshot data' : 'null'}`);
-      console.log('Screenshot result:', screenshot);
-    }
-  };
-
   const handleToggleUI = () => {
     if (myRoomRef.current) {
       // Try different methods to access overlay UI
       console.log('MyRoom ref:', myRoomRef.current);
       
       // Try common method names for toggling UI
-      if (typeof myRoomRef.current.toggleUI === 'function') {
-        myRoomRef.current.toggleUI();
+      if (typeof (myRoomRef.current as any).toggleUI === 'function') {
+        (myRoomRef.current as any).toggleUI();
         toast.info('Toggled UI via toggleUI method');
-      } else if (typeof myRoomRef.current.showUI === 'function') {
-        myRoomRef.current.showUI();
+      } else if (typeof (myRoomRef.current as any).showUI === 'function') {
+        (myRoomRef.current as any).showUI();
         toast.info('Showed UI via showUI method');
-      } else if (typeof myRoomRef.current.toggleControls === 'function') {
-        myRoomRef.current.toggleControls();
+      } else if (typeof (myRoomRef.current as any).toggleControls === 'function') {
+        (myRoomRef.current as any).toggleControls();
         toast.info('Toggled controls via toggleControls method');
       } else {
         console.log('Available methods:', Object.getOwnPropertyNames(myRoomRef.current));
@@ -351,7 +361,7 @@ function App() {
       toast.error('MyRoom ref not available');
     }
   };
-  
+
   const handleChangeRoom = () => {
     if (availableRooms.length > 0) {
       // Use real room data from backend
@@ -369,7 +379,7 @@ function App() {
       toast.info(`Room changed to: ${newName}`);
     }
   };
-  
+
   const handleChangeAvatar = () => {
     if (avatarConfig) {
       const newGender: 'male' | 'female' = avatarConfig.gender === 'female' ? 'male' : 'female';
@@ -432,7 +442,7 @@ function App() {
           <div className="flex justify-between items-center py-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">MyRoom System Demo</h1>
-              <p className="text-sm text-gray-600">Using real data from myroom-system & backend APIs</p>
+              <p className="text-sm text-gray-600">Using real data from myroom-system &amp; backend APIs</p>
             </div>
             <div className="flex space-x-4">
               <button
@@ -476,13 +486,13 @@ function App() {
               <h2 className="text-xl font-semibold mb-4">3D Room View</h2>
               {roomConfig && avatarConfig ? (
                 <MyRoom
-                ref={myRoomRef}
-                roomConfig={roomConfig}
-                avatarConfig={avatarConfig}
-                onSceneReady={handleSceneReady}
-                onError={handleError}
-                style={{ width: '100%', height: '400px' }}
-              />
+                  ref={myRoomRef}
+                  roomConfig={roomConfig}
+                  avatarConfig={avatarConfig}
+                  onSceneReady={handleSceneReady}
+                  onError={handleError}
+                  style={{ width: '100%', height: '400px' }}
+                />
               ) : (
                 <div className="h-96 bg-gray-100 rounded-lg flex items-center justify-center">
                   <p className="text-gray-500">Loading room and avatar configuration...</p>
@@ -764,5 +774,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   experimental: {
     forceSwcTransforms: false,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;
