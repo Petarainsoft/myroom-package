@@ -1,0 +1,484 @@
+/* MyRoom System - Next.js Example Styles */
+
+/* Container */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f5f5;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Status */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status span {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.loading {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.error {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+  border: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.ready {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #28a745;
+  border: 1px solid rgba(40, 167, 69, 0.3);
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  min-height: 0;
+}
+
+/* MyRoom Wrapper */
+.myroomWrapper {
+  flex: 1;
+  position: relative;
+  min-height: 600px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.myroomContainer {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 12px;
+}
+
+/* Loading Container */
+.loadingContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingContainer p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Error Overlay */
+.errorOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(220, 53, 69, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.errorContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  max-width: 400px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.errorContent h3 {
+  color: #dc3545;
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+}
+
+.errorContent p {
+  color: #666;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+}
+
+.errorContent button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.errorContent button:hover {
+  background: #c82333;
+}
+
+/* Controls Panel */
+.controlsPanel {
+  width: 320px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  height: fit-content;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.controlsPanel h3 {
+  color: #333;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 0.5rem;
+}
+
+/* Control Groups */
+.controlGroup {
+  margin-bottom: 2rem;
+}
+
+.controlGroup:last-child {
+  margin-bottom: 0;
+}
+
+.controlGroup h4 {
+  color: #555;
+  margin: 0 0 0.75rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Button Groups */
+.buttonGroup {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.buttonGroup.vertical {
+  flex-direction: column;
+}
+
+.buttonGroup button {
+  padding: 0.5rem 1rem;
+  border: 2px solid #e0e0e0;
+  background: white;
+  color: #666;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  flex: 1;
+  min-width: 0;
+}
+
+.buttonGroup button:hover {
+  border-color: #667eea;
+  color: #667eea;
+  transform: translateY(-1px);
+}
+
+.buttonGroup button.active {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.buttonGroup button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.buttonGroup button:disabled:hover {
+  border-color: #e0e0e0;
+  color: #666;
+  transform: none;
+}
+
+/* Labels */
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.label:last-child {
+  margin-bottom: 0;
+}
+
+.label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #667eea;
+}
+
+/* Info Section */
+.info {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 4px solid #667eea;
+}
+
+.info p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.4;
+}
+
+.info p:last-child {
+  margin-bottom: 0;
+}
+
+.info strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Footer */
+.footer {
+  background: #333;
+  color: #ccc;
+  padding: 1rem 2rem;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.footer p {
+  margin: 0 0 0.25rem 0;
+}
+
+.footer p:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .main {
+    flex-direction: column;
+  }
+  
+  .controlsPanel {
+    width: 100%;
+    max-height: none;
+  }
+  
+  .myroomWrapper {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .header h1 {
+    font-size: 1.25rem;
+  }
+  
+  .main {
+    padding: 0.5rem;
+  }
+  
+  .controlsPanel {
+    padding: 1rem;
+  }
+  
+  .buttonGroup {
+    flex-direction: column;
+  }
+  
+  .myroomWrapper {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.75rem;
+  }
+  
+  .header h1 {
+    font-size: 1.125rem;
+  }
+  
+  .controlsPanel {
+    padding: 0.75rem;
+  }
+  
+  .controlGroup {
+    margin-bottom: 1.5rem;
+  }
+  
+  .myroomWrapper {
+    min-height: 350px;
+  }
+}
+
+/* Scrollbar Styling */
+.controlsPanel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.controlsPanel::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.controlsPanel::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.controlsPanel::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Animation cho smooth transitions */
+.myroomContainer,
+.controlsPanel,
+.buttonGroup button {
+  transition: all 0.3s ease;
+}
+
+/* Focus styles cho accessibility */
+.buttonGroup button:focus,
+.label input:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .controlsPanel,
+  .header,
+  .footer {
+    display: none;
+  }
+  
+  .main {
+    padding: 0;
+  }
+  
+  .myroomWrapper {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* Next.js specific optimizations */
+.container {
+  /* Prevent layout shift */
+  contain: layout;
+}
+
+.myroomWrapper {
+  /* Optimize for dynamic imports */
+  will-change: contents;
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background-color: #1a1a1a;
+  }
+  
+  .myroomWrapper,
+  .controlsPanel {
+    background: #2d2d2d;
+    color: #e0e0e0;
+  }
+  
+  .controlsPanel h3,
+  .controlGroup h4 {
+    color: #e0e0e0;
+  }
+  
+  .buttonGroup button {
+    background: #3d3d3d;
+    border-color: #555;
+    color: #e0e0e0;
+  }
+  
+  .info {
+    background: #3d3d3d;
+    border-left-color: #667eea;
+  }
+  
+  .info p {
+    color: #ccc;
+  }
+  
+  .info strong {
+    color: #e0e0e0;
+  }
+}

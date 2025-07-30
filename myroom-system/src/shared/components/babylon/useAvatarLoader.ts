@@ -557,7 +557,6 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
     // Effect to load avatar when config changes
     useEffect(() => {
       loadAvatar();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sceneRef.current, avatarConfig]);
   
     // Cleanup function when component unmounts

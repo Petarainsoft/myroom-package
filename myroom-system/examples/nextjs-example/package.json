@@ -1,0 +1,68 @@
+{
+  "name": "myroom-nextjs-example",
+  "version": "1.0.0",
+  "description": "MyRoom System integration example with Next.js",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "export": "next export",
+    "analyze": "cross-env ANALYZE=true next build",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "myroom-system": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "keywords": [
+    "myroom",
+    "nextjs",
+    "react",
+    "3d",
+    "babylonjs",
+    "avatar",
+    "room",
+    "visualization",
+    "ssr"
+  ],
+  "author": "MyRoom Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/myroom/myroom-system.git",
+    "directory": "examples/nextjs-example"
+  },
+  "bugs": {
+    "url": "https://github.com/myroom/myroom-system/issues"
+  },
+  "homepage": "https://github.com/myroom/myroom-system#readme"
+}

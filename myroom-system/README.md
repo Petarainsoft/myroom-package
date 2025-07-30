@@ -17,14 +17,30 @@ A powerful 3D room visualization and avatar interaction library built with React
 npm install myroom-system
 # or
 yarn add myroom-system
+# or
+pnpm add myroom-system
 ```
 
-## Peer Dependencies
+### Peer Dependencies
 
-Make sure you have React 18+ installed:
+Make sure you have the required peer dependencies installed:
 
 ```bash
-npm install react react-dom
+npm install react@^18.0.0 react-dom@^18.0.0
+```
+
+### Backend Integration
+
+MyRoom System connects to a backend API for data. Make sure your backend is running and accessible:
+
+```bash
+# Example backend URL
+REACT_APP_BACKEND_URL=http://localhost:3000
+REACT_APP_MYROOM_API_KEY=your-api-key
+
+# For Next.js
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+NEXT_PUBLIC_MYROOM_API_KEY=your-api-key
 ```
 
 ## Usage
@@ -36,11 +52,49 @@ import React from 'react';
 import { IntegratedBabylonScene } from 'myroom-system';
 
 function App() {
+  const handleSceneReady = (scene) => {
+    console.log('3D Scene is ready:', scene);
+  };
+
+  const handleAvatarChange = (avatarConfig) => {
+    console.log('Avatar changed:', avatarConfig);
+  };
+
+  const handleRoomChange = (roomId) => {
+    console.log('Room changed:', roomId);
+  };
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <IntegratedBabylonScene
-        apiBaseUrl="https://your-api-url.com"
+        // Backend Configuration
+        apiBaseUrl={process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'}
+        customDomain={process.env.REACT_APP_BACKEND_URL}
+        
+        // Component Configuration
+        roomConfig={{
+          defaultRoom: 'living-room',
+          enableRoomSwitching: true
+        }}
+        avatarConfig={{
+          defaultGender: 'male',
+          enableCustomization: true
+        }}
+        sceneConfig={{
+          enablePostProcessing: true,
+          enableSkybox: true
+        }}
+        
+        // UI Configuration
         enableDebug={false}
+        showControls={true}
+        compactMode={false}
+        
+        // Event Handlers
+        onSceneReady={handleSceneReady}
+        onAvatarChange={handleAvatarChange}
+        onRoomChange={handleRoomChange}
+        onError={(error) => console.error('MyRoom Error:', error)}
       />
     </div>
   );
@@ -49,28 +103,74 @@ function App() {
 export default App;
 ```
 
-### Next.js Usage (SSR Compatible)
+### Next.js Integration (SSR Compatible)
 
 ```jsx
+import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
-const MyRoomScene = dynamic(
-  () => import('myroom-system').then(mod => mod.IntegratedBabylonScene),
-  { ssr: false }
+// Dynamic import to avoid SSR issues
+const MyRoom = dynamic(
+  () => import('myroom-system').then(mod => mod.MyRoom),
+  { 
+    ssr: false,
+    loading: () => <div>Loading MyRoom System...</div>
+  }
 );
 
-function HomePage() {
+export default function HomePage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <MyRoomScene
-        apiBaseUrl="https://your-api-url.com"
-        enableDebug={false}
+      <MyRoom
+        // Backend Configuration
+        apiEndpoint={process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000'}
+        customDomain={process.env.NEXT_PUBLIC_BACKEND_URL}
+        
+        // Component Configuration
+        roomConfig={{ 
+          defaultRoom: 'living-room',
+          enableRoomSwitching: true
+        }}
+        avatarConfig={{ 
+          defaultGender: 'male',
+          enableCustomization: true
+        }}
+        sceneConfig={{
+          enablePostProcessing: true,
+          enableSkybox: true
+        }}
+        
+        // UI Configuration
+        showControls={true}
+        compactMode={false}
+        enableDebug={process.env.NODE_ENV === 'development'}
+        
+        // Event Handlers
+        onSceneReady={(scene) => console.log('Scene ready:', scene)}
+        onError={(error) => console.error('MyRoom Error:', error)}
       />
     </div>
   );
 }
+```
 
-export default HomePage;
+#### Environment Variables for Next.js
+
+Create a `.env.local` file:
+
+```bash
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+NEXT_PUBLIC_MYROOM_API_KEY=your-api-key
 ```
 
 ### Advanced Usage with Custom Configuration
@@ -160,6 +260,84 @@ export default AdvancedApp;
 | `onRoomChange` | function | null | Callback when room changes |
 | `onAvatarChange` | function | null | Callback when avatar changes |
 | `onSceneReady` | function | null | Callback when scene is ready |
+
+## Examples
+
+Complete integration examples are available in the `examples/` directory:
+
+### React Example
+```bash
+cd examples/react-example
+npm install
+npm start
+```
+
+### Next.js Example
+```bash
+cd examples/nextjs-example
+npm install
+npm run dev
+```
+
+## API Reference
+
+### MyRoom Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `apiEndpoint` | `string` | - | Backend API URL |
+| `customDomain` | `string` | - | Custom domain for resources |
+| `roomConfig` | `RoomConfig` | - | Room configuration |
+| `avatarConfig` | `AvatarConfig` | - | Avatar configuration |
+| `sceneConfig` | `SceneConfig` | - | 3D scene configuration |
+| `showControls` | `boolean` | `true` | Show built-in controls |
+| `compactMode` | `boolean` | `false` | Enable compact UI mode |
+| `ultraCompactMode` | `boolean` | `false` | Enable ultra compact mode |
+| `enableDebug` | `boolean` | `false` | Enable debug mode |
+| `onSceneReady` | `function` | - | Scene ready callback |
+| `onAvatarChange` | `function` | - | Avatar change callback |
+| `onRoomChange` | `function` | - | Room change callback |
+| `onItemAdd` | `function` | - | Item add callback |
+| `onItemRemove` | `function` | - | Item remove callback |
+| `onError` | `function` | - | Error callback |
+
+### RoomConfig
+
+```typescript
+interface RoomConfig {
+  defaultRoom?: string;
+  enableRoomSwitching?: boolean;
+  autoLoad?: boolean;
+  availableRooms?: string[];
+}
+```
+
+### AvatarConfig
+
+```typescript
+interface AvatarConfig {
+  defaultGender?: 'male' | 'female';
+  enableCustomization?: boolean;
+  enableMovement?: boolean;
+  enableAnimations?: boolean;
+}
+```
+
+### SceneConfig
+
+```typescript
+interface SceneConfig {
+  enablePostProcessing?: boolean;
+  enableSkybox?: boolean;
+  enableShadows?: boolean;
+  enableLighting?: boolean;
+  cameraSettings?: {
+    fov?: number;
+    minDistance?: number;
+    maxDistance?: number;
+  };
+}
+```
 
 ## Development
 
