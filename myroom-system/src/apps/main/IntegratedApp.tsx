@@ -1842,7 +1842,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                         <pre>
                           <code>{`<my-room-scene 
   id="mainScene"
-  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  room-resource-id="relax-mr_khroom_0001"
   gender="female"
   width="100%"
   height="600px">
@@ -1853,7 +1853,7 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                           onClick={() =>
                             handleCopyCode(`<my-room-scene 
   id="mainScene"
-  room="/models/rooms/cate001/MR_KHROOM_0001.glb"
+  room-resource-id="relax-mr_khroom_0001"
   gender="female"
   width="100%"
   height="600px">
@@ -1881,14 +1881,14 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                             <td>mainScene</td>
                           </tr>
                           <tr>
-                            <td>room</td>
-                            <td>Path to the room model</td>
+                            <td>room-resource-id</td>
+                            <td>Resource ID for the room model</td>
                             <td>
-                              /models/rooms/cate001/MR_KHROOM_0001.glb
+                              relax-mr_khroom_0001
                               <br />
-                              /models/rooms/cate001/MR_KHROOM_0002.glb
+                              relax-mr_khroom_0002
                               <br />
-                              /models/rooms/cate002/MR_KHROOM_0003.glb
+                              relax-mr_khroom_0003
                             </td>
                           </tr>
                           <tr>
@@ -1923,15 +1923,15 @@ mainScene.setAttribute('gender', 'male');
 mainScene.setAttribute('gender', 'female');
 
 // Change room
-mainScene.setAttribute('room', '/models/rooms/cate002/MR_KHROOM_0003.glb');
+mainScene.setAttribute('room-resource-id', 'relax-mr_khroom_0003');
 
 // Customize avatar with detailed configuration
 const avatarConfig = {
   "gender": "male",
   "parts": {
-    "body": "/models/male/male_body/male_body.glb",
-    "hair": "/models/male/male_hair/male_hair_001.glb",
-    "fullset": "/models/male/male_fullset/male_fullset_003.glb"
+    "body": "male-body",
+    "hair": "male-hair-001",
+    "fullset": "male-fullset-003"
   }
 };
 if (mainScene && mainScene.changeAvatar) {
@@ -1942,7 +1942,7 @@ if (mainScene && mainScene.changeAvatar) {
 const items = [{
   "id": "item_001",
   "name": "Chair",
-  "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+  "resourceId": "chair-mr_chair_0001",
   "position": { "x": 0.37, "y": 0, "z": -0.67 },
   "rotation": { "x": 0, "y": 0, "z": 0 },
   "scale": { "x": 1, "y": 1, "z": 1 }
@@ -1972,15 +1972,15 @@ mainScene.setAttribute('gender', 'male');
 mainScene.setAttribute('gender', 'female');
 
 // Change room
-mainScene.setAttribute('room', '/models/rooms/cate002/MR_BEDROOM_0001.glb');
+mainScene.setAttribute('room-resource-id', 'relax-mr_khroom_0003');
 
 // Customize avatar with detailed configuration
 const avatarConfig = {
   "gender": "male",
   "parts": {
-    "body": "/models/male/male_body/male_body.glb",
-    "hair": "/models/male/male_hair/male_hair_001.glb",
-    "fullset": "/models/male/male_fullset/male_fullset_003.glb"
+    "body": "male-body",
+    "hair": "male-hair-001",
+    "fullset": "male-fullset-003"
   },
   "colors": {
     "hair": "#4A301B",
@@ -1995,7 +1995,7 @@ if (mainScene && mainScene.changeAvatar) {
 const items = [{
   "id": "item_001",
   "name": "Chair",
-  "path": "/models/items/catelv1_01/catelv2_01/catelv3_01/MR_CHAIR_0001.glb",
+  "resourceId": "chair-mr_chair_0001",
   "position": { "x": 0.37, "y": 0, "z": -0.67 },
   "rotation": { "x": 0, "y": 0, "z": 0 },
   "scale": { "x": 1, "y": 1, "z": 1 }

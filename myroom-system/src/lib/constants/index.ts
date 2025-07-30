@@ -1,17 +1,17 @@
 import { RoomConfig, AvatarConfigProps, SceneConfig } from '../types';
 import { AvatarConfig } from '../../shared/types/AvatarTypes';
 
-// Default room configuration
+// Default room configuration - now using resourceIds for backend API
 export const DEFAULT_ROOM_CONFIG: RoomConfig = {
-  defaultRoom: '/models/rooms/cate001/MR_KHROOM_0001.glb',
+  defaultRoom: 'relax-mr_khroom_0001',
   availableRooms: [
-    '/models/rooms/cate001/MR_KHROOM_0001.glb',
-    '/models/rooms/cate001/MR_KHROOM_0002.glb',
-    '/models/rooms/cate002/MR_KHROOM_0003.glb'
+    'relax-mr_khroom_0001',
+    'relax-mr_khroom_0002',
+    'relax-mr_khroom_0003'
   ],
   autoLoad: true,
   enableRoomSwitching: true,
-  roomAssetPath: '/models/rooms/'
+  roomAssetPath: 'rooms/'
 };
 
 // Default avatar configuration
@@ -40,7 +40,7 @@ export const DEFAULT_AVATAR_PROPS_CONFIG: AvatarConfigProps = {
   enableCustomization: true,
   enableMovement: true,
   enableAnimations: true,
-  avatarAssetPath: '/models/'
+  avatarAssetPath: 'avatars/'
 };
 
 // Default scene configuration
@@ -70,14 +70,14 @@ export const SUPPORTED_FORMATS = {
   animations: ['.glb', '.gltf', '.babylon']
 };
 
-// Asset paths
+// Asset paths - using relative paths for backend API
 export const ASSET_PATHS = {
-  rooms: '/models/rooms/',
-  avatars: '/models/',
-  items: '/models/items/',
-  animations: '/animations/',
-  textures: '/textures/',
-  manifests: '/manifest/'
+  rooms: 'rooms/',
+  avatars: 'avatars/',
+  items: 'items/',
+  animations: 'animations/',
+  textures: 'textures/',
+  manifests: 'manifests/'
 };
 
 // Animation names
@@ -182,7 +182,7 @@ export const PERFORMANCE_SETTINGS = {
 // Default camera configuration
 export const DEFAULT_CAMERA_CONFIG = {
   type: 'arcRotate' as const,
-  position: { x: 0, y: 5, z: -10 },
+  position: { x: 0, y: 5, z: 10 },
   target: { x: 0, y: 0, z: 0 },
   fov: 0.8,
   minZ: 0.1,

@@ -95,30 +95,24 @@ class ManifestService {
       timestamp: new Date('2025-07-21T16:30:24.571Z').getTime(),
       room: {
         name: 'Living Room',
-        path: '/models/rooms/cate001/MR_KHROOM_0001.glb',
         resourceId: 'relax-mr_khroom_0001'
       },
       avatar: {
         gender: 'male',
         parts: {
           body: {
-            path: '/models/male/male_body/male_body.glb',
             resourceId: 'male-male_body-male_body'
           },
           hair: {
-            path: '/models/male/male_hair/male_hair_001.glb',
             resourceId: 'male-male_hair-male_hair_001'
           },
           top: {
-            path: '/models/male/male_top/male_top_001.glb',
             resourceId: 'male-male_top-male_top_001'
           },
           bottom: {
-            path: '/models/male/male_bottom/male_bottom_001.glb',
             resourceId: 'male-male_bottom-male_bottom_001'
           },
           shoes: {
-            path: '/models/male/male_shoes/male_shoes_001.glb',
             resourceId: 'male-male_shoes-male_shoes_001'
           },
           fullset: null,
@@ -131,10 +125,9 @@ class ManifestService {
       },
       items: [],
       usage: {
-        description: 'This manifest provides GLB paths and resourceIds for flexible asset loading',
-        when_using_backend: 'ResourceIds are automatically used by loaders when backend is configured',
-        when_using_local: 'Path properties are used as fallback for local asset loading'
-      }
+          description: 'This manifest provides resourceIds for backend API asset loading',
+          when_using_backend: 'ResourceIds are automatically used by loaders when backend is configured'
+        }
     };
     
     this.presetCache = hardcodedConfig;
@@ -161,8 +154,7 @@ class ManifestService {
         rooms.push({
           id: presetConfig.room.resourceId || 'default-room',
           name: presetConfig.room.name || 'Default Room',
-          resourceId: presetConfig.room.resourceId || '',
-          path: presetConfig.room.path || ''
+          resourceId: presetConfig.room.resourceId || ''
         });
       }
       
@@ -232,10 +224,10 @@ class ManifestService {
   public async loadRoomConfig(presetName: string = 'default-preset'): Promise<any> {
     try {
       const presetConfig = await this.loadPresetConfig(presetName);
-      return presetConfig.room || { name: 'Default Room', path: '', resourceId: '' };
+      return presetConfig.room || { name: 'Default Room', resourceId: '' };
     } catch (error) {
       console.error('Failed to load room config:', error);
-      return { name: 'Default Room', path: '', resourceId: '' };
+      return { name: 'Default Room', resourceId: '' };
     }
   }
 

@@ -64,9 +64,9 @@ export const domainConfig = {
     webComponent: '/dist/myroom-webcomponent.umd.js',
     embedHtml: '/embed.html',
     models: {
-      rooms: '/models/rooms',
-      items: '/models/items',
-      avatars: '/models/avatars'
+      rooms: 'api/rooms',
+      items: 'api/items',
+      avatars: 'api/avatars'
     }
   }
 };

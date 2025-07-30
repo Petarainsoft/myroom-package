@@ -51,8 +51,8 @@ export function ManifestDropdown({
       try {
       const manifestList = await manifestService.listPresets();
       if (manifestList.length === 0) {
-        console.log('No manifests found, creating default from local preset');
-        const defaultConfig = await manifestService.loadLocalPreset('default-preset.json');
+        console.log('No manifests found, creating default from hardcoded preset');
+        const defaultConfig = await manifestService.loadPreset('default-preset');
         await onManifestSave('Default', defaultConfig);
         const newList = await manifestService.listPresets();
         setManifests(newList);

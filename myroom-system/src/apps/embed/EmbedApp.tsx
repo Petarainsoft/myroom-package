@@ -15,7 +15,7 @@ interface EmbedDemoProps {
 const getUrlParams = (): EmbedDemoProps => {
   const params = new URLSearchParams(window.location.search);
   return {
-    room: params.get('room') || '/models/rooms/cate001/MR_KHROOM_0001.glb',
+    room: params.get('room') || 'relax-mr_khroom_0001',
     gender: (params.get('gender') as 'male' | 'female') || 'female',
     width: params.get('width') || '100%',
     height: params.get('height') || '100vh',

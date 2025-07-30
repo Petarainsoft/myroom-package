@@ -5,10 +5,28 @@ import { AvatarConfig } from '../../types/AvatarTypes';
 import { findMappedBone } from '../../data/skeletonMapping';
 import { DISABLE_LOCAL_GLB_LOADING } from '../../config/appConfig';
 
+interface UseAvatarLoaderParams {
+  sceneRef: React.MutableRefObject<Scene | null>;
+  avatarConfig: AvatarConfig;
+  domainConfig: any;
+  idleAnimRef: React.MutableRefObject<any>;
+  walkAnimRef: React.MutableRefObject<any>;
+  currentAnimRef: React.MutableRefObject<any>;
+  allIdleAnimationsRef: React.MutableRefObject<any[]>;
+  allWalkAnimationsRef: React.MutableRefObject<any[]>;
+  allCurrentAnimationsRef: React.MutableRefObject<any[]>;
+  avatarRef: React.MutableRefObject<TransformNode | null>;
+  shadowGeneratorRef?: React.MutableRefObject<ShadowGenerator | null>;
+}
+
 // Helper function to get avatar part URL
 const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<string> => {
   console.log('🔍 [getAvatarPartUrl] Starting load for part:', partData);
   console.log('🔍 [getAvatarPartUrl] domainConfig:', domainConfig);
+  console.log('🔍 [getAvatarPartUrl] domainConfig.useResourceId:', domainConfig.useResourceId);
+  console.log('🔍 [getAvatarPartUrl] partData.resourceId:', partData.resourceId);
+  console.log('🔍 [getAvatarPartUrl] domainConfig.backendDomain:', domainConfig.backendDomain);
+  console.log('🔍 [getAvatarPartUrl] domainConfig.apiKey:', domainConfig.apiKey);
   
   // Check if local GLB loading is disabled
   if (DISABLE_LOCAL_GLB_LOADING) {
@@ -84,21 +102,9 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
     allCurrentAnimationsRef,
     avatarRef,
     shadowGeneratorRef
-  }: {
-    sceneRef: any;
-    avatarConfig: any;
-    domainConfig: any;
-    loadedAvatarPartsRef: any;
-    pendingPartsRef: any;
-    avatarRef: any;
-    shadowGeneratorRef: any;
-    allIdleAnimationsRef: any;
-    allWalkAnimationsRef: any;
-    allCurrentAnimationsRef: any;
-    idleAnimRef: any;
-    walkAnimRef: any;
-    currentAnimRef: any;
-  }) {
+  }: UseAvatarLoaderParams) {
+    console.log('🚀 [useAvatarLoader] Hook initialized with avatarConfig:', avatarConfig);
+    console.log('🚀 [useAvatarLoader] domainConfig:', domainConfig);
     // Refs for avatar parts
     const loadedAvatarPartsRef = useRef<Record<string, any[]>>({});
     const pendingPartsRef = useRef<Record<string, any[]>>({});
@@ -437,15 +443,16 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
                 }
               });
             }
-            const bodyPath = genderData.fixedParts.body;
+            const bodyData = genderData.fixedParts.body;
             
-            // Check if bodyPath is null or undefined
-            if (!bodyPath) {
-              console.error('🔍 [useAvatarLoader] bodyPath is null or undefined:', genderData.fixedParts);
-              throw new Error('Avatar body path is null or undefined');
+            // Check if bodyData is null or undefined
+            if (!bodyData) {
+              console.error('🔍 [useAvatarLoader] bodyData is null or undefined:', genderData.fixedParts);
+              throw new Error('Avatar body data is null or undefined');
             }
             
-            const fullBodyUrl = bodyPath.startsWith('http') ? bodyPath : `${domainConfig.baseDomain}${bodyPath}`;
+            console.log('🔍 [useAvatarLoader] Loading body with data:', bodyData);
+            const fullBodyUrl = await getAvatarPartUrl(bodyData, domainConfig);
             const bodyResult = await SceneLoader.ImportMeshAsync(
               '',
               fullBodyUrl,
@@ -461,7 +468,9 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
               mesh.metadata = { gender: avatarConfig.gender };
             });
             loadedAvatarPartsRef.current['body'] = bodyResult.meshes;
-          } catch (error) {}
+          } catch (error) {
+            console.error('🔍 [useAvatarLoader] Error loading body:', error);
+          }
         }
         for (const [partType, partKey] of Object.entries(avatarConfig.parts || {})) {
           if (partType === 'body') continue;
