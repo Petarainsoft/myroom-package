@@ -5,7 +5,11 @@
  * Simplified to use backend API only for all asset loading.
  */
 const getConfiguredBackendDomain = () => {
-  // Hardcoded to work exclusively with the backend
+  // Check window.MYROOM_CONFIG first (from config-domain.js)
+  if (typeof window !== 'undefined' && (window as any).MYROOM_CONFIG && (window as any).MYROOM_CONFIG.backendDomain) {
+    return (window as any).MYROOM_CONFIG.backendDomain;
+  }
+  // Fallback to localhost for development
   return 'http://localhost:3000';
 };
 const getConfiguredApiKey = () => {

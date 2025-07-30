@@ -8,9 +8,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/myroom-system.es.js",
-      "require": "./dist/myroom-system.umd.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/myroom-system.umd.js"
     }
   },
   "files": [

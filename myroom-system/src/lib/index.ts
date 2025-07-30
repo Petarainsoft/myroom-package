@@ -1,6 +1,10 @@
 // MyRoom System - React Component Library
 // Main entry point for the library
 
+// Import Babylon.js loaders to ensure they are available
+import '@babylonjs/loaders';
+import '@babylonjs/loaders/glTF';
+
 // Core Components
 export { MyRoom } from './components/MyRoom';
 export { AvatarSystem } from './components/AvatarSystem';

@@ -16,7 +16,7 @@ import {
   AbstractMesh
 } from '@babylonjs/core'
 import '@babylonjs/loaders'
-import { domainConfig } from '../../../config/appConfig';
+import { domainConfig } from '../../config/appConfig';
 import { manifestService } from '../../services/ManifestService'
 
 // LoadedItem interface

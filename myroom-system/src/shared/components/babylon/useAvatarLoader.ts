@@ -128,8 +128,9 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
     avatarRef,
     shadowGeneratorRef
   }: UseAvatarLoaderParams) {
-    console.log('🚀 [useAvatarLoader] Hook initialized with avatarConfig:', avatarConfig);
-    console.log('🚀 [useAvatarLoader] domainConfig:', domainConfig);
+    // Debug logs disabled for production
+    // console.log('🚀 [useAvatarLoader] Hook initialized with avatarConfig:', avatarConfig);
+    // console.log('🚀 [useAvatarLoader] domainConfig:', domainConfig);
     // Refs for avatar parts
     const loadedAvatarPartsRef = useRef<Record<string, any[]>>({});
     const pendingPartsRef = useRef<Record<string, any[]>>({});
@@ -392,13 +393,16 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
         });
         try {
           const bodyData = genderData.fixedParts.body;
+          console.log('🔍 [useAvatarLoader] About to load body with bodyData:', bodyData);
           const fullBodyUrl = await getAvatarPartUrl(bodyData, domainConfig);
+          console.log('🔍 [useAvatarLoader] Got body URL, about to import mesh:', fullBodyUrl);
           const bodyResult = await SceneLoader.ImportMeshAsync(
             '',
             fullBodyUrl,
             '',
             sceneRef.current
           );
+          console.log('🔍 [useAvatarLoader] Successfully imported body mesh:', bodyResult.meshes.length, 'meshes');
           bodyResult.meshes.forEach(mesh => {
             if (mesh.parent === null && avatarRef.current) {
               mesh.parent = avatarRef.current;
@@ -408,27 +412,37 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
             mesh.metadata = { gender: avatarConfig.gender };
           });
           loadingGenderPartsRef.current.parts['body'] = bodyResult.meshes;
-        } catch (error) {}
+        } catch (error) {
+          console.error('🔍 [useAvatarLoader] Error loading body (gender change):', error);
+          console.error('🔍 [useAvatarLoader] Body loading error details:', {
+            bodyData: genderData.fixedParts.body,
+            error: error instanceof Error ? error.message : error
+          });
+        }
         const loadPromises = [];
         for (const [partType, partKey] of Object.entries(avatarConfig.parts || {})) {
           if (partType === 'body') continue;
           if (partKey && genderData.selectableParts[partType]) {
             const partsList = genderData.selectableParts[partType];
             // Find part by resourceId first, then fallback to fileName
-            console.log(`🔍 [useAvatarLoader] Looking for ${partType} with partKey: ${partKey}`);
-            console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
+            // Debug logs disabled for production
+            // console.log(`🔍 [useAvatarLoader] Looking for ${partType} with partKey: ${partKey}`);
+            // console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
             const partData = partsList?.find((item: any) => item.resourceId === partKey) || partsList?.find((item: any) => item.fileName === partKey);
-            console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
+            // console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
             if (partData && partData.resourceId) {
               const loadPartPromise = (async () => {
                 try {
+                  console.log(`🔍 [useAvatarLoader] About to load part ${partType} with partData:`, partData);
                   const fullPartUrl = await getAvatarPartUrl(partData, domainConfig);
+                  console.log(`🔍 [useAvatarLoader] Got URL for ${partType}, about to import mesh:`, fullPartUrl);
                   const partResult = await SceneLoader.ImportMeshAsync(
                     '',
                     fullPartUrl,
                     '',
                     sceneRef.current
                   );
+                  console.log(`🔍 [useAvatarLoader] Successfully imported mesh for ${partType}:`, partResult.meshes.length, 'meshes');
                   partResult.meshes.forEach(mesh => {
                     if (mesh.parent === null && avatarRef.current) {
                       mesh.parent = avatarRef.current;
@@ -438,7 +452,13 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
                     mesh.metadata = { resourceId: partData.resourceId };
                   });
                   loadingGenderPartsRef.current.parts[partType] = partResult.meshes;
-                } catch (error) {}
+                } catch (error) {
+                  console.error(`🔍 [useAvatarLoader] Error loading part ${partType}:`, error);
+                  console.error(`🔍 [useAvatarLoader] Error details for ${partType}:`, {
+                    partData,
+                    error: error instanceof Error ? error.message : error
+                  });
+                }
               })();
               loadPromises.push(loadPartPromise);
             }
@@ -477,21 +497,33 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
             
             console.log('🔍 [useAvatarLoader] Loading body with data:', bodyData);
             const fullBodyUrl = await getAvatarPartUrl(bodyData, domainConfig);
+            console.log('🔍 [useAvatarLoader] Got body URL (non-gender change), about to import mesh:', fullBodyUrl);
             const bodyResult = await SceneLoader.ImportMeshAsync(
               '',
               fullBodyUrl,
               '',
               sceneRef.current
             );
-            bodyResult.meshes.forEach(mesh => {
-              if (mesh.parent === null && avatarRef.current) {
-                mesh.parent = avatarRef.current;
-              }
-              mesh.setEnabled(false);
-              mesh.isVisible = false;
-              mesh.metadata = { gender: avatarConfig.gender };
-            });
-            loadedAvatarPartsRef.current['body'] = bodyResult.meshes;
+            console.log('🔍 [useAvatarLoader] Successfully imported body mesh (non-gender change):', bodyResult.meshes.length, 'meshes');
+            try {
+              console.log('🔍 [useAvatarLoader] Processing body meshes...');
+              bodyResult.meshes.forEach((mesh, index) => {
+                console.log(`🔍 [useAvatarLoader] Processing mesh ${index}:`, mesh.name);
+                if (mesh.parent === null && avatarRef.current) {
+                  mesh.parent = avatarRef.current;
+                  console.log(`🔍 [useAvatarLoader] Set parent for mesh ${index}`);
+                }
+                mesh.setEnabled(false);
+                mesh.isVisible = false;
+                mesh.metadata = { gender: avatarConfig.gender };
+                console.log(`🔍 [useAvatarLoader] Configured mesh ${index}`);
+              });
+              loadedAvatarPartsRef.current['body'] = bodyResult.meshes;
+              console.log('🔍 [useAvatarLoader] ✅ Body meshes processed successfully');
+            } catch (meshError) {
+              console.error('🔍 [useAvatarLoader] Error processing body meshes:', meshError);
+              throw meshError;
+            }
           } catch (error) {
             console.error('🔍 [useAvatarLoader] Error loading body:', error);
           }
@@ -501,10 +533,11 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
           if (partKey && genderData.selectableParts[partType]) {
             const partsList = genderData.selectableParts[partType];
             // Find part by resourceId first, then fallback to fileName
-            console.log(`🔍 [useAvatarLoader] Looking for ${partType} with partKey: ${partKey}`);
-            console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
+            // Debug logs disabled for production
+            // console.log(`🔍 [useAvatarLoader] Looking for ${partType} with partKey: ${partKey}`);
+            // console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
             const partData = partsList?.find((item: any) => item.resourceId === partKey) || partsList?.find((item: any) => item.fileName === partKey);
-            console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
+            // console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
             if (partData && partData.resourceId) {
               const currentPart = loadedAvatarPartsRef.current[partType];
               const isCurrentPartSame = currentPart && currentPart.some(mesh =>
@@ -523,22 +556,36 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
                   oldPartsToDisposeRef.current[partType] = currentPart;
                   delete loadedAvatarPartsRef.current[partType];
                 }
-                const fullPartUrl = await getAvatarPartUrl(partData, domainConfig);
-                const partResult = await SceneLoader.ImportMeshAsync(
-                  '',
-                  fullPartUrl,
-                  '',
-                  sceneRef.current
-                );
-                partResult.meshes.forEach(mesh => {
-                  if (mesh.parent === null && avatarRef.current) {
-                    mesh.parent = avatarRef.current;
-                  }
-                  mesh.setEnabled(false);
-                  mesh.isVisible = false;
-                  mesh.metadata = { resourceId: partData.resourceId };
-                });
-                loadedAvatarPartsRef.current[partType] = partResult.meshes;
+                console.log(`🔍 [useAvatarLoader] Loading part ${partType} (part swap) with partData:`, partData);
+                try {
+                  const fullPartUrl = await getAvatarPartUrl(partData, domainConfig);
+                  console.log(`🔍 [useAvatarLoader] Got URL for ${partType} (part swap), about to import mesh:`, fullPartUrl);
+                  const partResult = await SceneLoader.ImportMeshAsync(
+                    '',
+                    fullPartUrl,
+                    '',
+                    sceneRef.current
+                  );
+                  console.log(`🔍 [useAvatarLoader] Successfully imported mesh for ${partType} (part swap):`, partResult.meshes.length, 'meshes');
+                  
+                  console.log(`🔍 [useAvatarLoader] Processing ${partType} meshes...`);
+                  partResult.meshes.forEach((mesh, index) => {
+                    console.log(`🔍 [useAvatarLoader] Processing ${partType} mesh ${index}:`, mesh.name);
+                    if (mesh.parent === null && avatarRef.current) {
+                      mesh.parent = avatarRef.current;
+                      console.log(`🔍 [useAvatarLoader] Set parent for ${partType} mesh ${index}`);
+                    }
+                    mesh.setEnabled(false);
+                    mesh.isVisible = false;
+                    mesh.metadata = { resourceId: partData.resourceId };
+                    console.log(`🔍 [useAvatarLoader] Configured ${partType} mesh ${index}`);
+                  });
+                  loadedAvatarPartsRef.current[partType] = partResult.meshes;
+                  console.log(`🔍 [useAvatarLoader] ✅ ${partType} meshes processed successfully`);
+                } catch (partError) {
+                  console.error(`🔍 [useAvatarLoader] Error loading/processing ${partType}:`, partError);
+                  throw partError;
+                }
                 wasPartSwapped = true;
   
                 if (idleAnimRef.current && walkAnimRef.current) {
@@ -564,43 +611,77 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
         }
       }
       // Wait until all parts are loaded
+      console.log('🔍 [useAvatarLoader] Waiting for all parts to load...');
       const allPartsLoaded = () => {
         const partsStatus = Object.keys(avatarConfig.parts || {}).map(partType => {
+          const partKey = avatarConfig.parts?.[partType];
           const loadedParts = loadedAvatarPartsRef.current[partType];
-          const isLoaded = (avatarConfig.parts?.[partType] == null) || (loadedParts && loadedParts.length > 0);
+          
+          // Part is considered loaded if:
+          // 1. partKey is null/undefined/empty (no part selected)
+          // 2. loadedParts exists and has meshes
+          const isLoaded = !partKey || (loadedParts && loadedParts.length > 0);
+          console.log(`🔍 [useAvatarLoader] Part ${partType} (key: ${partKey}) loaded:`, isLoaded, 'meshes:', loadedParts?.length || 0);
           return isLoaded;
         });
-        return partsStatus.every(status => status);
+        const allLoaded = partsStatus.every(status => status);
+        console.log('🔍 [useAvatarLoader] All parts loaded:', allLoaded);
+        return allLoaded;
       };
-      while (!allPartsLoaded()) {
+      
+      // Add timeout to prevent infinite loop
+      let waitCount = 0;
+      const maxWaitCount = 50; // 5 seconds max
+      while (!allPartsLoaded() && waitCount < maxWaitCount) {
         await new Promise(resolve => setTimeout(resolve, 100));
+        waitCount++;
       }
+      
+      if (waitCount >= maxWaitCount) {
+        console.warn('🔍 [useAvatarLoader] ⚠️ Timeout waiting for parts to load, proceeding anyway...');
+      }
+      console.log('🔍 [useAvatarLoader] ✅ All parts loaded, proceeding to animations...');
+      
       // Load animations after avatar has finished loading
       if (sceneRef.current && avatarRef.current) {
+        console.log('🔍 [useAvatarLoader] Loading animations...');
         const isInitialLoad = !walkAnimRef.current || !idleAnimRef.current;
         if (isInitialLoad) {
+          console.log('🔍 [useAvatarLoader] Initial animation load...');
           if (currentAnimRef.current) {
             currentAnimRef.current.stop();
           }
           await loadAnimationFromGLB('standard_walk');
           await loadAnimationFromGLB('breathing_idle', { playImmediately: true });
+          console.log('🔍 [useAvatarLoader] ✅ Animations loaded');
         }
   
+        console.log('🔍 [useAvatarLoader] Setting animation ready and enabling meshes...');
         setIsAnimationReady(true);
         Object.entries(loadedAvatarPartsRef.current || {}).forEach(([partType, meshes]) => {
-          meshes.forEach(mesh => {
+          console.log(`🔍 [useAvatarLoader] Enabling ${partType} meshes (${meshes.length} meshes)`);
+          meshes.forEach((mesh, index) => {
             if (!mesh.isDisposed()) {
               mesh.setEnabled(true);
               mesh.isVisible = true;
               if (shadowGeneratorRef.current)
                 shadowGeneratorRef.current.addShadowCaster(mesh);
+              console.log(`🔍 [useAvatarLoader] Enabled ${partType} mesh ${index}:`, mesh.name);
+            } else {
+              console.warn(`🔍 [useAvatarLoader] Mesh ${index} in ${partType} is disposed!`);
             }
           });
         });
+        
         if (idleAnimRef.current && !currentAnimRef.current?.isPlaying) {
+          console.log('🔍 [useAvatarLoader] Starting idle animation...');
           idleAnimRef.current.play(true);
           currentAnimRef.current = idleAnimRef.current;
+          console.log('🔍 [useAvatarLoader] ✅ Idle animation started');
         }
+        console.log('🔍 [useAvatarLoader] ✅ Avatar loading completed successfully!');
+      } else {
+        console.error('🔍 [useAvatarLoader] Scene or avatar ref is null!');
       }
     }, [sceneRef, avatarConfig, domainConfig, avatarRef, loadedAvatarPartsRef, oldPartsToDisposeRef, idleAnimRef, walkAnimRef, currentAnimRef, allIdleAnimationsRef, allWalkAnimationsRef, loadAnimationFromGLB, addAnimationTargets]);
   
@@ -612,7 +693,7 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
     // Effect to load avatar parts immediately on component mount
     useEffect(() => {
       if (sceneRef.current && avatarConfig && avatarRef.current) {
-        console.log('🔍 [useAvatarLoader] Component mounted, loading avatar parts immediately');
+        // console.log('🔍 [useAvatarLoader] Component mounted, loading avatar parts immediately');
         loadAvatar();
       }
     }, [sceneRef.current, avatarRef.current]); // Only depend on scene and avatar ref being ready

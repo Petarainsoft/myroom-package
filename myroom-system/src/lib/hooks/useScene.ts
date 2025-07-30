@@ -172,8 +172,8 @@ export function useScene(initialConfig?: Partial<SceneConfig>): UseSceneReturn {
       
       const newConfig = {
         ...config,
-        camera: {
-          ...config.camera,
+        cameraSettings: {
+          ...config.cameraSettings,
           ...cameraConfig
         }
       };

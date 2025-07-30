@@ -54,6 +54,11 @@ export const useRoomLoader = ({ scene, roomPath, roomResourceId, isSceneReady, r
           throw new Error('Either roomResourceId or roomPath is required');
         }
 
+        // Validate that we have a proper URL before proceeding
+        if (!fullRoomUrl || (!fullRoomUrl.startsWith('http') && !fullRoomUrl.includes('.'))) {
+          throw new Error(`Invalid room URL: ${fullRoomUrl}. Expected a valid HTTP URL or file path.`);
+        }
+
         // Load new room
         const lastSlashIndex = fullRoomUrl.lastIndexOf('/');
         const rootUrl = fullRoomUrl.substring(0, lastSlashIndex + 1);

@@ -210,7 +210,7 @@ export function useMyRoom(initialConfig?: {
       
       debugLog('Configuration imported successfully');
     } catch (err) {
-      const error = createError('INVALID_CONFIG', 'Failed to import configuration', err);
+      const error = createError('INVALID_CONFIGURATION', 'Failed to import configuration', err);
       setError(error);
       debugLog('Configuration import failed', { error });
     } finally {
