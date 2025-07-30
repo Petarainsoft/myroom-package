@@ -20,7 +20,6 @@ interface UseAvatarLoaderParams {
 
 // Helper function to get avatar part URL - exclusively uses backend API
 const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<string> => {
-  console.log('🔍 [getAvatarPartUrl] Loading avatar part via backend API');
   console.log('🔍 [getAvatarPartUrl] partData:', { name: partData.name, resourceId: partData.resourceId });
   
   if (!partData.resourceId) {
@@ -422,14 +421,34 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
         const loadPromises = [];
         for (const [partType, partKey] of Object.entries(avatarConfig.parts || {})) {
           if (partType === 'body') continue;
-          if (partKey && genderData.selectableParts[partType]) {
+          
+          // Extract resourceId from partKey (handle both string and object cases)
+          let resourceIdToFind: string | null = null;
+          let fileNameToFind: string | null = null;
+          
+          if (typeof partKey === 'string') {
+            resourceIdToFind = partKey;
+            fileNameToFind = partKey;
+          } else if (typeof partKey === 'object' && partKey !== null) {
+            resourceIdToFind = (partKey as any).resourceId || null;
+            fileNameToFind = (partKey as any).fileName || (partKey as any).path || null;
+          }
+          
+          console.log(`🔍 [useAvatarLoader] Part type: ${partType}`, {
+            partKey,
+            resourceIdToFind,
+            fileNameToFind,
+            selectableParts: genderData.selectableParts[partType],
+            hasSelectableParts: !!genderData.selectableParts[partType]
+          });
+          
+          if ((resourceIdToFind || fileNameToFind) && genderData.selectableParts[partType]) {
             const partsList = genderData.selectableParts[partType];
             // Find part by resourceId first, then fallback to fileName
-            // Debug logs disabled for production
-            // console.log(`🔍 [useAvatarLoader] Looking for ${partType} with partKey: ${partKey}`);
+            console.log(`🔍 [useAvatarLoader] Looking for ${partType} with resourceId: ${resourceIdToFind}, fileName: ${fileNameToFind}`);
             // console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
-            const partData = partsList?.find((item: any) => item.resourceId === partKey) || partsList?.find((item: any) => item.fileName === partKey);
-            // console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
+            const partData = partsList?.find((item: any) => item.resourceId === resourceIdToFind) || partsList?.find((item: any) => item.fileName === fileNameToFind);
+            console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
             if (partData && partData.resourceId) {
               const loadPartPromise = (async () => {
                 try {
@@ -530,14 +549,34 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
         }
         for (const [partType, partKey] of Object.entries(avatarConfig.parts || {})) {
           if (partType === 'body') continue;
-          if (partKey && genderData.selectableParts[partType]) {
+          
+          // Extract resourceId from partKey (handle both string and object cases)
+          let resourceIdToFind: string | null = null;
+          let fileNameToFind: string | null = null;
+          
+          if (typeof partKey === 'string') {
+            resourceIdToFind = partKey;
+            fileNameToFind = partKey;
+          } else if (typeof partKey === 'object' && partKey !== null) {
+            resourceIdToFind = (partKey as any).resourceId || null;
+            fileNameToFind = (partKey as any).fileName || (partKey as any).path || null;
+          }
+          
+          console.log(`🔍 [useAvatarLoader] Part type: ${partType}`, {
+            partKey,
+            resourceIdToFind,
+            fileNameToFind,
+            selectableParts: genderData.selectableParts[partType],
+            hasSelectableParts: !!genderData.selectableParts[partType]
+          });
+          
+          if ((resourceIdToFind || fileNameToFind) && genderData.selectableParts[partType]) {
             const partsList = genderData.selectableParts[partType];
             // Find part by resourceId first, then fallback to fileName
-            // Debug logs disabled for production
-            // console.log(`🔍 [useAvatarLoader] Looking for ${partType} with partKey: ${partKey}`);
-            // console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
-            const partData = partsList?.find((item: any) => item.resourceId === partKey) || partsList?.find((item: any) => item.fileName === partKey);
-            // console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
+            console.log(`🔍 [useAvatarLoader] Looking for ${partType} with resourceId: ${resourceIdToFind}, fileName: ${fileNameToFind}`);
+            console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
+            const partData = partsList?.find((item: any) => item.resourceId === resourceIdToFind) || partsList?.find((item: any) => item.fileName === fileNameToFind);
+            console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
             if (partData && partData.resourceId) {
               const currentPart = loadedAvatarPartsRef.current[partType];
               const isCurrentPartSame = currentPart && currentPart.some(mesh =>
@@ -615,13 +654,20 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
       const allPartsLoaded = () => {
         const partsStatus = Object.keys(avatarConfig.parts || {}).map(partType => {
           const partKey = avatarConfig.parts?.[partType];
+          if (!partKey) {
+            return true; // No part selected means it's "loaded"
+          }
           const loadedParts = loadedAvatarPartsRef.current[partType];
           
           // Part is considered loaded if:
           // 1. partKey is null/undefined/empty (no part selected)
           // 2. loadedParts exists and has meshes
           const isLoaded = !partKey || (loadedParts && loadedParts.length > 0);
-          console.log(`🔍 [useAvatarLoader] Part ${partType} (key: ${partKey}) loaded:`, isLoaded, 'meshes:', loadedParts?.length || 0);
+          console.log(`🔍 [useAvatarLoader] Part ${partType} loaded:`, {
+            key: partKey,
+            isLoaded,
+            meshCount: loadedParts?.length || 0
+          });
           return isLoaded;
         });
         const allLoaded = partsStatus.every(status => status);
@@ -631,9 +677,9 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
       
       // Add timeout to prevent infinite loop
       let waitCount = 0;
-      const maxWaitCount = 50; // 5 seconds max
+      const maxWaitCount = 20; // 20 seconds max
       while (!allPartsLoaded() && waitCount < maxWaitCount) {
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         waitCount++;
       }
       

@@ -131,8 +131,9 @@ export const getDefaultConfigForGender = (gender: Gender): AvatarConfig => {
     if (partType !== 'fullset' && partType !== 'accessory') {
       const items = genderData.selectableParts[partType as keyof GenderSelectableParts];
       if (items && items.length > 0) {
-        const firstActualItem = items.find((item) => item.fileName !== null);
-        initialParts[partType] = firstActualItem ? firstActualItem.fileName : null;
+        // Find first item with resourceId instead of fileName
+        const firstActualItem = items.find((item) => item.resourceId !== null && item.resourceId !== undefined);
+        initialParts[partType] = firstActualItem ? firstActualItem.resourceId : null;
         initialResourceIds[partType] = firstActualItem ? firstActualItem.resourceId || null : null;
       } else {
         initialParts[partType] = null;
