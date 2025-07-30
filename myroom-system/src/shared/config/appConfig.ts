@@ -11,8 +11,8 @@
 
 // Check if domain is configured via external script
 const getConfiguredBaseDomain = () => {
-  if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.baseDomain) {
-    return window.MYROOM_CONFIG.baseDomain;
+  if (typeof window !== 'undefined' && (window as any).MYROOM_CONFIG && (window as any).MYROOM_CONFIG.baseDomain) {
+    return (window as any).MYROOM_CONFIG.baseDomain;
   }
   
   // Default domain (used during development or if not configured)
@@ -21,27 +21,23 @@ const getConfiguredBaseDomain = () => {
   // return 'https://myroom.petarainsoft.com';
 };
 const getConfiguredBackendDomain = () => {
-  if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.backendDomain) {
-    return window.MYROOM_CONFIG.backendDomain;
-  }
-  return 'http://localhost:3000'; // Default backend domain, to be filled later
+  // Hardcoded to work exclusively with the backend
+  return 'http://localhost:3000';
 };
 const getConfiguredApiKey = () => {
-  if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.apiKey) {
-    return window.MYROOM_CONFIG.apiKey;
+  if (typeof window !== 'undefined' && (window as any).MYROOM_CONFIG && (window as any).MYROOM_CONFIG.apiKey) {
+    return (window as any).MYROOM_CONFIG.apiKey;
   }
   // Default API key for development
   return 'pk_test_1234567890abcdef1234567890abcdef';
 };
 const getConfiguredUseResourceId = () => {
-  if (typeof window !== 'undefined' && window.MYROOM_CONFIG && typeof window.MYROOM_CONFIG.useResourceId === 'boolean') {
-    return window.MYROOM_CONFIG.useResourceId;
-  }
-  return false; // Default to false for backward compatibility
+  // Hardcoded to true to always use backend API
+  return true;
 };
 const getConfiguredProjectId = () => {
-  if (typeof window !== 'undefined' && window.MYROOM_CONFIG && window.MYROOM_CONFIG.projectId) {
-    return window.MYROOM_CONFIG.projectId;
+  if (typeof window !== 'undefined' && (window as any).MYROOM_CONFIG && (window as any).MYROOM_CONFIG.projectId) {
+    return (window as any).MYROOM_CONFIG.projectId;
   }
   // Check environment variable safely
   if (typeof process !== 'undefined' && process.env && process.env.REACT_APP_PROJECT_ID) {

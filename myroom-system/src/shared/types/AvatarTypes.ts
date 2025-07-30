@@ -66,7 +66,7 @@ export interface AvailableParts {
 }
 
 export interface AvatarPartPaths {
-    body: string;
+    body: string | null;
     hair: string | null;
     top: string | null;
     bottom?: string | null;

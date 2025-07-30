@@ -151,7 +151,7 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   useEffect(() => {
     console.log('[DEBUG] isAnimationReady:', isAnimationReady);
     if (loadedAvatarPartsRef && loadedAvatarPartsRef.current) {
-      Object.entries(loadedAvatarPartsRef.current).forEach(([partType, meshes]) => {
+      Object.entries(loadedAvatarPartsRef.current || {}).forEach(([partType, meshes]) => {
         console.log(`[DEBUG] Avatar part: ${partType}, mesh count: ${meshes.length}`);
         meshes.forEach(mesh => {
           console.log(`[DEBUG] Mesh: ${mesh.name}, isEnabled: ${mesh.isEnabled?.()}, isVisible: ${mesh.isVisible}`);

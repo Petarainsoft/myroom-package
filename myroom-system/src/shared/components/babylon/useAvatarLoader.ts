@@ -84,6 +84,20 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
     allCurrentAnimationsRef,
     avatarRef,
     shadowGeneratorRef
+  }: {
+    sceneRef: any;
+    avatarConfig: any;
+    domainConfig: any;
+    loadedAvatarPartsRef: any;
+    pendingPartsRef: any;
+    avatarRef: any;
+    shadowGeneratorRef: any;
+    allIdleAnimationsRef: any;
+    allWalkAnimationsRef: any;
+    allCurrentAnimationsRef: any;
+    idleAnimRef: any;
+    walkAnimRef: any;
+    currentAnimRef: any;
   }) {
     // Refs for avatar parts
     const loadedAvatarPartsRef = useRef<Record<string, any[]>>({});
@@ -205,21 +219,22 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
             return clonedAnim ? { animation: clonedAnim, skeletonInfo } : null;
           }).filter(Boolean);
           // Store all animations in appropriate refs
-          const allClonedAnims = clonedAnimations.map(ca => ca.animation);
+          const allClonedAnims = clonedAnimations.map(ca => ca?.animation).filter(Boolean);
           if (animationName.toLowerCase().includes('walk')) {
-            allWalkAnimationsRef.current.forEach(anim => anim._cleanup && anim._cleanup());
+            allWalkAnimationsRef.current.forEach((anim: any) => anim._cleanup && anim._cleanup());
             allWalkAnimationsRef.current = allClonedAnims;
             walkAnimRef.current = allClonedAnims[0];
           } else if (animationName.toLowerCase().includes('idle')) {
-            allIdleAnimationsRef.current.forEach(anim => anim._cleanup && anim._cleanup());
+            allIdleAnimationsRef.current.forEach((anim: any) => anim._cleanup && anim._cleanup());
             allIdleAnimationsRef.current = allClonedAnims;
             idleAnimRef.current = allClonedAnims[0];
           }
           // Synchronize animations if needed
           const shouldSynchronize = options?.synchronizeAnimations !== false;
           if (shouldSynchronize && clonedAnimations.length > 1) {
-            const mainAnim = clonedAnimations[0].animation;
-            const allAnimations = clonedAnimations.map(ca => ca.animation);
+            const mainAnim = clonedAnimations[0]?.animation;
+            if (!mainAnim) return;
+            const allAnimations = clonedAnimations.map(ca => ca?.animation).filter(Boolean);
             const originalPlay = mainAnim.play.bind(mainAnim);
             const originalStop = mainAnim.stop.bind(mainAnim);
             const originalPause = mainAnim.pause.bind(mainAnim);
@@ -229,7 +244,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
                 for (let i = 1; i < allAnimations.length; i++) {
                   if (allAnimations[i] && mainAnim.isPlaying && allAnimations[i]) {
                     try {
-                      allAnimations[i].play(loop);
+                      allAnimations[i]?.play(loop);
                     } catch (e) {
                       // Animation might be disposed
                     }
@@ -243,7 +258,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
               for (let i = 1; i < allAnimations.length; i++) {
                 if (allAnimations[i]) {
                   try {
-                    allAnimations[i].stop();
+                    allAnimations[i]?.stop();
                   } catch (e) {
                     // Animation might be disposed
                   }
@@ -256,7 +271,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
               for (let i = 1; i < allAnimations.length; i++) {
                 if (allAnimations[i]) {
                   try {
-                    allAnimations[i].pause();
+                    allAnimations[i]?.pause();
                   } catch (e) {
                     // Animation might be disposed
                   }
@@ -267,12 +282,12 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
           }
           // Play animation immediately if requested
           if (options?.playImmediately === true) {
-            const animToPlay = clonedAnimations[0].animation;
+            const animToPlay = clonedAnimations[0]?.animation;
             if (currentAnimRef.current) {
               currentAnimRef.current.stop();
             }
             clonedAnimations.forEach(clonedAnim => {
-              if (clonedAnim.animation.animatables && clonedAnim.animation.animatables.length > 0) {
+              if (clonedAnim && clonedAnim.animation.animatables && clonedAnim.animation.animatables.length > 0) {
                 clonedAnim.animation.animatables.forEach((animatable) => {
                   if (animatable.getAnimations && animatable.getAnimations().length > 0) {
                     animatable.getAnimations().forEach((animation) => {
@@ -284,8 +299,10 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
                 });
               }
             });
-            animToPlay.play(true);
-            currentAnimRef.current = animToPlay;
+            if (animToPlay) {
+              animToPlay.play(true);
+              currentAnimRef.current = animToPlay;
+            }
           }
           // Dispose original meshes from animation file
           result.meshes.forEach(mesh => {
@@ -303,8 +320,8 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
      * Loads avatar parts and handles gender changes, part switching, and animation setup.
      */
     const loadAvatar = useCallback(async () => {
-      if (!sceneRef.current || !avatarConfig || !avatarRef.current) return;
-      const genderData = availablePartsData[avatarConfig.gender];
+      if (!sceneRef.current || !avatarConfig || !avatarConfig.parts || !avatarRef.current) return;
+      const genderData = (availablePartsData as any)[avatarConfig.gender];
       const currentBodyMeshes = loadedAvatarPartsRef.current['body'];
       const isGenderChanged = currentBodyMeshes &&
         Array.isArray(currentBodyMeshes) &&
@@ -335,7 +352,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
           gender: avatarConfig.gender,
           parts: {}
         };
-        Object.entries(loadedAvatarPartsRef.current).forEach(([partType, meshes]) => {
+        Object.entries(loadedAvatarPartsRef.current || {}).forEach(([partType, meshes]) => {
           meshes.forEach(mesh => {
             if (!mesh.isDisposed()) {
               mesh.setEnabled(false);
@@ -363,14 +380,14 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
           loadingGenderPartsRef.current.parts['body'] = bodyResult.meshes;
         } catch (error) {}
         const loadPromises = [];
-        for (const [partType, partKey] of Object.entries(avatarConfig.parts)) {
+        for (const [partType, partKey] of Object.entries(avatarConfig.parts || {})) {
           if (partType === 'body') continue;
           if (partKey && genderData.selectableParts[partType]) {
             const partsList = genderData.selectableParts[partType];
             // Find part by resourceId first, then fallback to fileName
             console.log(`🔍 [useAvatarLoader] Looking for ${partType} with partKey: ${partKey}`);
-            console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map(p => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
-            const partData = partsList?.find(item => item.resourceId === partKey) || partsList?.find(item => item.fileName === partKey);
+            console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
+            const partData = partsList?.find((item: any) => item.resourceId === partKey) || partsList?.find((item: any) => item.fileName === partKey);
             console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
             if (partData && partData.fileName) {
               const loadPartPromise = (async () => {
@@ -398,7 +415,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
           }
         }
         await Promise.all(loadPromises);
-        Object.entries(loadedAvatarPartsRef.current).forEach(([partType, meshes]) => {
+        Object.entries(loadedAvatarPartsRef.current || {}).forEach(([partType, meshes]) => {
           meshes.forEach(mesh => {
             if (!mesh.isDisposed()) {
               mesh.dispose();
@@ -406,7 +423,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
           });
         });
         loadedAvatarPartsRef.current = {};
-        Object.entries(loadingGenderPartsRef.current.parts).forEach(([partType, meshes]) => {
+        Object.entries(loadingGenderPartsRef.current.parts || {}).forEach(([partType, meshes]) => {
           loadedAvatarPartsRef.current[partType] = meshes;
         });
         loadingGenderPartsRef.current = { isLoading: false, gender: null, parts: {} };
@@ -446,14 +463,14 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
             loadedAvatarPartsRef.current['body'] = bodyResult.meshes;
           } catch (error) {}
         }
-        for (const [partType, partKey] of Object.entries(avatarConfig.parts)) {
+        for (const [partType, partKey] of Object.entries(avatarConfig.parts || {})) {
           if (partType === 'body') continue;
           if (partKey && genderData.selectableParts[partType]) {
             const partsList = genderData.selectableParts[partType];
             // Find part by resourceId first, then fallback to fileName
             console.log(`🔍 [useAvatarLoader] Looking for ${partType} with partKey: ${partKey}`);
-            console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map(p => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
-            const partData = partsList?.find(item => item.resourceId === partKey) || partsList?.find(item => item.fileName === partKey);
+            console.log(`🔍 [useAvatarLoader] Available parts for ${partType}:`, partsList?.map((p: any) => ({name: p.name, fileName: p.fileName, resourceId: p.resourceId})));
+            const partData = partsList?.find((item: any) => item.resourceId === partKey) || partsList?.find((item: any) => item.fileName === partKey);
             console.log(`🔍 [useAvatarLoader] Found partData for ${partType}:`, partData ? {name: partData.name, fileName: partData.fileName, resourceId: partData.resourceId} : 'NOT FOUND');
             if (partData && partData.fileName) {
               const currentPart = loadedAvatarPartsRef.current[partType];
@@ -515,9 +532,9 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
       }
       // Wait until all parts are loaded
       const allPartsLoaded = () => {
-        const partsStatus = Object.keys(avatarConfig.parts).map(partType => {
+        const partsStatus = Object.keys(avatarConfig.parts || {}).map(partType => {
           const loadedParts = loadedAvatarPartsRef.current[partType];
-          const isLoaded = (avatarConfig.parts[partType] == null) || (loadedParts && loadedParts.length > 0);
+          const isLoaded = (avatarConfig.parts?.[partType] == null) || (loadedParts && loadedParts.length > 0);
           return isLoaded;
         });
         return partsStatus.every(status => status);
@@ -537,7 +554,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
         }
   
         setIsAnimationReady(true);
-        Object.entries(loadedAvatarPartsRef.current).forEach(([partType, meshes]) => {
+        Object.entries(loadedAvatarPartsRef.current || {}).forEach(([partType, meshes]) => {
           meshes.forEach(mesh => {
             if (!mesh.isDisposed()) {
               mesh.setEnabled(true);
@@ -562,28 +579,28 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
     // Cleanup function when component unmounts
     useEffect(() => {
       return () => {
-        Object.values(loadedAvatarPartsRef.current).forEach(meshes => {
+        Object.values(loadedAvatarPartsRef.current || {}).forEach(meshes => {
           meshes.forEach(mesh => {
             if (!mesh.isDisposed()) {
               mesh.dispose();
             }
           });
         });
-        Object.values(pendingPartsRef.current).forEach(meshes => {
+        Object.values(pendingPartsRef.current || {}).forEach(meshes => {
           meshes.forEach(mesh => {
             if (!mesh.isDisposed()) {
               mesh.dispose();
             }
           });
         });
-        Object.values(loadingGenderPartsRef.current.parts).forEach(meshes => {
+        Object.values(loadingGenderPartsRef.current.parts || {}).forEach(meshes => {
           meshes.forEach(mesh => {
             if (!mesh.isDisposed()) {
               mesh.dispose();
             }
           });
         });
-        Object.values(oldPartsToDisposeRef.current).forEach(meshes => {
+        Object.values(oldPartsToDisposeRef.current || {}).forEach(meshes => {
           meshes.forEach(mesh => {
             if (!mesh.isDisposed()) {
               mesh.dispose();

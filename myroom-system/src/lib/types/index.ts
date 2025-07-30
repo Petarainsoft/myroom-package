@@ -83,7 +83,10 @@ export interface RenderConfig {
 export interface ItemConfig {
   id: string;
   name: string;
-  resourceId: string;
+  resourceId?: string;
+  url?: string;
+  format?: string;
+  path?: string;
   category?: string;
   position?: { x: number; y: number; z: number };
   rotation?: { x: number; y: number; z: number };
@@ -136,28 +139,83 @@ export interface UseMyRoomReturn {
 }
 
 export interface UseAvatarReturn {
-  config: AvatarConfig;
-  updateConfig: (config: Partial<AvatarConfig>) => void;
+  // State
+  config: AvatarConfigProps;
   isLoading: boolean;
   error: Error | null;
+  currentAnimation: string | null;
+  availableAnimations: string[];
+  
+  // Methods
+  loadAvatar: (avatarId: string) => Promise<void>;
+  updateConfig: (config: Partial<AvatarConfigProps>) => Promise<void>;
+  playAnimation: (animationName: string) => void;
+  stopAnimation: () => void;
+  changeGender: (gender: 'male' | 'female') => void;
+  changeOutfit: (outfitId: string) => void;
+  setPosition: (x: number, y: number, z: number) => void;
+  setRotation: (x: number, y: number, z: number) => void;
+  setCallbacks: (callbacks: {
+    onAvatarLoaded?: (avatar: any) => void;
+    onAnimationChanged?: (animation: string) => void;
+    onError?: (error: Error) => void;
+  }) => void;
+  reset: () => void;
 }
 
 export interface UseRoomReturn {
-  currentRoom: string;
-  availableRooms: string[];
-  changeRoom: (roomId: string) => void;
+  // State
+  config: RoomConfig;
   isLoading: boolean;
   error: Error | null;
+  currentRoom: string;
+  availableRooms: string[];
+  roomMetadata: any;
+  
+  // Methods
+  loadRoom: (roomId: string) => Promise<void>;
+  changeRoom: (roomId: string) => Promise<void>;
+  updateConfig: (config: Partial<RoomConfig>) => Promise<void>;
+  setLighting: (lightingConfig: any) => Promise<void>;
+  setMaterials: (materialsConfig: any) => Promise<void>;
+  getRoomBounds: () => any;
+  isValidPosition: (x: number, y: number, z: number) => boolean;
+  getAvailableRooms: () => Promise<string[]>;
+  setCallbacks: (callbacks: {
+    onRoomLoaded?: (room: any) => void;
+    onRoomChanged?: (roomId: string) => void;
+    onError?: (error: Error) => void;
+  }) => void;
+  reset: () => void;
 }
 
 export interface UseItemsReturn {
+  // State
   items: ItemConfig[];
-  availableItems: any[];
-  addItem: (item: ItemConfig) => void;
-  removeItem: (itemId: string) => void;
-  updateItem: (itemId: string, updates: Partial<ItemConfig>) => void;
   isLoading: boolean;
   error: Error | null;
+  selectedItem: string | null;
+  availableItems: ItemConfig[];
+  
+  // Methods
+  addItem: (item: Omit<ItemConfig, 'id'>) => Promise<ItemConfig>;
+  removeItem: (itemId: string) => Promise<void>;
+  updateItem: (itemId: string, updates: Partial<ItemConfig>) => Promise<ItemConfig>;
+  moveItem: (itemId: string, position: { x: number; y: number; z: number }) => Promise<void>;
+  rotateItem: (itemId: string, rotation: { x: number; y: number; z: number }) => Promise<void>;
+  scaleItem: (itemId: string, scale: { x: number; y: number; z: number }) => Promise<void>;
+  selectItem: (itemId: string | null) => void;
+  getItem: (itemId: string) => ItemConfig | null;
+  getItemsByCategory: (category: string) => ItemConfig[];
+  clearItems: () => Promise<void>;
+  getAvailableItems: () => Promise<ItemConfig[]>;
+  setCallbacks: (callbacks: {
+    onItemAdded?: (item: ItemConfig) => void;
+    onItemRemoved?: (itemId: string) => void;
+    onItemSelected?: (itemId: string | null) => void;
+    onItemMoved?: (itemId: string, position: { x: number; y: number; z: number }) => void;
+    onError?: (error: Error) => void;
+  }) => void;
 }
 
 export interface UseSceneReturn {

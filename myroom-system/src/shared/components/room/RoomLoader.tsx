@@ -27,7 +27,9 @@ export const useRoomLoader = ({ scene, roomPath, roomResourceId, isSceneReady, r
         // Clear existing room
         roomRef.current!.getChildMeshes().forEach(mesh => mesh.dispose());
 
-        let fullRoomUrl: string;
+        // Initialize fullRoomUrl with default value
+        let fullRoomUrl: string = roomPath!.startsWith('http') ? roomPath! : `${domainConfig.baseDomain}${roomPath!}`;
+        
         if (domainConfig.useResourceId && roomResourceId && domainConfig.backendDomain && domainConfig.apiKey) {
           try {
             // Call API to get S3 presigned download URL using resourceId
