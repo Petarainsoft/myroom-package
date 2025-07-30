@@ -61,6 +61,45 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
   }
 };
 
+// Helper function to get animation URL - exclusively uses backend API
+const getAnimationUrl = async (gender: string, domainConfig: any): Promise<string> => {
+  console.log('🎬 [getAnimationUrl] Loading animation via backend API');
+  console.log('🎬 [getAnimationUrl] gender:', gender);
+  
+  if (!domainConfig.backendDomain || !domainConfig.apiKey) {
+    throw new Error('Backend domain and API key are required for animation loading');
+  }
+  
+  try {
+    const apiUrl = `${domainConfig.backendDomain}/api/animations/${gender}`;
+    console.log('🎬 [getAnimationUrl] Fetching from:', apiUrl);
+    
+    const response = await fetch(apiUrl, {
+      headers: {
+        'x-api-key': domainConfig.apiKey
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      
+      if (data && data.data && data.data.url) {
+        console.log('🎬 [getAnimationUrl] ✅ Got presigned URL from backend');
+        console.log(`🔗 [Animation Loader] Loading GLB: ${gender} -> ${data.data.url}`);
+        return data.data.url;
+      } else {
+        throw new Error('Backend returned invalid response structure');
+      }
+    } else {
+      const errorText = await response.text();
+      throw new Error(`Backend fetch failed with status ${response.status}: ${errorText}`);
+    }
+  } catch (error) {
+    console.error('🎬 [getAnimationUrl] Backend fetch error:', error);
+    throw error;
+  }
+};
+
   /**
    * Custom hook to manage avatar part loading, gender switching, and animation management.
    * @param {object} params
@@ -150,8 +189,7 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
         // }
         
         const currentGender = avatarConfig.gender;
-        const animationFileName = currentGender === 'male' ? 'male_anims.glb' : 'female_anims.glb';
-        const animationUrl = `${domainConfig.baseDomain}/animations/${animationFileName}`;
+        const animationUrl = await getAnimationUrl(currentGender, domainConfig);
         console.log('🎬 [loadAnimationFromGLB] Loading animation from:', animationUrl);
         const result = await SceneLoader.ImportMeshAsync("", animationUrl, "", sceneRef.current);
         if (result.animationGroups && result.animationGroups.length > 0) {
@@ -353,8 +391,8 @@ const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<strin
           });
         });
         try {
-          const bodyPath = genderData.fixedParts.body;
-          const fullBodyUrl = bodyPath.startsWith('http') ? bodyPath : `${domainConfig.baseDomain}${bodyPath}`;
+          const bodyData = genderData.fixedParts.body;
+          const fullBodyUrl = await getAvatarPartUrl(bodyData, domainConfig);
           const bodyResult = await SceneLoader.ImportMeshAsync(
             '',
             fullBodyUrl,

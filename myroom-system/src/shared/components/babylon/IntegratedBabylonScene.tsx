@@ -94,6 +94,8 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
   const allCurrentAnimationsRef = useRef<any[]>([]);
 
   const [isSceneReady, setIsSceneReady] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // State for camera offset when UI panels are open
   const [cameraOffset, setCameraOffset] = useState<Vector3 | undefined>(undefined);
@@ -587,9 +589,6 @@ const IntegratedBabylonScene = forwardRef<IntegratedSceneRef, IntegratedScenePro
       enableSSAO: true
     }
   });
-
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Function to collect current scene configuration
   const getCurrentSceneConfig = (): PresetConfig => {
