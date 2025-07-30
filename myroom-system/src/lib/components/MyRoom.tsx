@@ -152,6 +152,7 @@ export const MyRoom = forwardRef<MyRoomRef, MyRoomProps>((
       <IntegratedBabylonScene
         ref={sceneRef}
         roomPath={finalRoomConfig.defaultRoom}
+        roomResourceId={finalRoomConfig.defaultRoom}
         avatarConfig={finalAvatarConfig}
         loadedItems={loadedItems}
         onSceneReady={handleSceneReady}

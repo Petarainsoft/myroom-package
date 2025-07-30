@@ -30,26 +30,38 @@ export function useRoom(initialConfig?: Partial<RoomConfig>): UseRoomReturn {
   
   // Load room
   const loadRoom = useCallback(async (roomId: string, roomConfig?: Partial<RoomConfig>) => {
+    console.log('🏠 [useRoom.loadRoom] Starting room loading process...');
+    console.log('🏠 [useRoom.loadRoom] roomId:', roomId);
+    console.log('🏠 [useRoom.loadRoom] roomConfig:', roomConfig);
+    console.log('🏠 [useRoom.loadRoom] current config:', config);
+    
     try {
       setIsLoading(true);
       setError(null);
       
       const newConfig = { ...config, ...roomConfig };
+      console.log('🏠 [useRoom.loadRoom] merged config:', newConfig);
       
       debugLog('Loading room', { roomId, config: newConfig });
       
       // Validate room configuration
+      console.log('🏠 [useRoom.loadRoom] Validating room configuration...');
       if (newConfig.url && !isValidUrl(newConfig.url)) {
+        console.error('🏠 [useRoom.loadRoom] Invalid room URL:', newConfig.url);
         throw new Error('Invalid room URL');
       }
+      console.log('🏠 [useRoom.loadRoom] Room configuration is valid');
       
       // Here you would implement the actual room loading logic
       // This would interact with the Babylon.js scene to load the room model
+      console.log('🏠 [useRoom.loadRoom] Setting new config and current room...');
       
       setConfig(newConfig);
       setCurrentRoom(roomId);
+      console.log('🏠 [useRoom.loadRoom] Config and current room set successfully');
       
       // Simulate room metadata
+      console.log('🏠 [useRoom.loadRoom] Creating room metadata...');
       const metadata = {
         id: roomId,
         name: `Room ${roomId}`,
@@ -61,23 +73,39 @@ export function useRoom(initialConfig?: Partial<RoomConfig>): UseRoomReturn {
         },
         loadedAt: new Date().toISOString()
       };
+      console.log('🏠 [useRoom.loadRoom] Room metadata created:', metadata);
       setRoomMetadata(metadata);
+      console.log('🏠 [useRoom.loadRoom] Room metadata set successfully');
       
       debugLog('Room loaded successfully', { roomId, metadata });
+      console.log('🏠 [useRoom.loadRoom] Calling onRoomLoaded callback...');
       callbacksRef.current.onRoomLoaded?.(roomRef.current);
+      console.log('🏠 [useRoom.loadRoom] Calling onRoomChanged callback...');
       callbacksRef.current.onRoomChanged?.(roomId);
+      console.log('🏠 [useRoom.loadRoom] Room loading completed successfully');
     } catch (err) {
+      console.error('🏠 [useRoom.loadRoom] Room loading failed - Error details:', err);
+      console.error('🏠 [useRoom.loadRoom] Error stack:', err.stack);
+      console.error('🏠 [useRoom.loadRoom] Error name:', err.name);
+      console.error('🏠 [useRoom.loadRoom] Error message:', err.message);
+      
       const error = createError('ROOM_LOAD_FAILED', `Failed to load room: ${roomId}`, err);
+      console.error('🏠 [useRoom.loadRoom] Created error object:', error);
       setError(error);
       debugLog('Room loading failed', { roomId, error });
+      console.log('🏠 [useRoom.loadRoom] Calling onError callback...');
       callbacksRef.current.onError?.(error);
     } finally {
+      console.log('🏠 [useRoom.loadRoom] Setting isLoading to false');
       setIsLoading(false);
     }
   }, [config]);
   
   // Change room
   const changeRoom = useCallback(async (roomId: string) => {
+    console.log('🏠 [useRoom.changeRoom] Starting room change process...');
+    console.log('🏠 [useRoom.changeRoom] from:', currentRoom, 'to:', roomId);
+    
     try {
       setIsLoading(true);
       setError(null);
@@ -86,16 +114,22 @@ export function useRoom(initialConfig?: Partial<RoomConfig>): UseRoomReturn {
       
       // Here you would implement the actual room changing logic
       // This might involve disposing current room and loading new one
+      console.log('🏠 [useRoom.changeRoom] Calling loadRoom...');
       
       await loadRoom(roomId);
       
+      console.log('🏠 [useRoom.changeRoom] Room changed successfully');
       debugLog('Room changed successfully', { roomId });
     } catch (err) {
+      console.error('🏠 [useRoom.changeRoom] Room change failed - Error details:', err);
+      console.error('🏠 [useRoom.changeRoom] Error stack:', err.stack);
+      
       const error = createError('ROOM_LOAD_FAILED', `Failed to change room to: ${roomId}`, err);
       setError(error);
       debugLog('Room change failed', { roomId, error });
       callbacksRef.current.onError?.(error);
     } finally {
+      console.log('🏠 [useRoom.changeRoom] Setting isLoading to false');
       setIsLoading(false);
     }
   }, [currentRoom, loadRoom]);

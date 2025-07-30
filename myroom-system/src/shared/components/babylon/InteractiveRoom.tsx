@@ -216,45 +216,91 @@ export default function InteractiveRoom() {
     if (!sceneRef.current || !roomResourceId) return
     
     const loadRoom = async () => {
+      console.log('🏠 [loadRoom] Starting room loading process...');
+      console.log('🏠 [loadRoom] roomResourceId:', roomResourceId);
+      console.log('🏠 [loadRoom] domainConfig:', domainConfig);
+      console.log('🏠 [loadRoom] rooms array:', rooms);
+      console.log('🏠 [loadRoom] sceneRef.current:', sceneRef.current);
+      
       try {
         // Load room using backend API
         if (domainConfig.backendDomain && domainConfig.apiKey) {
+          console.log('🏠 [loadRoom] Using backend API for room loading');
+          console.log('🏠 [loadRoom] Backend URL:', `${domainConfig.backendDomain}/api/rooms/resource/${roomResourceId}/presigned-download`);
+          
           const response = await fetch(`${domainConfig.backendDomain}/api/rooms/resource/${roomResourceId}/presigned-download`, {
             headers: {
               'x-api-key': domainConfig.apiKey
             }
           });
           
+          console.log('🏠 [loadRoom] Backend response status:', response.status);
+          console.log('🏠 [loadRoom] Backend response ok:', response.ok);
+          
           if (response.ok) {
             const data = await response.json();
+            console.log('🏠 [loadRoom] Backend response data:', data);
+            
             const presignedUrl = data.data.downloadUrl;
+            console.log('🏠 [loadRoom] Presigned URL:', presignedUrl);
+            
             const { root, file } = splitPath(presignedUrl);
+            console.log('🏠 [loadRoom] Split path - root:', root, 'file:', file);
+            
+            console.log('🏠 [loadRoom] Starting SceneLoader.ImportMeshAsync...');
             const res = await SceneLoader.ImportMeshAsync('', root, file, sceneRef.current);
+            console.log('🏠 [loadRoom] SceneLoader result:', res);
+            console.log('🏠 [loadRoom] Loaded meshes count:', res.meshes.length);
+            console.log('🏠 [loadRoom] First mesh:', res.meshes[0]);
+            
             if (roomRef.current) {
+              console.log('🏠 [loadRoom] Disposing previous room mesh');
               roomRef.current.dispose();
             }
             roomRef.current = res.meshes[0];
+            console.log('🏠 [loadRoom] Room loaded successfully via backend API');
             return;
           } else {
-            throw new Error(`Failed to load room from backend: ${response.status}`);
+            const errorText = await response.text();
+            console.error('🏠 [loadRoom] Backend API error response:', errorText);
+            throw new Error(`Failed to load room from backend: ${response.status} - ${errorText}`);
           }
         } else {
+          console.log('🏠 [loadRoom] Using fallback direct path loading');
+          console.log('🏠 [loadRoom] Missing backend config - domain:', domainConfig.backendDomain, 'apiKey:', domainConfig.apiKey ? 'present' : 'missing');
+          
           // Fallback to direct path loading
           const room = rooms.find(r => r.resourceId === roomResourceId);
+          console.log('🏠 [loadRoom] Found room in rooms array:', room);
+          
           if (room && room.path) {
             const fullRoomUrl = room.path.startsWith('http') ? room.path : room.path;
+            console.log('🏠 [loadRoom] Full room URL:', fullRoomUrl);
+            
             const { root, file } = splitPath(fullRoomUrl);
+            console.log('🏠 [loadRoom] Split path - root:', root, 'file:', file);
+            
+            console.log('🏠 [loadRoom] Starting SceneLoader.ImportMeshAsync (fallback)...');
             const res = await SceneLoader.ImportMeshAsync('', root, file, sceneRef.current);
+            console.log('🏠 [loadRoom] SceneLoader result (fallback):', res);
+            console.log('🏠 [loadRoom] Loaded meshes count (fallback):', res.meshes.length);
+            
             if (roomRef.current) {
+              console.log('🏠 [loadRoom] Disposing previous room mesh (fallback)');
               roomRef.current.dispose();
             }
             roomRef.current = res.meshes[0];
+            console.log('🏠 [loadRoom] Room loaded successfully via fallback');
           } else {
+            console.error('🏠 [loadRoom] No room found or missing path. Room:', room);
             throw new Error('Backend domain and API key are required for room loading');
           }
         }
       } catch (error) {
-        console.error('Failed to load room:', error);
+        console.error('🏠 [loadRoom] Failed to load room - Error details:', error);
+        console.error('🏠 [loadRoom] Error stack:', error.stack);
+        console.error('🏠 [loadRoom] Error name:', error.name);
+        console.error('🏠 [loadRoom] Error message:', error.message);
       }
     };
     
