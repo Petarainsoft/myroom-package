@@ -27,6 +27,7 @@ model Admin {
   uploadedItems  Item[] @relation("UploadedItems")
   uploadedAvatars Avatar[] @relation("UploadedAvatars")
   uploadedRooms Room[] @relation("UploadedRooms")
+  uploadedAnimations Animation[] @relation("UploadedAnimations")
 
   @@map("admins")
 }
@@ -53,6 +54,8 @@ model Developer {
   avatarPermissions DeveloperAvatarPermission[]
   roomUsage    RoomUsage[]
   roomPermissions DeveloperRoomPermission[]
+  animationUsage AnimationUsage[]
+  animationPermissions DeveloperAnimationPermission[]
 
   @@map("developers")
 }
@@ -79,6 +82,7 @@ model Project {
   itemPermissions   ProjectItemPermission[]
   avatarPermissions ProjectAvatarPermission[]
   roomPermissions   ProjectRoomPermission[]
+  animationPermissions ProjectAnimationPermission[]
 
   @@map("projects")
 }
@@ -708,5 +712,150 @@ enum RoomUsageAction {
   DOWNLOAD
   VIEW
   CUSTOMIZE
+  PURCHASE
+}
+
+// Animation Management Models
+
+// Animation Resources (GLB Files)
+model Animation {
+  id                String   @id @default(cuid())
+  name              String
+  description       String?
+  
+  // File information
+  s3Url             String   @map("s3_url")
+  s3Key             String   @map("s3_key")
+  fileSize          BigInt   @map("file_size")
+  fileType          String   @default("model/gltf-binary") @map("file_type")
+  mimeType          String?  @default("model/gltf-binary") @map("mime_type")
+  checksum          String?
+  
+  // Animation specific fields
+  gender            AnimationGender
+  animationType     AnimationType @default(IDLE) @map("animation_type")
+  
+  // Versioning and identification
+  version           String   @default("1.0.0")
+  resourceId        String   @unique @map("resource_id")
+  
+  // Pricing and access
+  isPremium         Boolean  @default(false) @map("is_premium")
+  isFree            Boolean  @default(true) @map("is_free")
+  price             Float?
+  
+  // Status and metadata
+  status            AnimationResourceStatus @default(ACTIVE)
+  metadata          Json?    @default("{}")
+  tags              String?  @default("")
+  keywords          String?  @default("")
+  
+  // Audit fields
+  uploadedByAdminId String?  @map("uploaded_by_admin_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  deletedAt         DateTime? @map("deleted_at")
+  
+  // Relations
+  uploadedBy        Admin?         @relation("UploadedAnimations", fields: [uploadedByAdminId], references: [id])
+  usage             AnimationUsage[]
+  permissions       DeveloperAnimationPermission[] @relation("AnimationPermissions")
+  projectPermissions ProjectAnimationPermission[]
+
+  @@map("animations")
+}
+
+// Animation Usage Tracking
+model AnimationUsage {
+  id                  String   @id @default(cuid())
+  animationResourceId String?  @map("animation_resource_id")
+
+  developerId         String?  @map("developer_id")
+  projectId          String?  @map("project_id")
+  action             AnimationUsageAction
+  userAgent          String?
+  ipAddress          String?  @map("ip_address")
+  metadata           Json?    @default("{}")
+  createdAt          DateTime @default(now()) @map("created_at")
+  
+  // Relations
+  animation          Animation?   @relation(fields: [animationResourceId], references: [id], onDelete: Cascade)
+  developer          Developer?   @relation(fields: [developerId], references: [id])
+  project            Project?     @relation(fields: [projectId], references: [id])
+
+  @@map("animation_usage")
+}
+
+// Developer Animation Permissions (for premium content)
+model DeveloperAnimationPermission {
+  id                  String   @id @default(cuid())
+  developerId         String   @map("developer_id")
+  animationResourceId String?  @map("animation_resource_id")
+
+  grantedAt           DateTime @default(now()) @map("granted_at")
+  expiresAt           DateTime? @map("expires_at")
+  isPaid              Boolean  @default(false) @map("is_paid")
+  paidAmount          Float?   @map("paid_amount")
+  grantedBy           String?  @map("granted_by")
+  reason              String?
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  
+  // Relations
+  developer           Developer         @relation(fields: [developerId], references: [id], onDelete: Cascade)
+  animation           Animation?        @relation("AnimationPermissions", fields: [animationResourceId], references: [id], onDelete: Cascade)
+
+  @@unique([developerId, animationResourceId])
+  @@map("developer_animation_permissions")
+}
+
+// Project Animation Permissions
+model ProjectAnimationPermission {
+  id          String   @id @default(cuid())
+  projectId   String   @map("project_id")
+  animationId String   @map("animation_id")
+  canAccess   Boolean  @default(true) @map("can_access")
+  canDownload Boolean  @default(true) @map("can_download")
+  grantedAt   DateTime @default(now()) @map("granted_at")
+  expiresAt   DateTime? @map("expires_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  animation   Animation @relation(fields: [animationId], references: [id], onDelete: Cascade)
+  
+  @@unique([projectId, animationId])
+  @@map("project_animation_permissions")
+}
+
+// Animation Enums
+enum AnimationGender {
+  MALE
+  FEMALE
+  UNISEX
+}
+
+enum AnimationType {
+  IDLE
+  WALK
+  RUN
+  JUMP
+  DANCE
+  WAVE
+  SIT
+  CUSTOM
+}
+
+enum AnimationResourceStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum AnimationUsageAction {
+  LOAD
+  DOWNLOAD
+  VIEW
+  PLAY
   PURCHASE
 }

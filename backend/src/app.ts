@@ -26,6 +26,7 @@ import healthRoutes from '@/routes/health';
 import docsRoutes from '@/routes/docs';
 import roomRoutes from '@/routes/roomRoutes';
 import avatarRoutes from '@/routes/avatar';
+import animationRoutes from '@/routes/animation';
 
 class App {
   public app: express.Application;
@@ -178,6 +179,7 @@ class App {
     // this.app.use('/api/apikey', apikeyRoutes); // File not found, commented out
     this.app.use('/api/rooms', roomRoutes);
     this.app.use('/api/avatar', avatarRoutes);
+    this.app.use('/api/animations', animationRoutes);
     this.app.use('/api/health', healthRoutes);
     this.app.use('/api', docsRoutes);
     
