@@ -77,6 +77,7 @@ model Project {
   manifests   Manifest[]
   avatarUsage AvatarUsage[]
   roomUsage   RoomUsage[]
+  animationUsage AnimationUsage[]
   
   // Project permissions
   itemPermissions   ProjectItemPermission[]

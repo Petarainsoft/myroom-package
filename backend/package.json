@@ -23,6 +23,7 @@
     "db:init-items": "tsx scripts/import-items.ts --dir ../resources/items",
     "db:init-avatars": "tsx scripts/import-avatars.ts --dir ../resources/avatars",
     "db:init-rooms": "tsx scripts/import-rooms.ts --dir ../resources/rooms",
+    "db:init-animations": "tsx scripts/import-animations.ts --dir ../resources/animations",
     "admin:create": "tsx src/scripts/create-admin.js",
     "deploy:setup": "npm run db:generate && npm run db:deploy && npm run db:seed",
     "clean": "rimraf dist",

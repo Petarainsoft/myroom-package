@@ -51,7 +51,11 @@ async function processAnimations(dir: string, adminId: string) {
       gender = 'FEMALE';
     }
     
-    // Upload to S3
+    // Create specific S3 key for animations
+    const animationKey = `animations/${gender.toLowerCase()}/${fileName}.glb`;
+    const specificS3Url = `models/${animationKey}`;
+    
+    // Upload to S3 with specific URL
     const uploadResult = await s3Service.uploadFile(
       fileBuffer,
       file,
@@ -59,6 +63,7 @@ async function processAnimations(dir: string, adminId: string) {
       {
         contentType: 'model/gltf-binary',
         metadata: { category: 'animations' },
+        specificS3Url: specificS3Url,
         ignoreIfExists: false
       }
     );
