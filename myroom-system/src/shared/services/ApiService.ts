@@ -37,12 +37,24 @@ class ApiService {
       ...options.headers,
     };
 
-    return fetch(url, {
+    // Log request details
+    console.log('Making API request to:', url);
+    console.log('Request method:', options.method || 'GET');
+    console.log('Request headers:', headers);
+    if (options.body) {
+      console.log('Request body:', options.body);
+    }
+
+    const response = await fetch(url, {
       ...options,
       headers,
     });
-  }
 
+    // Log response status
+    console.log('Response status:', response.status, response.statusText);
+
+    return response;
+  }
   /**
    * GET request
    */
