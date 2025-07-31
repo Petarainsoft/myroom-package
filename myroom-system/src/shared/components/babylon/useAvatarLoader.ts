@@ -18,6 +18,18 @@ interface UseAvatarLoaderParams {
   shadowGeneratorRef?: React.MutableRefObject<ShadowGenerator | null>;
 }
 
+// Animation cache interface
+interface AnimationCacheEntry {
+  animationGroups: any[];
+  url: string;
+  gender: string;
+  timestamp: number;
+}
+
+// Global animation cache to persist across component instances
+const animationCache = new Map<string, AnimationCacheEntry>();
+const CACHE_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes
+
 // Helper function to get avatar part URL - exclusively uses backend API
 const getAvatarPartUrl = async (partData: any, domainConfig: any): Promise<string> => {
   console.log('🔍 [getAvatarPartUrl] partData:', { name: partData.name, resourceId: partData.resourceId });
@@ -97,6 +109,70 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
     console.error('🎬 [getAnimationUrl] Backend fetch error:', error);
     throw error;
   }
+};
+
+// Helper function to manage animation cache
+const getCachedAnimation = (cacheKey: string): AnimationCacheEntry | null => {
+  const cached = animationCache.get(cacheKey);
+  if (cached) {
+    const now = Date.now();
+    if (now - cached.timestamp < CACHE_EXPIRY_TIME) {
+      console.log('🎬 [getCachedAnimation] ✅ Using cached animation for:', cacheKey);
+      return cached;
+    } else {
+      console.log('🎬 [getCachedAnimation] ⏰ Cache expired for:', cacheKey);
+      animationCache.delete(cacheKey);
+    }
+  }
+  return null;
+};
+
+const setCachedAnimation = (cacheKey: string, animationGroups: any[], url: string, gender: string): void => {
+  // Clone animation groups to avoid reference issues
+  const clonedGroups = animationGroups.map(group => {
+    // Create a lightweight copy with essential properties
+    return {
+      name: group.name,
+      targetedAnimations: group.targetedAnimations,
+      animatables: group.animatables,
+      from: group.from,
+      to: group.to,
+      isPlaying: group.isPlaying,
+      speedRatio: group.speedRatio,
+      clone: group.clone.bind(group) // Keep reference to clone method
+    };
+  });
+  
+  animationCache.set(cacheKey, {
+    animationGroups: clonedGroups,
+    url,
+    gender,
+    timestamp: Date.now()
+  });
+  console.log('🎬 [setCachedAnimation] 💾 Cached animation for:', cacheKey);
+};
+
+// Helper function to clear expired cache entries
+const clearExpiredCache = (): void => {
+  const now = Date.now();
+  const expiredKeys: string[] = [];
+  
+  animationCache.forEach((entry, key) => {
+    if (now - entry.timestamp >= CACHE_EXPIRY_TIME) {
+      expiredKeys.push(key);
+    }
+  });
+  
+  expiredKeys.forEach(key => {
+    animationCache.delete(key);
+    console.log('🎬 [clearExpiredCache] 🗑️ Removed expired cache for:', key);
+  });
+};
+
+// Helper function to clear all cache
+const clearAllCache = (): void => {
+  animationCache.clear();
+  console.log('🎬 [clearAllCache] 🗑️ Cleared all animation cache');
 };
 
   /**
@@ -182,18 +258,39 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
     }) => {
       if (!sceneRef.current || !avatarRef.current) return;
       try {
-        // Check if local GLB loading is disabled
-        // if (DISABLE_LOCAL_GLB_LOADING) {
-        //   console.warn('⚠️ [loadAnimationFromGLB] Local GLB loading is disabled by DISABLE_LOCAL_GLB_LOADING flag');
-        //   throw new Error('Local GLB animation loading is temporarily disabled');
-        // }
-        
         const currentGender = avatarConfig.gender;
-        const animationUrl = await getAnimationUrl(currentGender, domainConfig);
-        console.log('🎬 [loadAnimationFromGLB] Loading animation from:', animationUrl);
-        const result = await SceneLoader.ImportMeshAsync("", animationUrl, "", sceneRef.current);
-        if (result.animationGroups && result.animationGroups.length > 0) {
-          const targetAnimGroup = result.animationGroups.find(group =>
+        const cacheKey = `${currentGender}_${animationName}`;
+        
+        // Check cache first
+        let animationGroups: any[] = [];
+        const cachedAnimation = getCachedAnimation(cacheKey);
+        
+        if (cachedAnimation) {
+          // Use cached animation groups
+          animationGroups = cachedAnimation.animationGroups;
+          console.log('🎬 [loadAnimationFromGLB] Using cached animation groups for:', animationName);
+        } else {
+          // Load from GLB file
+          const animationUrl = await getAnimationUrl(currentGender, domainConfig);
+          console.log('🎬 [loadAnimationFromGLB] Loading animation from:', animationUrl);
+          const result = await SceneLoader.ImportMeshAsync("", animationUrl, "", sceneRef.current);
+          
+          if (result.animationGroups && result.animationGroups.length > 0) {
+            animationGroups = result.animationGroups;
+            // Cache the loaded animation groups
+            setCachedAnimation(cacheKey, animationGroups, animationUrl, currentGender);
+            
+            // Dispose original meshes from animation file
+            result.meshes.forEach(mesh => {
+              if (!mesh.isDisposed()) {
+                mesh.dispose();
+              }
+            });
+          }
+        }
+        
+        if (animationGroups && animationGroups.length > 0) {
+          const targetAnimGroup = animationGroups.find(group =>
             group.name.toLowerCase().includes(animationName.toLowerCase()));
           if (!targetAnimGroup) return;
           // Find all skeletons from avatar parts
@@ -334,15 +431,9 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
               currentAnimRef.current = animToPlay;
             }
           }
-          // Dispose original meshes from animation file
-          result.meshes.forEach(mesh => {
-            if (!mesh.isDisposed()) {
-              mesh.dispose();
-            }
-          });
         }
       } catch (error) {
-        // Handle error
+        console.error('🎬 [loadAnimationFromGLB] Error loading animation:', error);
       }
     }, [sceneRef, avatarConfig, domainConfig, loadedAvatarPartsRef, pendingPartsRef, idleAnimRef, walkAnimRef, currentAnimRef, allIdleAnimationsRef, allWalkAnimationsRef]);
   
@@ -737,6 +828,15 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
       loadAvatar();
     }, [sceneRef.current, avatarConfig]);
 
+    // Effect to periodically clear expired cache
+    useEffect(() => {
+      const interval = setInterval(() => {
+        clearExpiredCache();
+      }, 60000); // Check every minute
+      
+      return () => clearInterval(interval);
+    }, []);
+
     // Effect to load avatar parts immediately on component mount
     useEffect(() => {
       if (sceneRef.current && avatarConfig && avatarRef.current) {
@@ -796,6 +896,10 @@ const getAnimationUrl = async (gender: string, domainConfig: any): Promise<strin
       isAnimationReady,
       setIsAnimationReady,
       loadAvatar,
-      loadAnimationFromGLB
+      loadAnimationFromGLB,
+      // Cache management functions
+      clearAnimationCache: clearAllCache,
+      clearExpiredAnimationCache: clearExpiredCache,
+      getAnimationCacheSize: () => animationCache.size
     };
   }
