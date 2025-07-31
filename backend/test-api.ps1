@@ -9,8 +9,8 @@ $body = @{
 Write-Host "Request body: $body"
 
 try {
-    Write-Host "Sending POST request to http://localhost:3000/api/developer/register"
-$response = Invoke-RestMethod -Uri 'http://localhost:3000/api/developer/register' -Method POST -ContentType 'application/json' -Body $body -Verbose
+    Write-Host "Sending POST request to http://localhost:3579/api/developer/register"
+$response = Invoke-RestMethod -Uri 'http://localhost:3579/api/developer/register' -Method POST -ContentType 'application/json' -Body $body -Verbose
     Write-Host "Success!"
     Write-Host "Response: $($response | ConvertTo-Json -Depth 3)"
 } catch {

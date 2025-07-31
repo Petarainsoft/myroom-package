@@ -86,5 +86,5 @@ Write-Host ""
 Write-Host "🚀 You can now start the application with:" -ForegroundColor Cyan
 Write-Host "   docker-compose up -d" -ForegroundColor White
 Write-Host ""
-Write-Host "📊 Health check endpoint: http://localhost:3000/health" -ForegroundColor Cyan
-Write-Host "📖 API documentation: http://localhost:3000/docs" -ForegroundColor Cyan
+Write-Host "📊 Health check endpoint: http://localhost:3579/health" -ForegroundColor Cyan
+Write-Host "📖 API documentation: http://localhost:3579/docs" -ForegroundColor Cyan

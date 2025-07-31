@@ -38,7 +38,7 @@ This example demonstrates how to integrate MyRoom System into a Next.js applicat
    
    Update `.env.local` with your backend configuration:
    ```bash
-   NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+   NEXT_PUBLIC_BACKEND_URL=http://localhost:3579
    NEXT_PUBLIC_MYROOM_API_KEY=your-api-key
    ```
 
@@ -48,7 +48,7 @@ This example demonstrates how to integrate MyRoom System into a Next.js applicat
    ```
 
 4. **Open your browser:**
-   Navigate to `http://localhost:3000`
+   Navigate to `http://localhost:3579`
 
 ## Project Structure
 
@@ -90,7 +90,7 @@ Next.js environment variables with `NEXT_PUBLIC_` prefix:
 
 ```jsx
 const backendConfig = {
-  apiEndpoint: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000',
+  apiEndpoint: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3579',
   apiKey: process.env.NEXT_PUBLIC_MYROOM_API_KEY
 };
 ```
@@ -163,7 +163,7 @@ const nextConfig = {
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|----------|
-| `NEXT_PUBLIC_BACKEND_URL` | Backend API URL | Yes | `http://localhost:3000` |
+| `NEXT_PUBLIC_BACKEND_URL` | Backend API URL | Yes | `http://localhost:3579` |
 | `NEXT_PUBLIC_MYROOM_API_KEY` | API key for authentication | Yes | - |
 | `NEXT_PUBLIC_DEBUG_MODE` | Enable debug mode | No | `false` |
 
@@ -205,7 +205,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
 RUN npm run build
-EXPOSE 3000
+EXPOSE 3579
 CMD ["npm", "start"]
 ```
 

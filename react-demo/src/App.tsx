@@ -3,7 +3,7 @@ import { Toaster, toast } from 'sonner';
 import { MyRoom } from 'myroom-system';
 
 // Configuration
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:3579/api';
 const API_KEY = 'pk_9dd7a67c7c6d69c7f5ae603bd78656944d61667257ce60c59a676d35ccb6a16f';
 
 // Types based on default-preset.json structure

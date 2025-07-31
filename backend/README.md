@@ -87,7 +87,7 @@ Update `.env` with your configuration:
 ```env
 # Server Configuration
 NODE_ENV=development
-PORT=3000
+PORT=3579
 HOST=localhost
 API_PREFIX=/api
 
@@ -110,7 +110,7 @@ AWS_S3_BUCKET="your-bucket-name"
 AWS_CLOUDFRONT_DOMAIN="your-cloudfront-domain"
 
 # Security
-CORS_ORIGIN="http://localhost:3000,http://localhost:5173"
+CORS_ORIGIN="http://localhost:3579,http://localhost:5173"
 CORS_CREDENTIALS=true
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
@@ -144,7 +144,7 @@ npm run db:seed
 npm run dev
 ```
 
-The API will be available at `http://localhost:3000`
+The API will be available at `http://localhost:3579`
 
 ## 📚 API Documentation
 

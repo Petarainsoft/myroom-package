@@ -35,11 +35,11 @@ MyRoom System connects to a backend API for data. Make sure your backend is runn
 
 ```bash
 # Example backend URL
-REACT_APP_BACKEND_URL=http://localhost:3000
+REACT_APP_BACKEND_URL=http://localhost:3579
 REACT_APP_MYROOM_API_KEY=your-api-key
 
 # For Next.js
-NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3579
 NEXT_PUBLIC_MYROOM_API_KEY=your-api-key
 ```
 
@@ -68,7 +68,7 @@ function App() {
     <div style={{ width: '100vw', height: '100vh' }}>
       <IntegratedBabylonScene
         // Backend Configuration
-        apiBaseUrl={process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000'}
+        apiBaseUrl={process.env.REACT_APP_BACKEND_URL || 'http://localhost:3579'}
         customDomain={process.env.REACT_APP_BACKEND_URL}
         
         // Component Configuration
@@ -133,7 +133,7 @@ export default function HomePage() {
     <div style={{ width: '100vw', height: '100vh' }}>
       <MyRoom
         // Backend Configuration
-        apiEndpoint={process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000'}
+        apiEndpoint={process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3579'}
         customDomain={process.env.NEXT_PUBLIC_BACKEND_URL}
         
         // Component Configuration
@@ -169,7 +169,7 @@ export default function HomePage() {
 Create a `.env.local` file:
 
 ```bash
-NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3579
 NEXT_PUBLIC_MYROOM_API_KEY=your-api-key
 ```
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL as string || 'http://localhost:3579/api';
 
 // Main API instance for JWT-authenticated endpoints
 const api = axios.create({

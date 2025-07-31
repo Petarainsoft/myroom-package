@@ -10,7 +10,7 @@ const getConfiguredBackendDomain = () => {
     return (window as any).MYROOM_CONFIG.backendDomain;
   }
   // Fallback to localhost for development
-  return 'http://localhost:3000';
+  return 'http://localhost:3579';
 };
 const getConfiguredApiKey = () => {
   if (typeof window !== 'undefined' && (window as any).MYROOM_CONFIG && (window as any).MYROOM_CONFIG.apiKey) {

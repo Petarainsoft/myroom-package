@@ -80,10 +80,10 @@ RUN chown -R myroom:nodejs /app
 
 USER myroom
 
-EXPOSE 3000
+EXPOSE 3579
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:3000/health || exit 1
+    CMD curl -f http://localhost:3579/health || exit 1
 
 ENTRYPOINT ["dumb-init", "--", "/app/scripts/docker-entrypoint.sh"]
 CMD ["npm", "start"]

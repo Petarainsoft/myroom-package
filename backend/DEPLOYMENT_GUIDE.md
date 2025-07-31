@@ -119,8 +119,8 @@ AWS_S3_BUCKET="your-bucket-name"
 
 # Application
 NODE_ENV="production"
-PORT="3000"
-CORS_ORIGIN="http://localhost:3000"
+PORT="3579"
+CORS_ORIGIN="http://localhost:3579"
 
 # Admin defaults (optional)
 DEFAULT_ADMIN_EMAIL="admin@petarainsoft.com"
@@ -146,7 +146,7 @@ docker build -t myroom-backend .
 # Run the container
 docker run -d \
   --name myroom-backend \
-  -p 3000:3000 \
+  -p 3579:3579 \
   --env-file .env \
   myroom-backend
 ```
@@ -179,11 +179,11 @@ After deployment, verify the setup:
 
 1. **Health Check:**
 ```bash
-curl http://your-domain:3000/health
+curl http://your-domain:3579/health
 ```
 
 2. **API Documentation:**
-Open `http://your-domain:3000/docs` in your browser
+Open `http://your-domain:3579/docs` in your browser
 
 3. **Admin Login:**
 - URL: Admin app URL

@@ -139,7 +139,7 @@ const nextConfig = {
       // Proxy API calls to backend
       {
         source: '/api/myroom/:path*',
-        destination: `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000'}/api/:path*`,
+        destination: `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3579'}/api/:path*`,
       },
     ];
   },

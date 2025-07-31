@@ -17,7 +17,7 @@ docker-compose config
 
 # Check for port conflicts
 Write-Host "📋 Checking port usage..." -ForegroundColor Yellow
-netstat -an | findstr ":3000"
+netstat -an | findstr ":3579"
 netstat -an | findstr ":5432"
 netstat -an | findstr ":6379"
 
@@ -49,7 +49,7 @@ docker-compose logs --tail=50
 Write-Host "🏥 Checking API health..." -ForegroundColor Yellow
 Start-Sleep -Seconds 10
 try {
-    $response = Invoke-WebRequest -Uri "http://localhost:3000/health" -TimeoutSec 5
+    $response = Invoke-WebRequest -Uri "http://localhost:3579/health" -TimeoutSec 5
     Write-Host "✅ API is healthy: $($response.StatusCode)" -ForegroundColor Green
 } catch {
     Write-Host "❌ API health check failed: $($_.Exception.Message)" -ForegroundColor Red

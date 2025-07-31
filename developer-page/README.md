@@ -10,7 +10,7 @@ This React application connects to the backend API for developer features.
    ```
 2. Create a `.env` file with:
    ```env
-   VITE_API_BASE_URL=http://localhost:3000/api
+   VITE_API_BASE_URL=http://localhost:3579/api
    ```
 3. Run the development server:
    ```bash

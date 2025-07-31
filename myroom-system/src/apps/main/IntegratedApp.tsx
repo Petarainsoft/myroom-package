@@ -12,6 +12,7 @@ import { ManifestDropdown } from '../../shared/components/ManifestDropdown';
 import { PresetConfig } from '../../shared/types/PresetConfig';
 import { sceneConfigLogger } from '../../shared/services/SceneConfigLogger';
 import { toast } from 'sonner';
+import GettingStarted from '../../pages/GettingStarted';
 import './App.css';
 
 type AppMode = 'room' | 'avatar' | 'integrated';
@@ -1192,20 +1193,16 @@ const InteractiveRoomWithAvatar: React.FC = () => {
       <header className="website-header">
         <div className="container">
           <h1>
-            <span
-              style={{ 
-                height: '40px', 
-                lineHeight: '40px',
-                fontSize: '24px',
-                fontWeight: 'bold',
-                color: '#4338ca',
+            <img
+              src="/icon/petarainlogo.png"
+              alt="MyRoom Service"
+              style={{
+                height: '40px',
                 cursor: 'pointer',
                 verticalAlign: 'middle'
               }}
               onClick={() => window.location.reload()}
-            >
-              🏠 MyRoom Service
-            </span>
+            />
           </h1>
           <nav className="main-nav">
             <a
@@ -1743,6 +1740,12 @@ const InteractiveRoomWithAvatar: React.FC = () => {
                     >
                       Web Component
                     </button>
+                    <button
+                      className={`tab-button ${activeTab === 'gettingstarted' ? 'active' : ''}`}
+                      onClick={() => handleTabChange('gettingstarted')}
+                    >
+                      Getting Started
+                    </button>
                   </div>
 
                   <div className="tab-content">
@@ -2022,6 +2025,11 @@ mainScene.addEventListener('avatar-changed', (event) => {
                           Copy Code
                         </button>
                       </div>
+                    </div>
+
+                    {/* Getting Started tab */}
+                    <div className={`tab-pane ${activeTab === 'gettingstarted' ? 'active' : ''}`}>
+                      <GettingStarted onClose={closeIntegrationGuide} />
                     </div>
                   </div>
                 </div>

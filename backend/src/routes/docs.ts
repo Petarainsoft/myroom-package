@@ -62,7 +62,7 @@ router.get('/postman', asyncHandler(async (req, res) => {
         4. Use the tokens in subsequent requests
         
         ## Environment Variables:
-        - baseUrl: API base URL (e.g., http://localhost:3000)
+        - baseUrl: API base URL (e.g., http://localhost:3579)
         - authToken: JWT token from login
         - apiKey: API key for certain endpoints
       `,

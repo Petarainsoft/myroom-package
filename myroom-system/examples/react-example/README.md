@@ -37,7 +37,7 @@ This example demonstrates how to integrate MyRoom System into a React applicatio
    
    Update `.env.local` with your backend configuration:
    ```bash
-   REACT_APP_BACKEND_URL=http://localhost:3000
+   REACT_APP_BACKEND_URL=http://localhost:3579
    REACT_APP_MYROOM_API_KEY=your-api-key
    ```
 
@@ -47,7 +47,7 @@ This example demonstrates how to integrate MyRoom System into a React applicatio
    ```
 
 4. **Open your browser:**
-   Navigate to `http://localhost:3000`
+   Navigate to `http://localhost:3579`
 
 ## Project Structure
 
@@ -82,7 +82,7 @@ The main application component that demonstrates:
 1. **Backend Integration**
    ```jsx
    const backendConfig = {
-     apiEndpoint: process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000',
+     apiEndpoint: process.env.REACT_APP_BACKEND_URL || 'http://localhost:3579',
      apiKey: process.env.REACT_APP_MYROOM_API_KEY
    };
    ```
@@ -127,7 +127,7 @@ The main application component that demonstrates:
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|----------|
-| `REACT_APP_BACKEND_URL` | Backend API URL | Yes | `http://localhost:3000` |
+| `REACT_APP_BACKEND_URL` | Backend API URL | Yes | `http://localhost:3579` |
 | `REACT_APP_MYROOM_API_KEY` | API key for authentication | Yes | - |
 
 ## Available Scripts

@@ -362,9 +362,9 @@ COPY --from=builder /app/package.json ./package.json
 
 USER myroom
 
-EXPOSE 3000
+EXPOSE 3579
 
-ENV PORT 3000
+ENV PORT 3579
 
 CMD ["node", "dist/index.js"]
 ```
@@ -399,7 +399,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile.dev
     ports:
-      - "3000:3000"
+      - "3579:3579"
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/myroom_dev
@@ -416,9 +416,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.dev
     ports:
-      - "3001:3000"
+      - "3001:3579"
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - NEXT_PUBLIC_API_URL=http://localhost:3579
     volumes:
       - ./frontend:/app
       - /app/node_modules

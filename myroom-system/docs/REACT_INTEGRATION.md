@@ -27,7 +27,7 @@ MyRoom System cần kết nối với backend API để lấy dữ liệu. Đả
 ```javascript
 // Tạo file config/myroom.config.js
 export const myroomConfig = {
-  backendDomain: 'http://localhost:3000', // URL backend của bạn
+  backendDomain: 'http://localhost:3579', // URL backend của bạn
   apiKey: 'your-api-key-here', // API key từ backend
   projectId: 'your-project-id' // Project ID (tùy chọn)
 };
@@ -58,7 +58,7 @@ function App() {
     <div style={{ width: '100vw', height: '100vh' }}>
       <MyRoom
         // Cấu hình backend
-        apiEndpoint="http://localhost:3000"
+        apiEndpoint="http://localhost:3579"
         
         // Cấu hình phòng
         roomConfig={{
@@ -115,7 +115,7 @@ function AdvancedApp() {
   return (
     <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
       <MyRoom
-        apiEndpoint="http://localhost:3000"
+        apiEndpoint="http://localhost:3579"
         roomConfig={{ defaultRoom: 'living-room' }}
         avatarConfig={{ defaultGender: 'male' }}
       />
@@ -163,7 +163,7 @@ export default function MyRoomPage() {
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
       <MyRoom
-        apiEndpoint={process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000'}
+        apiEndpoint={process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3579'}
         roomConfig={{
           defaultRoom: 'living-room',
           enableRoomSwitching: true
@@ -249,7 +249,7 @@ export default function MyRoomPage() {
 ### .env.local (Next.js)
 
 ```env
-NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3579
 NEXT_PUBLIC_MYROOM_API_KEY=your-api-key-here
 NEXT_PUBLIC_MYROOM_PROJECT_ID=your-project-id
 ```
@@ -257,7 +257,7 @@ NEXT_PUBLIC_MYROOM_PROJECT_ID=your-project-id
 ### .env (React)
 
 ```env
-REACT_APP_BACKEND_URL=http://localhost:3000
+REACT_APP_BACKEND_URL=http://localhost:3579
 REACT_APP_MYROOM_API_KEY=your-api-key-here
 REACT_APP_MYROOM_PROJECT_ID=your-project-id
 ```

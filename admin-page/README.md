@@ -10,7 +10,7 @@ This is a simple React application built with Vite. It connects to the backend A
    ```
 2. Create a `.env` file with:
    ```env
-   VITE_API_BASE_URL=http://localhost:3000/api
+   VITE_API_BASE_URL=http://localhost:3579/api
    ```
 3. Run the development server:
    ```bash

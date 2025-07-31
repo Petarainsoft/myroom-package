@@ -23,7 +23,7 @@ function App() {
 
   // Backend configuration
   const backendConfig = {
-    apiEndpoint: process.env.REACT_APP_BACKEND_URL || 'http://localhost:3000',
+    apiEndpoint: process.env.REACT_APP_BACKEND_URL || 'http://localhost:3579',
     apiKey: process.env.REACT_APP_MYROOM_API_KEY || 'pk_test_1234567890abcdef1234567890abcdef'
   };
 
