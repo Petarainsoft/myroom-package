@@ -48,6 +48,9 @@ const envSchema = z.object({
   // CORS Configuration
   CORS_ORIGIN: z.string().default('http://localhost:5174'),
   CORS_CREDENTIALS: z.string().transform(val => val === 'true').default('true'),
+  CORS_MAX_AGE: z.string().transform(Number).default('86400'),
+  CORS_PREFLIGHT_CONTINUE: z.string().transform(val => val === 'true').default('false'),
+  CORS_OPTIONS_SUCCESS_STATUS: z.string().transform(Number).default('204'),
 
   // File Upload Configuration
   MAX_FILE_SIZE: z.string().transform(Number).default('104857600'), // 100MB

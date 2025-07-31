@@ -66,16 +66,48 @@ class App {
       crossOriginEmbedderPolicy: false,
     }));
 
-    // CORS configuration
-    // In development allow requests from any origin to simplify local testing.
-    // In production, restrict to the whitelist specified via CORS_ORIGIN env variable.
+    // CORS configuration with enhanced security
     this.app.use(cors({
-      origin: derivedConfig.isDevelopment ? true : derivedConfig.corsOrigins,
+      origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        // In development, allow any localhost origin
+        if (derivedConfig.isDevelopment && origin.includes('localhost')) {
+          return callback(null, true);
+        }
+        
+        // Check against whitelist
+        if (derivedConfig.corsOrigins.includes(origin)) {
+          return callback(null, true);
+        }
+        
+        // Log unauthorized CORS attempts
+        logger.warn('CORS: Unauthorized origin attempt', { origin, ip: 'unknown' });
+        return callback(new Error('Not allowed by CORS'), false);
+      },
       credentials: config.CORS_CREDENTIALS,
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-      exposedHeaders: ['X-Total-Count', 'X-Page-Count'],
-      maxAge: 86400, // 24 hours
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+      allowedHeaders: [
+        'Content-Type', 
+        'Authorization', 
+        'X-API-Key', 
+        'X-Requested-With',
+        'Accept',
+        'Origin',
+        'Cache-Control',
+        'X-File-Name'
+      ],
+      exposedHeaders: [
+        'X-Total-Count', 
+        'X-Page-Count', 
+        'X-Rate-Limit-Limit',
+        'X-Rate-Limit-Remaining',
+        'X-Rate-Limit-Reset'
+      ],
+      maxAge: config.CORS_MAX_AGE,
+      preflightContinue: config.CORS_PREFLIGHT_CONTINUE,
+      optionsSuccessStatus: config.CORS_OPTIONS_SUCCESS_STATUS
     }));
 
     // Compression
