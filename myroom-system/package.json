@@ -1,7 +1,7 @@
 {
   "name": "myroom-system",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "main": "./dist/myroom-system.umd.js",
   "module": "./dist/myroom-system.es.js",
@@ -79,7 +79,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/myroom-system.git"
+    "url": "https://github.com/Petarainsoft/myroom-package.git"
   },
   "license": "MIT"
 }

@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { Toaster, toast } from 'sonner';
-import { MyRoom } from 'myroom-system';
+import { MyRoom } from '@petarain/myroom-system';
 
 // Configuration
-const API_BASE_URL = 'http://localhost:3579/api';
+const API_BASE_URL = 'https://settled-iguana-fast.ngrok-free.app/api';
 const API_KEY = 'pk_9dd7a67c7c6d69c7f5ae603bd78656944d61667257ce60c59a676d35ccb6a16f';
 
 // Types based on default-preset.json structure
@@ -91,7 +91,7 @@ class ApiService {
 // Real MyRoom component is now imported from myroom-system
 
 function App() {
-  const myRoomRef = useRef(null);
+  const myRoomRef = useRef<any>(null);
   const [apiService] = useState(() => new ApiService(API_BASE_URL, API_KEY));
   
   // State for real data
@@ -477,8 +477,8 @@ function App() {
               {roomConfig && avatarConfig ? (
                 <MyRoom
                 ref={myRoomRef}
-                roomConfig={roomConfig}
-                avatarConfig={avatarConfig}
+                roomConfig={roomConfig as any}
+                avatarConfig={avatarConfig as any}
                 onSceneReady={handleSceneReady}
                 onError={handleError}
                 style={{ width: '100%', height: '400px' }}

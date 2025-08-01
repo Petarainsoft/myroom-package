@@ -50,7 +50,7 @@ export default function Home() {
   // Backend configuration từ environment variables
   const backendConfig = {
     apiEndpoint: process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3579',
-    apiKey: process.env.NEXT_PUBLIC_MYROOM_API_KEY || 'pk_test_1234567890abcdef1234567890abcdef'
+    apiKey: process.env.NEXT_PUBLIC_MYROOM_API_KEY || 'pk_9dd7a67c7c6d69c7f5ae603bd78656944d61667257ce60c59a676d35ccb6a16f'
   };
 
   // Room configuration

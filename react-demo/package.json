@@ -10,8 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "myroom-system": "file:../myroom-system",
-    "react": "^18.3.1",
+    "@petarain/myroom-system": "github:Petarainsoft/myroom-package",
     "react-dom": "^18.3.1",
     "sonner": "^2.0.6"
   },
