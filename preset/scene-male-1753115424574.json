@@ -1,0 +1,87 @@
+{
+  "version": "1.0",
+  "timestamp": "2025-07-21T16:30:24.571Z",
+  "room": {
+    "name": "Living Room",
+    "path": "/models/rooms/cate001/MR_KHROOM_0001.glb",
+    "resourceId": "relax-mr_khroom_0001"
+  },
+  "avatar": {
+    "gender": "male",
+    "parts": {
+      "body": "/models/male/male_body/male_body.glb",
+      "hair": "/models/male/male_hair/male_hair_001.glb",
+      "top": "/models/male/male_top/male_top_001.glb",
+      "bottom": "/models/male/male_bottom/male_bottom_001.glb",
+      "shoes": "/models/male/male_shoes/male_shoes_001.glb",
+      "fullset": null,
+      "accessory": null
+    },
+    "colors": {
+      "hair": "#4A301B",
+      "top": "#1E90FF"
+    }
+  },
+  "items": [
+    {
+      "id": "item_1753115307413",
+      "name": "Bed 04",
+      "path": "/models/items/Beds/Bed_04.glb",
+      "position": {
+        "x": 0.8311794973085886,
+        "y": 0,
+        "z": 1.2671257590503329
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "id": "item_1753115334545",
+      "name": "Carpet 02",
+      "path": "/models/items/Carpet/Carpet_02.glb",
+      "position": {
+        "x": 0.1811184580282692,
+        "y": 0,
+        "z": -1.485018025190672
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    },
+    {
+      "id": "item_1753115355964",
+      "name": "Armchair 20",
+      "path": "/models/items/Chair/Armchair_20.glb",
+      "position": {
+        "x": -0.8734708295568394,
+        "y": 0,
+        "z": 0.637536509699344
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      }
+    }
+  ]
+}
