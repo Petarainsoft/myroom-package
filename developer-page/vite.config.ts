@@ -25,7 +25,7 @@ export default defineConfig({
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:3579',
+        target: 'https://settled-iguana-fast.ngrok-free.app',
         changeOrigin: true,
       }
     }

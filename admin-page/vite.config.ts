@@ -7,9 +7,10 @@ export default defineConfig({
     port: 5175,
     proxy: {
       '/api': {
-        target: 'http://localhost:3579',
+        target: 'https://settled-iguana-fast.ngrok-free.app',
         changeOrigin: true,
       }
-    }
+    },
+    allowedHosts: ['myroom.petarainsoft.com']
   }
 });
