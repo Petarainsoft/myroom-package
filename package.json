@@ -1,0 +1,65 @@
+{
+  "name": "@petarain/myroom-system",
+  "version": "1.0.0",
+  "description": "A comprehensive 3D room customization system for React and Next.js applications",
+  "type": "module",
+  "main": "./myroom-system.umd.js",
+  "module": "./myroom-system.es.js",
+  "types": "./index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./myroom-system.es.js",
+      "require": "./myroom-system.umd.js"
+    }
+  },
+  "files": [
+    "*.js",
+    "*.js.map",
+    "*.d.ts",
+    "lib/",
+    "models/",
+    "animations/",
+    "textures/",
+    "manifest/",
+    "preset/",
+    "icon/",
+    "config-domain.js"
+  ],
+  "keywords": [
+    "react",
+    "nextjs",
+    "3d",
+    "babylonjs",
+    "room",
+    "avatar",
+    "customization",
+    "webgl",
+    "component",
+    "library"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Petarainsoft/myroom-package.git"
+  },
+  "author": "Petarain Soft",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Petarainsoft/myroom-package/issues"
+  },
+  "homepage": "https://github.com/Petarainsoft/myroom-package#readme",
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^7.31.1",
+    "@babylonjs/gui": "^7.31.1",
+    "@babylonjs/loaders": "^7.31.1",
+    "@babylonjs/materials": "^7.31.1",
+    "@babylonjs/post-processes": "^7.31.1",
+    "lodash": "^4.17.21",
+    "lucide-react": "^0.526.0",
+    "sonner": "^2.0.6"
+  }
+}
