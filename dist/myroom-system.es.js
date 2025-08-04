@@ -1,4 +1,4 @@
-import { y as e, N as o, a4 as t, a3 as r, Q as m, J as n, M as R, O, z as A, a5 as i, V as u, a0 as C, a2 as I, Y as f, _ as g, X as l, Z as M, $ as _, a1 as v } from "./index-D_-3xylv.js";
+import { y as e, N as o, a4 as t, a3 as r, Q as m, J as n, M as R, O, z as A, a5 as i, V as u, a0 as C, a2 as I, Y as f, _ as g, X as l, Z as M, $ as _, a1 as v } from "./index-DtyR3SWS.js";
 export {
   e as AvatarSystem,
   o as ConfigurationPanel,
