@@ -1,0 +1,3525 @@
+{
+  "items": [
+    {
+      "id": "Bath_01",
+      "name": "Bath 01",
+      "imageUrl": "/images/items/Bath_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_01.glb"
+    },
+    {
+      "id": "Bath_02",
+      "name": "Bath 02",
+      "imageUrl": "/images/items/Bath_02.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_02.glb"
+    },
+    {
+      "id": "Bath_03",
+      "name": "Bath 03",
+      "imageUrl": "/images/items/Bath_03.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_03.glb"
+    },
+    {
+      "id": "Bath_04",
+      "name": "Bath 04",
+      "imageUrl": "/images/items/Bath_04.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_04.glb"
+    },
+    {
+      "id": "Bath_05",
+      "name": "Bath 05",
+      "imageUrl": "/images/items/Bath_05.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_05.glb"
+    },
+    {
+      "id": "Bath_06",
+      "name": "Bath 06",
+      "imageUrl": "/images/items/Bath_06.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_06.glb"
+    },
+    {
+      "id": "Bath_Mirror_01",
+      "name": "Bath Mirror 01",
+      "imageUrl": "/images/items/Bath_Mirror_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Mirror_01.glb"
+    },
+    {
+      "id": "Bath_Mirror_03",
+      "name": "Bath Mirror 03",
+      "imageUrl": "/images/items/Bath_Mirror_03.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Mirror_03.glb"
+    },
+    {
+      "id": "Bath_Mirror_05",
+      "name": "Bath Mirror 05",
+      "imageUrl": "/images/items/Bath_Mirror_05.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Mirror_05.glb"
+    },
+    {
+      "id": "Bath_Mirror_06",
+      "name": "Bath Mirror 06",
+      "imageUrl": "/images/items/Bath_Mirror_06.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Mirror_06.glb"
+    },
+    {
+      "id": "Bath_Prop_05",
+      "name": "Bath Prop 05",
+      "imageUrl": "/images/items/Bath_Prop_05.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Prop_05.glb"
+    },
+    {
+      "id": "Bath_Prop_07",
+      "name": "Bath Prop 07",
+      "imageUrl": "/images/items/Bath_Prop_07.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Prop_07.glb"
+    },
+    {
+      "id": "Bath_Prop_08",
+      "name": "Bath Prop 08",
+      "imageUrl": "/images/items/Bath_Prop_08.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Prop_08.glb"
+    },
+    {
+      "id": "Bath_Prop_10",
+      "name": "Bath Prop 10",
+      "imageUrl": "/images/items/Bath_Prop_10.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Prop_10.glb"
+    },
+    {
+      "id": "Bath_Prop_22",
+      "name": "Bath Prop 22",
+      "imageUrl": "/images/items/Bath_Prop_22.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Prop_22.glb"
+    },
+    {
+      "id": "Bath_Prop_24",
+      "name": "Bath Prop 24",
+      "imageUrl": "/images/items/Bath_Prop_24.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Prop_24.glb"
+    },
+    {
+      "id": "Bath_Prop_26",
+      "name": "Bath Prop 26",
+      "imageUrl": "/images/items/Bath_Prop_26.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Prop_26.glb"
+    },
+    {
+      "id": "Bath_Prop_28",
+      "name": "Bath Prop 28",
+      "imageUrl": "/images/items/Bath_Prop_28.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Prop_28.glb"
+    },
+    {
+      "id": "Bath_Prop_32",
+      "name": "Bath Prop 32",
+      "imageUrl": "/images/items/Bath_Prop_32.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Prop_32.glb"
+    },
+    {
+      "id": "Bath_Shelving_06",
+      "name": "Bath Shelving 06",
+      "imageUrl": "/images/items/Bath_Shelving_06.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Bath_Shelving_06.glb"
+    },
+    {
+      "id": "Brush_01",
+      "name": "Brush 01",
+      "imageUrl": "/images/items/Brush_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Brush_01.glb"
+    },
+    {
+      "id": "Brush_02",
+      "name": "Brush 02",
+      "imageUrl": "/images/items/Brush_02.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Brush_02.glb"
+    },
+    {
+      "id": "Candle_01",
+      "name": "Candle 01",
+      "imageUrl": "/images/items/Candle_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Candle_01.glb"
+    },
+    {
+      "id": "Cream_01",
+      "name": "Cream 01",
+      "imageUrl": "/images/items/Cream_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Cream_01.glb"
+    },
+    {
+      "id": "Cream_02",
+      "name": "Cream 02",
+      "imageUrl": "/images/items/Cream_02.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Cream_02.glb"
+    },
+    {
+      "id": "Cream_03",
+      "name": "Cream 03",
+      "imageUrl": "/images/items/Cream_03.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Cream_03.glb"
+    },
+    {
+      "id": "Cream_04",
+      "name": "Cream 04",
+      "imageUrl": "/images/items/Cream_04.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Cream_04.glb"
+    },
+    {
+      "id": "Cream_05",
+      "name": "Cream 05",
+      "imageUrl": "/images/items/Cream_05.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Cream_05.glb"
+    },
+    {
+      "id": "Cream_06",
+      "name": "Cream 06",
+      "imageUrl": "/images/items/Cream_06.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Cream_06.glb"
+    },
+    {
+      "id": "Cream_07",
+      "name": "Cream 07",
+      "imageUrl": "/images/items/Cream_07.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Cream_07.glb"
+    },
+    {
+      "id": "Hair_Dryer_01",
+      "name": "Hair Dryer 01",
+      "imageUrl": "/images/items/Hair_Dryer_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Hair_Dryer_01.glb"
+    },
+    {
+      "id": "Loofah_01",
+      "name": "Loofah 01",
+      "imageUrl": "/images/items/Loofah_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Loofah_01.glb"
+    },
+    {
+      "id": "Mixer_01",
+      "name": "Mixer 01",
+      "imageUrl": "/images/items/Mixer_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_01.glb"
+    },
+    {
+      "id": "Mixer_02",
+      "name": "Mixer 02",
+      "imageUrl": "/images/items/Mixer_02.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_02.glb"
+    },
+    {
+      "id": "Mixer_03",
+      "name": "Mixer 03",
+      "imageUrl": "/images/items/Mixer_03.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_03.glb"
+    },
+    {
+      "id": "Mixer_04",
+      "name": "Mixer 04",
+      "imageUrl": "/images/items/Mixer_04.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_04.glb"
+    },
+    {
+      "id": "Mixer_05",
+      "name": "Mixer 05",
+      "imageUrl": "/images/items/Mixer_05.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_05.glb"
+    },
+    {
+      "id": "Mixer_06",
+      "name": "Mixer 06",
+      "imageUrl": "/images/items/Mixer_06.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_06.glb"
+    },
+    {
+      "id": "Mixer_07",
+      "name": "Mixer 07",
+      "imageUrl": "/images/items/Mixer_07.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_07.glb"
+    },
+    {
+      "id": "Mixer_08",
+      "name": "Mixer 08",
+      "imageUrl": "/images/items/Mixer_08.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_08.glb"
+    },
+    {
+      "id": "Mixer_09",
+      "name": "Mixer 09",
+      "imageUrl": "/images/items/Mixer_09.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_09.glb"
+    },
+    {
+      "id": "Mixer_10",
+      "name": "Mixer 10",
+      "imageUrl": "/images/items/Mixer_10.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_10.glb"
+    },
+    {
+      "id": "Mixer_11",
+      "name": "Mixer 11",
+      "imageUrl": "/images/items/Mixer_11.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_11.glb"
+    },
+    {
+      "id": "Mixer_12",
+      "name": "Mixer 12",
+      "imageUrl": "/images/items/Mixer_12.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_12.glb"
+    },
+    {
+      "id": "Mixer_13",
+      "name": "Mixer 13",
+      "imageUrl": "/images/items/Mixer_13.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Mixer_13.glb"
+    },
+    {
+      "id": "Plunger_01",
+      "name": "Plunger 01",
+      "imageUrl": "/images/items/Plunger_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Plunger_01.glb"
+    },
+    {
+      "id": "Scales_01",
+      "name": "Scales 01",
+      "imageUrl": "/images/items/Scales_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Scales_01.glb"
+    },
+    {
+      "id": "Shower_01",
+      "name": "Shower 01",
+      "imageUrl": "/images/items/Shower_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Shower_01.glb"
+    },
+    {
+      "id": "Shower_02",
+      "name": "Shower 02",
+      "imageUrl": "/images/items/Shower_02.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Shower_02.glb"
+    },
+    {
+      "id": "Shower_03",
+      "name": "Shower 03",
+      "imageUrl": "/images/items/Shower_03.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Shower_03.glb"
+    },
+    {
+      "id": "Slippers_01",
+      "name": "Slippers 01",
+      "imageUrl": "/images/items/Slippers_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Slippers_01.glb"
+    },
+    {
+      "id": "Soap_01",
+      "name": "Soap 01",
+      "imageUrl": "/images/items/Soap_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Soap_01.glb"
+    },
+    {
+      "id": "Soap_02",
+      "name": "Soap 02",
+      "imageUrl": "/images/items/Soap_02.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Soap_02.glb"
+    },
+    {
+      "id": "Toilet_paper_01",
+      "name": "Toilet Paper 01",
+      "imageUrl": "/images/items/Toilet_paper_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Toilet_paper_01.glb"
+    },
+    {
+      "id": "Toilet_paper_02",
+      "name": "Toilet Paper 02",
+      "imageUrl": "/images/items/Toilet_paper_02.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Toilet_paper_02.glb"
+    },
+    {
+      "id": "Toothbrush_01",
+      "name": "Toothbrush 01",
+      "imageUrl": "/images/items/Toothbrush_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Toothbrush_01.glb"
+    },
+    {
+      "id": "Toothbrush_02",
+      "name": "Toothbrush 02",
+      "imageUrl": "/images/items/Toothbrush_02.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Toothbrush_02.glb"
+    },
+    {
+      "id": "Toothpaste_01",
+      "name": "Toothpaste 01",
+      "imageUrl": "/images/items/Toothpaste_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Toothpaste_01.glb"
+    },
+    {
+      "id": "Towel_01",
+      "name": "Towel 01",
+      "imageUrl": "/images/items/Towel_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Towel_01.glb"
+    },
+    {
+      "id": "Towel_02",
+      "name": "Towel 02",
+      "imageUrl": "/images/items/Towel_02.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Towel_02.glb"
+    },
+    {
+      "id": "Washing_Machine_01",
+      "name": "Washing Machine 01",
+      "imageUrl": "/images/items/Washing_Machine_01.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Washing_Machine_01.glb"
+    },
+    {
+      "id": "Washing_Machine_04",
+      "name": "Washing Machine 04",
+      "imageUrl": "/images/items/Washing_Machine_04.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Washing_Machine_04.glb"
+    },
+    {
+      "id": "Wash_Basin_05",
+      "name": "Wash Basin 05",
+      "imageUrl": "/images/items/Wash_Basin_05.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Wash_Basin_05.glb"
+    },
+    {
+      "id": "Wash_Basin_06",
+      "name": "Wash Basin 06",
+      "imageUrl": "/images/items/Wash_Basin_06.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Wash_Basin_06.glb"
+    },
+    {
+      "id": "Wash_Basin_07",
+      "name": "Wash Basin 07",
+      "imageUrl": "/images/items/Wash_Basin_07.jpg",
+      "category": "Bathroom",
+      "path": "/models/items/Bathroom/Wash_Basin_07.glb"
+    },
+    {
+      "id": "Bed_01",
+      "name": "Bed 01",
+      "imageUrl": "/images/items/Bed_01.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_01.glb"
+    },
+    {
+      "id": "Bed_04",
+      "name": "Bed 04",
+      "imageUrl": "/images/items/Bed_04.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_04.glb"
+    },
+    {
+      "id": "Bed_05",
+      "name": "Bed 05",
+      "imageUrl": "/images/items/Bed_05.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_05.glb"
+    },
+    {
+      "id": "Bed_06",
+      "name": "Bed 06",
+      "imageUrl": "/images/items/Bed_06.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_06.glb"
+    },
+    {
+      "id": "Bed_07",
+      "name": "Bed 07",
+      "imageUrl": "/images/items/Bed_07.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_07.glb"
+    },
+    {
+      "id": "Bed_08",
+      "name": "Bed 08",
+      "imageUrl": "/images/items/Bed_08.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_08.glb"
+    },
+    {
+      "id": "Bed_09",
+      "name": "Bed 09",
+      "imageUrl": "/images/items/Bed_09.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_09.glb"
+    },
+    {
+      "id": "Bed_10",
+      "name": "Bed 10",
+      "imageUrl": "/images/items/Bed_10.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_10.glb"
+    },
+    {
+      "id": "Bed_11",
+      "name": "Bed 11",
+      "imageUrl": "/images/items/Bed_11.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_11.glb"
+    },
+    {
+      "id": "Bed_16",
+      "name": "Bed 16",
+      "imageUrl": "/images/items/Bed_16.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_16.glb"
+    },
+    {
+      "id": "Bed_18",
+      "name": "Bed 18",
+      "imageUrl": "/images/items/Bed_18.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_18.glb"
+    },
+    {
+      "id": "Bed_19",
+      "name": "Bed 19",
+      "imageUrl": "/images/items/Bed_19.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_19.glb"
+    },
+    {
+      "id": "Bed_20",
+      "name": "Bed 20",
+      "imageUrl": "/images/items/Bed_20.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_20.glb"
+    },
+    {
+      "id": "Bed_21",
+      "name": "Bed 21",
+      "imageUrl": "/images/items/Bed_21.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_21.glb"
+    },
+    {
+      "id": "Bed_22",
+      "name": "Bed 22",
+      "imageUrl": "/images/items/Bed_22.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_22.glb"
+    },
+    {
+      "id": "Bed_23",
+      "name": "Bed 23",
+      "imageUrl": "/images/items/Bed_23.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_23.glb"
+    },
+    {
+      "id": "Bed_24",
+      "name": "Bed 24",
+      "imageUrl": "/images/items/Bed_24.jpg",
+      "category": "Beds",
+      "path": "/models/items/Beds/Bed_24.glb"
+    },
+    {
+      "id": "Book_01",
+      "name": "Book 01",
+      "imageUrl": "/images/items/Book_01.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Book_01.glb"
+    },
+    {
+      "id": "Book_02",
+      "name": "Book 02",
+      "imageUrl": "/images/items/Book_02.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Book_02.glb"
+    },
+    {
+      "id": "Book_03",
+      "name": "Book 03",
+      "imageUrl": "/images/items/Book_03.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Book_03.glb"
+    },
+    {
+      "id": "Book_04",
+      "name": "Book 04",
+      "imageUrl": "/images/items/Book_04.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Book_04.glb"
+    },
+    {
+      "id": "Book_05",
+      "name": "Book 05",
+      "imageUrl": "/images/items/Book_05.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Book_05.glb"
+    },
+    {
+      "id": "Book_06",
+      "name": "Book 06",
+      "imageUrl": "/images/items/Book_06.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Book_06.glb"
+    },
+    {
+      "id": "Book_07",
+      "name": "Book 07",
+      "imageUrl": "/images/items/Book_07.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Book_07.glb"
+    },
+    {
+      "id": "Book_08",
+      "name": "Book 08",
+      "imageUrl": "/images/items/Book_08.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Book_08.glb"
+    },
+    {
+      "id": "Magazine_01",
+      "name": "Magazine 01",
+      "imageUrl": "/images/items/Magazine_01.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Magazine_01.glb"
+    },
+    {
+      "id": "Magazine_02",
+      "name": "Magazine 02",
+      "imageUrl": "/images/items/Magazine_02.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Magazine_02.glb"
+    },
+    {
+      "id": "Magazine_03",
+      "name": "Magazine 03",
+      "imageUrl": "/images/items/Magazine_03.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Magazine_03.glb"
+    },
+    {
+      "id": "Magazine_04",
+      "name": "Magazine 04",
+      "imageUrl": "/images/items/Magazine_04.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Magazine_04.glb"
+    },
+    {
+      "id": "Paper_01",
+      "name": "Paper 01",
+      "imageUrl": "/images/items/Paper_01.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Paper_01.glb"
+    },
+    {
+      "id": "Paper_02",
+      "name": "Paper 02",
+      "imageUrl": "/images/items/Paper_02.jpg",
+      "category": "Books",
+      "path": "/models/items/Books/Paper_02.glb"
+    },
+    {
+      "id": "Carpet_01",
+      "name": "Carpet 01",
+      "imageUrl": "/images/items/Carpet_01.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_01.glb"
+    },
+    {
+      "id": "Carpet_02",
+      "name": "Carpet 02",
+      "imageUrl": "/images/items/Carpet_02.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_02.glb"
+    },
+    {
+      "id": "Carpet_03",
+      "name": "Carpet 03",
+      "imageUrl": "/images/items/Carpet_03.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_03.glb"
+    },
+    {
+      "id": "Carpet_04",
+      "name": "Carpet 04",
+      "imageUrl": "/images/items/Carpet_04.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_04.glb"
+    },
+    {
+      "id": "Carpet_05",
+      "name": "Carpet 05",
+      "imageUrl": "/images/items/Carpet_05.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_05.glb"
+    },
+    {
+      "id": "Carpet_06",
+      "name": "Carpet 06",
+      "imageUrl": "/images/items/Carpet_06.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_06.glb"
+    },
+    {
+      "id": "Carpet_07",
+      "name": "Carpet 07",
+      "imageUrl": "/images/items/Carpet_07.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_07.glb"
+    },
+    {
+      "id": "Carpet_08",
+      "name": "Carpet 08",
+      "imageUrl": "/images/items/Carpet_08.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_08.glb"
+    },
+    {
+      "id": "Carpet_09",
+      "name": "Carpet 09",
+      "imageUrl": "/images/items/Carpet_09.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_09.glb"
+    },
+    {
+      "id": "Carpet_10",
+      "name": "Carpet 10",
+      "imageUrl": "/images/items/Carpet_10.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_10.glb"
+    },
+    {
+      "id": "Carpet_11",
+      "name": "Carpet 11",
+      "imageUrl": "/images/items/Carpet_11.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_11.glb"
+    },
+    {
+      "id": "Carpet_12",
+      "name": "Carpet 12",
+      "imageUrl": "/images/items/Carpet_12.jpg",
+      "category": "Carpet",
+      "path": "/models/items/Carpet/Carpet_12.glb"
+    },
+    {
+      "id": "Armchair_01",
+      "name": "Armchair 01",
+      "imageUrl": "/images/items/Armchair_01.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_01.glb"
+    },
+    {
+      "id": "Armchair_02",
+      "name": "Armchair 02",
+      "imageUrl": "/images/items/Armchair_02.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_02.glb"
+    },
+    {
+      "id": "Armchair_03",
+      "name": "Armchair 03",
+      "imageUrl": "/images/items/Armchair_03.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_03.glb"
+    },
+    {
+      "id": "Armchair_04",
+      "name": "Armchair 04",
+      "imageUrl": "/images/items/Armchair_04.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_04.glb"
+    },
+    {
+      "id": "Armchair_05",
+      "name": "Armchair 05",
+      "imageUrl": "/images/items/Armchair_05.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_05.glb"
+    },
+    {
+      "id": "Armchair_06",
+      "name": "Armchair 06",
+      "imageUrl": "/images/items/Armchair_06.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_06.glb"
+    },
+    {
+      "id": "Armchair_07",
+      "name": "Armchair 07",
+      "imageUrl": "/images/items/Armchair_07.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_07.glb"
+    },
+    {
+      "id": "Armchair_10",
+      "name": "Armchair 10",
+      "imageUrl": "/images/items/Armchair_10.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_10.glb"
+    },
+    {
+      "id": "Armchair_11",
+      "name": "Armchair 11",
+      "imageUrl": "/images/items/Armchair_11.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_11.glb"
+    },
+    {
+      "id": "Armchair_12",
+      "name": "Armchair 12",
+      "imageUrl": "/images/items/Armchair_12.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_12.glb"
+    },
+    {
+      "id": "Armchair_13",
+      "name": "Armchair 13",
+      "imageUrl": "/images/items/Armchair_13.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_13.glb"
+    },
+    {
+      "id": "Armchair_14",
+      "name": "Armchair 14",
+      "imageUrl": "/images/items/Armchair_14.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_14.glb"
+    },
+    {
+      "id": "Armchair_15",
+      "name": "Armchair 15",
+      "imageUrl": "/images/items/Armchair_15.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_15.glb"
+    },
+    {
+      "id": "Armchair_16",
+      "name": "Armchair 16",
+      "imageUrl": "/images/items/Armchair_16.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_16.glb"
+    },
+    {
+      "id": "Armchair_17",
+      "name": "Armchair 17",
+      "imageUrl": "/images/items/Armchair_17.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_17.glb"
+    },
+    {
+      "id": "Armchair_18",
+      "name": "Armchair 18",
+      "imageUrl": "/images/items/Armchair_18.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_18.glb"
+    },
+    {
+      "id": "Armchair_19",
+      "name": "Armchair 19",
+      "imageUrl": "/images/items/Armchair_19.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_19.glb"
+    },
+    {
+      "id": "Armchair_20",
+      "name": "Armchair 20",
+      "imageUrl": "/images/items/Armchair_20.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_20.glb"
+    },
+    {
+      "id": "Armchair_21",
+      "name": "Armchair 21",
+      "imageUrl": "/images/items/Armchair_21.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_21.glb"
+    },
+    {
+      "id": "Armchair_22",
+      "name": "Armchair 22",
+      "imageUrl": "/images/items/Armchair_22.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_22.glb"
+    },
+    {
+      "id": "Armchair_23",
+      "name": "Armchair 23",
+      "imageUrl": "/images/items/Armchair_23.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_23.glb"
+    },
+    {
+      "id": "Armchair_24",
+      "name": "Armchair 24",
+      "imageUrl": "/images/items/Armchair_24.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_24.glb"
+    },
+    {
+      "id": "Armchair_25",
+      "name": "Armchair 25",
+      "imageUrl": "/images/items/Armchair_25.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_25.glb"
+    },
+    {
+      "id": "Armchair_26",
+      "name": "Armchair 26",
+      "imageUrl": "/images/items/Armchair_26.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_26.glb"
+    },
+    {
+      "id": "Armchair_27",
+      "name": "Armchair 27",
+      "imageUrl": "/images/items/Armchair_27.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Armchair_27.glb"
+    },
+    {
+      "id": "Black_Chair",
+      "name": "Black Chair",
+      "imageUrl": "/images/items/Black_Chair.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Black_Chair.glb"
+    },
+    {
+      "id": "Chair_01",
+      "name": "Chair 01",
+      "imageUrl": "/images/items/Chair_01.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_01.glb"
+    },
+    {
+      "id": "Chair_02",
+      "name": "Chair 02",
+      "imageUrl": "/images/items/Chair_02.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_02.glb"
+    },
+    {
+      "id": "Chair_03",
+      "name": "Chair 03",
+      "imageUrl": "/images/items/Chair_03.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_03.glb"
+    },
+    {
+      "id": "Chair_04",
+      "name": "Chair 04",
+      "imageUrl": "/images/items/Chair_04.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_04.glb"
+    },
+    {
+      "id": "Chair_05",
+      "name": "Chair 05",
+      "imageUrl": "/images/items/Chair_05.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_05.glb"
+    },
+    {
+      "id": "Chair_06",
+      "name": "Chair 06",
+      "imageUrl": "/images/items/Chair_06.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_06.glb"
+    },
+    {
+      "id": "Chair_07",
+      "name": "Chair 07",
+      "imageUrl": "/images/items/Chair_07.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_07.glb"
+    },
+    {
+      "id": "Chair_08",
+      "name": "Chair 08",
+      "imageUrl": "/images/items/Chair_08.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_08.glb"
+    },
+    {
+      "id": "Chair_09",
+      "name": "Chair 09",
+      "imageUrl": "/images/items/Chair_09.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_09.glb"
+    },
+    {
+      "id": "Chair_10",
+      "name": "Chair 10",
+      "imageUrl": "/images/items/Chair_10.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_10.glb"
+    },
+    {
+      "id": "Chair_11",
+      "name": "Chair 11",
+      "imageUrl": "/images/items/Chair_11.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_11.glb"
+    },
+    {
+      "id": "Chair_12",
+      "name": "Chair 12",
+      "imageUrl": "/images/items/Chair_12.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_12.glb"
+    },
+    {
+      "id": "Chair_13",
+      "name": "Chair 13",
+      "imageUrl": "/images/items/Chair_13.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_13.glb"
+    },
+    {
+      "id": "Chair_14",
+      "name": "Chair 14",
+      "imageUrl": "/images/items/Chair_14.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_14.glb"
+    },
+    {
+      "id": "Chair_15",
+      "name": "Chair 15",
+      "imageUrl": "/images/items/Chair_15.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_15.glb"
+    },
+    {
+      "id": "Chair_16",
+      "name": "Chair 16",
+      "imageUrl": "/images/items/Chair_16.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_16.glb"
+    },
+    {
+      "id": "Chair_17",
+      "name": "Chair 17",
+      "imageUrl": "/images/items/Chair_17.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_17.glb"
+    },
+    {
+      "id": "Chair_18",
+      "name": "Chair 18",
+      "imageUrl": "/images/items/Chair_18.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_18.glb"
+    },
+    {
+      "id": "Chair_19",
+      "name": "Chair 19",
+      "imageUrl": "/images/items/Chair_19.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_19.glb"
+    },
+    {
+      "id": "Chair_20",
+      "name": "Chair 20",
+      "imageUrl": "/images/items/Chair_20.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_20.glb"
+    },
+    {
+      "id": "Chair_21",
+      "name": "Chair 21",
+      "imageUrl": "/images/items/Chair_21.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_21.glb"
+    },
+    {
+      "id": "Chair_22",
+      "name": "Chair 22",
+      "imageUrl": "/images/items/Chair_22.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_22.glb"
+    },
+    {
+      "id": "Chair_PC_01",
+      "name": "Chair Pc 01",
+      "imageUrl": "/images/items/Chair_PC_01.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_PC_01.glb"
+    },
+    {
+      "id": "Chair_PC_02",
+      "name": "Chair Pc 02",
+      "imageUrl": "/images/items/Chair_PC_02.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_PC_02.glb"
+    },
+    {
+      "id": "Chair_PC_03",
+      "name": "Chair Pc 03",
+      "imageUrl": "/images/items/Chair_PC_03.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_PC_03.glb"
+    },
+    {
+      "id": "Chair_PC_04",
+      "name": "Chair Pc 04",
+      "imageUrl": "/images/items/Chair_PC_04.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_PC_04.glb"
+    },
+    {
+      "id": "Chair_PC_05",
+      "name": "Chair Pc 05",
+      "imageUrl": "/images/items/Chair_PC_05.jpg",
+      "category": "Chair",
+      "path": "/models/items/Chair/Chair_PC_05.glb"
+    },
+    {
+      "id": "Closet_01",
+      "name": "Closet 01",
+      "imageUrl": "/images/items/Closet_01.jpg",
+      "category": "Closet",
+      "path": "/models/items/Closet/Closet_01.glb"
+    },
+    {
+      "id": "Closet_04",
+      "name": "Closet 04",
+      "imageUrl": "/images/items/Closet_04.jpg",
+      "category": "Closet",
+      "path": "/models/items/Closet/Closet_04.glb"
+    },
+    {
+      "id": "Closet_05",
+      "name": "Closet 05",
+      "imageUrl": "/images/items/Closet_05.jpg",
+      "category": "Closet",
+      "path": "/models/items/Closet/Closet_05.glb"
+    },
+    {
+      "id": "Closet_10",
+      "name": "Closet 10",
+      "imageUrl": "/images/items/Closet_10.jpg",
+      "category": "Closet",
+      "path": "/models/items/Closet/Closet_10.glb"
+    },
+    {
+      "id": "Couch_01",
+      "name": "Couch 01",
+      "imageUrl": "/images/items/Couch_01.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_01.glb"
+    },
+    {
+      "id": "Couch_02",
+      "name": "Couch 02",
+      "imageUrl": "/images/items/Couch_02.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_02.glb"
+    },
+    {
+      "id": "Couch_03",
+      "name": "Couch 03",
+      "imageUrl": "/images/items/Couch_03.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_03.glb"
+    },
+    {
+      "id": "Couch_04",
+      "name": "Couch 04",
+      "imageUrl": "/images/items/Couch_04.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_04.glb"
+    },
+    {
+      "id": "Couch_05",
+      "name": "Couch 05",
+      "imageUrl": "/images/items/Couch_05.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_05.glb"
+    },
+    {
+      "id": "Couch_06",
+      "name": "Couch 06",
+      "imageUrl": "/images/items/Couch_06.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_06.glb"
+    },
+    {
+      "id": "Couch_07",
+      "name": "Couch 07",
+      "imageUrl": "/images/items/Couch_07.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_07.glb"
+    },
+    {
+      "id": "Couch_08",
+      "name": "Couch 08",
+      "imageUrl": "/images/items/Couch_08.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_08.glb"
+    },
+    {
+      "id": "Couch_09",
+      "name": "Couch 09",
+      "imageUrl": "/images/items/Couch_09.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_09.glb"
+    },
+    {
+      "id": "Couch_10",
+      "name": "Couch 10",
+      "imageUrl": "/images/items/Couch_10.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_10.glb"
+    },
+    {
+      "id": "Couch_11",
+      "name": "Couch 11",
+      "imageUrl": "/images/items/Couch_11.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_11.glb"
+    },
+    {
+      "id": "Couch_12",
+      "name": "Couch 12",
+      "imageUrl": "/images/items/Couch_12.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_12.glb"
+    },
+    {
+      "id": "Couch_13",
+      "name": "Couch 13",
+      "imageUrl": "/images/items/Couch_13.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_13.glb"
+    },
+    {
+      "id": "Couch_14",
+      "name": "Couch 14",
+      "imageUrl": "/images/items/Couch_14.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_14.glb"
+    },
+    {
+      "id": "Couch_15",
+      "name": "Couch 15",
+      "imageUrl": "/images/items/Couch_15.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_15.glb"
+    },
+    {
+      "id": "Couch_16",
+      "name": "Couch 16",
+      "imageUrl": "/images/items/Couch_16.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_16.glb"
+    },
+    {
+      "id": "Couch_Table_01",
+      "name": "Couch Table 01",
+      "imageUrl": "/images/items/Couch_Table_01.jpg",
+      "category": "Couch",
+      "path": "/models/items/Couch/Couch_Table_01.glb"
+    },
+    {
+      "id": "Doorway_Black",
+      "name": "Doorway Black",
+      "imageUrl": "/images/items/Doorway_Black.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Doorway_Black.glb"
+    },
+    {
+      "id": "Doorway_Brown",
+      "name": "Doorway Brown",
+      "imageUrl": "/images/items/Doorway_Brown.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Doorway_Brown.glb"
+    },
+    {
+      "id": "Doorway_White",
+      "name": "Doorway White",
+      "imageUrl": "/images/items/Doorway_White.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Doorway_White.glb"
+    },
+    {
+      "id": "Door_Black_01",
+      "name": "Door Black 01",
+      "imageUrl": "/images/items/Door_Black_01.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Black_01.glb"
+    },
+    {
+      "id": "Door_Black_02",
+      "name": "Door Black 02",
+      "imageUrl": "/images/items/Door_Black_02.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Black_02.glb"
+    },
+    {
+      "id": "Door_Black_03",
+      "name": "Door Black 03",
+      "imageUrl": "/images/items/Door_Black_03.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Black_03.glb"
+    },
+    {
+      "id": "Door_Black_04",
+      "name": "Door Black 04",
+      "imageUrl": "/images/items/Door_Black_04.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Black_04.glb"
+    },
+    {
+      "id": "Door_Black_05",
+      "name": "Door Black 05",
+      "imageUrl": "/images/items/Door_Black_05.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Black_05.glb"
+    },
+    {
+      "id": "Door_Black_06",
+      "name": "Door Black 06",
+      "imageUrl": "/images/items/Door_Black_06.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Black_06.glb"
+    },
+    {
+      "id": "Door_Black_07",
+      "name": "Door Black 07",
+      "imageUrl": "/images/items/Door_Black_07.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Black_07.glb"
+    },
+    {
+      "id": "Door_Black_08",
+      "name": "Door Black 08",
+      "imageUrl": "/images/items/Door_Black_08.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Black_08.glb"
+    },
+    {
+      "id": "Door_Black_09",
+      "name": "Door Black 09",
+      "imageUrl": "/images/items/Door_Black_09.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Black_09.glb"
+    },
+    {
+      "id": "Door_Brown_01",
+      "name": "Door Brown 01",
+      "imageUrl": "/images/items/Door_Brown_01.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Brown_01.glb"
+    },
+    {
+      "id": "Door_Brown_02",
+      "name": "Door Brown 02",
+      "imageUrl": "/images/items/Door_Brown_02.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Brown_02.glb"
+    },
+    {
+      "id": "Door_Brown_03",
+      "name": "Door Brown 03",
+      "imageUrl": "/images/items/Door_Brown_03.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Brown_03.glb"
+    },
+    {
+      "id": "Door_Brown_04",
+      "name": "Door Brown 04",
+      "imageUrl": "/images/items/Door_Brown_04.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Brown_04.glb"
+    },
+    {
+      "id": "Door_Brown_05",
+      "name": "Door Brown 05",
+      "imageUrl": "/images/items/Door_Brown_05.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Brown_05.glb"
+    },
+    {
+      "id": "Door_Brown_06",
+      "name": "Door Brown 06",
+      "imageUrl": "/images/items/Door_Brown_06.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Brown_06.glb"
+    },
+    {
+      "id": "Door_Brown_07",
+      "name": "Door Brown 07",
+      "imageUrl": "/images/items/Door_Brown_07.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Brown_07.glb"
+    },
+    {
+      "id": "Door_Brown_08",
+      "name": "Door Brown 08",
+      "imageUrl": "/images/items/Door_Brown_08.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Brown_08.glb"
+    },
+    {
+      "id": "Door_Brown_09",
+      "name": "Door Brown 09",
+      "imageUrl": "/images/items/Door_Brown_09.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_Brown_09.glb"
+    },
+    {
+      "id": "Door_White_01",
+      "name": "Door White 01",
+      "imageUrl": "/images/items/Door_White_01.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_White_01.glb"
+    },
+    {
+      "id": "Door_White_02",
+      "name": "Door White 02",
+      "imageUrl": "/images/items/Door_White_02.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_White_02.glb"
+    },
+    {
+      "id": "Door_White_03",
+      "name": "Door White 03",
+      "imageUrl": "/images/items/Door_White_03.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_White_03.glb"
+    },
+    {
+      "id": "Door_White_04",
+      "name": "Door White 04",
+      "imageUrl": "/images/items/Door_White_04.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_White_04.glb"
+    },
+    {
+      "id": "Door_White_05",
+      "name": "Door White 05",
+      "imageUrl": "/images/items/Door_White_05.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_White_05.glb"
+    },
+    {
+      "id": "Door_White_06",
+      "name": "Door White 06",
+      "imageUrl": "/images/items/Door_White_06.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_White_06.glb"
+    },
+    {
+      "id": "Door_White_07",
+      "name": "Door White 07",
+      "imageUrl": "/images/items/Door_White_07.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_White_07.glb"
+    },
+    {
+      "id": "Door_White_08",
+      "name": "Door White 08",
+      "imageUrl": "/images/items/Door_White_08.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_White_08.glb"
+    },
+    {
+      "id": "Door_White_09",
+      "name": "Door White 09",
+      "imageUrl": "/images/items/Door_White_09.jpg",
+      "category": "Doors",
+      "path": "/models/items/Doors/Door_White_09.glb"
+    },
+    {
+      "id": "Fireplace_01",
+      "name": "Fireplace 01",
+      "imageUrl": "/images/items/Fireplace_01.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_01.glb"
+    },
+    {
+      "id": "Fireplace_02",
+      "name": "Fireplace 02",
+      "imageUrl": "/images/items/Fireplace_02.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_02.glb"
+    },
+    {
+      "id": "Fireplace_03",
+      "name": "Fireplace 03",
+      "imageUrl": "/images/items/Fireplace_03.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_03.glb"
+    },
+    {
+      "id": "Fireplace_04",
+      "name": "Fireplace 04",
+      "imageUrl": "/images/items/Fireplace_04.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_04.glb"
+    },
+    {
+      "id": "Fireplace_05",
+      "name": "Fireplace 05",
+      "imageUrl": "/images/items/Fireplace_05.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_05.glb"
+    },
+    {
+      "id": "Fireplace_06",
+      "name": "Fireplace 06",
+      "imageUrl": "/images/items/Fireplace_06.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_06.glb"
+    },
+    {
+      "id": "Fireplace_07",
+      "name": "Fireplace 07",
+      "imageUrl": "/images/items/Fireplace_07.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_07.glb"
+    },
+    {
+      "id": "Fireplace_08",
+      "name": "Fireplace 08",
+      "imageUrl": "/images/items/Fireplace_08.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_08.glb"
+    },
+    {
+      "id": "Fireplace_09",
+      "name": "Fireplace 09",
+      "imageUrl": "/images/items/Fireplace_09.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_09.glb"
+    },
+    {
+      "id": "Fireplace_10",
+      "name": "Fireplace 10",
+      "imageUrl": "/images/items/Fireplace_10.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_10.glb"
+    },
+    {
+      "id": "Fireplace_11",
+      "name": "Fireplace 11",
+      "imageUrl": "/images/items/Fireplace_11.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_11.glb"
+    },
+    {
+      "id": "Fireplace_12",
+      "name": "Fireplace 12",
+      "imageUrl": "/images/items/Fireplace_12.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_12.glb"
+    },
+    {
+      "id": "Fireplace_13",
+      "name": "Fireplace 13",
+      "imageUrl": "/images/items/Fireplace_13.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_13.glb"
+    },
+    {
+      "id": "Fireplace_14",
+      "name": "Fireplace 14",
+      "imageUrl": "/images/items/Fireplace_14.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_14.glb"
+    },
+    {
+      "id": "Fireplace_15",
+      "name": "Fireplace 15",
+      "imageUrl": "/images/items/Fireplace_15.jpg",
+      "category": "Fireplace",
+      "path": "/models/items/Fireplace/Fireplace_15.glb"
+    },
+    {
+      "id": "Floor_01",
+      "name": "Floor 01",
+      "imageUrl": "/images/items/Floor_01.jpg",
+      "category": "Floor",
+      "path": "/models/items/Floor/Floor_01.glb"
+    },
+    {
+      "id": "Blender_01",
+      "name": "Blender 01",
+      "imageUrl": "/images/items/Blender_01.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Blender_01.glb"
+    },
+    {
+      "id": "Bowl_01",
+      "name": "Bowl 01",
+      "imageUrl": "/images/items/Bowl_01.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Bowl_01.glb"
+    },
+    {
+      "id": "Bowl_02",
+      "name": "Bowl 02",
+      "imageUrl": "/images/items/Bowl_02.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Bowl_02.glb"
+    },
+    {
+      "id": "Bowl_03",
+      "name": "Bowl 03",
+      "imageUrl": "/images/items/Bowl_03.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Bowl_03.glb"
+    },
+    {
+      "id": "Bowl_04",
+      "name": "Bowl 04",
+      "imageUrl": "/images/items/Bowl_04.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Bowl_04.glb"
+    },
+    {
+      "id": "Bowl_05",
+      "name": "Bowl 05",
+      "imageUrl": "/images/items/Bowl_05.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Bowl_05.glb"
+    },
+    {
+      "id": "Coffee_Machine_01",
+      "name": "Coffee Machine 01",
+      "imageUrl": "/images/items/Coffee_Machine_01.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Coffee_Machine_01.glb"
+    },
+    {
+      "id": "Coffee_Machine_02",
+      "name": "Coffee Machine 02",
+      "imageUrl": "/images/items/Coffee_Machine_02.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Coffee_Machine_02.glb"
+    },
+    {
+      "id": "Cutting_board_01",
+      "name": "Cutting Board 01",
+      "imageUrl": "/images/items/Cutting_board_01.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Cutting_board_01.glb"
+    },
+    {
+      "id": "Cutting_board_02",
+      "name": "Cutting Board 02",
+      "imageUrl": "/images/items/Cutting_board_02.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Cutting_board_02.glb"
+    },
+    {
+      "id": "Grill_01",
+      "name": "Grill 01",
+      "imageUrl": "/images/items/Grill_01.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Grill_01.glb"
+    },
+    {
+      "id": "Grill_01_Cover",
+      "name": "Grill 01 Cover",
+      "imageUrl": "/images/items/Grill_01_Cover.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Grill_01_Cover.glb"
+    },
+    {
+      "id": "Teapot_03",
+      "name": "Teapot 03",
+      "imageUrl": "/images/items/Teapot_03.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Teapot_03.glb"
+    },
+    {
+      "id": "Toaster_01",
+      "name": "Toaster 01",
+      "imageUrl": "/images/items/Toaster_01.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Toaster_01.glb"
+    },
+    {
+      "id": "Toaster_02",
+      "name": "Toaster 02",
+      "imageUrl": "/images/items/Toaster_02.jpg",
+      "category": "Kitchen",
+      "path": "/models/items/Kitchen/Toaster_02.glb"
+    },
+    {
+      "id": "Lightstand",
+      "name": "Lightstand",
+      "imageUrl": "/images/items/Lightstand.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Lightstand.glb"
+    },
+    {
+      "id": "Light_01",
+      "name": "Light 01",
+      "imageUrl": "/images/items/Light_01.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_01.glb"
+    },
+    {
+      "id": "Light_02",
+      "name": "Light 02",
+      "imageUrl": "/images/items/Light_02.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_02.glb"
+    },
+    {
+      "id": "Light_03",
+      "name": "Light 03",
+      "imageUrl": "/images/items/Light_03.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_03.glb"
+    },
+    {
+      "id": "Light_04",
+      "name": "Light 04",
+      "imageUrl": "/images/items/Light_04.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_04.glb"
+    },
+    {
+      "id": "Light_05",
+      "name": "Light 05",
+      "imageUrl": "/images/items/Light_05.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_05.glb"
+    },
+    {
+      "id": "Light_06",
+      "name": "Light 06",
+      "imageUrl": "/images/items/Light_06.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_06.glb"
+    },
+    {
+      "id": "Light_07",
+      "name": "Light 07",
+      "imageUrl": "/images/items/Light_07.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_07.glb"
+    },
+    {
+      "id": "Light_08",
+      "name": "Light 08",
+      "imageUrl": "/images/items/Light_08.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_08.glb"
+    },
+    {
+      "id": "Light_09",
+      "name": "Light 09",
+      "imageUrl": "/images/items/Light_09.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_09.glb"
+    },
+    {
+      "id": "Light_10",
+      "name": "Light 10",
+      "imageUrl": "/images/items/Light_10.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_10.glb"
+    },
+    {
+      "id": "Light_11",
+      "name": "Light 11",
+      "imageUrl": "/images/items/Light_11.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_11.glb"
+    },
+    {
+      "id": "Light_12",
+      "name": "Light 12",
+      "imageUrl": "/images/items/Light_12.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_12.glb"
+    },
+    {
+      "id": "Light_13",
+      "name": "Light 13",
+      "imageUrl": "/images/items/Light_13.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_13.glb"
+    },
+    {
+      "id": "Light_14",
+      "name": "Light 14",
+      "imageUrl": "/images/items/Light_14.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_14.glb"
+    },
+    {
+      "id": "Light_15",
+      "name": "Light 15",
+      "imageUrl": "/images/items/Light_15.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_15.glb"
+    },
+    {
+      "id": "Light_16",
+      "name": "Light 16",
+      "imageUrl": "/images/items/Light_16.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_16.glb"
+    },
+    {
+      "id": "Light_17",
+      "name": "Light 17",
+      "imageUrl": "/images/items/Light_17.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_17.glb"
+    },
+    {
+      "id": "Light_18",
+      "name": "Light 18",
+      "imageUrl": "/images/items/Light_18.jpg",
+      "category": "Light",
+      "path": "/models/items/Light/Light_18.glb"
+    },
+    {
+      "id": "Nightstand_01",
+      "name": "Nightstand 01",
+      "imageUrl": "/images/items/Nightstand_01.jpg",
+      "category": "Nightstand",
+      "path": "/models/items/Nightstand/Nightstand_01.glb"
+    },
+    {
+      "id": "Nightstand_02",
+      "name": "Nightstand 02",
+      "imageUrl": "/images/items/Nightstand_02.jpg",
+      "category": "Nightstand",
+      "path": "/models/items/Nightstand/Nightstand_02.glb"
+    },
+    {
+      "id": "Nightstand_03",
+      "name": "Nightstand 03",
+      "imageUrl": "/images/items/Nightstand_03.jpg",
+      "category": "Nightstand",
+      "path": "/models/items/Nightstand/Nightstand_03.glb"
+    },
+    {
+      "id": "Nightstand_04",
+      "name": "Nightstand 04",
+      "imageUrl": "/images/items/Nightstand_04.jpg",
+      "category": "Nightstand",
+      "path": "/models/items/Nightstand/Nightstand_04.glb"
+    },
+    {
+      "id": "Nightstand_07",
+      "name": "Nightstand 07",
+      "imageUrl": "/images/items/Nightstand_07.jpg",
+      "category": "Nightstand",
+      "path": "/models/items/Nightstand/Nightstand_07.glb"
+    },
+    {
+      "id": "Nightstand_08",
+      "name": "Nightstand 08",
+      "imageUrl": "/images/items/Nightstand_08.jpg",
+      "category": "Nightstand",
+      "path": "/models/items/Nightstand/Nightstand_08.glb"
+    },
+    {
+      "id": "Nightstand_12",
+      "name": "Nightstand 12",
+      "imageUrl": "/images/items/Nightstand_12.jpg",
+      "category": "Nightstand",
+      "path": "/models/items/Nightstand/Nightstand_12.glb"
+    },
+    {
+      "id": "Nightstand_13",
+      "name": "Nightstand 13",
+      "imageUrl": "/images/items/Nightstand_13.jpg",
+      "category": "Nightstand",
+      "path": "/models/items/Nightstand/Nightstand_13.glb"
+    },
+    {
+      "id": "Nightstand_17",
+      "name": "Nightstand 17",
+      "imageUrl": "/images/items/Nightstand_17.jpg",
+      "category": "Nightstand",
+      "path": "/models/items/Nightstand/Nightstand_17.glb"
+    },
+    {
+      "id": "Picture_01",
+      "name": "Picture 01",
+      "imageUrl": "/images/items/Picture_01.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_01.glb"
+    },
+    {
+      "id": "Picture_02",
+      "name": "Picture 02",
+      "imageUrl": "/images/items/Picture_02.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_02.glb"
+    },
+    {
+      "id": "Picture_03",
+      "name": "Picture 03",
+      "imageUrl": "/images/items/Picture_03.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_03.glb"
+    },
+    {
+      "id": "Picture_04",
+      "name": "Picture 04",
+      "imageUrl": "/images/items/Picture_04.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_04.glb"
+    },
+    {
+      "id": "Picture_05",
+      "name": "Picture 05",
+      "imageUrl": "/images/items/Picture_05.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_05.glb"
+    },
+    {
+      "id": "Picture_06",
+      "name": "Picture 06",
+      "imageUrl": "/images/items/Picture_06.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_06.glb"
+    },
+    {
+      "id": "Picture_07",
+      "name": "Picture 07",
+      "imageUrl": "/images/items/Picture_07.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_07.glb"
+    },
+    {
+      "id": "Picture_08",
+      "name": "Picture 08",
+      "imageUrl": "/images/items/Picture_08.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_08.glb"
+    },
+    {
+      "id": "Picture_09",
+      "name": "Picture 09",
+      "imageUrl": "/images/items/Picture_09.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_09.glb"
+    },
+    {
+      "id": "Picture_10",
+      "name": "Picture 10",
+      "imageUrl": "/images/items/Picture_10.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_10.glb"
+    },
+    {
+      "id": "Picture_11",
+      "name": "Picture 11",
+      "imageUrl": "/images/items/Picture_11.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_11.glb"
+    },
+    {
+      "id": "Picture_12",
+      "name": "Picture 12",
+      "imageUrl": "/images/items/Picture_12.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_12.glb"
+    },
+    {
+      "id": "Picture_13",
+      "name": "Picture 13",
+      "imageUrl": "/images/items/Picture_13.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_13.glb"
+    },
+    {
+      "id": "Picture_14",
+      "name": "Picture 14",
+      "imageUrl": "/images/items/Picture_14.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_14.glb"
+    },
+    {
+      "id": "Picture_15",
+      "name": "Picture 15",
+      "imageUrl": "/images/items/Picture_15.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_15.glb"
+    },
+    {
+      "id": "Picture_16",
+      "name": "Picture 16",
+      "imageUrl": "/images/items/Picture_16.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_16.glb"
+    },
+    {
+      "id": "Picture_17",
+      "name": "Picture 17",
+      "imageUrl": "/images/items/Picture_17.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_17.glb"
+    },
+    {
+      "id": "Picture_18",
+      "name": "Picture 18",
+      "imageUrl": "/images/items/Picture_18.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_18.glb"
+    },
+    {
+      "id": "Picture_19",
+      "name": "Picture 19",
+      "imageUrl": "/images/items/Picture_19.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_19.glb"
+    },
+    {
+      "id": "Picture_20",
+      "name": "Picture 20",
+      "imageUrl": "/images/items/Picture_20.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_20.glb"
+    },
+    {
+      "id": "Picture_21",
+      "name": "Picture 21",
+      "imageUrl": "/images/items/Picture_21.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_21.glb"
+    },
+    {
+      "id": "Picture_22",
+      "name": "Picture 22",
+      "imageUrl": "/images/items/Picture_22.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_22.glb"
+    },
+    {
+      "id": "Picture_23",
+      "name": "Picture 23",
+      "imageUrl": "/images/items/Picture_23.jpg",
+      "category": "Picture",
+      "path": "/models/items/Picture/Picture_23.glb"
+    },
+    {
+      "id": "Plants_01",
+      "name": "Plants 01",
+      "imageUrl": "/images/items/Plants_01.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_01.glb"
+    },
+    {
+      "id": "Plants_02",
+      "name": "Plants 02",
+      "imageUrl": "/images/items/Plants_02.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_02.glb"
+    },
+    {
+      "id": "Plants_03",
+      "name": "Plants 03",
+      "imageUrl": "/images/items/Plants_03.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_03.glb"
+    },
+    {
+      "id": "Plants_04",
+      "name": "Plants 04",
+      "imageUrl": "/images/items/Plants_04.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_04.glb"
+    },
+    {
+      "id": "Plants_05",
+      "name": "Plants 05",
+      "imageUrl": "/images/items/Plants_05.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_05.glb"
+    },
+    {
+      "id": "Plants_06",
+      "name": "Plants 06",
+      "imageUrl": "/images/items/Plants_06.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_06.glb"
+    },
+    {
+      "id": "Plants_07",
+      "name": "Plants 07",
+      "imageUrl": "/images/items/Plants_07.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_07.glb"
+    },
+    {
+      "id": "Plants_08",
+      "name": "Plants 08",
+      "imageUrl": "/images/items/Plants_08.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_08.glb"
+    },
+    {
+      "id": "Plants_09",
+      "name": "Plants 09",
+      "imageUrl": "/images/items/Plants_09.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_09.glb"
+    },
+    {
+      "id": "Plants_10",
+      "name": "Plants 10",
+      "imageUrl": "/images/items/Plants_10.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_10.glb"
+    },
+    {
+      "id": "Plants_11",
+      "name": "Plants 11",
+      "imageUrl": "/images/items/Plants_11.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_11.glb"
+    },
+    {
+      "id": "Plants_12",
+      "name": "Plants 12",
+      "imageUrl": "/images/items/Plants_12.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_12.glb"
+    },
+    {
+      "id": "Plants_13",
+      "name": "Plants 13",
+      "imageUrl": "/images/items/Plants_13.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_13.glb"
+    },
+    {
+      "id": "Plants_14",
+      "name": "Plants 14",
+      "imageUrl": "/images/items/Plants_14.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_14.glb"
+    },
+    {
+      "id": "Plants_15",
+      "name": "Plants 15",
+      "imageUrl": "/images/items/Plants_15.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_15.glb"
+    },
+    {
+      "id": "Plants_16",
+      "name": "Plants 16",
+      "imageUrl": "/images/items/Plants_16.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_16.glb"
+    },
+    {
+      "id": "Plants_17",
+      "name": "Plants 17",
+      "imageUrl": "/images/items/Plants_17.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_17.glb"
+    },
+    {
+      "id": "Plants_18",
+      "name": "Plants 18",
+      "imageUrl": "/images/items/Plants_18.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_18.glb"
+    },
+    {
+      "id": "Plants_19",
+      "name": "Plants 19",
+      "imageUrl": "/images/items/Plants_19.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_19.glb"
+    },
+    {
+      "id": "Plants_20",
+      "name": "Plants 20",
+      "imageUrl": "/images/items/Plants_20.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_20.glb"
+    },
+    {
+      "id": "Plants_21",
+      "name": "Plants 21",
+      "imageUrl": "/images/items/Plants_21.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_21.glb"
+    },
+    {
+      "id": "Plants_22",
+      "name": "Plants 22",
+      "imageUrl": "/images/items/Plants_22.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_22.glb"
+    },
+    {
+      "id": "Plants_23",
+      "name": "Plants 23",
+      "imageUrl": "/images/items/Plants_23.jpg",
+      "category": "Plants",
+      "path": "/models/items/Plants/Plants_23.glb"
+    },
+    {
+      "id": "Pouf_01",
+      "name": "Pouf 01",
+      "imageUrl": "/images/items/Pouf_01.jpg",
+      "category": "Pouf",
+      "path": "/models/items/Pouf/Pouf_01.glb"
+    },
+    {
+      "id": "Pouf_02",
+      "name": "Pouf 02",
+      "imageUrl": "/images/items/Pouf_02.jpg",
+      "category": "Pouf",
+      "path": "/models/items/Pouf/Pouf_02.glb"
+    },
+    {
+      "id": "Pouf_03",
+      "name": "Pouf 03",
+      "imageUrl": "/images/items/Pouf_03.jpg",
+      "category": "Pouf",
+      "path": "/models/items/Pouf/Pouf_03.glb"
+    },
+    {
+      "id": "Pouf_04",
+      "name": "Pouf 04",
+      "imageUrl": "/images/items/Pouf_04.jpg",
+      "category": "Pouf",
+      "path": "/models/items/Pouf/Pouf_04.glb"
+    },
+    {
+      "id": "Pouf_06",
+      "name": "Pouf 06",
+      "imageUrl": "/images/items/Pouf_06.jpg",
+      "category": "Pouf",
+      "path": "/models/items/Pouf/Pouf_06.glb"
+    },
+    {
+      "id": "Pouf_07",
+      "name": "Pouf 07",
+      "imageUrl": "/images/items/Pouf_07.jpg",
+      "category": "Pouf",
+      "path": "/models/items/Pouf/Pouf_07.glb"
+    },
+    {
+      "id": "Audio_01",
+      "name": "Audio 01",
+      "imageUrl": "/images/items/Audio_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Audio_01.glb"
+    },
+    {
+      "id": "Audio_02",
+      "name": "Audio 02",
+      "imageUrl": "/images/items/Audio_02.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Audio_02.glb"
+    },
+    {
+      "id": "Audio_03",
+      "name": "Audio 03",
+      "imageUrl": "/images/items/Audio_03.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Audio_03.glb"
+    },
+    {
+      "id": "Audio_04",
+      "name": "Audio 04",
+      "imageUrl": "/images/items/Audio_04.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Audio_04.glb"
+    },
+    {
+      "id": "Audio_05",
+      "name": "Audio 05",
+      "imageUrl": "/images/items/Audio_05.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Audio_05.glb"
+    },
+    {
+      "id": "Audio_06",
+      "name": "Audio 06",
+      "imageUrl": "/images/items/Audio_06.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Audio_06.glb"
+    },
+    {
+      "id": "Audio_07",
+      "name": "Audio 07",
+      "imageUrl": "/images/items/Audio_07.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Audio_07.glb"
+    },
+    {
+      "id": "Audio_08",
+      "name": "Audio 08",
+      "imageUrl": "/images/items/Audio_08.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Audio_08.glb"
+    },
+    {
+      "id": "Audio_09",
+      "name": "Audio 09",
+      "imageUrl": "/images/items/Audio_09.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Audio_09.glb"
+    },
+    {
+      "id": "Ball_01",
+      "name": "Ball 01",
+      "imageUrl": "/images/items/Ball_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Ball_01.glb"
+    },
+    {
+      "id": "BarbellStand_01",
+      "name": "Barbellstand 01",
+      "imageUrl": "/images/items/BarbellStand_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/BarbellStand_01.glb"
+    },
+    {
+      "id": "BarbellStand_01_Part",
+      "name": "Barbellstand 01 Part",
+      "imageUrl": "/images/items/BarbellStand_01_Part.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/BarbellStand_01_Part.glb"
+    },
+    {
+      "id": "Barbell_01",
+      "name": "Barbell 01",
+      "imageUrl": "/images/items/Barbell_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Barbell_01.glb"
+    },
+    {
+      "id": "Basket",
+      "name": "Basket",
+      "imageUrl": "/images/items/Basket.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Basket.glb"
+    },
+    {
+      "id": "Board",
+      "name": "Board",
+      "imageUrl": "/images/items/Board.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Board.glb"
+    },
+    {
+      "id": "Clock_01",
+      "name": "Clock 01",
+      "imageUrl": "/images/items/Clock_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Clock_01.glb"
+    },
+    {
+      "id": "Clock_02",
+      "name": "Clock 02",
+      "imageUrl": "/images/items/Clock_02.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Clock_02.glb"
+    },
+    {
+      "id": "Clock_03",
+      "name": "Clock 03",
+      "imageUrl": "/images/items/Clock_03.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Clock_03.glb"
+    },
+    {
+      "id": "Clock_04",
+      "name": "Clock 04",
+      "imageUrl": "/images/items/Clock_04.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Clock_04.glb"
+    },
+    {
+      "id": "Clock_05",
+      "name": "Clock 05",
+      "imageUrl": "/images/items/Clock_05.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Clock_05.glb"
+    },
+    {
+      "id": "Clock_05_Door",
+      "name": "Clock 05 Door",
+      "imageUrl": "/images/items/Clock_05_Door.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Clock_05_Door.glb"
+    },
+    {
+      "id": "Computer_01",
+      "name": "Computer 01",
+      "imageUrl": "/images/items/Computer_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Computer_01.glb"
+    },
+    {
+      "id": "Conditioner_01",
+      "name": "Conditioner 01",
+      "imageUrl": "/images/items/Conditioner_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Conditioner_01.glb"
+    },
+    {
+      "id": "Darts_01",
+      "name": "Darts 01",
+      "imageUrl": "/images/items/Darts_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Darts_01.glb"
+    },
+    {
+      "id": "Dumbbell_01",
+      "name": "Dumbbell 01",
+      "imageUrl": "/images/items/Dumbbell_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Dumbbell_01.glb"
+    },
+    {
+      "id": "Dumbbell_02",
+      "name": "Dumbbell 02",
+      "imageUrl": "/images/items/Dumbbell_02.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Dumbbell_02.glb"
+    },
+    {
+      "id": "ExerciseBike_01",
+      "name": "Exercisebike 01",
+      "imageUrl": "/images/items/ExerciseBike_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/ExerciseBike_01.glb"
+    },
+    {
+      "id": "Frame_01",
+      "name": "Frame 01",
+      "imageUrl": "/images/items/Frame_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Frame_01.glb"
+    },
+    {
+      "id": "GameConsole_01",
+      "name": "Gameconsole 01",
+      "imageUrl": "/images/items/GameConsole_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/GameConsole_01.glb"
+    },
+    {
+      "id": "GameConsole_02",
+      "name": "Gameconsole 02",
+      "imageUrl": "/images/items/GameConsole_02.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/GameConsole_02.glb"
+    },
+    {
+      "id": "GameConsole_03",
+      "name": "Gameconsole 03",
+      "imageUrl": "/images/items/GameConsole_03.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/GameConsole_03.glb"
+    },
+    {
+      "id": "GameConsole_03_Part_01",
+      "name": "Gameconsole 03 Part 01",
+      "imageUrl": "/images/items/GameConsole_03_Part_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/GameConsole_03_Part_01.glb"
+    },
+    {
+      "id": "GameConsole_03_Part_02",
+      "name": "Gameconsole 03 Part 02",
+      "imageUrl": "/images/items/GameConsole_03_Part_02.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/GameConsole_03_Part_02.glb"
+    },
+    {
+      "id": "GameConsole_05",
+      "name": "Gameconsole 05",
+      "imageUrl": "/images/items/GameConsole_05.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/GameConsole_05.glb"
+    },
+    {
+      "id": "Grey_Kiosk",
+      "name": "Grey Kiosk",
+      "imageUrl": "/images/items/Grey_Kiosk.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Grey_Kiosk.glb"
+    },
+    {
+      "id": "Guitar_01",
+      "name": "Guitar 01",
+      "imageUrl": "/images/items/Guitar_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Guitar_01.glb"
+    },
+    {
+      "id": "Hanger_01",
+      "name": "Hanger 01",
+      "imageUrl": "/images/items/Hanger_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Hanger_01.glb"
+    },
+    {
+      "id": "Hanger_02",
+      "name": "Hanger 02",
+      "imageUrl": "/images/items/Hanger_02.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Hanger_02.glb"
+    },
+    {
+      "id": "Hanger_03",
+      "name": "Hanger 03",
+      "imageUrl": "/images/items/Hanger_03.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Hanger_03.glb"
+    },
+    {
+      "id": "Hanger_04",
+      "name": "Hanger 04",
+      "imageUrl": "/images/items/Hanger_04.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Hanger_04.glb"
+    },
+    {
+      "id": "IroningBoard_01",
+      "name": "Ironingboard 01",
+      "imageUrl": "/images/items/IroningBoard_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/IroningBoard_01.glb"
+    },
+    {
+      "id": "Iron_01",
+      "name": "Iron 01",
+      "imageUrl": "/images/items/Iron_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Iron_01.glb"
+    },
+    {
+      "id": "Keyboard_01",
+      "name": "Keyboard 01",
+      "imageUrl": "/images/items/Keyboard_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Keyboard_01.glb"
+    },
+    {
+      "id": "KH_Ball",
+      "name": "Kh Ball",
+      "imageUrl": "/images/items/KH_Ball.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/KH_Ball.glb"
+    },
+    {
+      "id": "LavaLamp_01",
+      "name": "Lavalamp 01",
+      "imageUrl": "/images/items/LavaLamp_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/LavaLamp_01.glb"
+    },
+    {
+      "id": "Mirror_01",
+      "name": "Mirror 01",
+      "imageUrl": "/images/items/Mirror_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Mirror_01.glb"
+    },
+    {
+      "id": "Mirror_02",
+      "name": "Mirror 02",
+      "imageUrl": "/images/items/Mirror_02.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Mirror_02.glb"
+    },
+    {
+      "id": "Mirror_03",
+      "name": "Mirror 03",
+      "imageUrl": "/images/items/Mirror_03.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Mirror_03.glb"
+    },
+    {
+      "id": "Mirror_04",
+      "name": "Mirror 04",
+      "imageUrl": "/images/items/Mirror_04.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Mirror_04.glb"
+    },
+    {
+      "id": "Mouse_01",
+      "name": "Mouse 01",
+      "imageUrl": "/images/items/Mouse_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Mouse_01.glb"
+    },
+    {
+      "id": "MR_KH_KIOSK_0002",
+      "name": "Mr Kh Kiosk 0002",
+      "imageUrl": "/images/items/MR_KH_KIOSK_0002.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/MR_KH_KIOSK_0002.glb"
+    },
+    {
+      "id": "Piano_01",
+      "name": "Piano 01",
+      "imageUrl": "/images/items/Piano_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Piano_01.glb"
+    },
+    {
+      "id": "pillow_01",
+      "name": "Pillow 01",
+      "imageUrl": "/images/items/pillow_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/pillow_01.glb"
+    },
+    {
+      "id": "pillow_02",
+      "name": "Pillow 02",
+      "imageUrl": "/images/items/pillow_02.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/pillow_02.glb"
+    },
+    {
+      "id": "Synthesizer_01",
+      "name": "Synthesizer 01",
+      "imageUrl": "/images/items/Synthesizer_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Synthesizer_01.glb"
+    },
+    {
+      "id": "Toy_01",
+      "name": "Toy 01",
+      "imageUrl": "/images/items/Toy_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Toy_01.glb"
+    },
+    {
+      "id": "Toy_02",
+      "name": "Toy 02",
+      "imageUrl": "/images/items/Toy_02.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Toy_02.glb"
+    },
+    {
+      "id": "Toy_03",
+      "name": "Toy 03",
+      "imageUrl": "/images/items/Toy_03.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Toy_03.glb"
+    },
+    {
+      "id": "Toy_04",
+      "name": "Toy 04",
+      "imageUrl": "/images/items/Toy_04.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Toy_04.glb"
+    },
+    {
+      "id": "Toy_05",
+      "name": "Toy 05",
+      "imageUrl": "/images/items/Toy_05.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Toy_05.glb"
+    },
+    {
+      "id": "Toy_06",
+      "name": "Toy 06",
+      "imageUrl": "/images/items/Toy_06.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Toy_06.glb"
+    },
+    {
+      "id": "Treadmill_01",
+      "name": "Treadmill 01",
+      "imageUrl": "/images/items/Treadmill_01.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/Treadmill_01.glb"
+    },
+    {
+      "id": "White_Kiosk",
+      "name": "White Kiosk",
+      "imageUrl": "/images/items/White_Kiosk.jpg",
+      "category": "Props",
+      "path": "/models/items/Props/White_Kiosk.glb"
+    },
+    {
+      "id": "Shelf_01",
+      "name": "Shelf 01",
+      "imageUrl": "/images/items/Shelf_01.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_01.glb"
+    },
+    {
+      "id": "Shelf_02",
+      "name": "Shelf 02",
+      "imageUrl": "/images/items/Shelf_02.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_02.glb"
+    },
+    {
+      "id": "Shelf_03",
+      "name": "Shelf 03",
+      "imageUrl": "/images/items/Shelf_03.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_03.glb"
+    },
+    {
+      "id": "Shelf_04",
+      "name": "Shelf 04",
+      "imageUrl": "/images/items/Shelf_04.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_04.glb"
+    },
+    {
+      "id": "Shelf_05",
+      "name": "Shelf 05",
+      "imageUrl": "/images/items/Shelf_05.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_05.glb"
+    },
+    {
+      "id": "Shelf_06",
+      "name": "Shelf 06",
+      "imageUrl": "/images/items/Shelf_06.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_06.glb"
+    },
+    {
+      "id": "Shelf_07",
+      "name": "Shelf 07",
+      "imageUrl": "/images/items/Shelf_07.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_07.glb"
+    },
+    {
+      "id": "Shelf_08",
+      "name": "Shelf 08",
+      "imageUrl": "/images/items/Shelf_08.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_08.glb"
+    },
+    {
+      "id": "Shelf_09",
+      "name": "Shelf 09",
+      "imageUrl": "/images/items/Shelf_09.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_09.glb"
+    },
+    {
+      "id": "Shelf_10",
+      "name": "Shelf 10",
+      "imageUrl": "/images/items/Shelf_10.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelf_10.glb"
+    },
+    {
+      "id": "Shelving_01",
+      "name": "Shelving 01",
+      "imageUrl": "/images/items/Shelving_01.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelving_01.glb"
+    },
+    {
+      "id": "Shelving_02",
+      "name": "Shelving 02",
+      "imageUrl": "/images/items/Shelving_02.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelving_02.glb"
+    },
+    {
+      "id": "Shelving_03",
+      "name": "Shelving 03",
+      "imageUrl": "/images/items/Shelving_03.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelving_03.glb"
+    },
+    {
+      "id": "Shelving_04",
+      "name": "Shelving 04",
+      "imageUrl": "/images/items/Shelving_04.jpg",
+      "category": "Shelving",
+      "path": "/models/items/Shelving/Shelving_04.glb"
+    },
+    {
+      "id": "Coffee_Table_01",
+      "name": "Coffee Table 01",
+      "imageUrl": "/images/items/Coffee_Table_01.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Coffee_Table_01.glb"
+    },
+    {
+      "id": "Coffee_Table_02",
+      "name": "Coffee Table 02",
+      "imageUrl": "/images/items/Coffee_Table_02.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Coffee_Table_02.glb"
+    },
+    {
+      "id": "Coffee_Table_03",
+      "name": "Coffee Table 03",
+      "imageUrl": "/images/items/Coffee_Table_03.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Coffee_Table_03.glb"
+    },
+    {
+      "id": "Coffee_Table_04",
+      "name": "Coffee Table 04",
+      "imageUrl": "/images/items/Coffee_Table_04.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Coffee_Table_04.glb"
+    },
+    {
+      "id": "Coffee_Table_05",
+      "name": "Coffee Table 05",
+      "imageUrl": "/images/items/Coffee_Table_05.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Coffee_Table_05.glb"
+    },
+    {
+      "id": "Coffee_Table_06",
+      "name": "Coffee Table 06",
+      "imageUrl": "/images/items/Coffee_Table_06.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Coffee_Table_06.glb"
+    },
+    {
+      "id": "Coffee_Table_08",
+      "name": "Coffee Table 08",
+      "imageUrl": "/images/items/Coffee_Table_08.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Coffee_Table_08.glb"
+    },
+    {
+      "id": "Coffee_Table_09",
+      "name": "Coffee Table 09",
+      "imageUrl": "/images/items/Coffee_Table_09.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Coffee_Table_09.glb"
+    },
+    {
+      "id": "Coffee_Table_10",
+      "name": "Coffee Table 10",
+      "imageUrl": "/images/items/Coffee_Table_10.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Coffee_Table_10.glb"
+    },
+    {
+      "id": "Dressing_Chair_01",
+      "name": "Dressing Chair 01",
+      "imageUrl": "/images/items/Dressing_Chair_01.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Dressing_Chair_01.glb"
+    },
+    {
+      "id": "Kids_Table_01",
+      "name": "Kids Table 01",
+      "imageUrl": "/images/items/Kids_Table_01.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kids_Table_01.glb"
+    },
+    {
+      "id": "Kids_Table_02",
+      "name": "Kids Table 02",
+      "imageUrl": "/images/items/Kids_Table_02.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kids_Table_02.glb"
+    },
+    {
+      "id": "Kitchen_Table_01",
+      "name": "Kitchen Table 01",
+      "imageUrl": "/images/items/Kitchen_Table_01.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_01.glb"
+    },
+    {
+      "id": "Kitchen_Table_02",
+      "name": "Kitchen Table 02",
+      "imageUrl": "/images/items/Kitchen_Table_02.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_02.glb"
+    },
+    {
+      "id": "Kitchen_Table_03",
+      "name": "Kitchen Table 03",
+      "imageUrl": "/images/items/Kitchen_Table_03.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_03.glb"
+    },
+    {
+      "id": "Kitchen_Table_04",
+      "name": "Kitchen Table 04",
+      "imageUrl": "/images/items/Kitchen_Table_04.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_04.glb"
+    },
+    {
+      "id": "Kitchen_Table_05",
+      "name": "Kitchen Table 05",
+      "imageUrl": "/images/items/Kitchen_Table_05.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_05.glb"
+    },
+    {
+      "id": "Kitchen_Table_06",
+      "name": "Kitchen Table 06",
+      "imageUrl": "/images/items/Kitchen_Table_06.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_06.glb"
+    },
+    {
+      "id": "Kitchen_Table_07",
+      "name": "Kitchen Table 07",
+      "imageUrl": "/images/items/Kitchen_Table_07.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_07.glb"
+    },
+    {
+      "id": "Kitchen_Table_08",
+      "name": "Kitchen Table 08",
+      "imageUrl": "/images/items/Kitchen_Table_08.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_08.glb"
+    },
+    {
+      "id": "Kitchen_Table_09",
+      "name": "Kitchen Table 09",
+      "imageUrl": "/images/items/Kitchen_Table_09.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_09.glb"
+    },
+    {
+      "id": "Kitchen_Table_10",
+      "name": "Kitchen Table 10",
+      "imageUrl": "/images/items/Kitchen_Table_10.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_10.glb"
+    },
+    {
+      "id": "Kitchen_Table_11",
+      "name": "Kitchen Table 11",
+      "imageUrl": "/images/items/Kitchen_Table_11.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_11.glb"
+    },
+    {
+      "id": "Kitchen_Table_12",
+      "name": "Kitchen Table 12",
+      "imageUrl": "/images/items/Kitchen_Table_12.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_12.glb"
+    },
+    {
+      "id": "Kitchen_Table_13",
+      "name": "Kitchen Table 13",
+      "imageUrl": "/images/items/Kitchen_Table_13.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_13.glb"
+    },
+    {
+      "id": "Kitchen_Table_14",
+      "name": "Kitchen Table 14",
+      "imageUrl": "/images/items/Kitchen_Table_14.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_14.glb"
+    },
+    {
+      "id": "Kitchen_Table_15",
+      "name": "Kitchen Table 15",
+      "imageUrl": "/images/items/Kitchen_Table_15.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_15.glb"
+    },
+    {
+      "id": "Kitchen_Table_16",
+      "name": "Kitchen Table 16",
+      "imageUrl": "/images/items/Kitchen_Table_16.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_16.glb"
+    },
+    {
+      "id": "Kitchen_Table_17",
+      "name": "Kitchen Table 17",
+      "imageUrl": "/images/items/Kitchen_Table_17.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_17.glb"
+    },
+    {
+      "id": "Kitchen_Table_18",
+      "name": "Kitchen Table 18",
+      "imageUrl": "/images/items/Kitchen_Table_18.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Kitchen_Table_18.glb"
+    },
+    {
+      "id": "Work_Table_01",
+      "name": "Work Table 01",
+      "imageUrl": "/images/items/Work_Table_01.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Work_Table_01.glb"
+    },
+    {
+      "id": "Work_Table_03",
+      "name": "Work Table 03",
+      "imageUrl": "/images/items/Work_Table_03.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Work_Table_03.glb"
+    },
+    {
+      "id": "Work_Table_06",
+      "name": "Work Table 06",
+      "imageUrl": "/images/items/Work_Table_06.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Work_Table_06.glb"
+    },
+    {
+      "id": "Work_Table_07",
+      "name": "Work Table 07",
+      "imageUrl": "/images/items/Work_Table_07.jpg",
+      "category": "Table",
+      "path": "/models/items/Table/Work_Table_07.glb"
+    },
+    {
+      "id": "Kr_Television",
+      "name": "Kr Television",
+      "imageUrl": "/images/items/Kr_Television.jpg",
+      "category": "Televisions",
+      "path": "/models/items/Televisions/Kr_Television.glb"
+    },
+    {
+      "id": "TV_01",
+      "name": "Tv 01",
+      "imageUrl": "/images/items/TV_01.jpg",
+      "category": "Televisions",
+      "path": "/models/items/Televisions/TV_01.glb"
+    },
+    {
+      "id": "TV_02",
+      "name": "Tv 02",
+      "imageUrl": "/images/items/TV_02.jpg",
+      "category": "Televisions",
+      "path": "/models/items/Televisions/TV_02.glb"
+    },
+    {
+      "id": "TV_03",
+      "name": "Tv 03",
+      "imageUrl": "/images/items/TV_03.jpg",
+      "category": "Televisions",
+      "path": "/models/items/Televisions/TV_03.glb"
+    },
+    {
+      "id": "TV_04",
+      "name": "Tv 04",
+      "imageUrl": "/images/items/TV_04.jpg",
+      "category": "Televisions",
+      "path": "/models/items/Televisions/TV_04.glb"
+    },
+    {
+      "id": "TV_05",
+      "name": "Tv 05",
+      "imageUrl": "/images/items/TV_05.jpg",
+      "category": "Televisions",
+      "path": "/models/items/Televisions/TV_05.glb"
+    },
+    {
+      "id": "TV_06",
+      "name": "Tv 06",
+      "imageUrl": "/images/items/TV_06.jpg",
+      "category": "Televisions",
+      "path": "/models/items/Televisions/TV_06.glb"
+    },
+    {
+      "id": "TV_07",
+      "name": "Tv 07",
+      "imageUrl": "/images/items/TV_07.jpg",
+      "category": "Televisions",
+      "path": "/models/items/Televisions/TV_07.glb"
+    },
+    {
+      "id": "TV_Stand_02",
+      "name": "Tv Stand 02",
+      "imageUrl": "/images/items/TV_Stand_02.jpg",
+      "category": "TV Stand",
+      "path": "/models/items/TV Stand/TV_Stand_02.glb"
+    },
+    {
+      "id": "TV_Stand_03",
+      "name": "Tv Stand 03",
+      "imageUrl": "/images/items/TV_Stand_03.jpg",
+      "category": "TV Stand",
+      "path": "/models/items/TV Stand/TV_Stand_03.glb"
+    },
+    {
+      "id": "TV_Stand_04",
+      "name": "Tv Stand 04",
+      "imageUrl": "/images/items/TV_Stand_04.jpg",
+      "category": "TV Stand",
+      "path": "/models/items/TV Stand/TV_Stand_04.glb"
+    },
+    {
+      "id": "TV_Stand_07",
+      "name": "Tv Stand 07",
+      "imageUrl": "/images/items/TV_Stand_07.jpg",
+      "category": "TV Stand",
+      "path": "/models/items/TV Stand/TV_Stand_07.glb"
+    },
+    {
+      "id": "Panel_Black_01",
+      "name": "Panel Black 01",
+      "imageUrl": "/images/items/Panel_Black_01.jpg",
+      "category": "Wall Panels",
+      "path": "/models/items/Wall Panels/Panel_Black_01.glb"
+    },
+    {
+      "id": "Panel_Black_02",
+      "name": "Panel Black 02",
+      "imageUrl": "/images/items/Panel_Black_02.jpg",
+      "category": "Wall Panels",
+      "path": "/models/items/Wall Panels/Panel_Black_02.glb"
+    },
+    {
+      "id": "Panel_Black_03",
+      "name": "Panel Black 03",
+      "imageUrl": "/images/items/Panel_Black_03.jpg",
+      "category": "Wall Panels",
+      "path": "/models/items/Wall Panels/Panel_Black_03.glb"
+    },
+    {
+      "id": "Panel_Brown_01",
+      "name": "Panel Brown 01",
+      "imageUrl": "/images/items/Panel_Brown_01.jpg",
+      "category": "Wall Panels",
+      "path": "/models/items/Wall Panels/Panel_Brown_01.glb"
+    },
+    {
+      "id": "Panel_Brown_02",
+      "name": "Panel Brown 02",
+      "imageUrl": "/images/items/Panel_Brown_02.jpg",
+      "category": "Wall Panels",
+      "path": "/models/items/Wall Panels/Panel_Brown_02.glb"
+    },
+    {
+      "id": "Panel_Brown_03",
+      "name": "Panel Brown 03",
+      "imageUrl": "/images/items/Panel_Brown_03.jpg",
+      "category": "Wall Panels",
+      "path": "/models/items/Wall Panels/Panel_Brown_03.glb"
+    },
+    {
+      "id": "Panel_White_01",
+      "name": "Panel White 01",
+      "imageUrl": "/images/items/Panel_White_01.jpg",
+      "category": "Wall Panels",
+      "path": "/models/items/Wall Panels/Panel_White_01.glb"
+    },
+    {
+      "id": "Panel_White_02",
+      "name": "Panel White 02",
+      "imageUrl": "/images/items/Panel_White_02.jpg",
+      "category": "Wall Panels",
+      "path": "/models/items/Wall Panels/Panel_White_02.glb"
+    },
+    {
+      "id": "Panel_White_03",
+      "name": "Panel White 03",
+      "imageUrl": "/images/items/Panel_White_03.jpg",
+      "category": "Wall Panels",
+      "path": "/models/items/Wall Panels/Panel_White_03.glb"
+    },
+    {
+      "id": "Wall_01",
+      "name": "Wall 01",
+      "imageUrl": "/images/items/Wall_01.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_01.glb"
+    },
+    {
+      "id": "Wall_02",
+      "name": "Wall 02",
+      "imageUrl": "/images/items/Wall_02.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_02.glb"
+    },
+    {
+      "id": "Wall_03",
+      "name": "Wall 03",
+      "imageUrl": "/images/items/Wall_03.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_03.glb"
+    },
+    {
+      "id": "Wall_04",
+      "name": "Wall 04",
+      "imageUrl": "/images/items/Wall_04.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_04.glb"
+    },
+    {
+      "id": "Wall_05",
+      "name": "Wall 05",
+      "imageUrl": "/images/items/Wall_05.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_05.glb"
+    },
+    {
+      "id": "Wall_06",
+      "name": "Wall 06",
+      "imageUrl": "/images/items/Wall_06.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_06.glb"
+    },
+    {
+      "id": "Wall_07",
+      "name": "Wall 07",
+      "imageUrl": "/images/items/Wall_07.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_07.glb"
+    },
+    {
+      "id": "Wall_08",
+      "name": "Wall 08",
+      "imageUrl": "/images/items/Wall_08.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_08.glb"
+    },
+    {
+      "id": "Wall_09",
+      "name": "Wall 09",
+      "imageUrl": "/images/items/Wall_09.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_09.glb"
+    },
+    {
+      "id": "Wall_10",
+      "name": "Wall 10",
+      "imageUrl": "/images/items/Wall_10.jpg",
+      "category": "Walls",
+      "path": "/models/items/Walls/Wall_10.glb"
+    },
+    {
+      "id": "Window_Black_01",
+      "name": "Window Black 01",
+      "imageUrl": "/images/items/Window_Black_01.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_01.glb"
+    },
+    {
+      "id": "Window_Black_02",
+      "name": "Window Black 02",
+      "imageUrl": "/images/items/Window_Black_02.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_02.glb"
+    },
+    {
+      "id": "Window_Black_03",
+      "name": "Window Black 03",
+      "imageUrl": "/images/items/Window_Black_03.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_03.glb"
+    },
+    {
+      "id": "Window_Black_04",
+      "name": "Window Black 04",
+      "imageUrl": "/images/items/Window_Black_04.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_04.glb"
+    },
+    {
+      "id": "Window_Black_05",
+      "name": "Window Black 05",
+      "imageUrl": "/images/items/Window_Black_05.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_05.glb"
+    },
+    {
+      "id": "Window_Black_06",
+      "name": "Window Black 06",
+      "imageUrl": "/images/items/Window_Black_06.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_06.glb"
+    },
+    {
+      "id": "Window_Black_07",
+      "name": "Window Black 07",
+      "imageUrl": "/images/items/Window_Black_07.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_07.glb"
+    },
+    {
+      "id": "Window_Black_08",
+      "name": "Window Black 08",
+      "imageUrl": "/images/items/Window_Black_08.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_08.glb"
+    },
+    {
+      "id": "Window_Black_09",
+      "name": "Window Black 09",
+      "imageUrl": "/images/items/Window_Black_09.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_09.glb"
+    },
+    {
+      "id": "Window_Black_10",
+      "name": "Window Black 10",
+      "imageUrl": "/images/items/Window_Black_10.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_10.glb"
+    },
+    {
+      "id": "Window_Black_11",
+      "name": "Window Black 11",
+      "imageUrl": "/images/items/Window_Black_11.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_11.glb"
+    },
+    {
+      "id": "Window_Black_12",
+      "name": "Window Black 12",
+      "imageUrl": "/images/items/Window_Black_12.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_12.glb"
+    },
+    {
+      "id": "Window_Black_13",
+      "name": "Window Black 13",
+      "imageUrl": "/images/items/Window_Black_13.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_13.glb"
+    },
+    {
+      "id": "Window_Black_14",
+      "name": "Window Black 14",
+      "imageUrl": "/images/items/Window_Black_14.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_14.glb"
+    },
+    {
+      "id": "Window_Black_15",
+      "name": "Window Black 15",
+      "imageUrl": "/images/items/Window_Black_15.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_15.glb"
+    },
+    {
+      "id": "Window_Black_16",
+      "name": "Window Black 16",
+      "imageUrl": "/images/items/Window_Black_16.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_16.glb"
+    },
+    {
+      "id": "Window_Black_17",
+      "name": "Window Black 17",
+      "imageUrl": "/images/items/Window_Black_17.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_17.glb"
+    },
+    {
+      "id": "Window_Black_18",
+      "name": "Window Black 18",
+      "imageUrl": "/images/items/Window_Black_18.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_18.glb"
+    },
+    {
+      "id": "Window_Black_19",
+      "name": "Window Black 19",
+      "imageUrl": "/images/items/Window_Black_19.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_Black_19.glb"
+    },
+    {
+      "id": "Window_White_01",
+      "name": "Window White 01",
+      "imageUrl": "/images/items/Window_White_01.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_01.glb"
+    },
+    {
+      "id": "Window_White_02",
+      "name": "Window White 02",
+      "imageUrl": "/images/items/Window_White_02.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_02.glb"
+    },
+    {
+      "id": "Window_White_03",
+      "name": "Window White 03",
+      "imageUrl": "/images/items/Window_White_03.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_03.glb"
+    },
+    {
+      "id": "Window_White_04",
+      "name": "Window White 04",
+      "imageUrl": "/images/items/Window_White_04.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_04.glb"
+    },
+    {
+      "id": "Window_White_05",
+      "name": "Window White 05",
+      "imageUrl": "/images/items/Window_White_05.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_05.glb"
+    },
+    {
+      "id": "Window_White_06",
+      "name": "Window White 06",
+      "imageUrl": "/images/items/Window_White_06.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_06.glb"
+    },
+    {
+      "id": "Window_White_07",
+      "name": "Window White 07",
+      "imageUrl": "/images/items/Window_White_07.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_07.glb"
+    },
+    {
+      "id": "Window_White_08",
+      "name": "Window White 08",
+      "imageUrl": "/images/items/Window_White_08.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_08.glb"
+    },
+    {
+      "id": "Window_White_09",
+      "name": "Window White 09",
+      "imageUrl": "/images/items/Window_White_09.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_09.glb"
+    },
+    {
+      "id": "Window_White_10",
+      "name": "Window White 10",
+      "imageUrl": "/images/items/Window_White_10.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_10.glb"
+    },
+    {
+      "id": "Window_White_11",
+      "name": "Window White 11",
+      "imageUrl": "/images/items/Window_White_11.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_11.glb"
+    },
+    {
+      "id": "Window_White_12",
+      "name": "Window White 12",
+      "imageUrl": "/images/items/Window_White_12.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_12.glb"
+    },
+    {
+      "id": "Window_White_13",
+      "name": "Window White 13",
+      "imageUrl": "/images/items/Window_White_13.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_13.glb"
+    },
+    {
+      "id": "Window_White_14",
+      "name": "Window White 14",
+      "imageUrl": "/images/items/Window_White_14.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_14.glb"
+    },
+    {
+      "id": "Window_White_15",
+      "name": "Window White 15",
+      "imageUrl": "/images/items/Window_White_15.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_15.glb"
+    },
+    {
+      "id": "Window_White_16",
+      "name": "Window White 16",
+      "imageUrl": "/images/items/Window_White_16.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_16.glb"
+    },
+    {
+      "id": "Window_White_17",
+      "name": "Window White 17",
+      "imageUrl": "/images/items/Window_White_17.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_17.glb"
+    },
+    {
+      "id": "Window_White_18",
+      "name": "Window White 18",
+      "imageUrl": "/images/items/Window_White_18.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_18.glb"
+    },
+    {
+      "id": "Window_White_19",
+      "name": "Window White 19",
+      "imageUrl": "/images/items/Window_White_19.jpg",
+      "category": "Windows",
+      "path": "/models/items/Windows/Window_White_19.glb"
+    }
+  ]
+}
