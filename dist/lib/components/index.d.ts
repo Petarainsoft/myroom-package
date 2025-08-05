@@ -7,6 +7,11 @@
  */
 export { MyRoom } from './MyRoom';
 export type { MyRoomProps, MyRoomRef } from '../types';
+export { MyRoomModern } from './MyRoomModern';
+export { AvatarSystemModern } from './AvatarSystemModern';
+export { ItemLibraryModern } from './ItemLibraryModern';
+export type { AvatarSystemModernProps } from './AvatarSystemModern';
+export type { ItemLibraryModernProps } from './ItemLibraryModern';
 export { AvatarSystem } from './AvatarSystem';
 export type { AvatarSystemProps, AvatarSystemRef } from './AvatarSystem';
 export { RoomManager } from './RoomManager';

@@ -6,6 +6,9 @@
  * of the 3D room system.
  */
 export { useMyRoom } from './useMyRoom';
+export { useMyRoomModern } from './useMyRoomModern';
+export { useAvatarModern } from './useAvatarModern';
+export { useItemsModern } from './useItemsModern';
 export { useAvatar } from './useAvatar';
 export { useRoom } from './useRoom';
 export { useItems } from './useItems';
